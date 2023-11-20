@@ -17,6 +17,7 @@
         </thead>
         <tbody>
             <?php
+            /** @var \$this */
 
             $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_lider, $id_pg);
 
@@ -181,8 +182,7 @@
 
                     $totalRelatorio = count($consultarProgresso);
 
-                    if ($totalRelatorio == 0) {
-                        $pontuacao = $pontuacao;
+                    if ($totalRelatorio == 0) {;
                     } else {
                         foreach ($consultarProgresso as $key => $progresso) {
                             $presenca = $progresso['presenca'];

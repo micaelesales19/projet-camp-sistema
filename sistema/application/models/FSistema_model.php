@@ -809,4 +809,28 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
+
+
+	public function cadastroDevocionais($id_ano, $id_modulo, $n_licao, $dia, $titulo, $titulo_ingles, $texto, $texto_ingles, $imagem_url, $imagem_url_ingles, $file, $file_ingles)
+	{
+		$inserir['id '] = NULL;
+		$inserir['id_ano'] = $id_ano;
+		$inserir['id_modulo'] = $id_modulo;
+		$inserir['n_licao'] = $n_licao;
+		$inserir['titulo'] = $titulo;
+		$inserir['titulo_ingles'] = $titulo_ingles;
+		$inserir['dia'] = $dia;
+		$inserir['texto'] = $texto;
+		$inserir['texto_ingles'] = $texto_ingles;
+		$inserir['imagem'] = $imagem_url;
+		$inserir['imagem_ingles'] = $imagem_url_ingles;
+		$inserir['file'] = $file;
+		$inserir['file_ingles'] = $file_ingles;
+
+		if ($this->db->insert('semanarios', $inserir)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

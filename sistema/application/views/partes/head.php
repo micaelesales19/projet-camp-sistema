@@ -37,17 +37,33 @@
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
 
   <script src="<?php echo base_url('import/sistema/plugins/datatables/jquery.dataTables.js') ?>"></script>
   <link href="<?php echo base_url('import/sistema/plugins/datatables/dataTables.bootstrap4.css') ?>" rel="stylesheet">
   <script src="<?php echo base_url('import/sistema/plugins/datatables/dataTables.bootstrap4.js') ?>"></script>
 
-
   <script type="text/javascript">
     $(document).ready(function() {
       $('#table_criancas_pais').DataTable();
+      $('#table_devocionais').DataTable();
+      var x = window.matchMedia("(max-width: 480px)")
+      responsive_function(x) // Call listener function at run time
+      //x.addListener(responsive_function)
     });
+
+    function responsive_function(x) {
+      if (x.matches) { // If media query matches
+        document.getElementById('colxs8').classList.remove('col-xs-8');
+        document.getElementById('colxs8').classList.add('col-lg-12');
+        document.getElementById('colxs4').classList.remove('col-xs-4');
+        document.getElementById('colxs4').classList.add('col-lg-12');
+      } else {
+        document.getElementById('colxs8').classList.remove('col-lg-12');
+        document.getElementById('colxs8').classList.add('col-xs-8');
+        document.getElementById('colxs4').classList.remove('col-lg-12');
+        document.getElementById('colxs4').classList.add('col-xs-4');
+      }
+    }
 
     function formataCPF(cpf) {
       const elementoAlvo = cpf

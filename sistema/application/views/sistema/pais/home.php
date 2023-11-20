@@ -1,5 +1,7 @@
 <?php
 
+/** @var \$this */
+
 $voltar = "";
 $array = array('voltar' => $voltar);
 
@@ -22,6 +24,7 @@ if (!isset($_SESSION['usuario'])) {
     <div class="wrapper">
       <!-- Menu -->
       <?php
+
       $this->load->view('sistema/pais/partes/menu_lateral', $array);
       ?>
 
@@ -151,7 +154,9 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="small-box bg-<?= $color_modulo; ?>">
                   <div class="inner">
                     <h4>PG's</h4><br>
-                    <p><?= $nome_modulo; ?></p>
+                    <p>
+                      <?= $nome_modulo; ?>
+                    </p>
                   </div>
                   <div class="icon">
                     <i class="ion ion-heart"></i>

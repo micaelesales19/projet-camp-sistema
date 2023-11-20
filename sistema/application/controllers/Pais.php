@@ -3,12 +3,12 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * @property input $input
+ * @property $input
  * @property FConsultas_model $FConsultas_model
  * @property FSistema_model $FSistema_model
- * @property db $db
- * @property upload $upload
- * @property email $email
+ * @property $db
+ * @property $upload
+ * @property $email
  */
 
 class Pais extends CI_Controller
@@ -566,7 +566,6 @@ class Pais extends CI_Controller
 							$consultarProgresso = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $idLider, $linha['id_crianca'], $id_modulo);
 
 							if ($consultarProgresso['row'] == 0) {
-								$pontuacao = $pontuacao;
 							} else {
 								foreach ($consultarProgresso['dados'] as $key => $progresso) {
 									$presenca = $progresso['presenca'];
@@ -691,7 +690,6 @@ class Pais extends CI_Controller
 							$consultarProgresso = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $idLider, $linha['id_crianca'], $id_modulo);
 
 							if ($consultarProgresso['row'] == 0) {
-								$pontuacao = $pontuacao;
 							} else {
 								foreach ($consultarProgresso['dados'] as $key => $progresso) {
 									$presenca = $progresso['presenca'];
@@ -892,7 +890,6 @@ class Pais extends CI_Controller
 						$consultarProgresso = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $idLider, $linha['id_crianca'], $id_modulo);
 
 						if ($consultarProgresso['row'] == 0) {
-							$pontuacao = $pontuacao;
 						} else {
 							foreach ($consultarProgresso['dados'] as $key => $progresso) {
 								$presenca = $progresso['presenca'];
@@ -981,7 +978,6 @@ class Pais extends CI_Controller
 						$consultarProgresso = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $idLider, $linha['id_crianca'], $id_modulo);
 
 						if ($consultarProgresso['row'] == 0) {
-							$pontuacao = $pontuacao;
 						} else {
 							foreach ($consultarProgresso['dados'] as $key => $progresso) {
 								$presenca = $progresso['presenca'];
@@ -1053,7 +1049,7 @@ class Pais extends CI_Controller
 
 			$dados = array(
 				'pg' => $dadosPg['dados'],
-				'devocionais' => $dadosDevocionais,
+				'devocionais_consulta' => $dadosDevocionais,
 			);
 
 			$this->load->view('sistema/pais/pages/pg/progresso', $dados);

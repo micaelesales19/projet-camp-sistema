@@ -1,4 +1,6 @@
 <?php
+
+/** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../../index");
 } else {
@@ -350,7 +352,7 @@ if (!isset($_SESSION['usuario'])) {
                                     $id_modulo = $pg['modulo_devocional'];
                                     $n_licao = $pg['licao_devocional'];
 
-                                    $devocionais = $devocionais;
+                                    $devocionais = $devocionais_consulta;
 
                                     //$dataHjTrocada = date('m/d/Y');
 

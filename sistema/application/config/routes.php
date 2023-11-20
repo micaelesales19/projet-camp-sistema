@@ -126,3 +126,9 @@ $route['modulo/mergulho'] = 'welcome/modulo_mergulho';
 $route['modulo/santuario'] = 'welcome/modulo_santuario';
 $route['modulo/arco'] = 'welcome/modulo_arco';
 $route['modulo/estacao'] = 'welcome/modulo_estacao';
+
+// adm
+$route['adm/home'] = 'adm/index';
+$route['adm/devocionais/mostrar'] = 'adm/mostrar_devocionais';
+$route['adm/devocionais/cadastrar'] = 'adm/cadastrar_devocionais';
+$route['adm/devocionais/salvar'] = 'adm/salvar_cadastro_devocionais';

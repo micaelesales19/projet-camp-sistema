@@ -2,12 +2,12 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * @property input $input
+ * @property $input
  * @property FAlerta_model $FAlerta_model
  * @property FConsultas_model $FConsultas_model
  * @property FSistema_model $FSistema_model
- * @property db $db
- * @property email $email
+ * @property $db
+ * @property $email
  */
 
 class Welcome extends CI_Controller
@@ -279,32 +279,32 @@ class Welcome extends CI_Controller
 			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
 		}
 
-		if ($this->FAlerta_model->valida_cpf($cpf) or $this->FAlerta_model->validaNIF($cpf)) {
-			if ($this->FAlerta_model->ValidaData($nascimento)) {
-				$consultarPais = $this->FConsultas_model->consultaraisJaCadastrado($nome, $cpf, $cpf_completo, $email);
-				$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
+		//if ($this->FAlerta_model->valida_cpf($cpf) or $this->FAlerta_model->validaNIF($cpf)) {
+		if ($this->FAlerta_model->ValidaData($nascimento)) {
+			$consultarPais = $this->FConsultas_model->consultaraisJaCadastrado($nome, $cpf, $cpf_completo, $email);
+			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
 
-				if ($consultarPais || $consultarUsuario) {
+			if ($consultarPais || $consultarUsuario) {
 
-					$consultarTreinamento = $this->FConsultas_model->consultaraisJaTerminouOTreinamento($nome, $email, $nascimento);
+				$consultarTreinamento = $this->FConsultas_model->consultaraisJaTerminouOTreinamento($nome, $email, $nascimento);
 
-					if (!$consultarTreinamento) {
-						$supervisor = $this->FConsultas_model->selecionarSupervisorEstado($estado);
-						$id_supervisor = $supervisor['id_supervisor'];
-						$nome_supervisor = $supervisor['nome_supervisor'];
-						$emailSupervisor = $supervisor['email'];
-						$nivel = 8;
-						$cadastro = $this->FSistema_model->cadastro_pais($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $pais, $estado, $cidade, $id_supervisor);
-						$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
-						if ($cadastro && $cadastroUsuario) {
-							if ($isColider == '') {
-							} else {
-								$consultarDados = $this->FConsultas_model->consultaDadosPaisNomeCPFEMail($nome, $cpf, $cpf_completo, $email);
-								$id_lider = $consultarDados['id'];
-								$this->FSistema_model->cadastrarColider($id_lider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
-							}
-							$this->FSistema_model->enviarEmailSupervisor($emailSupervisor, $nome_supervisor, $nome, $email, $telefone, $estado, $cidade);
-							echo '
+				if (!$consultarTreinamento) {
+					$supervisor = $this->FConsultas_model->selecionarSupervisorEstado($estado);
+					$id_supervisor = $supervisor['id_supervisor'];
+					$nome_supervisor = $supervisor['nome_supervisor'];
+					$emailSupervisor = $supervisor['email'];
+					$nivel = 8;
+					$cadastro = $this->FSistema_model->cadastro_pais($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $pais, $estado, $cidade, $id_supervisor);
+					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
+					if ($cadastro && $cadastroUsuario) {
+						if ($isColider == '') {
+						} else {
+							$consultarDados = $this->FConsultas_model->consultaDadosPaisNomeCPFEMail($nome, $cpf, $cpf_completo, $email);
+							$id_lider = $consultarDados['id'];
+							$this->FSistema_model->cadastrarColider($id_lider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
+						}
+						$this->FSistema_model->enviarEmailSupervisor($emailSupervisor, $nome_supervisor, $nome, $email, $telefone, $estado, $cidade);
+						echo '
 								<script>
 									if(window.confirm("Sucesso!")) {
 										window.location="https://sistema.campbrasil.com/";
@@ -313,8 +313,8 @@ class Welcome extends CI_Controller
 									}
 								</script>
 							';
-						} else {
-							echo '
+					} else {
+						echo '
 								<script>
 									if(window.confirm("Erro, tente novamente!")) {
 										window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
@@ -323,9 +323,9 @@ class Welcome extends CI_Controller
 									}
 								</script>
 							';
-						}
-					} else {
-						echo '
+					}
+				} else {
+					echo '
 							<script>
 								if(window.confirm("Você não terminou o treinamento para pais!")) {
 									window.location="https://treinamento.campbrasil.com/";
@@ -334,9 +334,9 @@ class Welcome extends CI_Controller
 								}
 							</script>
 						';
-					}
-				} else {
-					echo '
+				}
+			} else {
+				echo '
 						<script>
 							if(window.confirm("Você já está cadastrado!")) {
 								window.location="https://sistema.campbrasil.com/";
@@ -345,9 +345,9 @@ class Welcome extends CI_Controller
 							}
 						</script>
 					';
-				}
-			} else {
-				echo '
+			}
+		} else {
+			echo '
 					<script>
 						if(window.confirm("Erro, data de nascimento inválida!")) {
 							window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
@@ -356,8 +356,8 @@ class Welcome extends CI_Controller
 						}
 					</script>
 				';
-			}
-		} else {
+		}
+		/*} else {
 			echo '
 				<script>
 					if(window.confirm("Erro, CPF inválido!")) {
@@ -367,7 +367,7 @@ class Welcome extends CI_Controller
 					}
 				</script>
 			';
-		}
+		}*/
 	}
 
 	public function index()
@@ -377,6 +377,15 @@ class Welcome extends CI_Controller
 
 		$this->load->view('sistema/page_login', $dados);
 	}
+
+	public function login()
+	{
+		$x = $this->input->get('x');
+		$dados = array('x' => $x);
+
+		$this->load->view('sistema/page_login', $dados);
+	}
+
 
 	public function autenticacao_login()
 	{
@@ -398,7 +407,7 @@ class Welcome extends CI_Controller
 			->from("usuario")
 			->where("email", $email)
 			->where("cpf", $cpf_completo)
-			->or_where("cpf", $cpf)
+			//->or_where("cpf", $cpf)
 			->get();
 		$dados = $consultar->row_array();
 		$total = $consultar->num_rows();
@@ -438,6 +447,13 @@ class Welcome extends CI_Controller
 				->get();
 			$dados_pais = $consultar_pais->row_array();
 
+			$consultar_adm = $this->db->select("*")
+				->from("direcao")
+				->where("email", $email)
+				->where("cpf", $cpf_completo)
+				->get();
+			$dados_adm = $consultar_adm->row_array();
+
 			if ($nivel == 1) {
 				/*if ($total_lider == 0) {
 				} else {*/
@@ -452,6 +468,8 @@ class Welcome extends CI_Controller
 					->get();
 				$termos = $consultar_termos->num_rows();
 
+				//setTimeout(function(){ window.location="lider/home"}, 3000);
+				
 				if ($termos == 0) {
 					echo '
 						<script>
@@ -467,11 +485,18 @@ class Welcome extends CI_Controller
 						';
 					}
 				}
-			}
+			} else if ($nivel == 6) { //admin
 
-			// PAIS
-			if ($nivel == 8) {
+				echo "Bem Vindo - " . $dados['nome'];
+				$_SESSION['id_usuario'] .= $dados_adm['id_direcao'];
+				$_SESSION['id_usuario_2'] .= $id_usuario;
 
+				echo '
+					<script>
+						setTimeout(function(){ window.location="adm/home"}, 2000);
+					</script>
+				';
+			} else if ($nivel == 8) { // pais
 				echo "Bem Vindo - " . $dados['nome'];
 				$_SESSION['id_usuario'] .= $dados_pais['id'];
 				$_SESSION['id_usuario_2'] .= $id_usuario;
@@ -500,15 +525,6 @@ class Welcome extends CI_Controller
 			}
 		}
 	}
-
-	public function login()
-	{
-		$x = $this->input->get('x');
-		$dados = array('x' => $x);
-
-		$this->load->view('sistema/page_login', $dados);
-	}
-
 
 	public function PaginaDosTermos()
 	{

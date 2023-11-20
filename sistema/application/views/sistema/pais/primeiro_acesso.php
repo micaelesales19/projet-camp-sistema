@@ -1,4 +1,7 @@
 <?php
+
+/** @var \$this */
+
 if (!isset($_SESSION['usuario'])) {
 	header("location: index");
 } else {
@@ -152,7 +155,6 @@ if (!isset($_SESSION['usuario'])) {
 										<input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required>
 									</div>
 								</div>
-
 
 								<div class="col-lg-6">
 									<div class="form-group">

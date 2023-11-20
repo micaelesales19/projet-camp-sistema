@@ -1,5 +1,5 @@
 <?php
-
+/** @var \$this */
 $voltar = "../";
 $array = array('voltar' => $voltar);
 

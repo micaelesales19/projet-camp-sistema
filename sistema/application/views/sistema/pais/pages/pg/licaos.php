@@ -1,4 +1,5 @@
 <?php
+/** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../../index");
 } else {

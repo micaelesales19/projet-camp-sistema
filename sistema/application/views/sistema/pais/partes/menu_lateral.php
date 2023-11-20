@@ -1,21 +1,26 @@
 <?php
+
+/** @var \$this */
 if (!isset($_SESSION['id_usuario'])) {
   header("location: index");
 }
 
 $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
 $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
+
+$color = "#46734C";
 ?>
+
 <header class="main-header">
   <!-- Logo -->
-  <a href="<?= $voltar; ?>home" class="logo">
+  <a href="<?= $voltar; ?>home" class="logo" style="background-color: <?= $color; ?>;">
     <!-- logo for regular state and mobile devices -->
     <span class="logo-lg"><b>CAMP</b>Brasil | Pais</span>
   </a>
   <!-- Header Navbar: style can be found in header.less -->
-  <nav class="navbar navbar-static-top">
+  <nav class="navbar navbar-static-top" style="background-color: <?= $color; ?>;">
     <!-- Sidebar toggle button-->
-    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+    <a href="#" class="sidebar-toggle" style="background-color: <?= $color; ?>;" data-toggle="push-menu" role="button">
       <span class="sr-only">MENU</span>
     </a>
     <div class="navbar-custom-menu">
@@ -38,7 +43,7 @@ $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
           <ul class="dropdown-menu">
             <!-- User image -->
-            <li class="user-header">
+            <li class="user-header" style="background-color: <?= $color; ?>;">
               <img src="<?= $foto_usuario; ?>" class="img-circle" alt="User Image">
               <p><?= $nome_usuario; ?></p>
             </li>
@@ -97,7 +102,7 @@ $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
           <span>Home</span>
         </a>
       </li>
-      
+
       <!-- <li class="treeview">
         <a href="#">
           <i class="fa fa-eye"></i>
@@ -134,7 +139,7 @@ $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
           <span>PG</span>
         </a>
       </li>
-      
+
       <li>
         <a href="<?= $voltar; ?>page/download">
           <i class="fa fa-download"></i>

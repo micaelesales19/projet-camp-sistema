@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @property db $db
+ * @property $db
+ * @property $load
  */
 
 class FConsultas_model extends CI_Model
@@ -615,5 +616,11 @@ class FConsultas_model extends CI_Model
 		} else {
 			return false;
 		}
+	}
+	public function consultarTodosDevocionais()
+	{
+		$consultar = $this->db->query("SELECT * FROM semanarios");
+		$dados_consula_colider = $consultar->result_array();
+		return $dados_consula_colider;
 	}
 }
