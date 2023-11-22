@@ -60,7 +60,7 @@ if (!isset($_SESSION['usuario'])) {
                 </div>
                 <?php
 
-                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario);
+                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
 
                 if ($consultarPG['row'] == 0) {
                 ?>

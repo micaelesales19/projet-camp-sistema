@@ -51,7 +51,7 @@ $color = "#46734C";
             <!-- Menu Footer-->
             <li class="user-footer">
               <div class="pull-left">
-                <a href="<?= $voltar; ?>pagina_editar_pessoal" class="btn btn-default btn-flat">Editar de Dados</a>
+                <a href="<?= $voltar; ?>pagina_editar_pessoal?x=1" class="btn btn-default btn-flat">Editar de Dados</a>
               </div>
               <div class="pull-right">
                 <a href="../<?= $voltar; ?>sair?id_usuario=<?= $id_usuario_2; ?>" class="btn btn-default btn-flat">Sair</a>

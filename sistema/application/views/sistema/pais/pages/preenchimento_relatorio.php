@@ -1,4 +1,5 @@
 <?php
+
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
   header("location: ../../index");
@@ -27,7 +28,7 @@ if (!isset($_SESSION['usuario'])) {
   <!-- Head -->
   <?php
   $this->load->view('partes/head');
-  ?>  
+  ?>
   <script>
     function AjaxF() {
       var ajax;
@@ -133,7 +134,7 @@ if (!isset($_SESSION['usuario'])) {
             <small>Painel de Controle</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="<?=$voltar?>home"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="<?= $voltar ?>page/pg"><i class="fa fa-group"></i> PG</a></li>
             <li class="active">Preenchimento de Relatório | PG</li>
           </ol>
@@ -159,11 +160,12 @@ if (!isset($_SESSION['usuario'])) {
                 <input type="hidden" id="ano" value="<?= $ano; ?>">
                 <input type="hidden" id="modulo" value="<?= $id_modulo; ?>">
                 <input type="hidden" id="licao" value="<?= $licao; ?>">
-                
+
                 <br>
                 <center><button class="btn btn-info" onclick="pesquisar_criancas()" id="b_modulo">Mostrar Crianças</button></center><br>
                 <form name="coder" action="preenchimento/salvar" method="post" autocomplete="off">
                   <input type="hidden" name="data_aula" value="<?= $data; ?>">
+                  <input type="hidden" name="nivel" value="1">
                   <div id="conteudo">
                     <center>
                       <div class="card-body">
@@ -181,28 +183,32 @@ if (!isset($_SESSION['usuario'])) {
                           </div>
                           <div>
                           </div>
-                    </center>                    
-                      <br><input type="submit" class="btn btn-success btn-block" value="Salvar" /><br>
-                  </div>
+                    </center>
+                    <div class="row" style="float:none;margin:auto; margin-bottom: 20px;">
+                      <div class="col-lg-6" style="float:none;margin:auto;">
+                        <br><input type="submit" class="btn btn-success btn-block" value="Salvar" /><br>
                 </form>
                 <a href="../../page/pg" class="btn btn-primary btn-block">Voltar</a>
               </div>
-              <!-- /.box-body -->
             </div>
-            <!-- /.box -->
           </div>
-          <!-- /.row -->
-        </section>
-        <!-- /.content -->
       </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+    </div>
+    <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    </div>
 
-      <!-- Footer -->
-      <?php
-      $this->load->view('partes/footer');
-      ?>
-      <!-- Add the sidebar's background. This div must be placed
+    <!-- Footer -->
+    <?php
+    $this->load->view('partes/footer');
+    ?>
+    <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
-      <div class="control-sidebar-bg"></div>
+    <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
     <!-- Links JavaScript -->

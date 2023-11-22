@@ -57,28 +57,30 @@ $route['index'] = 'welcome/index';
 $route['sair'] = 'welcome/sair';
 $route['acesso'] = 'welcome/autenticacao_login';
 $route['login'] = 'welcome/login';
+$route['donwload_material'] = 'welcome/downloadMaterial';
 
 // PAIS	
 $route['cadastro'] = 'welcome/cadastro';
 $route['cadastro/salvar'] = 'welcome/salvar_cadastro';
 
-$route['pais/home'] = 'Pais/home_pais';
-$route['pais/sair'] = 'Pais/sair';
+/* NÍVEL PAIS */
+$route['pais/home'] = 'Pais/home';
 
 // Dados Pessoais
-$route['pagina_editar_pessoal'] = 'Pais/pagina_editar_pessoal';
+$route['pais/pagina_editar_pessoal'] = 'Pais/pagina_editar_pessoal';
 $route['pais/salvar_edicao'] = 'Pais/e_pessoal';
 // Fim Dados Pessoais
 
 // Crianças
 $route['pais/page/criancas'] = 'Pais/pagina_visualizacao_criancas';
 $route['pais/page/criancas/cadastro'] = 'Pais/pagina_cadastro_criancas';
-$route['pais/page/criancas/cadastro/salvar'] = 'Pais/cadastro_crianca';
-$route['pais/page/criancas/cadastro/paginaInicial'] = 'Pais/cadastro_crianca_inicial';
-$route['pais/page/criancas/edicao/salvar'] = 'Pais/editar_crianca';
-$route['pais/page/criancas/exclusao/desativar'] = 'Pais/desativar_crianca';
-$route['pais/page/criancas/ativar'] = 'Pais/ativar_crianca';
-$route['pais/page/criancas/gerar/relatorio'] = 'Pais/RelatoriosCriancas';
+
+$route['pais/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
+$route['pais/page/criancas/cadastro/paginaInicial'] = 'welcome/cadastro_crianca_inicial';
+$route['pais/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';
+$route['pais/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca';
+$route['pais/page/criancas/ativar'] = 'welcome/ativar_crianca';
+$route['pais/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas';
 // Fim das Crianças
 
 // PG
@@ -86,14 +88,15 @@ $route['pais/page/pg'] = 'Pais/pagina_visualizacao_pg';
 
 $route['pais/page/pg/progresso'] = 'Pais/pagina_ver_progresso';
 
-$route['pais/page/pg/cadastro/salvar'] = 'Pais/cadastro_pg';
-$route['pais/page/pg/cadastro/paginaInicial'] = 'Pais/cadastro_pg_inicial';
-$route['pais/page/pg/cadastro/primeiroAcesso'] = 'Pais/cadastro_pg_pagina_inicial';
-$route['pais/page/pg/edicao/salvar'] = 'Pais/editar_pg';
-$route['pais/page/pg/exclusao/desativar'] = 'Pais/desativar_pg';
+$route['pais/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
+$route['pais/page/pg/cadastro/paginaInicial'] = 'welcome/cadastro_pg_inicial';
+$route['pais/page/pg/cadastro/primeiroAcesso'] = 'welcome/cadastro_pg_pagina_inicial';
+$route['pais/page/pg/edicao/salvar'] = 'welcome/editar_pg';
+$route['pais/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
+
 $route['pais/page/pg/licoes'] = 'Pais/pagina_licoes';
 $route['pais/page/pg/preenchimento'] = 'Pais/pagina_preenchimento_relatorio_pg';
-$route['pais/page/pg/preenchimento/salvar'] = 'Pais/salvar_relatorio';
+$route['pais/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio';
 $route['pais/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Pais/consulta_criancas_relatorios';
 
 $route['pais/page/pg/atualizar_data_pg'] = 'Pais/atualizarDataPG';
@@ -117,8 +120,58 @@ $route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
 // Download de Material
 $route['pais/page/download'] = 'Pais/pagina_download_material';
 $route['pais/page/modulo'] = 'Pais/pagina_download_material_modulo';
-$route['donwload_material'] = 'welcome/downloadMaterial';
 // FIM PAIS
+
+/* NÍVEL LÍDER */
+$route['lider/home'] = 'Lider/home';
+
+// Dados Pessoais
+$route['lider/pagina_editar_pessoal'] = 'Lider/pagina_editar_pessoal';
+$route['lider/salvar_edicao'] = 'Lider/e_pessoal';
+// Fim Dados Pessoais
+
+// Crianças
+$route['lider/page/criancas'] = 'Lider/pagina_visualizacao_criancas';
+$route['lider/page/criancas/cadastro'] = 'Lider/pagina_cadastro_criancas';
+
+$route['lider/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
+$route['lider/page/criancas/cadastro/paginaInicial'] = 'welcome/cadastro_crianca_inicial';
+$route['lider/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';
+$route['lider/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca';
+$route['lider/page/criancas/ativar'] = 'welcome/ativar_crianca';
+$route['lider/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas';
+// Fim das Crianças
+
+// PG
+$route['lider/page/pg'] = 'Lider/pagina_visualizacao_pg';
+
+$route['lider/page/pg/progresso'] = 'Lider/pagina_ver_progresso';
+
+$route['lider/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
+$route['lider/page/pg/cadastro/paginaInicial'] = 'welcome/cadastro_pg_inicial';
+$route['lider/page/pg/cadastro/primeiroAcesso'] = 'welcome/cadastro_pg_pagina_inicial';
+$route['lider/page/pg/edicao/salvar'] = 'welcome/editar_pg';
+$route['lider/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
+
+$route['lider/page/pg/licoes'] = 'Lider/pagina_licoes';
+$route['lider/page/pg/preenchimento'] = 'Lider/pagina_preenchimento_relatorio_pg';
+$route['lider/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio';
+$route['lider/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Lider/consulta_criancas_relatorios';
+
+$route['lider/page/pg/atualizar_data_pg'] = 'Lider/atualizarDataPG';
+$route['lider/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg';
+// Fim das PG
+
+// Colíderes
+$route['lider/colider/cadastro/salvar'] = 'Lider/cadastro_colider';
+$route['lider/colider/desativar'] = 'Lider/desativar_colider';
+$route['lider/colider/ativar'] = 'Lider/ativar_colider';
+// Colíderes
+
+// Download de Material
+$route['lider/page/download'] = 'Lider/pagina_download_material';
+$route['lider/page/modulo'] = 'Lider/pagina_download_material_modulo';
+// FIM LÍDER
 
 // MÓDULOS
 $route['modulo/trilha'] = 'welcome/modulo_trilha';

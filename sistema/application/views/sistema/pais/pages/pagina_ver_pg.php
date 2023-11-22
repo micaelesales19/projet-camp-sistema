@@ -1,4 +1,5 @@
 <?php
+
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../index");
@@ -111,6 +112,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
                                                 <div class="box-body">
                                                     <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                                                    <input type="hidden" name="nivel" value="1">
                                                     <div class="col-lg-12">
                                                         <div class="form-group">
                                                             <label for="exampleInputEmail1">Nome para o PG</label>
@@ -121,7 +123,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <div class="col-lg-12">
                                                         <div class="form-group">
                                                             <label for="exampleInputPassword1">Data de Início</label>
-                                                            <input class="form-control" id="data_inicio" type="text" name="data_inicio" maxlength="10" onkeypress="if(this.value.length==2){this.value = this.value+'/'}if(this.value.length==5){this.value = this.value+'/'}" placeholder="DD/MM/AAAA">
+                                                            <p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker" required></p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -137,7 +139,7 @@ if (!isset($_SESSION['usuario'])) {
                                 </div>
 
                                 <?php
-                                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario);
+                                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
 
                                 if ($consultarPG['row'] == 0) {
                                 } else {
@@ -192,7 +194,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                         $disabled = $consultarPG['row'] == 1 ? 'disabled' : '';
 
-                                        $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $id_pg);
+                                        $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $id_pg, 1);
                                         $total_crianca = $criancas['row'];
 
                                 ?>
@@ -226,6 +228,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     <div class="box-body">
                                                                         <input type="hidden" name="idPg" id="id_pg<?= $i ?>" value="<?= $dadosPG['id_pg']; ?>">
                                                                         <input type="hidden" name="fotoOriginal" value="<?= $dadosPG['foto']; ?>">
+                                                                        <input type="hidden" name="nivel" value="1">
                                                                         <div class="col-lg-12" style="display: flex; justify-content: center;">
                                                                             <div class="col-lg-4">
                                                                                 <div class="form-group">
@@ -286,7 +289,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <input type="hidden" name="idLider" value="<?= $dadosPG['id_lider']; ?>">
                                                                         <input type="hidden" name="idPg" value="<?= $dadosPG['id_pg']; ?>">
                                                                         <input type="hidden" name="nomePg" value="<?= $dadosPG['nome_pg']; ?>">
-
+                                                                        <input type="hidden" name="nivel" value="1">
                                                                         <div class="form-group">
                                                                             <label for="exampleInputEmail1">Deseja realmente retirar essa PG do projeto CAMP?</label>
                                                                             <label for="exampleInputPassword1">Conte-nos o motivo:</label>
@@ -325,6 +328,27 @@ if (!isset($_SESSION['usuario'])) {
                 </section>
                 <!-- /.content -->
             </div>
+
+
+            <script>
+                $(function() {
+                    $("#datepicker").datepicker({
+                        dateFormat: 'dd/mm/yy',
+                        closeText: "Fechar",
+                        prevText: "&#x3C;Anterior",
+                        nextText: "Próximo&#x3E;",
+                        currentText: "Hoje",
+                        monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+                        monthNamesShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                        dayNames: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
+                        dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+                        dayNamesMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+                        weekHeader: "Sm",
+                        firstDay: 1,
+                        minDate: 0,
+                    });
+                });
+            </script>
 
             <!-- Footer -->
             <?php

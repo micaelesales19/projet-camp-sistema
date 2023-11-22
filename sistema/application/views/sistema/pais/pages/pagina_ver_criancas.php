@@ -1,4 +1,5 @@
 <?php
+
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../index");
@@ -11,7 +12,7 @@ if (!isset($_SESSION['usuario'])) {
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
 
-    $dadosPais = $this->FConsultas_model->consultaDadosPaisId($id_usuario);
+    $dadosPais = $this->FConsultas_model->consultaDadosPaisId($id_usuario, 1);
 
 ?>
     <!DOCTYPE html>
@@ -69,7 +70,7 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box-body chat" id="chat-box">
                                 <?php
 
-                                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario);
+                                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
 
                                 if ($consultarPG['row'] == 0) {
                                 ?>
@@ -92,6 +93,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <form action="criancas/cadastro/salvar" role="form" method="POST" enctype="multipart/form-data">
                                         <div class="box-body">
                                             <input class="form-control" id="id_lider" type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+                                            <input type="hidden" name="nivel" value="1">
 
                                             <div class="col-lg-12">
                                                 <div class="form-group">
@@ -106,7 +108,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <select name="id_pg" id="id_pg" class="form-control">
                                                         <optgroup label="Seu PG">
                                                             <?php
-                                                            $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario);
+                                                            $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
 
                                                             foreach ($consultarPG['dados'] as $key => $val) {
                                                             ?>
@@ -222,7 +224,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <h3 class="box-title"><i class="fa fa-table"></i> Suas Crianças</h3>
 
                                 <?php
-                                $criancas_desativadas = $this->FConsultas_model->mostrarCriancasDesativadas($id_usuario);
+                                $criancas_desativadas = $this->FConsultas_model->mostrarCriancasDesativadas($id_usuario, 1);
                                 if ($criancas_desativadas['row'] == 0) {
                                 } else {
                                 ?>
@@ -258,7 +260,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <?php
                                                 foreach ($consultarPG['dados'] as $key => $dadosPG) {
 
-                                                    $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $dadosPG['id_pg']);
+                                                    $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $dadosPG['id_pg'], 1);
 
                                                     if ($consultaCriancas) {
                                                         $i = 0;
@@ -313,6 +315,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                             <div class="box-body">
                                                                                 <input type="hidden" name="idCrianca" value="<?= $linha['id_crianca']; ?>">
                                                                                 <input type="hidden" name="idLider" value="<?= $linha['lider']; ?>">
+                                                                                <input type="hidden" name="nivel" value="1">
 
                                                                                 <div class="col-lg-12">
                                                                                     <div class="form-group">
@@ -488,6 +491,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                 <input type="hidden" name="idLider" value="<?= $linha['lider']; ?>">
                                                                                 <input type="hidden" name="idCrianca" value="<?= $linha['id_crianca']; ?>">
                                                                                 <input type="hidden" name="nomeCrianca" value="<?= $linha['nome_crianca']; ?>">
+                                                                                <input type="hidden" name="nivel" value="1">
 
                                                                                 <div class="form-group">
                                                                                     <label for="exampleInputEmail1">Deseja realmente desativar essa Criança?</label>
@@ -533,7 +537,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="box-body" style="height: 150px;">
 
                                                 <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
-
+                                                <input type="hidden" name="nivel" value="1">
                                                 <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
                                                     <div class="form-group">
                                                         <label for="opc">Selecione a Criança:</label>
@@ -590,6 +594,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="modal-content">
                                                 <form action="criancas/gerar/relatorio" target="_blank" method="post">
                                                     <input type="hidden" name="id" value="<?= $id_usuario; ?>">
+                                                    <input type="hidden" name="nivel" value="1">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span></button>

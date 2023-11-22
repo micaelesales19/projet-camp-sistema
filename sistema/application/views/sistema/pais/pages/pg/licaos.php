@@ -1,4 +1,5 @@
 <?php
+
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../../index");
@@ -351,7 +352,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <div class="tab-content">
                                                     <?php
                                                     $i = 1;
-                                                    $checksCriancas = $this->FConsultas_model->checkCriancasPG($id_lider, $id_pg);
+                                                    $checksCriancas = $this->FConsultas_model->checkCriancasPG($id_lider, $id_pg, 1);
                                                     foreach ($modulos as $key => $m) {
                                                         if ($i == 1) {
                                                     ?>
@@ -409,7 +410,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                             for ($i2 = 1; $i2 <= $n_licao; $i2++) {
 
-                                                                                $consultar_progresso = $this->FConsultas_model->consultarProgressoPG($id_pg, $i, $i2);
+                                                                                $consultar_progresso = $this->FConsultas_model->consultarProgressoPG($id_pg, $i, $i2, 1);
                                                                                 $x = $consultar_progresso['row'];
 
                                                                                 $dados_licao = $this->FConsultas_model->consultarLicaoId($i, $i2);
@@ -527,7 +528,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                             for ($i2 = 1; $i2 <= $n_licao; $i2++) {
 
-                                                                                $consultar_progresso = $this->FConsultas_model->consultarProgressoPG($id_pg, $i, $i2);
+                                                                                $consultar_progresso = $this->FConsultas_model->consultarProgressoPG($id_pg, $i, $i2, 1);
                                                                                 $x = $consultar_progresso['row'];
 
                                                                                 $dados_licao = $this->FConsultas_model->consultarLicaoId($i, $i2);

@@ -1,4 +1,5 @@
 <?php
+
 /** @var \$this */
 $voltar = "../";
 $array = array('voltar' => $voltar);
@@ -98,7 +99,7 @@ if (!isset($_SESSION['usuario'])) {
           <div class="row">
             <?php
 
-            $consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario);
+            $consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario, 1);
             $dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
 
             $nome_modulo = $dadosModulos['nome_modulo'];
@@ -371,7 +372,7 @@ if (!isset($_SESSION['usuario'])) {
 
               $idPG = $consultarPG['dados']['id_pg'];
 
-              $consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG);
+              $consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG, 1);
 
               if ($consultarCriancas['row'] == 0) {
 

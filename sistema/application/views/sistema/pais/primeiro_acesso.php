@@ -16,9 +16,9 @@ if (!isset($_SESSION['usuario'])) {
 	}
 
 	$funcao = new FConsultas_model();
-	$dadosPais = $funcao->consultaDadosPaisId($id_usuario);
+	$dadosPais = $funcao->consultaDadosPaisId($id_usuario, 1);
 
-	$consultarPG = $funcao->mostrarPGDownload($id_usuario);
+	$consultarPG = $funcao->mostrarPGDownload($id_usuario, 1);
 	$totalPG = $consultarPG['row'];
 ?>
 	<!DOCTYPE html>
@@ -58,6 +58,7 @@ if (!isset($_SESSION['usuario'])) {
 									<div class="box-body">
 										<input class="form-control" type="hidden" name="idLider" value="<?= $id_usuario; ?>">
 										<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">
+										<input class="form-control" type="hidden" name="nivel_2" value="1">
 
 										<div class="col-lg-12">
 											<div class="form-group">
@@ -77,7 +78,7 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="pull-right">
 											<input type="submit" class="btn btn-success" name="btn_form" value="Salvar">
 								</form>
-								<a href="primeiro_acesso?idLider=<?= $id_usuario ?>&nome=<?= $dadosPais['nome']; ?>&nivel=8" class="btn btn-warning">Pular</a>
+								<a href="pais/page/pg/cadastro/primeiroAcesso?idLider=<?= $id_usuario ?>&nome=<?= $dadosPais['nome']; ?>&nivel=8" class="btn btn-warning">Pular</a>
 							</div>
 						</div>
 
@@ -107,7 +108,7 @@ if (!isset($_SESSION['usuario'])) {
 
 		<?php } else {
 
-					$consultaCriancas = $funcao->mostrarCriancasPaisPg($id_usuario, $consultarPG['dados']['id_pg']);
+					$consultaCriancas = $funcao->mostrarCriancasPaisPg($id_usuario, $consultarPG['dados']['id_pg'], 1);
 
 					if ($consultaCriancas['row'] == 0 && $x_ir != 3) {
 
@@ -135,6 +136,7 @@ if (!isset($_SESSION['usuario'])) {
 							<div class="box-body">
 								<input class="form-control" id="id_lider" type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
 								<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">
+								<input class="form-control" type="hidden" name="nivel_2" value="1">
 								<div class="col-lg-12">
 									<div class="form-group">
 										<label for="exampleInputEmail1">PG</label>
@@ -348,7 +350,7 @@ if (!isset($_SESSION['usuario'])) {
 			<div class="row">
 				<?php
 
-					$consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario);
+					$consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario, 1);
 					$id_modulo = $consultarPG['dados']['id_modulo'];
 					$dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
 
@@ -621,7 +623,7 @@ if (!isset($_SESSION['usuario'])) {
 
 						$idPG = $consultarPG['dados']['id_pg'];
 
-						$consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG);
+						$consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG, 1);
 
 						if ($consultarCriancas['row'] == 0) {
 
@@ -1033,6 +1035,7 @@ if (!isset($_SESSION['usuario'])) {
 																	<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
 																	<input type="hidden" name="title" value="<?= $licao['nome']; ?>" style="color: black;">
 																	<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>" style="color: black;">
+																	<input type="hidden" name="nivel" value="1">
 
 																	<div class="modal-header">
 																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1065,7 +1068,7 @@ if (!isset($_SESSION['usuario'])) {
 														<!-- /.modal-dialog -->
 													</div>
 												<?php } else { ?>
-													<a href="donwload_material?id=<?= $licao['id']; ?>&id_lider=<?= $id_usuario; ?>&id_pg=<?= $idPG; ?>&title=<?= $licao['nome']; ?>&download=<?= $licao['arquivo']; ?>" target="_blank" download>
+													<a href="donwload_material?id=<?= $licao['id']; ?>&id_lider=<?= $id_usuario; ?>&id_pg=<?= $idPG; ?>&title=<?= $licao['nome']; ?>&download=<?= $licao['arquivo']; ?>&nivel=1" target="_blank" download>
 														<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
 														<label for=""><?= $licao['nome']; ?></label>
 													</a>

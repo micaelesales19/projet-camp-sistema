@@ -122,7 +122,7 @@ class FSistema_model extends CI_Model
 	}
 
 	// PG
-	public function cadastro_pg_inicial($idLider, $nome)
+	public function cadastro_pg_pagina_inicial($idLider, $nome, $x)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
@@ -151,39 +151,12 @@ class FSistema_model extends CI_Model
 		$inserir['ativo'] = $ativo;
 		$inserir['foto'] = $foto;
 		$inserir['bonus'] = $bonus;
-		$this->db->insert("pg_pais", $inserir);
-	}
 
-	public function cadastro_pg_pagina_inicial($idLider, $nome)
-	{
-		date_default_timezone_set('America/Sao_Paulo');
-		$data = date('d/m/Y');
-
-		$foto = "import/sistema/fotoPG/geral.jpg";
-
-		$ano_pg = "1";
-		$modulo = "1";
-		$licao = "1";
-
-		$ativo = "1";
-		$bonus = "0";
-
-		$inserir['nome_pg'] = $nome;
-		$inserir['id_lider'] = $idLider;
-		$inserir['ano'] = $ano_pg;
-		$inserir['id_modulo'] = $modulo;
-		$inserir['n_licao'] = $licao;
-		$inserir['data_cadastro'] = $data;
-		$inserir['data_inicio'] = '';
-		$inserir['data_previsao_termino'] = '';
-		$inserir['data_semana'] = '';
-		$inserir['ano_devocional'] = $ano_pg;
-		$inserir['modulo_devocional'] = $modulo;
-		$inserir['licao_devocional'] = $licao;
-		$inserir['ativo'] = $ativo;
-		$inserir['foto'] = $foto;
-		$inserir['bonus'] = $bonus;
-		$this->db->insert("pg_pais", $inserir);
+		if ($x == 1) {
+			$this->db->insert("pg_pais", $inserir);
+		} else if ($x == 2) {
+			$this->db->insert("pg_2", $inserir);
+		}
 	}
 
 	public function enviarEmailSupervisor($emailSupervisor, $nomeSupervisor, $nome, $email, $telefone, $estado, $cidade)
@@ -217,7 +190,7 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-	public function cadastro_pg($idLider, $nome, $data_inicio)
+	public function cadastro_pg($idLider, $nome, $data_inicio, $x)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
@@ -256,10 +229,18 @@ class FSistema_model extends CI_Model
 		$inserir['foto'] = $foto;
 		$inserir['bonus'] = $bonus;
 
-		if ($this->db->insert("pg_pais", $inserir)) {
-			return true;
-		} else {
-			return false;
+		if ($x == 1) {
+			if ($this->db->insert("pg_pais", $inserir)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->insert("pg_2", $inserir)) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
@@ -489,7 +470,7 @@ class FSistema_model extends CI_Model
 	/*Colíder*/
 
 	// Crianças
-	public function cadastro_crianca($nome, $nascimento, $idLider, $id_pg, $obs, $opcao, $nomePai, $emailPai, $telefonePai)
+	public function cadastro_crianca($nome, $nascimento, $idLider, $id_pg, $obs, $opcao, $nomePai, $emailPai, $telefonePai, $x)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
@@ -508,14 +489,22 @@ class FSistema_model extends CI_Model
 		$inserir['data'] = $data;
 		$inserir['ativo'] = $ativo;
 
-		if ($this->db->insert("criancas", $inserir)) {
-			return true;
-		} else {
-			return false;
+		if ($x == 1) {
+			if ($this->db->insert("criancas", $inserir)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->insert("criancas_2", $inserir)) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
-	public function editaCrianca($idCrianca, $nome, $nascimento, $idLider, $id_pg, $obs, $opcao, $nome_responsavel, $email_responsavel, $telefone_responsavel)
+	public function editaCrianca($idCrianca, $nome, $nascimento, $idLider, $id_pg, $obs, $opcao, $nome_responsavel, $email_responsavel, $telefone_responsavel, $x)
 	{
 		$this->db->set('nome_crianca', $nome);
 		$this->db->set('nascimento', $nascimento);
@@ -530,14 +519,23 @@ class FSistema_model extends CI_Model
 		$this->db->where('id_crianca', $idCrianca);
 
 		$this->db->error();
-		if ($this->db->update('criancas')) {
-			return true;
-		} else {
-			return false;
+
+		if ($x == 1) {
+			if ($this->db->update('criancas')) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->update('criancas_2')) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
-	public function editaCriancaResponsavel($idCrianca, $nomeResponsavel, $emailResponsavel, $telefoneResponsavel)
+	public function editaCriancaResponsavel($idCrianca, $nomeResponsavel, $emailResponsavel, $telefoneResponsavel, $x)
 	{
 		$this->db->set('nome_responsavel', $nomeResponsavel);
 		$this->db->set('email_responsavel', $emailResponsavel);
@@ -546,14 +544,23 @@ class FSistema_model extends CI_Model
 		$this->db->where('id_crianca', $idCrianca);
 
 		$this->db->error();
-		if ($this->db->update('criancas')) {
-			return true;
-		} else {
-			return false;
+
+		if ($x == 1) {
+			if ($this->db->update('criancas')) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->update('criancas_2')) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
-	public function excluirCrianca($id_crianca, $nome_crianca, $id_lider, $id_responsavel, $motivo)
+	public function excluirCrianca($id_crianca, $nome_crianca, $id_lider, $id_responsavel, $motivo, $x)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
@@ -574,12 +581,22 @@ class FSistema_model extends CI_Model
 			$this->db->set('ativo', $ativo);
 			$this->db->where('id_crianca', $id_crianca);
 
-			if ($this->db->update('criancas')) {
-				$this->FAlerta_model->alerta_controle($id_responsavel, $id_crianca, $motivo, $acao);
-				$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_crianca, $motivo, $acao);
-				return true;
-			} else {
-				return false;
+			if ($x == 1) {
+				if ($this->db->update('criancas')) {
+					$this->FAlerta_model->alerta_controle($id_responsavel, $id_crianca, $motivo, $acao);
+					$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_crianca, $motivo, $acao);
+					return true;
+				} else {
+					return false;
+				}
+			} else if ($x == 2) {
+				if ($this->db->update('criancas')) {
+					$this->FAlerta_model->alerta_controle($id_responsavel, $id_crianca, $motivo, $acao);
+					$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_crianca, $motivo, $acao);
+					return true;
+				} else {
+					return false;
+				}
 			}
 		} else {
 			return false;
@@ -587,44 +604,61 @@ class FSistema_model extends CI_Model
 	}
 
 	// REATIVAR
-	public function reativarCrianca($id_crianca)
+	public function reativarCrianca($id_crianca, $x)
 	{
 		$ativo = "1";
 
 		$this->db->set('ativo', $ativo);
 		$this->db->where('id_crianca', $id_crianca);
 
-		if ($this->db->update('criancas')) {
-			$this->FSistema_model->excluirCriancaAlcancado($id_crianca);
-			return true;
-		} else {
-			return false;
+		if ($x == 1) {
+			if ($this->db->update('criancas')) {
+				$this->FSistema_model->excluirCriancaAlcancado($id_crianca);
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->update('criancas')) {
+				$this->FSistema_model->excluirCriancaAlcancado($id_crianca);
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 	// Fim REATIVAR
 
-	public function editarAtivo($id_pg, $idlider)
+	public function editarAtivo($id_pg, $idlider, $x)
 	{
 
 		$this->db->set('ativo', "1");
 		$this->db->where('id_pg', $id_pg);
 		$this->db->where('id_lider', $idlider);
 
-		if ($this->db->update('pg_pais')) {
-			return true;
-		} else {
-			return false;
+		if ($x == 1) {
+			if ($this->db->update('pg_pais')) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->update('pg_2')) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
-	public function relatorio_encontro($id_lider, $id_pg, $qtd_crianca, $id_crianca, $versiculo, $presenca, $misterio, $devocional, $ano, $modulo, $licao, $data_aula)
+	public function relatorio_encontro($id_lider, $id_pg, $qtd_crianca, $id_crianca, $versiculo, $presenca, $misterio, $devocional, $ano, $modulo, $licao, $data_aula, $nivel)
 	{
 		$data = $data_aula;
 
-		$consulta = $this->FConsultas_model->consultarProgressoPG($id_pg, $modulo, $licao);
+		$consulta = $this->FConsultas_model->consultarProgressoPG($id_pg, $modulo, $licao, $nivel);
 		$resultados = $consulta['row'];
 
-		$consulta_pg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg);
+		$consulta_pg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, $nivel);
 
 		$dadosP = $consulta_pg['dados'];
 		$modulo_atual_pg = $dadosP['id_modulo'];
@@ -669,11 +703,17 @@ class FSistema_model extends CI_Model
 		$consultaMO_N = $this->FConsultas_model->consultarModuloId($n_modulo);
 		$novo_modulo = $consultaMO_N['nome_modulo'];
 
-		$consultaLI = $this->db->query("SELECT * FROM pais WHERE id LIKE $id_lider");
-		$rowli = $consultaLI->row_array();
+		if ($nivel == 1) {
+			$consultaLI = $this->db->query("SELECT * FROM pais WHERE id LIKE $id_lider");
+			$rowli = $consultaLI->row_array();
 
-		$id_coordenador = $rowli['id_supervisor'];
+			$id_coordenador = $rowli['id_supervisor'];
+		} else if ($nivel == 2) {
+			$consultaLI = $this->db->query("SELECT * FROM lider WHERE id_lider LIKE $id_lider");
+			$rowli = $consultaLI->row_array();
 
+			$id_coordenador = $rowli['id_supervisor'];
+		}
 		$base = "";
 
 		if ($qtd_crianca == $resultados) {
@@ -695,7 +735,20 @@ class FSistema_model extends CI_Model
 					$this->db->set('data_previsao_termino', $data_fim);
 					$this->db->set('data_semana', $data);
 					$this->db->where('id_pg', $id_pg);
-					$this->db->update('pg_pais');
+
+					if ($nivel == 1) {
+						$this->db->set('data_inicio', $data);
+						$this->db->set('data_previsao_termino', $data_fim);
+						$this->db->set('data_semana', $data);
+						$this->db->where('id_pg', $id_pg);
+						$this->db->update('pg_pais');
+					} else if ($nivel == 2) {
+						$this->db->set('data_inicio', $data);
+						$this->db->set('data_previsao_termino', $data_fim);
+						$this->db->set('data_semana', $data);
+						$this->db->where('id_pg', $id_pg);
+						$this->db->update('pg_2');
+					}
 				}
 
 				if ($licao == $consultaMO['n_licao']) {
@@ -716,24 +769,48 @@ class FSistema_model extends CI_Model
 
 					$ativo = strtotime($data_previsao_termino) >= strtotime($data) ? 1 : 0;
 
-					$this->db->set('ano', $anoNovo);
-					$this->db->set('ano_devocional', $anoNovo);
-					$this->db->set('id_modulo', $n_modulo);
-					$this->db->set('modulo_devocional', $n_modulo);
-					$this->db->set('n_licao', $licao_nova_modulo);
-					$this->db->set('licao_devocional', $licao_nova_modulo);
-					$this->db->set('ativo', $ativo);
-					$this->db->set('data_semana', $data);
-					$this->db->where('id_pg', $id_pg);
+					if ($nivel == 1) {
 
-					if ($this->db->update('pg_pais')) {
-						$acao = "MUDANCA_DE_MODULO";
-						$assunto = " mudou de módulo, módulo " . $nome_modulo . " para " . $novo_modulo . " autorize o novo módulo";
+						$this->db->set('ano', $anoNovo);
+						$this->db->set('ano_devocional', $anoNovo);
+						$this->db->set('id_modulo', $n_modulo);
+						$this->db->set('modulo_devocional', $n_modulo);
+						$this->db->set('n_licao', $licao_nova_modulo);
+						$this->db->set('licao_devocional', $licao_nova_modulo);
+						$this->db->set('ativo', $ativo);
+						$this->db->set('data_semana', $data);
+						$this->db->where('id_pg', $id_pg);
 
-						$this->FAlerta_model->alerta_controle($id_lider, $id_lider, $assunto, $acao);
-						$this->FAlerta_model->alerta_para_coordenador($id_coordenador, $id_lider, $id_crianca, $assunto, $acao);
+						if ($this->db->update('pg_pais')) {
+							$acao = "MUDANCA_DE_MODULO";
+							$assunto = " mudou de módulo, módulo " . $nome_modulo . " para " . $novo_modulo . " autorize o novo módulo";
 
-						$base .= "fim_modulo?id_lider=$id_lider&id_pg=$id_pg";
+							$this->FAlerta_model->alerta_controle($id_lider, $id_lider, $assunto, $acao);
+							$this->FAlerta_model->alerta_para_coordenador($id_coordenador, $id_lider, $id_crianca, $assunto, $acao);
+
+							$base .= "fim_modulo?id_lider=$id_lider&id_pg=$id_pg";
+						}
+					} else if ($nivel == 2) {
+
+						$this->db->set('ano', $anoNovo);
+						$this->db->set('ano_devocional', $anoNovo);
+						$this->db->set('id_modulo', $n_modulo);
+						$this->db->set('modulo_devocional', $n_modulo);
+						$this->db->set('n_licao', $licao_nova_modulo);
+						$this->db->set('licao_devocional', $licao_nova_modulo);
+						$this->db->set('ativo', $ativo);
+						$this->db->set('data_semana', $data);
+						$this->db->where('id_pg', $id_pg);
+
+						if ($this->db->update('pg_2')) {
+							$acao = "MUDANCA_DE_MODULO";
+							$assunto = " mudou de módulo, módulo " . $nome_modulo . " para " . $novo_modulo . " autorize o novo módulo";
+
+							$this->FAlerta_model->alerta_controle($id_lider, $id_lider, $assunto, $acao);
+							$this->FAlerta_model->alerta_para_coordenador($id_coordenador, $id_lider, $id_crianca, $assunto, $acao);
+
+							$base .= "fim_modulo?id_lider=$id_lider&id_pg=$id_pg";
+						}
 					}
 				} else {
 
@@ -750,13 +827,24 @@ class FSistema_model extends CI_Model
 
 						$data_inicio = $dadosP['data_inicio'];
 
-						$this->db->set('n_licao', $licao_nova);
-						$this->db->set('licao_devocional', $licao_nova);
-						$this->db->set('data_semana', $data);
-						$this->db->where('id_pg', $id_pg);
+						if ($nivel == 1) {
+							$this->db->set('n_licao', $licao_nova);
+							$this->db->set('licao_devocional', $licao_nova);
+							$this->db->set('data_semana', $data);
+							$this->db->where('id_pg', $id_pg);
 
-						if ($this->db->update('pg_pais')) {
-							$base .= "pg";
+							if ($this->db->update('pg_pais')) {
+								$base .= "pg";
+							}
+						} else if ($nivel == 2) {
+							$this->db->set('n_licao', $licao_nova);
+							$this->db->set('licao_devocional', $licao_nova);
+							$this->db->set('data_semana', $data);
+							$this->db->where('id_pg', $id_pg);
+
+							if ($this->db->update('pg_2')) {
+								$base .= "pg";
+							}
 						}
 					}
 				}

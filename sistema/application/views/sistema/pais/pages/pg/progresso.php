@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-    $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $pg['id_pg']);
+    $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $pg['id_pg'], 1);
 
     $voltar = "../../";
     $array = array('voltar' => $voltar);

@@ -103,7 +103,7 @@ if (!isset($_SESSION['usuario'])) {
 
             <?php
 
-            $consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario);
+            $consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario, 1);
             $modulos = $this->FConsultas_model->consultarModulo();
 
             if ($consultarPG['row'] == 0) {
@@ -208,7 +208,7 @@ if (!isset($_SESSION['usuario'])) {
 
               $idPG = $consultarPG['dados']['id_pg'];
 
-              $consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG);
+              $consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG, 1);
 
               if ($consultarCriancas['row'] == 0) {
 
