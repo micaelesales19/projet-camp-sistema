@@ -374,7 +374,7 @@ class Pais extends CI_Controller
 
 			$dataE = '00';
 
-			$this->FSistema_model->editarData($idPg, $dataE, $dataE, $dataE);
+			$this->FSistema_model->editarData($idPg, $dataE, $dataE, $dataE, 1);
 		} else if ($data == '') {
 		} else {
 			$dataE = $data;
@@ -386,7 +386,7 @@ class Pais extends CI_Controller
 
 			$data_fim = date('d/m/Y', strtotime('+2 months', strtotime($data_trocada)));
 
-			$this->FSistema_model->editarData($idPg, $data, $data_fim, $data);
+			$this->FSistema_model->editarData($idPg, $data, $data_fim, $data, 1);
 		}
 
 		header('Location: progresso?id_pg=' . $idPg . '&id_lider=' . $idLider . '');

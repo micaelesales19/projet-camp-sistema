@@ -193,7 +193,7 @@ class Welcome extends CI_Controller
 
 							$anoNovo = ($moduloNovo == 11 ? 3 : ($moduloNovo == 6 ? 2 : 1));
 
-							$this->FSistema_model->editarPGProgressoData($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio);
+							$this->FSistema_model->editarPGProgressoData($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio, 1);
 						} else {
 						}
 					}
@@ -471,7 +471,7 @@ class Welcome extends CI_Controller
 				if ($termos == 0) {
 					echo '
 						<script>
-							setTimeout(function(){ window.location="termos"}, 3000);
+							setTimeout(function(){ window.location="termos?nivel=1"}, 2000);
 						</script>
 					';
 				} else {
@@ -538,13 +538,15 @@ class Welcome extends CI_Controller
 		$nivel = $this->input->get('nivel');
 		$check = $this->input->get('x_ir');
 
-		if ($check == '2') {
+		/*if ($check == '2') {
 			$confimacao = 1;
 			$this->FSistema_model->aceitarTermos($id_usuario, $confimacao);
-		}
+		}*/
 
 		if ($nivel == 8) {
 			$this->load->view('sistema/pais/primeiro_acesso');
+		} else if ($nivel == 1) {
+			$this->load->view('sistema/lider/primeiro_acesso');
 		}
 	}
 
@@ -594,7 +596,7 @@ class Welcome extends CI_Controller
 			$data_trocada = $mes . "/" . $dia . "/" . $ano;
 			$data_fim = date('d/m/Y', strtotime('+2 months', strtotime($data_trocada)));
 
-			$this->FSistema_model->editarData($idPg, $dataEscolhida, $data_fim, $dataEscolhida);
+			$this->FSistema_model->editarData($idPg, $dataEscolhida, $data_fim, $dataEscolhida, $nivel);
 		}
 
 		if ($id == 4) {
@@ -647,9 +649,15 @@ class Welcome extends CI_Controller
 				$emailPai = $email_responsavel[$i];
 				$telefonePai = $telefone_responsavel[$i];
 			} else {
-				$nomePai = $dadosPais['nome'];
-				$emailPai = $dadosPais['email'];
-				$telefonePai = $dadosPais['telefone_whatsapp'];
+				if ($nivel == 1) {
+					$nomePai = $dadosPais['nome'];
+					$emailPai = $dadosPais['email'];
+					$telefonePai = $dadosPais['telefone_whatsapp'];
+				} else if ($nivel == 2) {
+					$nomePai = $dadosPais['nome_lider'];
+					$emailPai = $dadosPais['email'];
+					$telefonePai = $dadosPais['telefone_whatsapp'];
+				}
 			}
 
 			$checkCriancas = $this->FConsultas_model->consultarCriancasNomeEIdade($nome2, $lider2, $id_pg2, $nascimento2, $opcao2, $obs2, $nomePai, $nivel);
@@ -708,9 +716,15 @@ class Welcome extends CI_Controller
 				$emailPai = $email_responsavel[$i];
 				$telefonePai = $telefone_responsavel[$i];
 			} else {
-				$nomePai = $dadosPais['nome'];
-				$emailPai = $dadosPais['email'];
-				$telefonePai = $dadosPais['telefone_whatsapp'];
+				if ($nivel_2 == 1) {
+					$nomePai = $dadosPais['nome'];
+					$emailPai = $dadosPais['email'];
+					$telefonePai = $dadosPais['telefone_whatsapp'];
+				} else if ($nivel_2 == 2) {
+					$nomePai = $dadosPais['nome_lider'];
+					$emailPai = $dadosPais['email'];
+					$telefonePai = $dadosPais['telefone_whatsapp'];
+				}
 			}
 
 			$checkCriancas = $this->FConsultas_model->consultarCriancasNomeEIdade($nome2, $lider2, $id_pg2, $nascimento2, $opcao2, $obs2, $nomePai, $nivel_2);
@@ -843,7 +857,7 @@ class Welcome extends CI_Controller
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
-		$nome = $dados['nome'];
+		$nome = $this->input->post("nivel") == '' ? $dados['nome'] : $dados['nome_lider'];
 
 		$pdf = new FPDF("L", "pt", "A4");
 		$pdf->AddPage();
@@ -1412,11 +1426,12 @@ class Welcome extends CI_Controller
 		$idLider = $this->input->post('idLider');
 		$nome_pg = $this->input->post('nome_pg');
 		$data_inicio = $this->input->post('data_inicio');
+		$autorizacao = $this->input->post('autorizacao') == '' ? 0 : $this->input->post('autorizacao');
 		$nivel = $this->input->post('nivel');
 
-		$nivel_2 = $this->input->get("nivel_2") == '' ? 1 : $this->input->get("nivel_2");
+		$nivel_2 = $this->input->post("nivel_2") == '' ? 1 : $this->input->post("nivel_2");
 
-		$this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $nivel_2);
+		$this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $autorizacao, $nivel_2);
 		header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
 	}
 
@@ -1426,12 +1441,13 @@ class Welcome extends CI_Controller
 		$nome_pg = $this->input->post('nome_pg');
 		$data_inicio = $this->input->post('data_inicio');
 
-		$nivel = $this->input->get("nivel") == '' ? 1 : $this->input->get("nivel");
+		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
+		$autorizacao = $this->input->post('autorizacao') == '' ? 0 : $this->input->post('autorizacao');
 
 		$consultarPg = $this->FConsultas_model->consultarPgCadastrado($idLider, $nome_pg, $nivel);
 
 		if ($consultarPg) {
-			$cadastro = $this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $nivel);
+			$cadastro = $this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $autorizacao, $nivel);
 
 			if ($cadastro) {
 				echo '
@@ -1540,7 +1556,7 @@ class Welcome extends CI_Controller
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
-		$excluir = $this->FSistema_model->excluirPG($idPg, $nomePg, $idLider, $idResponsavel, $motivo);
+		$excluir = $this->FSistema_model->excluirPG($idPg, $nomePg, $idLider, $idResponsavel, $motivo, $nivel);
 
 		if ($excluir) {
 			echo '

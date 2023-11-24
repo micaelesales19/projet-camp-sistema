@@ -21,13 +21,12 @@ class Lider extends CI_Controller
 		require_once 'import/sistema/fpdf/fpdf.php';
 		define('PDF_PATH', 'import/sistema/temp/');
 	}
+	/* LÍDER */
 
-	/* Lider */
 	public function home()
 	{
 		$this->load->view('sistema/lider/home');
 	}
-
 	// Dados Pessoal
 	public function pagina_editar_pessoal()
 	{
@@ -194,7 +193,7 @@ class Lider extends CI_Controller
 				$nome_responsavel = $dadosCriancas['nome_responsavel'];
 
 				if ($nome_responsavel == $nome_antigo) {
-					$this->FSistema_model->editaCriancaResponsavel($id, $nome, $email, $telefone, 1);
+					$this->FSistema_model->editaCriancaResponsavel($id, $nome, $email, $telefone, 2);
 				}
 			}
 		}
@@ -262,7 +261,6 @@ class Lider extends CI_Controller
 			$this->load->view('sistema/lider/pages/pg/progresso', $dados);
 		}
 	}
-
 	public function pagina_licoes()
 	{
 
@@ -312,79 +310,6 @@ class Lider extends CI_Controller
 
 		$this->load->view('sistema/lider/pages/pg/linha', $dados);
 	}
-
-	public function salvar_relatorio()
-	{
-		$id_lider = $this->input->post('id_lider');
-		$id_pg = $this->input->post('id_pg');
-		$qtd_crianca = $this->input->post('qtd_crianca');
-		$id_crianca = $this->input->post('id_crianca');
-		$presenca = $this->input->post('presenca');
-		$versiculo = $this->input->post('versiculo');
-		$misterio = $this->input->post('misterio');
-		$devocional = $this->input->post('devocional');
-		$modulo = $this->input->post('id_modulo');
-		$ano = $this->input->post('ano');
-		$licao = $this->input->post('licao');
-		$data_aula = $this->input->post('data_aula');
-
-		$total = count($id_crianca);
-
-		if ($licao == 1 || $licao == 3 || $licao == 5 || $licao == 7 || $licao == 9) {
-			$isImpar = true;
-		} else {
-			$isImpar = false;
-		}
-
-		for ($i = 0; $i < $total; $i++) {
-			$id_pg2 = $id_pg;
-			$qtd_crianca2 = $qtd_crianca;
-			$id_crianca2 = $id_crianca[$i];
-			$presenca2 = $presenca[$i];
-			$versiculo2 = $isImpar ? 0 : $versiculo[$i];
-			$misterio2 = $isImpar ? 0 : $misterio[$i];
-			$devocional2 = $isImpar ? 0 : $devocional[$i];
-			$ano2 = $ano;
-			$modulo2 = $modulo;
-			$licao2 = $licao;
-			$data_aula2 = $data_aula;
-
-			$preenchimento = $this->FSistema_model->relatorio_encontro($id_lider, $id_pg2, $qtd_crianca2, $id_crianca2, $versiculo2, $presenca2, $misterio2, $devocional2, $ano2, $modulo2, $licao2, $data_aula2);
-		}
-
-		if ($preenchimento == 'false') {
-			/*echo '
-				<script>
-					alert("erro");
-				</script>
-			';*/
-			echo '
-				<script>
-					if(window.confirm("ERRO!")) {
-						window.location="../../pg";
-					}else{
-						window.location="../../pg";
-					}
-				</script>
-			';
-		} else {
-			/*echo '
-				<script>
-					alert("SUCESSO");
-				</script>
-			';*/
-			echo '
-				<script>
-					if(window.confirm("SUCESSO!")) {
-						window.location="../../pg";
-					}else{
-						window.location="../../pg";
-					}
-				</script>
-			';
-		}
-	}
-
 	public function enviarEmailcomArquivo()
 	{
 
@@ -449,7 +374,7 @@ class Lider extends CI_Controller
 
 			$dataE = '00';
 
-			$this->FSistema_model->editarData($idPg, $dataE, $dataE, $dataE);
+			$this->FSistema_model->editarData($idPg, $dataE, $dataE, $dataE, 2);
 		} else if ($data == '') {
 		} else {
 			$dataE = $data;
@@ -461,7 +386,7 @@ class Lider extends CI_Controller
 
 			$data_fim = date('d/m/Y', strtotime('+2 months', strtotime($data_trocada)));
 
-			$this->FSistema_model->editarData($idPg, $data, $data_fim, $data);
+			$this->FSistema_model->editarData($idPg, $data, $data_fim, $data, 2);
 		}
 
 		header('Location: progresso?id_pg=' . $idPg . '&id_lider=' . $idLider . '');

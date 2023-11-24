@@ -135,9 +135,11 @@ class FSistema_model extends CI_Model
 
 		$ativo = "1";
 		$bonus = "0";
+		$autorizacao = "0";
 
 		$inserir['nome_pg'] = $nome;
 		$inserir['id_lider'] = $idLider;
+		$inserir['autorizacao'] = $autorizacao;
 		$inserir['ano'] = $ano_pg;
 		$inserir['id_modulo'] = $modulo;
 		$inserir['n_licao'] = $licao;
@@ -190,7 +192,7 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-	public function cadastro_pg($idLider, $nome, $data_inicio, $x)
+	public function cadastro_pg($idLider, $nome, $data_inicio, $autorizacao, $x)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
@@ -215,6 +217,7 @@ class FSistema_model extends CI_Model
 
 		$inserir['nome_pg'] = $nome;
 		$inserir['id_lider'] = $idLider;
+		$inserir['autorizacao'] = $autorizacao;
 		$inserir['ano'] = $ano_pg;
 		$inserir['id_modulo'] = $modulo;
 		$inserir['n_licao'] = $licao;
@@ -257,36 +260,58 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-	public function editarData($id, $data1, $data2, $data3)
+	public function editarData($id, $data1, $data2, $data3, $x)
 	{
 		$this->db->set('data_inicio', $data1);
 		$this->db->set('data_previsao_termino', $data2);
 		$this->db->set('data_semana', $data3);
 		$this->db->where('id_pg ', $id);
 
-		if ($this->db->update('pg_pais')) {
-			return true;
-		} else {
-			return false;
+		if ($x == 1) {
+			if ($this->db->update('pg_pais')) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->update('pg_2')) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
-	public function editarPGProgressoData($id, $ano, $modulo, $licao, $data)
+	public function editarPGProgressoData($id, $ano, $modulo, $licao, $data, $x)
 	{
-		$this->db->set('data_semana', $data);
-		$this->db->set('ano_devocional', $ano);
-		$this->db->set('modulo_devocional', $modulo);
-		$this->db->set('licao_devocional', $licao);
-		$this->db->where('id_pg ', $id);
+		if ($x == 1) {
+			$this->db->set('data_semana', $data);
+			$this->db->set('ano_devocional', $ano);
+			$this->db->set('modulo_devocional', $modulo);
+			$this->db->set('licao_devocional', $licao);
+			$this->db->where('id_pg ', $id);
 
-		if ($this->db->update('pg_pais')) {
-			return true;
-		} else {
-			return false;
+			if ($this->db->update('pg_pais')) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			$this->db->set('data_semana', $data);
+			$this->db->set('ano_devocional', $ano);
+			$this->db->set('modulo_devocional', $modulo);
+			$this->db->set('licao_devocional', $licao);
+			$this->db->where('id_pg ', $id);
+
+			if ($this->db->update('pg_2')) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
-	public function excluirPG($id_pg, $nome_pg, $id_lider, $id_responsavel, $motivo)
+	public function excluirPG($id_pg, $nome_pg, $id_lider, $id_responsavel, $motivo, $x)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
@@ -304,15 +329,28 @@ class FSistema_model extends CI_Model
 
 		if ($this->db->insert('alcancado_pg', $inserir)) {
 
-			$this->db->set('ativo', $ativo);
-			$this->db->where('id_pg', $id_pg);
+			if ($x == 1) {
+				$this->db->set('ativo', $ativo);
+				$this->db->where('id_pg', $id_pg);
 
-			if ($this->db->update('pg_pais')) {
-				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
-				$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_pg, $motivo, $acao);
-				return true;
-			} else {
-				return false;
+				if ($this->db->update('pg_pais')) {
+					$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
+					$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_pg, $motivo, $acao);
+					return true;
+				} else {
+					return false;
+				}
+			} else if ($x == 2) {
+				$this->db->set('ativo', $ativo);
+				$this->db->where('id_pg', $id_pg);
+
+				if ($this->db->update('pg_2')) {
+					$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
+					$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_pg, $motivo, $acao);
+					return true;
+				} else {
+					return false;
+				}
 			}
 		} else {
 			return false;
@@ -590,7 +628,7 @@ class FSistema_model extends CI_Model
 					return false;
 				}
 			} else if ($x == 2) {
-				if ($this->db->update('criancas')) {
+				if ($this->db->update('criancas_2')) {
 					$this->FAlerta_model->alerta_controle($id_responsavel, $id_crianca, $motivo, $acao);
 					$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_crianca, $motivo, $acao);
 					return true;
@@ -619,7 +657,7 @@ class FSistema_model extends CI_Model
 				return false;
 			}
 		} else if ($x == 2) {
-			if ($this->db->update('criancas')) {
+			if ($this->db->update('criancas_2')) {
 				$this->FSistema_model->excluirCriancaAlcancado($id_crianca);
 				return true;
 			} else {
@@ -712,14 +750,26 @@ class FSistema_model extends CI_Model
 			$consultaLI = $this->db->query("SELECT * FROM lider WHERE id_lider LIKE $id_lider");
 			$rowli = $consultaLI->row_array();
 
-			$id_coordenador = $rowli['id_supervisor'];
+			$id_coordenador = $rowli['id_coordenador'];
 		}
 		$base = "";
+
+		switch ($nivel) {
+			case 1:
+				$tabela = "progresso_pg_pais";
+				break;
+			case 2:
+				$tabela = "progresso_pg";
+				break;
+			default:
+				$tabela = "progresso_pg";
+				break;
+		}
 
 		if ($qtd_crianca == $resultados) {
 			$base .= "false";
 		} else {
-			if ($this->db->insert("progresso_pg_pais", $inserir)) {
+			if ($this->db->insert($tabela, $inserir)) {
 
 				$data_inicio = $dadosP['data_inicio'];
 

@@ -126,6 +126,14 @@ if (!isset($_SESSION['usuario'])) {
                                                             <p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker" required></p>
                                                         </div>
                                                     </div>
+
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group">
+                                                            <label>
+                                                                <input type="checkbox" name="autorizacao" value="1"> Desejo receber notificações por e-mail
+                                                            </label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
