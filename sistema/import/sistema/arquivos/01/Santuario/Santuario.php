@@ -186,7 +186,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que você pode construir com ela?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 3		
 $pdf->AddPage();
@@ -256,7 +256,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que você pode construir sobre ela?"
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 4	
 $pdf->AddPage();
@@ -328,7 +328,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual nossa parte no projeto?"), 0, 'J'
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 5
 
@@ -431,7 +431,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual nossa parte no projeto?"), 0, 'J'
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 6	
 $pdf->AddPage();
@@ -530,7 +530,7 @@ $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 // Página 7
@@ -596,7 +596,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quê devemos consultar esse orác
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 8
 $pdf->AddPage();
@@ -671,7 +671,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual é o material de construção?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 $pdf->AddPage();
@@ -760,7 +760,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual é o material de construção"), 
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 // Página 9
@@ -812,7 +812,7 @@ $pdf->SetFont('arial', '', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("E a Bíblia diz:"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 9);
-$pdf->MultiCell(0, 10, $pdf->textoUTF8("Mas ele foi transpassado por causa das nossas transgressões, foi esmagado por causa de nossas iniqüidades; o castigo que nos trouxe paz estava sobre ele, e pelas suas feridas fomos curados. Todos nós, tal qual ovelhas, nos desviamos, cada um de nós se voltou para o seu próprio caminho; e o Senhor fez cair sobre ele a iniqüidade de todos nós. Isaías 53:4-6 "), 0, 'J');
+$pdf->MultiCell(0, 10, $pdf->textoUTF8("Mas ele foi transpassado por causa das nossas transgressões, foi esmagado por causa de nossas iniquidades; o castigo que nos trouxe paz estava sobre ele, e pelas suas feridas fomos curados. Todos nós, tal qual ovelhas, nos desviamos, cada um de nós se voltou para o seu próprio caminho; e o Senhor fez cair sobre ele a iniquidade de todos nós. Isaías 53:4-6 "), 0, 'J');
 
 $pdf->SetFont('arial', '', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("Como Jesus amava a Deus e a nós! Ele amava tanto que morreu numa cruz, enfrentou a morte e ficou morto 3 dias antes de ressuscitar e vencer a morte. Jesus está vivo! Ele venceu a morte. Ele fez o impossível! E Davi? (fig.9.2) Davi, um dia foi levar alimento para seus irmãos e viu um gigante de mais de 4 metros de altura falando mal de Deus e desafiando seu povo. Davi era só um pastor, não tinha força própria, mas tinha o desejo de agradar a Deus. Vejam o que ele disse ao rei:"), 0, 'J');
@@ -856,7 +856,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Por que ele aponta para esse local?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 
@@ -877,7 +877,7 @@ $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
 $pdf->Cell(90, 10, $pdf->textoUTF8("Ponte:"), 0, 1, 'L');
 $pdf->SetFont('arial', '', 9);
-$pdf->MultiCell(0, 10, $pdf->textoUTF8("Você lembra de nossa última conversa? De como a Bíblia, nosso material de construção de nossas vidas, aponta para Jesus? Você sabia que mais 400 anos antes de Jesus nascer a Bíblia já dizia de quem ele seria filho, onde ele nasceria, quem o batizaria, como ele morreria e que ele ressuscitaria? Você duvida? Mas como as pessoas que escreveram poderiam saber? Essa é uma das razões porque eu creio na Bíblia, é porque Deus guiou os homens que a escreveram. Não tinha como eles saberem esses detalhes se o próprio Deus não tivesse revelado. Escutem:"), 0, 'J');
+$pdf->MultiCell(0, 10, $pdf->textoUTF8("Você lembra de nossa última conversa? De como a Bíblia, nosso material de construção de nossas vidas, aponta para Jesus? Você sabia que mais 400 anos antes de Jesus nascer a Bíblia já dizia de quem ele seria filho, onde ele nasceria, quem o batizaria, como ele morreria e que ele ressuscitaria? Você dúvida? Mas como as pessoas que escreveram poderiam saber? Essa é uma das razões porque eu creio na Bíblia, é porque Deus guiou os homens que a escreveram. Não tinha como eles saberem esses detalhes se o próprio Deus não tivesse revelado. Escutem:"), 0, 'J');
 
 //Tópico
 $pdf->Ln(10);
@@ -936,7 +936,7 @@ $pdf->SetFont('arial', '', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("Quem foi o mensageiro que anunciou Jesus? (fig.10.3) E esta outra promessa?"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 9);
-$pdf->MultiCell(0, 10, $pdf->textoUTF8("Mas ele foi transpassado por causa das nossas transgressões, foi esmagado por causa de nossas iniqüidades; o castigo que nos trouxe paz estava sobre ele, e pelas suas feridas fomos curados. Isaías 53:5 "), 0, 'J');
+$pdf->MultiCell(0, 10, $pdf->textoUTF8("Mas ele foi transpassado por causa das nossas transgressões, foi esmagado por causa de nossas iniquidades; o castigo que nos trouxe paz estava sobre ele, e pelas suas feridas fomos curados. Isaías 53:5 "), 0, 'J');
 
 $pdf->SetFont('arial', '', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("Jesus fez isso? Escutem:"), 0, 'J');
@@ -978,7 +978,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Por que ele aponta para esse local?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $pdf->AddPage();
 
@@ -1043,7 +1043,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Por que ele aponta para esse local? - 
 
 $pdf->ln(200);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 $nome_relatorio = $pdf->textoUTF8("Santuário");

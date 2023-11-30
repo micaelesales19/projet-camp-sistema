@@ -1650,7 +1650,6 @@ class Welcome extends CI_Controller
 		}
 	}
 
-
 	public function modulo_trilha()
 	{
 		$this->load->view("../../import/sistema/arquivos/01/Trilha/Trilha.php");

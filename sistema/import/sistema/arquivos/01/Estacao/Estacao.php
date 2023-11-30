@@ -136,7 +136,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("1. ESTAÇÃO 1 - O ESPÍRITO SANTO"), 0, 1, 
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -196,7 +196,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que o Espírito Santo faz?"), 0, 'J'
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);		    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 3		
 $pdf->AddPage();
@@ -216,7 +216,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("2. ESTAÇÃO 2 - OS CRISTÃOS SÃO PERSEGUID
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -273,7 +273,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que o Espírito Santo faz?"), 0, 'J'
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 4	
 $pdf->AddPage();
@@ -292,7 +292,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("3. ESTAÇÃO 3 - CHAMADO DE PAULO AOS GENTIO
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -370,7 +370,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quem serve nosso trem?"), 0, 'J')
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 5
 $pdf->AddPage();
@@ -389,7 +389,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("4. ESTAÇÃO 4 - A IGREJA."), 0, 1, 'L');
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -464,7 +464,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quem serve nosso trem?"), 0, 'J')
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);			    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 6	
 $pdf->AddPage();
@@ -483,7 +483,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("5. ESTAÇÃO 5 - A VOLTA DE CRISTO."), 0, 1,
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -549,7 +549,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ter este contato?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 7
 $pdf->AddPage();
@@ -568,7 +568,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("6. ESTAÇÃO 6 - O DESTINO DO INIMIGO DE DEU
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -628,7 +628,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ter este contato?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);			    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 8
 $pdf->AddPage();
@@ -647,7 +647,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("7. ESTAÇÃO 7 – OS JULGAMENTOS."), 0, 1, 
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -718,7 +718,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Ela é o fim ou o começo?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);			    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 $pdf->AddPage();
@@ -737,7 +737,7 @@ $pdf->Cell(50, 10, $pdf->textoUTF8("8. ESTAÇÃO 8 - NOVO CÉU E NOVA TERRA."), 
 //Tópico
 $pdf->Ln(10);
 $pdf->SetFont('arial', 'B', 9);
-$pdf->Cell(90, 10, $pdf->textoUTF8("Bilhateria:"), 0, 1, 'L');
+$pdf->Cell(90, 10, $pdf->textoUTF8("Bilheteria:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 9);
@@ -820,7 +820,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Ela é o fim ou o começo?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $pdf->AddPage();
 
@@ -886,7 +886,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Ela é o fim ou o começo? - O começo
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $nome_relatorio = $pdf->textoUTF8("Estação Final");
 $pdf->Output("$nome_relatorio.pdf", "I");

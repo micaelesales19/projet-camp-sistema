@@ -4,6 +4,12 @@
 $voltar = "../";
 $array = array('voltar' => $voltar);
 
+require_once(APPPATH . '../import/sistema/materiais/materiais_1_trilha.php');
+require_once(APPPATH . '../import/sistema/materiais/materiais_2_mergulho.php');
+require_once(APPPATH . '../import/sistema/materiais/materiais_3_santuario.php');
+require_once(APPPATH . '../import/sistema/materiais/materiais_4_arco.php');
+require_once(APPPATH . '../import/sistema/materiais/materiais_5_estacao.php');
+
 if (!isset($_SESSION['usuario'])) {
   header("location: ../../index");
 } else {
@@ -106,88 +112,60 @@ if (!isset($_SESSION['usuario'])) {
             $aprenderemos = $dadosModulos['aprenderemos'];
             $descricao = $dadosModulos['descricao'];
 
-            $color_modulo = '';
-            $color_h3 = '';
-
             $materialCapa = array();
             $materialCards = array();
             $materialLicao = array();
 
-            $materialCapaTrilha = array(
-              'capa' => 'import/sistema/arquivos/01/Trilha/capa.jpg'
-            );
-
-            $materialContraCapaTrilha = array(
-              'capa' => 'import/sistema/arquivos/01/Trilha/contracapa.jpg'
-            );
-
-            $materialCardsTrilha = array(
-              'nome' => 'Versículos e Mistérios',
-              'arquivo' => 'import/sistema/arquivos/01/Trilha/cards_novos.pdf'
-            );
-
-            $materialSemanarioTrilha = array(
-              'nome' => 'Devocional Diário',
-              'arquivo' => 'import/sistema/arquivos/01/Trilha/devocional.pdf'
-            );
-
-            $materialIntroducaoTrilha = array(
-              'id' => 1,
-              'nome' => 'Introdução à Trilha',
-              'arquivo' => 'import/sistema/arquivos/01/Trilha/introducao.pdf',
-              'imagem' => 'import/sistema/img/livro.png',
-            );
-
-            $materialLicaoTrilha = array(
-              'id' => 2,
-              'nome' => 'Manual da Trilha',
-              'arquivo' => 'import/sistema/arquivos/01/Trilha/Trilha.php?id_lider=' . $id_usuario . '&id_modulo=1',
-              'imagem' => 'import/sistema/img/livro.png',
-            );
-
-            $materialLicaoVisuais1 = array(
-              'id' => 3,
-              'nome' => 'Visuais da Trilha',
-              'arquivo' => 'import/sistema/arquivos/01/Trilha/visuais.pdf',
-              'imagem' => 'import/sistema/img/documento.png',
-            );
-
-            $materialLicaoVisuais2 = array(
-              'id' => 4,
-              'nome' => 'Lição em PowerPoint',
-              'arquivo' => 'import/sistema/arquivos/01/Trilha/Trilha.ppsx',
-              'imagem' => 'import/sistema/img/livro.png',
-            );
-
-
             switch ($id_modulo) {
               case 1:
-                $color_modulo = 'green';
-                $color_h3 = 'black';
                 array_push($materialCapa, $materialCapaTrilha);
                 array_push($materialCapa, $materialContraCapaTrilha);
                 array_push($materialCards, $materialCardsTrilha);
                 array_push($materialCards, $materialSemanarioTrilha);
                 array_push($materialLicao, $materialIntroducaoTrilha);
                 array_push($materialLicao, $materialLicaoTrilha);
-                array_push($materialLicao, $materialLicaoVisuais2);
-                array_push($materialLicao, $materialLicaoVisuais1);
+                array_push($materialLicao, $materialLicaoVisuaisTrilha2);
+                array_push($materialLicao, $materialLicaoVisuaisTrilha1);
                 break;
               case 2:
-                $color_modulo = 'blue';
-                $color_h3 = 'black';
+                array_push($materialCapa, $materialCapaMergulho);
+                array_push($materialCapa, $materialContraCapaMergulho);
+                array_push($materialCards, $materialCardsMergulho);
+                array_push($materialCards, $materialSemanarioMergulho);
+                array_push($materialLicao, $materialIntroducaoMergulho);
+                array_push($materialLicao, $materialLicaoMergulho);
+                array_push($materialLicao, $materialLicaoVisuaisMergulho2);
+                array_push($materialLicao, $materialLicaoVisuaisMergulho1);
                 break;
               case 3:
-                $color_modulo = 'gray';
-                $color_h3 = 'white';
+                array_push($materialCapa, $materialCapaSantuario);
+                array_push($materialCapa, $materialContraCapaSantuario);
+                array_push($materialCards, $materialCardsSantuario);
+                array_push($materialCards, $materialSemanarioSantuario);
+                array_push($materialLicao, $materialIntroducaoSantuario);
+                array_push($materialLicao, $materialLicaoSantuario);
+                array_push($materialLicao, $materialLicaoVisuaisSantuario2);
+                array_push($materialLicao, $materialLicaoVisuaisSantuario1);
                 break;
               case 4:
-                $color_modulo = 'red';
-                $color_h3 = 'black';
+                array_push($materialCapa, $materialCapaArco);
+                array_push($materialCapa, $materialContraCapaArco);
+                array_push($materialCards, $materialCardsArco);
+                array_push($materialCards, $materialSemanarioArco);
+                array_push($materialLicao, $materialIntroducaoArco);
+                array_push($materialLicao, $materialLicaoArco);
+                array_push($materialLicao, $materialLicaoVisuaisArco2);
+                array_push($materialLicao, $materialLicaoVisuaisArco1);
                 break;
               case 5:
-                $color_modulo = 'yellow';
-                $color_h3 = 'black';
+                array_push($materialCapa, $materialCapaEstacao);
+                array_push($materialCapa, $materialContraCapaEstacao);
+                array_push($materialCards, $materialCardsEstacao);
+                array_push($materialCards, $materialSemanarioEstacao);
+                array_push($materialLicao, $materialIntroducaoEstacao);
+                array_push($materialLicao, $materialLicaoEstacao);
+                array_push($materialLicao, $materialLicaoVisuaisEstacao2);
+                array_push($materialLicao, $materialLicaoVisuaisEstacao1);
                 break;
               case 6:
                 $color_modulo = 'orange-active';
@@ -236,7 +214,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="col-md-6">
                   <div class="box bg-info">
                     <div class="box-header with-border">
-                      <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
+                      <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
                       <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
@@ -253,13 +231,13 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="col-md-6">
                   <div class="box bg-info">
                     <div class="box-header with-border">
-                      <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
+                      <h3 class="box-title"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
                       <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
                       </div>
                     </div>
-                    <div class="box-body chat" id="quadrado">
+                    <div class="box-body chat">
                       <div class="tab-content">
                         <div class="tab-pane active">
                           <table class="table no-margin">
@@ -290,7 +268,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="col-md-6">
                   <div class="small-box bg-info">
                     <div class="box-header with-border">
-                      <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
+                      <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
                       <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
@@ -317,7 +295,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="col-md-6">
                   <div class="small-box bg-info">
                     <div class="box-header with-border">
-                      <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
+                      <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
                       <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
@@ -345,7 +323,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="col-md-6">
                   <div class="small-box bg-info">
                     <div class="box-header with-border">
-                      <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
+                      <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
                       <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                         </button>
@@ -395,7 +373,7 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="col-md-6">
                     <div class="box bg-info">
                       <div class="box-header with-border">
-                        <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
+                        <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
                         <div class="box-tools pull-right">
                           <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                           </button>
@@ -412,13 +390,13 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="col-md-6">
                     <div class="box bg-info">
                       <div class="box-header with-border">
-                        <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
+                        <h3 class="box-title"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
                         <div class="box-tools pull-right">
                           <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                           </button>
                         </div>
                       </div>
-                      <div class="box-body chat" id="quadrado">
+                      <div class="box-body chat">
                         <div class="tab-content">
                           <div class="tab-pane active">
                             <table class="table no-margin">
@@ -449,7 +427,7 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="col-md-6">
                     <div class="small-box bg-info">
                       <div class="box-header with-border">
-                        <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
+                        <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
                         <div class="box-tools pull-right">
                           <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                           </button>
@@ -476,7 +454,7 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="col-md-6">
                     <div class="small-box bg-info">
                       <div class="box-header with-border">
-                        <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
+                        <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
                         <div class="box-tools pull-right">
                           <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                           </button>
@@ -504,7 +482,7 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="col-md-6">
                     <div class="small-box bg-info">
                       <div class="box-header with-border">
-                        <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
+                        <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
                         <div class="box-tools pull-right">
                           <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                           </button>
@@ -538,7 +516,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -555,13 +533,13 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
+                          <h3 class="box-title"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
                           </div>
                         </div>
-                        <div class="box-body chat" id="quadrado">
+                        <div class="box-body chat">
                           <div class="tab-content">
                             <div class="tab-pane active">
                               <table class="table no-margin">
@@ -592,7 +570,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="small-box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -619,7 +597,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="small-box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -647,7 +625,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="small-box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -677,7 +655,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -694,13 +672,13 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
+                          <h3 class="box-title"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
                           </div>
                         </div>
-                        <div class="box-body chat" id="quadrado">
+                        <div class="box-body chat">
                           <div class="tab-content">
                             <div class="tab-pane active">
                               <table class="table no-margin">
@@ -731,7 +709,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="small-box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>;"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -758,7 +736,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="small-box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>; word-break: normal;"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -835,7 +813,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="col-md-6">
                       <div class="small-box bg-info">
                         <div class="box-header with-border">
-                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
+                          <h3 class="box-title"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
                           <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>

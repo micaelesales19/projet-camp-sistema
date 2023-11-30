@@ -209,7 +209,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Nós merecemos?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);	    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 3		
 $pdf->AddPage();
@@ -282,7 +282,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Nós merecemos?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 4	
 $pdf->AddPage();
@@ -360,7 +360,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual a cor da flecha?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 5
 $pdf->AddPage();
@@ -445,7 +445,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual a cor da flecha?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 6	
 $pdf->AddPage();
@@ -522,7 +522,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que representa a cor vermelha?"), 0,
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);		    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 7
 $pdf->AddPage();
@@ -602,7 +602,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que representa a cor vermelha?"), 0,
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 8
 $pdf->AddPage();
@@ -679,7 +679,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Que cor é o começo?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 $pdf->AddPage();
@@ -748,7 +748,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Que cor é o começo?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 $pdf->AddPage();
@@ -826,7 +826,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como começar bem?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 $pdf->AddPage();
@@ -911,7 +911,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como começar bem?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $pdf->AddPage();
 
@@ -985,7 +985,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como começar bem? - Fazendo a vontade
 //Tópico
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $nome_relatorio = $pdf->textoUTF8("Arco");
 $pdf->Output("$nome_relatorio.pdf", "I");

@@ -189,7 +189,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ela é ouvida hoje?"), 0, 'J');
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 1
 
 // Lição 2
@@ -267,7 +267,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ela é ouvida hoje?"), 0, 'J');
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 2
 
 // Lição 3
@@ -347,7 +347,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ficar protegido?"), 0, 'J');
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 3
 
 // Lição 4		
@@ -421,7 +421,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ficar protegido?"), 0, 'J');
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 4
 
 // Lição 5
@@ -492,7 +492,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como posso ser uma polícia verde?"), 
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 5
 
 // Lição 6
@@ -566,7 +566,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como posso ser uma polícia verde?"), 
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 6
 
 // Lição 7
@@ -637,7 +637,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Podemos adiantar as horas nesse relóg
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 7
 
 // Lição 8
@@ -716,7 +716,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Podemos adiantar as horas nesse relóg
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 8
 
 // Respostas dos mistérios
@@ -794,7 +794,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Podemos adiantar as horas nesse relóg
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Material Impresso por - " . $nome_usuario, 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $nome_relatorio = $pdf->textoUTF8("Trilha");
 $pdf->Output("$nome_relatorio.pdf", "I");
