@@ -21,28 +21,32 @@ $materialSemanarioMergulho = array(
 
 $materialIntroducaoMergulho = array(
     'id' => 1,
-    'nome' => 'Introdução à Mergulho',
+    'nome' => 'Introdução ao Mergulhuo',
+    'nome_visivel' => 'Introdução',
     'arquivo' => 'import/sistema/arquivos/01/Mergulho/introducao.pdf',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoMergulho = array(
     'id' => 2,
-    'nome' => 'Manual da Mergulho',
+    'nome' => 'Manual do Mergulho',
+    'nome_visivel' => 'Manual',
     'arquivo' => 'import/sistema/arquivos/01/Mergulho/Mergulho.php?id_lider=' . $id_usuario . '&id_modulo=2',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisMergulho1 = array(
     'id' => 3,
-    'nome' => 'Visuais da Mergulho',
+    'nome' => 'Visuais do Mergulho',
+    'nome_visivel' => 'Visuais',
     'arquivo' => 'import/sistema/arquivos/01/Mergulho/visuais.pdf',
     'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisMergulho2 = array(
     'id' => 4,
-    'nome' => 'PowerPoint - Mergulho',
+    'nome' => 'Lição em PowerPoint do Mergulho',
+    'nome_visivel' => 'Lição em PowerPoint',
     'arquivo' => 'import/sistema/arquivos/01/Mergulho/O Mergulho.ppsx',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );

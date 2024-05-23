@@ -95,7 +95,7 @@ if (!isset($_SESSION['usuario'])) {
             <small>Painel de Controle</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="<?= $voltar ?>page/download"><i class="fa fa-home"></i> Home</a></li>
             <li class="active">Download do Material | CAMP Brasil</li>
           </ol>
         </section>
@@ -509,7 +509,7 @@ if (!isset($_SESSION['usuario'])) {
 
                 $idModuloPG = $consultarPG['dados']['id_modulo'];
 
-                if ($idModuloPG > $id_modulo) {
+                if ($idModuloPG < $id_modulo) {
                 ?>
 
                   <div class="col-md-12">

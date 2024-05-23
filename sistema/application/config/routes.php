@@ -53,11 +53,17 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+$route['offline'] = 'welcome/offline';
+
 $route['index'] = 'welcome/index';
 $route['sair'] = 'welcome/sair';
-$route['acesso'] = 'welcome/autenticacao_login';
 $route['login'] = 'welcome/login';
-$route['donwload_material'] = 'welcome/downloadMaterial';
+$route['acesso'] = 'welcome/autenticacao_login'; //ok
+
+$route['termos'] = 'welcome/PaginaDosTermos';
+$route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
+
+$route['download_material'] = 'welcome/downloadMaterial';
 
 // PAIS	
 $route['cadastro'] = 'welcome/cadastro';
@@ -85,8 +91,7 @@ $route['pais/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas';
 
 // PG
 $route['pais/page/pg'] = 'Pais/pagina_visualizacao_pg';
-
-$route['pais/page/pg/progresso'] = 'Pais/pagina_ver_progresso';
+$route['pais/page/pg/get-informacoes-pg'] = 'welcome/get_informacoes_pg';
 
 $route['pais/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
 $route['pais/page/pg/cadastro/paginaInicial'] = 'welcome/cadastro_pg_inicial';
@@ -110,12 +115,9 @@ $route['pais/colider/ativar'] = 'Pais/ativar_colider';
 // Colíderes
 
 // CronJobs
-$route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDevocional';
 $route['controller/devocionalDiario'] = 'welcome/enviarEmailDevocionalDiario';
 $route['controller/atualizacaoModuloMensal'] = 'welcome/atualizarModuloMensal';
-
-$route['termos'] = 'welcome/PaginaDosTermos';
-$route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
+$route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDevocional';
 
 // Download de Material
 $route['pais/page/download'] = 'Pais/pagina_download_material';

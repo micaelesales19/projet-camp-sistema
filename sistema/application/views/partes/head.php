@@ -2,8 +2,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>CAMP Brasil</title>
-
-  <link rel="icon" href="<?php echo base_url('import/sistema/dist/img/icone.png'); ?>" type="image/x-icon" />
+  <link rel="icon" href="<?php echo base_url('import/logo/android/android-launchericon-512-512.png'); ?>" type="image/x-icon" />
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -98,4 +97,5 @@
       display: inline;
     }
   </style>
+
 </head>

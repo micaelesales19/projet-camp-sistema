@@ -21,28 +21,32 @@ $materialSemanarioArco = array(
 
 $materialIntroducaoArco = array(
     'id' => 1,
-    'nome' => 'Introdução à Arco',
+    'nome' => 'Introdução ao Arco',
+    'nome_visivel' => 'Introdução',
     'arquivo' => 'import/sistema/arquivos/01/Arco/introducao.pdf',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoArco = array(
     'id' => 2,
-    'nome' => 'Manual da Arco',
+    'nome' => 'Manual do Arco',
+    'nome_visivel' => 'Manual',
     'arquivo' => 'import/sistema/arquivos/01/Arco/Arco.php?id_lider=' . $id_usuario . '&id_modulo=4',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisArco1 = array(
     'id' => 3,
-    'nome' => 'Visuais da Arco',
+    'nome' => 'Visuais do Arco',
+    'nome_visivel' => 'Visuais',
     'arquivo' => 'import/sistema/arquivos/01/Arco/visuais.pdf',
     'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisArco2 = array(
     'id' => 4,
-    'nome' => 'PowerPoint - Arco',
+    'nome' => 'Lição em PowerPoint do Arco',
+    'nome_visivel' => 'Lição em PowerPoint',
     'arquivo' => 'import/sistema/arquivos/01/Arco/Arco.ppsx',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );

@@ -1,15 +1,16 @@
 <?php
 
-/** @var \$this */
-
 if (!isset($_SESSION['usuario'])) {
 	header("location: index");
 } else {
+
+	require_once(APPPATH . '../import/sistema/materiais/materiais_1_trilha.php');
+
 	$id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
 	$id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-	$nivel = $_GET['nivel'];
-	$x_ir = $_GET['x_ir'];
+	$nivel = $_POST['nivel'];
+	$x_ir = $_POST['x_ir'];
 
 	if ($x_ir == "") {
 		$x_ir .= "";
@@ -87,7 +88,12 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="pull-right">
 											<input type="submit" class="btn btn-success" name="btn_form" value="Salvar">
 								</form>
-								<a href="pais/page/pg/cadastro/primeiroAcesso?idLider=<?= $id_usuario ?>&nome=<?= $dadosPais['nome']; ?>&nivel=8" class="btn btn-warning">Pular</a>
+								<form action="pais/page/pg/cadastro/primeiroAcesso" method="post">
+									<input type="hidden" name="idLider" value="<?= $id_usuario ?>">
+									<input type="hidden" name="nome" value="<?= $dadosPais['nome']; ?>">
+									<input type="hidden" name="nivel" value="8">
+									<br><input type="submit" value="Pular" class="btn btn-warning">
+								</form>
 							</div>
 						</div>
 
@@ -246,15 +252,28 @@ if (!isset($_SESSION['usuario'])) {
 									<input type="button" class="btn btn-info" value="Adicionar" id="add">
 									<button type="submit" id="button" class="btn btn-success">Salvar</button>
 						</form>
-						<a href="primeiro_acesso?id_usuario=<?= $id_usuario ?>&nivel=8&x_ir=3" class="btn btn-warning">Pular</a>
+
+						<form action="primeiro_acesso" method="post">
+							<input type="hidden" name="id_usuario" value="<?= $id_usuario ?>">
+							<input type="hidden" name="nivel" value="8">
+							<input type="hidden" name="x_ir" value="3">
+							<br><input type="submit" value="Pular" class="btn btn-warning">
+						</form>
 					</div>
-				</div>
-				</div>
 				</div>
 				<!-- /.box -->
 			</section>
 
-		<?php } ?>
+		<?php } else {
+						/*$data = [
+					"<input type='hidden' name='id_usuario' value='$id_usuario'>",
+					"<input type='hidden' name='nivel' value='$nivel'>",
+					"<input type='hidden' name='x_ir' value='3'>",
+				];
+				$funcao = $this->FConsultas_model->red('primeiro_acesso', 0, $data);
+				echo $funcao;*/
+					}
+		?>
 
 	<?php }
 				if ($x_ir == 3) { ?>
@@ -272,22 +291,32 @@ if (!isset($_SESSION['usuario'])) {
 				color: red;
 			}
 
-			.not-active label {
+			.succ {
+				width: 120px;
+				margin: 2px;
+				display: table-column;
+				justify-content: center;
+				align-content: center;
 				text-align: center;
-				margin-left: 21px;
+			}
+
+			.img-center {
+				width: 100px;
+				margin: 0 auto;
 			}
 
 			.img-capa {
+				width: 100px;
 				border-radius: 30px;
-				width: 150px;
-				height: 150px;
-				position: relative;
-				text-align: center;
-				margin: 10px;
+				height: 100px;
+				display: flex;
+				margin: 0 auto;
+				justify-content: center;
+				align-content: center;
 			}
 
 			#quadrado {
-				height: 300px;
+				height: 400px;
 				margin-bottom: 10px;
 			}
 
@@ -367,113 +396,20 @@ if (!isset($_SESSION['usuario'])) {
 					$aprenderemos = $dadosModulos['aprenderemos'];
 					$descricao = $dadosModulos['descricao'];
 
-					$color_modulo = '';
-					$color_h3 = '';
+					$color_h3 = 'black';
 
 					$materialCapa = array();
 					$materialCards = array();
 					$materialLicao = array();
 
-					$materialCapaTrilha = array(
-						'capa' => 'import/sistema/arquivos/01/Trilha/capa.jpg'
-					);
-
-					$materialContraCapaTrilha = array(
-						'capa' => 'import/sistema/arquivos/01/Trilha/contracapa.jpg'
-					);
-
-					$materialCardsTrilha = array(
-						'nome' => 'Versículos e Mistérios',
-						'arquivo' => 'import/sistema/arquivos/01/Trilha/cards_novos.pdf'
-					);
-
-					$materialSemanarioTrilha = array(
-						'nome' => 'Devocional Diário',
-						'arquivo' => 'import/sistema/arquivos/01/Trilha/devocional.pdf'
-					);
-
-					$materialIntroducaoTrilha = array(
-						'id' => 1,
-						'nome' => 'Introdução à Trilha',
-						'arquivo' => 'import/sistema/arquivos/01/Trilha/introducao.pdf',
-						'imagem' => 'import/sistema/img/livro.png',
-					);
-
-					$materialLicaoTrilha = array(
-						'id' => 2,
-						'nome' => 'Manual da Trilha',
-						'arquivo' => 'import/sistema/arquivos/01/Trilha/Trilha.php?id_lider=' . $id_usuario . '&id_modulo=1',
-						'imagem' => 'import/sistema/img/livro.png',
-					);
-
-					$materialLicaoVisuais1 = array(
-						'id' => 3,
-						'nome' => 'Visuais da Trilha',
-						'arquivo' => 'import/sistema/arquivos/01/Trilha/visuais.pdf',
-						'imagem' => 'import/sistema/img/documento.png',
-					);
-
-					$materialLicaoVisuais2 = array(
-						'id' => 4,
-						'nome' => 'Lição em PowerPoint',
-						'arquivo' => 'import/sistema/arquivos/01/Trilha/Trilha.ppsx',
-						'imagem' => 'import/sistema/img/livro.png',
-					);
-
-					switch ($id_modulo) {
-						case 1:
-							$color_modulo = 'green';
-							$color_h3 = 'black';
-							array_push($materialCapa, $materialCapaTrilha);
-							array_push($materialCapa, $materialContraCapaTrilha);
-							array_push($materialCards, $materialCardsTrilha);
-							array_push($materialCards, $materialSemanarioTrilha);
-							array_push($materialLicao, $materialIntroducaoTrilha);
-							array_push($materialLicao, $materialLicaoTrilha);
-							array_push($materialLicao, $materialLicaoVisuais2);
-							array_push($materialLicao, $materialLicaoVisuais1);
-							break;
-						case 2:
-							$color_modulo = 'blue';
-							$color_h3 = 'black';
-							break;
-						case 3:
-							$color_modulo = 'gray';
-							$color_h3 = 'white';
-							break;
-						case 4:
-							$color_modulo = 'red';
-							$color_h3 = 'black';
-							break;
-						case 5:
-							$color_modulo = 'yellow';
-							$color_h3 = 'black';
-							break;
-						case 6:
-							$color_modulo = 'orange-active';
-							$color_h3 = 'black';
-							break;
-						case 7:
-							$color_modulo = 'orange';
-							$color_h3 = 'black';
-							break;
-						case 8:
-							$color_modulo = 'navy';
-							$color_h3 = 'black';
-							break;
-						case 9:
-							$color_modulo = 'brown';
-							$color_h3 = 'black';
-							break;
-						case 10:
-							$color_modulo = 'brown-active';
-							$color_h3 = 'black';
-							break;
-						default:
-							$color_modulo = 'green';
-							$color_h3 = 'black';
-							break;
-					}
+					array_push($materialCapa, $materialCapaTrilha);
+					array_push($materialCapa, $materialContraCapaTrilha);
+					array_push($materialCards, $materialCardsTrilha);
+					array_push($materialCards, $materialSemanarioTrilha);
+					array_push($materialLicao, $materialIntroducaoTrilha);
+					array_push($materialLicao, $materialLicaoTrilha);
+					array_push($materialLicao, $materialLicaoVisuaisTrilha2);
+					array_push($materialLicao, $materialLicaoVisuaisTrilha1);
 
 					if ($consultarPG['row'] == 0) {
 				?>
@@ -559,11 +495,16 @@ if (!isset($_SESSION['usuario'])) {
 								<div class="box-body chat" id="linha">
 									<?php
 									foreach ($materialCapa as $key => $capas) {
+										if ($capas['capa'] == '') {
+										} else {
 									?>
-										<a class="not-active" href="<?php echo base_url($capas['capa']); ?>" download>
-											<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-responsive img-capa" alt="User Image">
-										</a>
-									<?php } ?>
+											<div class="succ not-active">
+												<div class="img-center">
+													<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-capa" alt="User Image">
+												</div>
+											</div>
+									<?php }
+									} ?>
 								</div>
 							</div>
 							<!-- /.box-body -->
@@ -586,12 +527,17 @@ if (!isset($_SESSION['usuario'])) {
 								<div class="box-body chat" id="linha">
 									<?php
 									foreach ($materialLicao as $key => $licao) {
+										if ($licao['id'] == 0) {
+										} else {
 									?>
-										<a class="not-active" href="<?php echo base_url($licao['arquivo']); ?>" download>
-											<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
-											<label for=""><?= $licao['nome']; ?></label>
-										</a>
-									<?php } ?>
+											<div class="succ not-active">
+												<div class="img-center">
+													<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-capa" alt="User Image">
+												</div>
+												<label for=""><?= $licao['nome_visivel']; ?></label>
+											</div>
+									<?php }
+									} ?>
 								</div>
 							</div>
 							<!-- /.box-body -->
@@ -615,10 +561,12 @@ if (!isset($_SESSION['usuario'])) {
 									<?php
 									foreach ($materialCards as $key => $cards) {
 									?>
-										<a class="not-active" href="<?php echo base_url($cards['arquivo']); ?>" download>
-											<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-responsive img-capa" alt="User Image">
+										<div class="succ not-active">
+											<div class="img-center">
+												<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
+											</div>
 											<label for=""><?= $cards['nome']; ?></label>
-										</a>
+										</div>
 									<?php } ?>
 								</div>
 							</div>
@@ -718,11 +666,16 @@ if (!isset($_SESSION['usuario'])) {
 									<div class="box-body chat" id="linha">
 										<?php
 										foreach ($materialCapa as $key => $capas) {
+											if ($capas['capa'] == '') {
+											} else {
 										?>
-											<a class="not-active" href="<?php echo base_url($capas['capa']); ?>" download>
-												<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-responsive img-capa" alt="User Image">
-											</a>
-										<?php } ?>
+												<div class="succ not-active">
+													<div class="img-center">
+														<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-capa" alt="User Image">
+													</div>
+												</div>
+										<?php }
+										} ?>
 									</div>
 								</div>
 								<!-- /.box-body -->
@@ -745,12 +698,17 @@ if (!isset($_SESSION['usuario'])) {
 									<div class="box-body chat" id="linha">
 										<?php
 										foreach ($materialLicao as $key => $licao) {
+											if ($licao['id'] == 0) {
+											} else {
 										?>
-											<a class="not-active" href="<?php echo base_url($licao['arquivo']); ?>" download>
-												<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
-												<label for=""><?= $licao['nome']; ?></label>
-											</a>
-										<?php } ?>
+												<div class="succ not-active">
+													<div class="img-center">
+														<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-capa" alt="User Image">
+													</div>
+													<label for=""><?= $licao['nome_visivel']; ?></label>
+												</div>
+										<?php }
+										} ?>
 									</div>
 								</div>
 								<!-- /.box-body -->
@@ -774,10 +732,12 @@ if (!isset($_SESSION['usuario'])) {
 										<?php
 										foreach ($materialCards as $key => $cards) {
 										?>
-											<a class="not-active" href="<?php echo base_url($cards['arquivo']); ?>" download>
-												<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-responsive img-capa" alt="User Image">
+											<div class="succ not-active">
+												<div class="img-center">
+													<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
+												</div>
 												<label for=""><?= $cards['nome']; ?></label>
-											</a>
+											</div>
 										<?php } ?>
 									</div>
 								</div>
@@ -791,7 +751,7 @@ if (!isset($_SESSION['usuario'])) {
 
 							$idModuloPG = $consultarPG['dados']['id_modulo'];
 
-							if ($idModuloPG > $id_modulo) {
+							if ($idModuloPG < $id_modulo) {
 						?>
 
 							<div class="col-md-12">
@@ -861,11 +821,16 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="box-body chat" id="linha">
 											<?php
 											foreach ($materialCapa as $key => $capas) {
+												if ($capas['capa'] == '') {
+												} else {
 											?>
-												<a class="not-active" href="<?php echo base_url($capas['capa']); ?>" download>
-													<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-responsive img-capa" alt="User Image">
-												</a>
-											<?php } ?>
+													<div class="succ not-active">
+														<div class="img-center">
+															<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-capa" alt="User Image">
+														</div>
+													</div>
+											<?php }
+											} ?>
 										</div>
 									</div>
 									<!-- /.box-body -->
@@ -888,12 +853,17 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="box-body chat" id="linha">
 											<?php
 											foreach ($materialLicao as $key => $licao) {
+												if ($licao['id'] == 0) {
+												} else {
 											?>
-												<a class="not-active" href="<?php echo base_url($licao['arquivo']); ?>" download>
-													<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
-													<label for=""><?= $licao['nome']; ?></label>
-												</a>
-											<?php } ?>
+													<div class="succ not-active">
+														<div class="img-center">
+															<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-capa" alt="User Image">
+														</div>
+														<label for=""><?= $licao['nome_visivel']; ?></label>
+													</div>
+											<?php }
+											} ?>
 										</div>
 									</div>
 									<!-- /.box-body -->
@@ -917,10 +887,12 @@ if (!isset($_SESSION['usuario'])) {
 											<?php
 											foreach ($materialCards as $key => $cards) {
 											?>
-												<a class="not-active" href="<?php echo base_url($cards['arquivo']); ?>" download>
-													<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-responsive img-capa" alt="User Image">
+												<div class="succ not-active">
+													<div class="img-center">
+														<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
+													</div>
 													<label for=""><?= $cards['nome']; ?></label>
-												</a>
+												</div>
 											<?php } ?>
 										</div>
 									</div>
@@ -1000,11 +972,18 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="box-body chat" id="linha">
 											<?php
 											foreach ($materialCapa as $key => $capas) {
+												if ($capas['capa'] == '') {
+												} else {
 											?>
-												<a href="<?php echo base_url($capas['capa']); ?>" target="_blank" download>
-													<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-responsive img-capa" alt="User Image">
-												</a>
-											<?php } ?>
+													<div class="succ">
+														<div class="img-center">
+															<a href="<?php echo base_url($capas['capa']); ?>" target="_blank" download>
+																<img src="<?php echo base_url($capas['capa']); ?>" title="Capa" class="img-capa" alt="User Image">
+															</a>
+														</div>
+													</div>
+											<?php }
+											} ?>
 										</div>
 									</div>
 									<!-- /.box-body -->
@@ -1028,59 +1007,80 @@ if (!isset($_SESSION['usuario'])) {
 											<?php
 											foreach ($materialLicao as $key => $licao) {
 
-												if ($licao['id'] == 2 && $consultarPG['dados']['data_inicio'] == '') {
+												if ($licao['id'] == 0) {
+												} else {
+
+													if ($licao['id'] == 2 && $consultarPG['dados']['data_inicio'] == '') {
 											?>
-													<a data-toggle="modal" data-target="<?= "#" . $licao['id']; ?>download" href="#">
-														<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
-														<label for=""><?= $licao['nome']; ?></label>
-													</a>
-
-													<div class="modal fade" id="<?= $licao['id']; ?>download">
-														<div class="modal-dialog modal-info">
-															<div class="modal-content">
-																<form action="donwload_material" method="get" target="_blank" id="form__submit">
-																	<input type="hidden" name="id" value="<?= $licao['id']; ?>">
-																	<input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
-																	<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
-																	<input type="hidden" name="title" value="<?= $licao['nome']; ?>" style="color: black;">
-																	<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>" style="color: black;">
-																	<input type="hidden" name="nivel" value="1">
-
-																	<div class="modal-header">
-																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span></button>
-																		<h4 class="modal-title">Download do Material | <?= $nome_modulo; ?></h4>
-																	</div>
-																	<div class="box-body">
-																		<div class="form-group" style="text-align: center;">
-																			<label for="exampleInputEmail1">Digite a data de início do PG</label>
-																			<p style="color: black;">Data: <input type="text" name="data" id="datepicker" autocomplete="off" required></p>
-																		</div>
-																	</div>
-																	<div class="modal-footer">
-																		<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Sair</button>
-																		<input type="submit" class="btn btn-default" onclick="fecharModal();" value="Baixar">
-																	</div>
-
-																	<script>
-																		function fecharModal() {
-																			let form = document.getElementById("form__submit");
-																			form.submit();
-																			$('.modal').modal('hide');
-																			window.location.reload(true);
-																		}
-																	</script>
-																</form>
-															</div>
-															<!-- /.modal-content -->
+														<div class="succ">
+															<a data-toggle="modal" data-target="<?= "#" . $licao['id']; ?>download" href="#">
+																<div class="img-center">
+																	<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-capa" alt="User Image">
+																</div>
+																<label for=""><?= $licao['nome_visivel']; ?></label>
+															</a>
 														</div>
-														<!-- /.modal-dialog -->
-													</div>
-												<?php } else { ?>
-													<a href="donwload_material?id=<?= $licao['id']; ?>&id_lider=<?= $id_usuario; ?>&id_pg=<?= $idPG; ?>&title=<?= $licao['nome']; ?>&download=<?= $licao['arquivo']; ?>&nivel=1" target="_blank" download>
-														<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
-														<label for=""><?= $licao['nome']; ?></label>
-													</a>
+
+														<div class="modal fade" id="<?= $licao['id']; ?>download">
+															<div class="modal-dialog modal-info">
+																<div class="modal-content">
+																	<form action="download_material" method="post" target="_blank" id="form__submit">
+																		<input type="hidden" name="id" value="<?= $licao['id']; ?>">
+																		<input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+																		<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
+																		<input type="hidden" name="title" value="<?= $licao['nome']; ?>" style="color: black;">
+																		<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>" style="color: black;">
+																		<input type="hidden" name="nivel" value="8">
+
+																		<div class="modal-header">
+																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span></button>
+																			<h4 class="modal-title">Download do Material | <?= $nome_modulo; ?></h4>
+																		</div>
+																		<div class="box-body">
+																			<div class="form-group" style="text-align: center;">
+																				<label for="exampleInputEmail1">Digite a data de início do PG</label>
+																				<p style="color: black;">Data: <input type="text" name="data" id="datepicker" autocomplete="off" required></p>
+																			</div>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Sair</button>
+																			<input type="submit" class="btn btn-default" onclick="fecharModal();" value="Baixar">
+																		</div>
+
+																		<script>
+																			function fecharModal() {
+																				let form = document.getElementById("form__submit");
+																				form.submit();
+																				$('.modal').modal('hide');
+																				window.location.reload(true);
+																			}
+																		</script>
+																	</form>
+																</div>
+																<!-- /.modal-content -->
+															</div>
+															<!-- /.modal-dialog -->
+														</div>
+													<?php } else { ?>
+														<div class="succ">
+															<form action="download_material" method="post" target="_blank" download>
+																<input type="hidden" name="id" value="<?= $licao['id']; ?>">
+																<input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+																<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
+																<input type="hidden" name="title" value="<?= $licao['nome']; ?>">
+																<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>">
+																<input type="hidden" name="nivel" value="8">
+
+																<div class="img-center">
+																	<button type="submit" style="background-color: transparent; border: none;">
+																		<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
+																	</button>
+																</div>
+																<label for=""><?= $licao['nome_visivel']; ?></label>
+															</form>
+														</div>
+													<?php } ?>
 												<?php } ?>
 											<?php } ?>
 										</div>
@@ -1106,10 +1106,14 @@ if (!isset($_SESSION['usuario'])) {
 											<?php
 											foreach ($materialCards as $key => $cards) {
 											?>
-												<a href="<?php echo base_url($cards['arquivo']); ?>" target="_blank" download>
-													<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-responsive img-capa" alt="User Image">
-													<label for=""><?= $cards['nome']; ?></label>
-												</a>
+												<div class="succ">
+													<a href="<?php echo base_url($cards['arquivo']); ?>" target="_blank" download>
+														<div class="img-center">
+															<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
+														</div>
+														<label for=""><?= $cards['nome']; ?></label>
+													</a>
+												</div>
 											<?php } ?>
 										</div>
 									</div>
@@ -1197,6 +1201,5 @@ if (!isset($_SESSION['usuario'])) {
 
 	</html>
 <?php
-
 }
 ?>

@@ -33,6 +33,48 @@ class FConsultas_model extends CI_Model
 		$this->db2 = $db2;
 	}
 
+	function red($route, $time, $data)
+	{
+
+		$funcao = "  
+			<br>
+			<form action='$route' method='post' id='dateForm'>
+
+			";
+
+		foreach ($data as $valor) {
+			$funcao .= $valor;
+		}
+
+		$funcao .= "
+			</form>
+
+			<script type='text/javascript'>
+
+				setTimeout(function(){
+					document.getElementById('dateForm').submit(); // SUBMIT FORM
+				}, $time);
+				
+			</script>
+		";
+
+		//setTimeout(function(){ $('#dateForm').submit(); }, 3000);
+		return $funcao;
+	}
+
+	public function list_modulos_informacoes($ciclo, $idModulo)
+	{
+		$consultar = $this->db->query("SELECT * FROM modulo WHERE ano LIKE $ciclo AND id_modulo LIKE $idModulo");
+		$row = $consultar->num_rows();
+		$dados = $consultar->row_array();
+
+		if ($row == 0) {
+			return false;
+		} else {
+			return $dados;
+		}
+	}
+
 	public function consultaraisJaTerminouOTreinamento($nome, $email, $nascimento)
 	{
 		$consultar = $this->db2->query("SELECT * FROM aluno WHERE nome LIKE '$nome' AND email = '$email' AND nascimento = '$nascimento'");
@@ -257,7 +299,7 @@ class FConsultas_model extends CI_Model
 	public function mostrarTodosPais()
 	{
 		// adicionar outros níveis
-		$dados = $this->db->query("SELECT * FROM pais WHERE confirmado LIKE 2")->result_array();
+		$dados = $this->db->query("SELECT * FROM pais WHERE confirmado LIKE 2 AND pais LIKE 'br'")->result_array();
 		return $dados;
 	}
 
@@ -465,7 +507,7 @@ class FConsultas_model extends CI_Model
 
 	public function consultarModuloAno($id_ano)
 	{
-		$consultar = $this->db->query("SELECT * FROM modulo WHERE ano LIKE $id_ano");
+		$consultar = $this->db->query("SELECT * FROM modulo WHERE ano LIKE $id_ano ORDER BY ordem ASC");
 		$row = $consultar->num_rows();
 		$dados = $consultar->result_array();
 
@@ -659,6 +701,33 @@ class FConsultas_model extends CI_Model
 			$consultar_criancas = $this->db->query("SELECT * FROM criancas_2 WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1 ORDER BY nome_crianca ASC");
 			$row = $consultar_criancas->num_rows();
 			$dados_consulta_criancas = $consultar_criancas->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_criancas,
+			);
+
+			return $dados;
+		}
+	}
+
+	public function mostrarCriancasPaisID($id_usuario, $idPG, $x, $id_crianca)
+	{
+		if ($x == 1) {
+			$consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1 AND id_crianca = $id_crianca");
+			$row = $consultar_criancas->num_rows();
+			$dados_consulta_criancas = $consultar_criancas->row_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_criancas,
+			);
+
+			return $dados;
+		} else if ($x == 2) {
+			$consultar_criancas = $this->db->query("SELECT * FROM criancas_2 WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1 ORDER BY nome_crianca ASC");
+			$row = $consultar_criancas->num_rows();
+			$dados_consulta_criancas = $consultar_criancas->row_array();
 
 			$dados = array(
 				'row' => $row,

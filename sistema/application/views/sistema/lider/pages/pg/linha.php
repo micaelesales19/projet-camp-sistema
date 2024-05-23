@@ -17,8 +17,7 @@
         </thead>
         <tbody>
             <?php
-            /** @var \$this */
-
+            
             $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_lider, $id_pg, 2);
 
             $qtdPresenca = "0";
@@ -194,7 +193,7 @@
                             $versiculoTotal = $versiculoTotal + $versiculo;
                             $misterioTotal = $misterioTotal + $misterio;
 
-                            $pontuacao = ($presenca == 1 ? 5 : 0);
+                            $pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
                             $pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
                             $pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
                             $pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);

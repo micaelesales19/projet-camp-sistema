@@ -229,44 +229,12 @@ class Pais extends CI_Controller
 		$this->load->view('sistema/pais/pages/pagina_ver_pg');
 	}
 
-	public function pagina_ver_progresso()
-	{
-		$idLider = $this->input->get("id_lider");
-		$idPg = $this->input->get("id_pg");
-
-		$dadosPg = $this->FConsultas_model->mostrarPGId($idLider, $idPg, 1);
-
-		if ($dadosPg['row'] == 0) {
-			echo '
-			<script>
-				if(window.confirm("DADOS NÃO ENCONTRADO!")) {
-					window.location="../pg";
-				}else{
-					window.location="../pg";
-				}
-			</script>
-		';
-		} else {
-			$ano = $dadosPg['dados']['ano'];
-			$modulo = $dadosPg['dados']['modulo_devocional'];
-			$licao = $dadosPg['dados']['licao_devocional'];
-
-			$dadosDevocionais = $this->FConsultas_model->consultarDevocionalModuloLicao($ano, $modulo, $licao);
-
-			$dados = array(
-				'pg' => $dadosPg['dados'],
-				'devocionais_consulta' => $dadosDevocionais,
-			);
-
-			$this->load->view('sistema/pais/pages/pg/progresso', $dados);
-		}
-	}
 	public function pagina_licoes()
 	{
 
-		$id_pg = $this->input->get("id_pg");
-		$id_lider = $this->input->get("id_lider");
-		$ano = $this->input->get("ano");
+		$id_pg = $this->input->post("id_pg");
+		$id_lider = $this->input->post("id_lider");
+		$ano = $this->input->post("ano");
 
 		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
 		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 1);
@@ -296,7 +264,12 @@ class Pais extends CI_Controller
 		$id_lider = $this->input->get("id_lider");
 		$id_pg = $this->input->get("id_pg");
 		$id_modulo = $this->input->get("id_modulo");
-		$total = $this->input->get("total");
+		$ano = $this->input->get("ano");
+		$total = $this->input->get("total"); // total de botões dos módulos escolhidos
+
+		$id_crianca = $this->input->get("id_crianca");
+
+		$page = $this->input->get('page') == '' ? 'inicial' : $this->input->get('page');
 
 		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 1);
 
@@ -305,10 +278,18 @@ class Pais extends CI_Controller
 			'id_pg' => $id_pg,
 			'id_modulo' => $id_modulo,
 			'total' => $total,
+			'ano' => $ano,
+			'page' => $page,
+			'id_crianca' => $id_crianca,
 			'pg' => $dadosPg['dados'],
 		);
 
-		$this->load->view('sistema/pais/pages/pg/linha', $dados);
+
+		if ($page == '' || $page == 'individual') {
+			$this->load->view('sistema/pais/pages/pg/linha', $dados);
+		} else {
+			$this->load->view('sistema/pais/pages/pg/linha_geral', $dados);
+		}
 	}
 	public function enviarEmailcomArquivo()
 	{
@@ -365,10 +346,10 @@ class Pais extends CI_Controller
 
 	public function atualizarDataPG()
 	{
-		$idPg = $this->input->get('id_pg');
-		$idLider = $this->input->get('id_lider');
-		$check = $this->input->get('check');
-		$data = $this->input->get('data');
+		$idPg = $this->input->post('id_pg');
+		$idLider = $this->input->post('id_lider');
+		$check = $this->input->post('check');
+		$data = $this->input->post('data');
 
 		if ($check == 'true' && $data == '') {
 
@@ -389,7 +370,14 @@ class Pais extends CI_Controller
 			$this->FSistema_model->editarData($idPg, $data, $data_fim, $data, 1);
 		}
 
-		header('Location: progresso?id_pg=' . $idPg . '&id_lider=' . $idLider . '');
+		$data = [
+			"<input type='hidden' name='id_pg' value='$idPg'>",
+			"<input type='hidden' name='id_lider' value='$idLider'>",
+		];
+		$funcao = $this->FConsultas_model->red('../pg', 0, $data);
+		echo $funcao;
+
+		//header('Location: progresso?id_pg=' . $idPg . '&id_lider=' . $idLider . '');
 	}
 	// Fim PG
 
@@ -421,11 +409,9 @@ class Pais extends CI_Controller
 			$cadastroColider = $this->FSistema_model->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
 
 			if ($cadastroColider) {
-				echo '
-				<script>
-					window.location="../../pagina_editar_pessoal";
-				</script>
-			';
+				$data = [];
+				$funcao = $this->FConsultas_model->red('../../pagina_editar_pessoal', 0, $data);
+				echo $funcao;
 			} else {
 				echo '
 				<script>
@@ -462,11 +448,15 @@ class Pais extends CI_Controller
 		$reativar = $this->FSistema_model->excluirColider($idColider, $nomeColider, $idLider, $idResponsavel, $motivo);
 
 		if ($reativar) {
-			echo '
-			<script>
-				window.location="../pagina_editar_pessoal";
-			</script>
-		';
+			/*echo '
+				<script>
+					window.location="../pagina_editar_pessoal";
+				</script>
+			';*/
+
+			$data = [];
+			$funcao = $this->FConsultas_model->red('../pagina_editar_pessoal', 0, $data);
+			echo $funcao;
 		} else {
 			echo '
 			<script>
@@ -488,11 +478,9 @@ class Pais extends CI_Controller
 		$reativar = $this->FSistema_model->reativarColider($idColider, $idLider);
 
 		if ($reativar) {
-			echo '
-			<script>
-				window.location="../pagina_editar_pessoal";
-			</script>
-		';
+			$data = [];
+			$funcao = $this->FConsultas_model->red('../pagina_editar_pessoal', 0, $data);
+			echo $funcao;
 		} else {
 			echo '
 			<script>

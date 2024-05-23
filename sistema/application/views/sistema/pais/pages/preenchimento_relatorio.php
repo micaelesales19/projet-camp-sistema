@@ -14,11 +14,11 @@ if (!isset($_SESSION['usuario'])) {
   date_default_timezone_set('America/Sao_Paulo');
   $data = date("d/m/Y");
 
-  $id_pg = $this->input->get('id_pg');
-  $id_lider = $this->input->get('id_lider');
-  $ano = $this->input->get('ano');
-  $id_modulo = $this->input->get('id_modulo');
-  $licao = $this->input->get('licao');
+  $id_pg = $this->input->post('id_pg');
+  $id_lider = $this->input->post('id_lider');
+  $ano = $this->input->post('ano');
+  $id_modulo = $this->input->post('id_modulo');
+  $licao = $this->input->post('licao');
 
   $CI = &get_instance();
   $CI->load->model('FConsultas_model');

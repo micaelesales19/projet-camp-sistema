@@ -38,6 +38,16 @@ class Welcome extends CI_Controller
 		define('PDF_PATH', 'import/sistema/temp/');
 	}
 
+	public function offline()
+	{
+		$dados = array(
+			'heading' => 'Você está Offline',
+			'message' => 'Conect a internet e tente novamente',
+		);
+
+		$this->load->view('errors/html/error_404', $dados);
+	}
+
 	public function cadastro()
 	{
 		$this->load->view('sistema/cadastro');
@@ -389,135 +399,182 @@ class Welcome extends CI_Controller
 	{
 		$email = $this->input->post('email');
 		$cpf = $this->input->post('cpf');
+
+		$nome = $this->input->post('nome');
+		$senha = $this->input->post('senha');
+
 		$x = $this->input->post('x_ir');
 
-		$ponto = $cpf[3];
+		$opc = $this->input->post('opc');
 
-		$cpf_completo = "";
-
-		if ($ponto == ".") {
-			$cpf_completo .= $cpf;
+		if ($email == '' && $cpf == '' && $nome == '' && $senha == '') {
+			echo "Dados Vazios";
+			$data = [
+				"<input type='hidden' name='x' value='$x'>"
+			];
+			$funcao = $this->FConsultas_model->red('index', 2000, $data);
+			echo $funcao;
 		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
-		}
+			$cpf_completo = "";
 
-		$consultar = $this->db->select("*")
-			->from("usuario")
-			->where("email", $email)
-			->where("cpf", $cpf_completo)
-			//->or_where("cpf", $cpf)
-			->get();
-		$dados = $consultar->row_array();
-		$total = $consultar->num_rows();
-
-		if ($total == 0) {
-			echo "Dados Inválidos";
-			echo '
-				<script>
-					setTimeout(function(){ window.location="index?x=' . $x . '" }, 3000);
-				</script>
-			';
-		} else {
-
-			$id_usuario = $dados['id_usuario'];
-			$nivel = $dados['nivel'];
-
-			$_SESSION['usuario'] = $dados['nome'];
-			$_SESSION['id_usuario'] = "";
-			$_SESSION['id_usuario_2'] = "";
-
-			$ativo = 1;
-			$this->db->set('ativo', $ativo);
-			$this->db->where('id_usuario', $id_usuario);
-			$this->db->update('usuario');
-
-			$consultar_lider = $this->db->select("*")
-				->from("lider")
-				->where("email", $email)
-				->where("cpf", $cpf_completo)
-				->get();
-			$dados_lider = $consultar_lider->row_array();
-
-			$consultar_pais = $this->db->select("*")
-				->from("pais")
-				->where("email", $email)
-				->where("cpf", $cpf_completo)
-				->get();
-			$dados_pais = $consultar_pais->row_array();
-
-			$consultar_adm = $this->db->select("*")
-				->from("direcao")
-				->where("email", $email)
-				->where("cpf", $cpf_completo)
-				->get();
-			$dados_adm = $consultar_adm->row_array();
-
-			if ($nivel == 1) {
-				/*if ($total_lider == 0) {
-				} else {*/
-				echo "Bem Vindo - " . $dados['nome'];
-
-				$_SESSION['id_usuario'] .= $dados_lider['id_lider'];
-				$_SESSION['id_usuario_2'] .= $id_usuario;
-
-				$consultar_termos = $this->db->select("*")
-					->from("termos")
-					->where("id_usuario", $dados_lider['id_lider'])
-					->get();
-				$termos = $consultar_termos->num_rows();
-
-				//setTimeout(function(){ window.location="lider/home"}, 3000);
-
-				if ($termos == 0) {
-					echo '
-						<script>
-							setTimeout(function(){ window.location="termos?nivel=1"}, 2000);
-						</script>
-					';
+			if ($opc == 1) {
+				$ponto = $cpf[3];
+				if ($ponto == ".") {
+					$cpf_completo .= $cpf;
 				} else {
-					if ($x == 1) {
-						echo '
-							<script>
-								setTimeout(function(){ window.location="lider/home"}, 3000);
-							</script>
-						';
-					}
+					$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
 				}
-			} else if ($nivel == 6) { //admin
+				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND (cpf = '$cpf' OR cpf = '$cpf_completo')");
+				$dados = $consultar->row_array();
+				$total = $consultar->num_rows();
+			} else if ($opc == 2 || $opc == 4) {
+				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND senha = '$senha'");
+				$dados = $consultar->row_array();
+				$total = $consultar->num_rows();
+			} else if ($opc == 3) {
+				$consultar = $this->db->query("SELECT * FROM usuario WHERE nome LIKE '$nome%' AND senha = '$senha'");
+				$dados = $consultar->row_array();
+				$total = $consultar->num_rows();
+			} else {
+			}
 
-				echo "Bem Vindo - " . $dados['nome'];
-				$_SESSION['id_usuario'] .= $dados_adm['id_direcao'];
-				$_SESSION['id_usuario_2'] .= $id_usuario;
+			if ($total == 0) {
+				echo "Dados Inválidos";
+				$data = [
+					"<input type='hidden' name='x' value='$x'>"
+				];
+				$funcao = $this->FConsultas_model->red('index', 2000, $data);
+				echo $funcao;
+			} else {
 
-				echo '
-					<script>
-						setTimeout(function(){ window.location="adm/home"}, 2000);
-					</script>
-				';
-			} else if ($nivel == 8) { // pais
-				echo "Bem Vindo - " . $dados['nome'];
-				$_SESSION['id_usuario'] .= $dados_pais['id'];
-				$_SESSION['id_usuario_2'] .= $id_usuario;
+				$id_usuario = $dados['id_usuario'];
+				$nivel = $dados['nivel'];
+				$nome_base = $dados['nome'];
 
-				$consultar_termos = $this->db->select("*")
-					->from("termos")
-					->where("id_usuario", $dados_pais['id'])
-					->get();
-				$termos = $consultar_termos->num_rows();
+				$_SESSION['usuario'] = $dados['nome'];
+				$_SESSION['id_usuario'] = "";
+				$_SESSION['id_usuario_2'] = "";
 
-				if ($termos == 0) {
-					echo '
+				$ativo = 1;
+				$this->db->set('ativo', $ativo);
+				$this->db->where('id_usuario', $id_usuario);
+				$this->db->update('usuario');
+
+				$consultar_lider = $this->db->query("SELECT * FROM lider WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_lider LIKE '$nome%' OR nome_lider LIKE '$nome_base%')");
+				$dados_lider = $consultar_lider->row_array();
+				$total_lider = $consultar_lider->num_rows();
+
+				$consultar_pais = $this->db->query("SELECT * FROM pais WHERE (email = '$email' OR cpf = '$cpf_completo') AND  (nome LIKE '$nome%' OR nome LIKE '$nome_base%')");
+				$dados_pais = $consultar_pais->row_array();
+				$total_pais = $consultar_pais->num_rows();
+
+				$consultar_adm = $this->db->query("SELECT * FROM direcao WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_direcao LIKE '$nome%' OR nome_direcao LIKE '$nome_base%')");
+				$dados_adm = $consultar_adm->row_array();
+				$total_adm = $consultar_adm->num_rows();
+
+				if ($nivel == 1) {
+					if ($total_lider == 0) {
+						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$data = [
+							"<input type='hidden' name='x' value='$x'>"
+						];
+						$funcao = $this->FConsultas_model->red('index', 2000, $data);
+						echo $funcao;
+					} else {
+						echo "Bem Vindo - " . $dados['nome'];
+
+						$_SESSION['id_usuario'] .= $dados_lider['id_lider'];
+						$_SESSION['id_usuario_2'] .= $id_usuario;
+
+						$consultar_termos = $this->db->select("*")
+							->from("termos")
+							->where("id_usuario", $id_usuario)
+							->get();
+						$termos = $consultar_termos->num_rows();
+
+						if ($termos == 0) {
+							$data = [
+								"<input type='hidden' name='nivel' value='1'>"
+							];
+							$funcao = $this->FConsultas_model->red('termos', 2000, $data);
+							echo $funcao;
+
+							/*echo '
+								<script>
+									setTimeout(function(){ window.location="termos?nivel=1"}, 2000);
+								</script>
+							';*/
+						} else {
+							if ($x == 1) {
+
+								$data = [];
+								$funcao = $this->FConsultas_model->red('lider/home', 2000, $data);
+								echo $funcao;
+
+								/*echo '
+									<script>
+										setTimeout(function(){ window.location="lider/home"}, 3000);
+									</script>
+								';*/
+							}
+						}
+					}
+				} else if ($nivel == 6) { //admin
+					if ($total_adm == 0) {
+						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						echo '
 						<script>
-							setTimeout(function(){ window.location="termos?nivel=8"}, 2000);
+							setTimeout(function(){ window.location="index?x=' . $x . '" }, 3000);
 						</script>
 					';
-				} else {
-					if ($x == 1) {
+					} else {
+						echo "Bem Vindo - " . $dados['nome'];
+						$_SESSION['id_usuario'] .= $dados_adm['id_direcao'];
+						$_SESSION['id_usuario_2'] .= $id_usuario;
+
 						echo '
-							<script>
-								setTimeout(function(){ window.location="pais/home"}, 2000);
-							</script>
-						';
+						<script>
+							setTimeout(function(){ window.location="adm/home"}, 2000);
+						</script>
+					';
+					}
+				} else if ($nivel == 8) { // pais
+					if ($total_pais == 0) {
+						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$data = [
+							"<input type='hidden' name='x' value='$x'>"
+						];
+						$funcao = $this->FConsultas_model->red('index', 2000, $data);
+						echo $funcao;
+					} else {
+						echo "Bem Vindo - " . $dados['nome'];
+						$_SESSION['id_usuario'] .= $dados_pais['id'];
+						$_SESSION['id_usuario_2'] .= $id_usuario;
+
+						$consultar_termos = $this->db->select("*")
+							->from("termos")
+							->where("id_usuario", $id_usuario)
+							->get();
+						$termos = $consultar_termos->num_rows();
+
+						if ($termos == 0) {
+							/*echo '
+								<script>
+									setTimeout(function(){ window.location="termos?nivel=8"}, 2000);
+								</script>
+							';*/
+							$data = [
+								"<input type='hidden' name='nivel' value='8'>"
+							];
+							$funcao = $this->FConsultas_model->red('termos', 2000, $data);
+							echo $funcao;
+						} else {
+							if ($x == 1) {
+								$data = [];
+								$funcao = $this->FConsultas_model->red('pais/home', 2000, $data);
+								echo $funcao;
+							}
+						}
 					}
 				}
 			}
@@ -525,8 +582,8 @@ class Welcome extends CI_Controller
 	}
 	public function PaginaDosTermos()
 	{
-		$x = $this->input->get('x');
-		$nivel = $this->input->get('nivel');
+		$x = $this->input->post('x');
+		$nivel = $this->input->post('nivel');
 		$dados = array('nivel' => $nivel, 'x' => $x,);
 
 		$this->load->view('sistema/termos', $dados);
@@ -534,14 +591,23 @@ class Welcome extends CI_Controller
 
 	public function PrimeiroAcesso()
 	{
-		$id_usuario = $this->input->get('id_usuario');
-		$nivel = $this->input->get('nivel');
-		$check = $this->input->get('x_ir');
+		$id_usuario = $this->input->post('id_usuario');
+		$nivel = $this->input->post('nivel');
+		$check = $this->input->post('x_ir');
 
-		/*if ($check == '2') {
-			$confimacao = 1;
-			$this->FSistema_model->aceitarTermos($id_usuario, $confimacao);
-		}*/
+		if ($check == '2') {
+
+			$consultar_termos = $this->db->select("*")
+				->from("termos")
+				->where("id_usuario", $id_usuario)
+				->get();
+			$termos = $consultar_termos->num_rows();
+
+			if ($termos == 0) {
+				$confimacao = 1;
+				$this->FSistema_model->aceitarTermos($id_usuario, $confimacao);
+			}
+		}
 
 		if ($nivel == 8) {
 			$this->load->view('sistema/pais/primeiro_acesso');
@@ -570,14 +636,14 @@ class Welcome extends CI_Controller
 
 	public function downloadMaterial()
 	{
-		$id = $this->input->get("id");
-		$idLider = $this->input->get("id_lider");
-		$idPg = $this->input->get("id_pg");
-		$title = $this->input->get("title");
-		$download = $this->input->get("download");
+		$id = $this->input->post("id");
+		$idLider = $this->input->post("id_lider");
+		$idPg = $this->input->post("id_pg");
+		$title = $this->input->post("title");
+		$download = $this->input->post("download");
 
-		$nivel = $this->input->get("nivel") == '' ? 1 : $this->input->get("nivel");
-		$dataEscolhida = $this->input->get("data");
+		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
+		$dataEscolhida = $this->input->post("data");
 
 		$dadosPg = $this->FConsultas_model->mostrarPGId($idLider, $idPg, $nivel);
 
@@ -667,11 +733,16 @@ class Welcome extends CI_Controller
 			} else {
 			}
 		}
-		echo '
+
+		/*echo '
 			<script>
 				window.location="../../criancas";
 			</script>
-		';
+		';*/
+
+		$data = [];
+		$funcao = $this->FConsultas_model->red('../../criancas', 0, $data);
+		echo $funcao;
 	}
 	public function cadastro_crianca_inicial()
 	{
@@ -735,7 +806,16 @@ class Welcome extends CI_Controller
 			}
 		}
 
-		header('Location: ../../../../primeiro_acesso?id_usuario=' . $lider . '&nivel=' . $nivel . '&x_ir=3');
+		//header('Location: ../../../../primeiro_acesso?id_usuario=' . $lider . '&nivel=' . $nivel . '&x_ir=3');
+
+
+		$data = [
+			"<input type='hidden' name='id_usuario' value='$lider'>",
+			"<input type='hidden' name='nivel' value='$nivel'>",
+			"<input type='hidden' name='x_ir' value='3'>",
+		];
+		$funcao = $this->FConsultas_model->red('../../../../primeiro_acesso', 0, $data);
+		echo $funcao;
 	}
 	public function editar_crianca()
 	{
@@ -757,14 +837,13 @@ class Welcome extends CI_Controller
 
 		$checkCriancas = $this->FConsultas_model->consultarCriancasNomeEIdade($nome, $lider, $id_pg, $nascimento, $opcao, $obs, $nome_responsavel, $nivel);
 
+
 		if ($checkCriancas) {
 			$editar = $this->FSistema_model->editaCrianca($id_crianca, $nome, $nascimento, $lider, $id_pg, $obs, $opcao, $nome_responsavel, $email_responsavel, $telefone_responsavel, $nivel);
 			if ($editar) {
-				echo '
-				<script>
-					window.location="../../criancas";
-				</script>
-			';
+				$data = [];
+				$funcao = $this->FConsultas_model->red('../../criancas', 0, $data);
+				echo $funcao;
 			} else {
 				echo '
 				<script>
@@ -801,11 +880,9 @@ class Welcome extends CI_Controller
 		$excluir = $this->FSistema_model->excluirCrianca($idCrianca, $nomeCrianca, $idLider, $idResponsavel, $motivo, $nivel);
 
 		if ($excluir) {
-			echo '
-			<script>
-				window.location="../../criancas";
-			</script>
-		';
+			$data = [];
+			$funcao = $this->FConsultas_model->red('../../criancas', 0, $data);
+			echo $funcao;
 		} else {
 			echo '
 			<script>
@@ -829,11 +906,9 @@ class Welcome extends CI_Controller
 		$reativar = $this->FSistema_model->reativarCrianca($idCrianca, $nivel);
 
 		if ($reativar) {
-			echo '
-			<script>
-				window.location="../criancas";
-			</script>
-		';
+			$data = [];
+			$funcao = $this->FConsultas_model->red('../criancas', 0, $data);
+			echo $funcao;
 		} else {
 			echo '
 			<script>
@@ -857,7 +932,7 @@ class Welcome extends CI_Controller
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
-		$nome = $this->input->post("nivel") == '' ? $dados['nome'] : $dados['nome_lider'];
+		$nome = $this->input->post("nivel") == 1 ? $dados['nome'] : $dados['nome_lider'];
 
 		$pdf = new FPDF("L", "pt", "A4");
 		$pdf->AddPage();
@@ -891,53 +966,49 @@ class Welcome extends CI_Controller
 				$id_modulo = $dadosPG['id_modulo'];
 				$nome_pg = $dadosPG['nome_pg'];
 
-				$pdf->SetFont('arial', 'B', 12);
-				$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças do PG: $nome_pg"), 0, 1, 'L');
-				$pdf->Ln(10);
-
 				if ($consultarPG['row'] == 0) {
 					$pdf->SetFont('arial', 'I', 12);
 					$pdf->Cell(0, 50, $pdf->textoUTF8("Sem PG Cadastrado"), 0, 1, "C");
 				} else {
-					$pdf->setFillColor(120, 120, 90);
-					$pdf->SetFont('arial', 'B', 11);
-					$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-					$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
-					$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
-					$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
-
 					$consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPgTodos($idLider, $dadosPG['id_pg'], $nivel);
 
 					if ($consultaCriancas) {
-						foreach ($consultaCriancas['dados'] as $key => $linha) {
-							$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
-							$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
-							$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
+						if ($consultaCriancas['row'] == 0) {
+							$pdf->SetFont('arial', 'I', 12);
+							$pdf->Cell(0, 50, $pdf->textoUTF8("Sem Crianças Cadastradas"), 0, 1, "C");
+						} else {
 
-							$pdf->SetFont('arial', '', 9);
-							$pdf->setFillColor(255, 255, 255);
+							$pdf->SetFont('arial', 'B', 12);
+							$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças do PG: $nome_pg"), 0, 1, 'L');
+							$pdf->Ln(10);
 
-							$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
-							$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
-							$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
-							$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+							$pdf->setFillColor(120, 120, 90);
+							$pdf->SetFont('arial', 'B', 11);
+
+							$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+							$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
+							$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
+							$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
+
+							foreach ($consultaCriancas['dados'] as $key => $linha) {
+								$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
+								$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
+								$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
+
+								$pdf->SetFont('arial', '', 9);
+								$pdf->setFillColor(255, 255, 255);
+
+								$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
+								$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
+								$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
+								$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+							}
 						}
 					}
-
-					$pdf->Ln(30);
-					$pdf->SetX(120);
-
-					$pdf->setFillColor(120, 120, 90);
-					$pdf->SetFont('arial', 'B', 11);
-					$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
-					$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
-					$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
 
 					$pontuacao = 0;
 
@@ -951,12 +1022,24 @@ class Welcome extends CI_Controller
 						$qtdPresenca = $qtdPresenca + $consultarModuloId['n_licao'];
 						$qtdVersiculo = $qtdVersiculo + $consultarModuloId['qtdVersiculo'];
 						$qtdMisterio = $qtdMisterio + $consultarModuloId['qtdMisterios'];
+
 						foreach ($consultaCriancas['dados'] as $key => $linha) {
 
 							$consultarProgresso = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $idLider, $linha['id_crianca'], $id_modulo, $nivel);
 
 							if ($consultarProgresso['row'] == 0) {
 							} else {
+								$pdf->Ln(30);
+								$pdf->SetX(120);
+
+								$pdf->setFillColor(120, 120, 90);
+								$pdf->SetFont('arial', 'B', 11);
+								$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
+								$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
+								$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
+
 								foreach ($consultarProgresso['dados'] as $key => $progresso) {
 									$presenca = $progresso['presenca'];
 									$versiculo = $progresso['versiculo_memorizado'];
@@ -1004,11 +1087,6 @@ class Welcome extends CI_Controller
 			$pdf->Ln(10);
 			$pdf->Cell(0, 5, "", "B", 1, 'C');
 			$pdf->Ln(8);
-			/*$pdf->SetFont('arial', 'B', 12);
-			$pdf->Cell(50, 20, $pdf->textoUTF8("Usuário:"), 0, 0, 'L');
-			$pdf->SetFont('arial', '', 12);
-			$pdf->Cell(0, 20, $pdf->textoUTF8($dados['nome']), 0, 1, 'L');
-			$pdf->Ln(15);*/
 
 			if ($consultarPG['row'] == 0) {
 				$pdf->SetFont('arial', 'I', 12);
@@ -1019,51 +1097,46 @@ class Welcome extends CI_Controller
 					$id_modulo = $dadosPG['id_modulo'];
 					$nome_pg = $pdf->textoUTF8($dadosPG['nome_pg']);
 
-					$pdf->SetFont('arial', 'B', 12);
-					$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças do PG: $nome_pg"), 0, 1, 'L');
-					$pdf->Ln(10);
-
-					$pdf->setFillColor(120, 120, 90);
-					$pdf->SetFont('arial', 'B', 11);
-					$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-					$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
-					$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
-					$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
-
 					$consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($idLider, $dadosPG['id_pg'], $nivel);
 
 					if ($consultaCriancas) {
-						foreach ($consultaCriancas['dados'] as $key => $linha) {
-							$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
-							$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
-							$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
+						if ($consultaCriancas['row'] == 0) {
+							$pdf->SetFont('arial', 'I', 12);
+							$pdf->Cell(0, 50, $pdf->textoUTF8("Sem Crianças Cadastradas"), 0, 1, "C");
+						} else {
 
-							$pdf->SetFont('arial', '', 9);
-							$pdf->setFillColor(255, 255, 255);
+							$pdf->SetFont('arial', 'B', 12);
+							$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças do PG: $nome_pg"), 0, 1, 'L');
+							$pdf->Ln(10);
 
-							$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
-							$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
-							$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
-							$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+							$pdf->setFillColor(120, 120, 90);
+							$pdf->SetFont('arial', 'B', 11);
+							$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+							$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
+							$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
+							$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
+
+							foreach ($consultaCriancas['dados'] as $key => $linha) {
+								$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
+								$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
+								$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
+
+								$pdf->SetFont('arial', '', 9);
+								$pdf->setFillColor(255, 255, 255);
+
+								$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
+								$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
+								$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
+								$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+							}
 						}
 					}
 
 					if ($consultaCriancas) {
-
-						$pdf->Ln(30);
-						$pdf->SetX(120);
-
-						$pdf->setFillColor(120, 120, 90);
-						$pdf->SetFont('arial', 'B', 11);
-						$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-						$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
-						$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
-						$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
-						$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
 
 						$pontuacao = 0;
 
@@ -1083,6 +1156,16 @@ class Welcome extends CI_Controller
 
 							if ($consultarProgresso['row'] == 0) {
 							} else {
+								$pdf->Ln(30);
+								$pdf->SetX(120);
+
+								$pdf->setFillColor(120, 120, 90);
+								$pdf->SetFont('arial', 'B', 11);
+								$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
+								$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
+								$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
 								foreach ($consultarProgresso['dados'] as $key => $progresso) {
 									$presenca = $progresso['presenca'];
 									$versiculo = $progresso['versiculo_memorizado'];
@@ -1131,11 +1214,6 @@ class Welcome extends CI_Controller
 			$pdf->Ln(10);
 			$pdf->Cell(0, 5, "", "B", 1, 'C');
 			$pdf->Ln(8);
-			/*$pdf->SetFont('arial', 'B', 12);
-			$pdf->Cell(50, 20, $pdf->textoUTF8("Usuário:"), 0, 0, 'L');
-			$pdf->SetFont('arial', '', 12);
-			$pdf->Cell(0, 20, $pdf->textoUTF8($dados['nome']), 0, 1, 'L');
-			$pdf->Ln(15);*/
 
 			if ($consultarPG['row'] == 0) {
 				$pdf->SetFont('arial', 'I', 12);
@@ -1146,44 +1224,51 @@ class Welcome extends CI_Controller
 					$id_modulo = $dadosPG['id_modulo'];
 					$nome_pg = $pdf->textoUTF8($dadosPG['nome_pg']);
 
-					$pdf->SetFont('arial', 'B', 12);
-					$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças:"), 0, 1, 'L');
-					$pdf->Ln(10);
-
-					$pdf->setFillColor(120, 120, 90);
-					$pdf->SetFont('arial', 'B', 12);
-					$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-					$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
-					$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
-					$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
-					$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
-
 					$consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPgDesativadas($idLider, $dadosPG['id_pg'], $nivel);
 
 					if ($consultaCriancas) {
-						foreach ($consultaCriancas['dados'] as $key => $linha) {
-							$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
-							$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
-							$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
 
-							$consultarMotivoExclusao = $this->FConsultas_model->mostrarCriancasPaisDesativadas($idLider, $linha['id_crianca']);
+						if ($consultaCriancas['row'] == 0) {
+							$pdf->SetFont('arial', 'I', 12);
+							$pdf->Cell(0, 50, $pdf->textoUTF8("Sem Crianças Desativadas!"), 0, 1, "C");
+						} else {
 
-							$pdf->SetFont('arial', '', 9);
-							$pdf->setFillColor(255, 255, 255);
+							$pdf->SetFont('arial', 'B', 12);
+							$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças do PG: $nome_pg"), 0, 1, 'L');
+							$pdf->Ln(10);
 
-							$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
-							$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
-							$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
-							$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+							$pdf->setFillColor(120, 120, 90);
+							$pdf->SetFont('arial', 'B', 12);
+							$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+							$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
+							$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
+							$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
 
-							if ($consultarMotivoExclusao['row'] == 0) {
-							} else {
-								$motivo = $pdf->textoUTF8($consultarMotivoExclusao['dados']['motivo']);
-								$pdf->Cell(690, 20, $motivo, 1, 0, "C", 1);
-								$pdf->Cell(90, 20, $consultarMotivoExclusao['dados']['data_saida'], 1, 1, "C", 1);
+							foreach ($consultaCriancas['dados'] as $key => $linha) {
+								$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
+								$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
+								$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
+
+								$consultarMotivoExclusao = $this->FConsultas_model->mostrarCriancasPaisDesativadas($idLider, $linha['id_crianca']);
+
+								$pdf->SetFont('arial', '', 9);
+								$pdf->setFillColor(255, 255, 255);
+
+								$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
+								$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
+								$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
+								$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+
+								if ($consultarMotivoExclusao['row'] == 0) {
+								} else {
+									$motivo = $pdf->textoUTF8($consultarMotivoExclusao['dados']['motivo']);
+									$pdf->Cell(690, 20, $motivo, 1, 0, "C", 1);
+									$pdf->Cell(90, 20, $consultarMotivoExclusao['dados']['data_saida'], 1, 1, "C", 1);
+								}
 							}
 						}
 					}
@@ -1204,11 +1289,6 @@ class Welcome extends CI_Controller
 			$pdf->Ln(10);
 			$pdf->Cell(0, 5, "", "B", 1, 'C');
 			$pdf->Ln(8);
-			/*$pdf->SetFont('arial', 'B', 12);
-			$pdf->Cell(50, 20, $pdf->textoUTF8("Usuário:"), 0, 0, 'L');
-			$pdf->SetFont('arial', '', 12);
-			$pdf->Cell(0, 20, $pdf->textoUTF8($dados['nome']), 0, 1, 'L');
-			$pdf->Ln(15);*/
 
 			if ($consultarPG['row'] == 0) {
 				$pdf->SetFont('arial', 'I', 12);
@@ -1221,49 +1301,44 @@ class Welcome extends CI_Controller
 				$id_modulo = $dadosPG['id_modulo'];
 				$nome_pg = $pdf->textoUTF8($dadosPG['nome_pg']);
 
-				$pdf->SetFont('arial', 'B', 12);
-				$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças do PG: $nome_pg"), 0, 1, 'L');
-				$pdf->Ln(10);
-
-				$pdf->setFillColor(120, 120, 90);
-				$pdf->SetFont('arial', 'B', 12);
-				$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-				$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
-				$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
-				$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
-				$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
-				$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
-
 				$consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPgTodos($idLider, $dadosPG['id_pg'], $nivel);
 
 				if ($consultaCriancas) {
-					foreach ($consultaCriancas['dados'] as $key => $linha) {
-						$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
-						$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
-						$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
+					if ($consultaCriancas['row'] == 0) {
+						$pdf->SetFont('arial', 'I', 12);
+						$pdf->Cell(0, 50, $pdf->textoUTF8("Sem Crianças Cadastradas"), 0, 1, "C");
+					} else {
 
-						$pdf->SetFont('arial', '', 9);
-						$pdf->setFillColor(255, 255, 255);
+						$pdf->SetFont('arial', 'B', 12);
+						$pdf->Cell(40, 20, $pdf->textoUTF8("Crianças do PG: $nome_pg"), 0, 1, 'L');
+						$pdf->Ln(10);
 
-						$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
-						$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
-						$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
-						$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
-						$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
-						$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+						$pdf->setFillColor(120, 120, 90);
+						$pdf->SetFont('arial', 'B', 12);
+						$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+						$pdf->Cell(150, 20, $pdf->textoUTF8("Responsável"), 1, 0, "C", 1);
+						$pdf->Cell(80, 20, $pdf->textoUTF8("Telefone"), 1, 0, "C", 1);
+						$pdf->Cell(100, 20, $pdf->textoUTF8("D. Nascimento"), 1, 0, "C", 1);
+						$pdf->Cell(80, 20, $pdf->textoUTF8("É Cristão?"), 1, 0, "C", 1);
+						$pdf->Cell(90, 20, $pdf->textoUTF8("Situação"), 1, 1, "C", 1);
+
+						foreach ($consultaCriancas['dados'] as $key => $linha) {
+							$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
+							$cristao = $linha['cristao'] == 1 ? "Sim" : "Não";
+							$situacao = $linha['ativo'] == 1 ? "Ativo" : "Desativado";
+
+							$pdf->SetFont('arial', '', 9);
+							$pdf->setFillColor(255, 255, 255);
+
+							$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
+							$pdf->Cell(150, 20, $pdf->textoUTF8($linha['nome_responsavel']), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8($linha['telefone_responsavel']), 1, 0, "C", 1);
+							$pdf->Cell(100, 20, $linha['nascimento'], 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8($cristao), 1, 0, "C", 1);
+							$pdf->Cell(90, 20, $pdf->textoUTF8($situacao), 1, 1, "C", 1);
+						}
 					}
 				}
-
-				$pdf->Ln(30);
-				$pdf->SetX(120);
-
-				$pdf->setFillColor(120, 120, 90);
-				$pdf->SetFont('arial', 'B', 11);
-				$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-				$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
-				$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
-				$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
-				$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
 
 				$pontuacao = 0;
 
@@ -1283,6 +1358,18 @@ class Welcome extends CI_Controller
 
 						if ($consultarProgresso['row'] == 0) {
 						} else {
+
+							$pdf->Ln(30);
+							$pdf->SetX(120);
+
+							$pdf->setFillColor(120, 120, 90);
+							$pdf->SetFont('arial', 'B', 11);
+							$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
+							$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
+							$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
+							$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
+
 							foreach ($consultarProgresso['dados'] as $key => $progresso) {
 								$presenca = $progresso['presenca'];
 								$versiculo = $progresso['versiculo_memorizado'];
@@ -1342,17 +1429,6 @@ class Welcome extends CI_Controller
 
 				$consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPgTodos($idLider, $dadosPG['id_pg'], $nivel);
 
-				$pdf->Ln(30);
-				$pdf->SetX(120);
-
-				$pdf->setFillColor(120, 120, 90);
-				$pdf->SetFont('arial', 'B', 11);
-				$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
-				$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
-				$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
-				$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
-				$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
-
 				$pontuacao = 0;
 
 				$qtdPresenca = "0";
@@ -1360,44 +1436,64 @@ class Welcome extends CI_Controller
 				$qtdMisterio = "0";
 
 				if ($consultaCriancas) {
-					$consultarModuloId = $this->FConsultas_model->consultarModuloId($id_modulo);
+					if ($consultaCriancas['row'] == 0) {
+						$pdf->SetFont('arial', 'I', 12);
+						$pdf->Cell(0, 50, $pdf->textoUTF8("Sem Crianças Cadastradas"), 0, 1, "C");
+					} else {
 
-					$qtdPresenca = $qtdPresenca + $consultarModuloId['n_licao'];
-					$qtdVersiculo = $qtdVersiculo + $consultarModuloId['qtdVersiculo'];
-					$qtdMisterio = $qtdMisterio + $consultarModuloId['qtdMisterios'];
-					foreach ($consultaCriancas['dados'] as $key => $linha) {
+						$consultarModuloId = $this->FConsultas_model->consultarModuloId($id_modulo);
 
-						$consultarProgresso = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $idLider, $linha['id_crianca'], $id_modulo, $nivel);
+						$qtdPresenca = $qtdPresenca + $consultarModuloId['n_licao'];
+						$qtdVersiculo = $qtdVersiculo + $consultarModuloId['qtdVersiculo'];
+						$qtdMisterio = $qtdMisterio + $consultarModuloId['qtdMisterios'];
+						foreach ($consultaCriancas['dados'] as $key => $linha) {
 
-						if ($consultarProgresso['row'] == 0) {
-						} else {
-							foreach ($consultarProgresso['dados'] as $key => $progresso) {
-								$presenca = $progresso['presenca'];
-								$versiculo = $progresso['versiculo_memorizado'];
-								$misterio = $progresso['misterio_respondido'];
-								$devocional = $progresso['devocional_respondido'];
+							$consultarProgresso = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $idLider, $linha['id_crianca'], $id_modulo, $nivel);
 
-								$pontuacao = ($presenca == 1 ? 5 : 0);
-								$pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
-								$pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
-								$pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+							if ($consultarProgresso['row'] == 0) {
+								$pdf->SetFont('arial', 'I', 12);
+								$pdf->Cell(0, 50, $pdf->textoUTF8("Sem Relatórios Preenchidos"), 0, 1, "C");
+							} else {
 
-								$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
+								$pdf->Ln(30);
+								$pdf->SetX(120);
 
-								$presencaTotal = $presenca . "/" . $qtdPresenca;
-								$misterioTotal = $misterio . "/" . $qtdMisterio;
-								$versiculoTotal = $versiculo . "/" . $qtdVersiculo;
+								$pdf->setFillColor(120, 120, 90);
+								$pdf->SetFont('arial', 'B', 11);
+								$pdf->Cell(250, 20, $pdf->textoUTF8("Nome"), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8("Presença"), 1, 0, "C", 1);
+								$pdf->Cell(100, 20, $pdf->textoUTF8("Versículo"), 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $pdf->textoUTF8("Mistério"), 1, 0, "C", 1);
+								$pdf->Cell(90, 20, $pdf->textoUTF8("Pontuação"), 1, 1, "C", 1);
+
+								foreach ($consultarProgresso['dados'] as $key => $progresso) {
+									$presenca = $progresso['presenca'];
+									$versiculo = $progresso['versiculo_memorizado'];
+									$misterio = $progresso['misterio_respondido'];
+									$devocional = $progresso['devocional_respondido'];
+
+									$pontuacao = ($presenca == 1 ? 5 : 0);
+									$pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+									$pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+									$pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+
+									$nome_crianca = $pdf->textoUTF8($linha['nome_crianca']);
+
+									$presencaTotal = $presenca . "/" . $qtdPresenca;
+									$misterioTotal = $misterio . "/" . $qtdMisterio;
+									$versiculoTotal = $versiculo . "/" . $qtdVersiculo;
+								}
+
+								$pdf->SetFont('arial', '', 9);
+								$pdf->setFillColor(255, 255, 255);
+								$pdf->SetX(120);
+
+								$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $presencaTotal, 1, 0, "C", 1);
+								$pdf->Cell(100, 20, $versiculoTotal, 1, 0, "C", 1);
+								$pdf->Cell(80, 20, $misterioTotal, 1, 0, "C", 1);
+								$pdf->Cell(90, 20, $pontuacao, 1, 1, "C", 1);
 							}
-
-							$pdf->SetFont('arial', '', 9);
-							$pdf->setFillColor(255, 255, 255);
-							$pdf->SetX(120);
-
-							$pdf->Cell(250, 20, $nome_crianca, 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $presencaTotal, 1, 0, "C", 1);
-							$pdf->Cell(100, 20, $versiculoTotal, 1, 0, "C", 1);
-							$pdf->Cell(80, 20, $misterioTotal, 1, 0, "C", 1);
-							$pdf->Cell(90, 20, $pontuacao, 1, 1, "C", 1);
 						}
 					}
 				}
@@ -1408,17 +1504,42 @@ class Welcome extends CI_Controller
 		$pdf->Output('I', $nomeCertificado);
 	}
 
+	public function get_informacoes_pg()
+	{
+
+		$id_usuario = $this->input->get('id_usuario');
+		$nivel = $this->input->get('nivel');
+
+		$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, $nivel);
+
+		$dados = array();
+
+		foreach ($consultarPG['dados'] as $key => $pg) {
+			$dados[] = $pg['id_pg'];
+		}
+
+		echo $dados;
+	}
+
 	public function cadastro_pg_pagina_inicial()
 	{
-		$idLider = $this->input->get("idLider");
-		$nome = $this->input->get("nome");
-		$nivel = $this->input->get("nivel");
+		$idLider = $this->input->post("idLider");
+		$nome = $this->input->post("nome");
+		$nivel = $this->input->post("nivel");
 
-		$nivel_2 = $this->input->get("nivel_2") == '' ? 1 : $this->input->get("nivel_2");
+		$nivel_2 = $this->input->post("nivel_2") == '' ? 1 : $this->input->post("nivel_2");
 
 		$this->FSistema_model->cadastro_pg_pagina_inicial($idLider, $nome, $nivel_2);
 
-		header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
+		$data = [
+			"<input type='hidden' name='id_usuario' value='$idLider'>",
+			"<input type='hidden' name='nivel' value='$nivel'>",
+			"<input type='hidden' name='x_ir' value='1'>",
+		];
+		$funcao = $this->FConsultas_model->red('../../../../primeiro_acesso', 0, $data);
+		echo $funcao;
+
+		//header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
 	}
 
 	public function cadastro_pg_inicial()
@@ -1432,7 +1553,16 @@ class Welcome extends CI_Controller
 		$nivel_2 = $this->input->post("nivel_2") == '' ? 1 : $this->input->post("nivel_2");
 
 		$this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $autorizacao, $nivel_2);
-		header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
+
+		$data = [
+			"<input type='hidden' name='id_usuario' value='$idLider'>",
+			"<input type='hidden' name='nivel' value='$nivel'>",
+			"<input type='hidden' name='x_ir' value='1'>",
+		];
+		$funcao = $this->FConsultas_model->red('../../../../primeiro_acesso', 0, $data);
+		echo $funcao;
+
+		//header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
 	}
 
 	public function cadastro_pg()
@@ -1450,11 +1580,9 @@ class Welcome extends CI_Controller
 			$cadastro = $this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $autorizacao, $nivel);
 
 			if ($cadastro) {
-				echo '
-				<script>
-					window.location="../../pg";
-				</script>
-			';
+				$data = [];
+				$funcao = $this->FConsultas_model->red('../../pg', 0, $data);
+				echo $funcao;
 			} else {
 				echo '
 				<script>
@@ -1478,12 +1606,12 @@ class Welcome extends CI_Controller
 			';
 		}
 	}
-
 	public function editar_pg()
 	{
 		$idPg = $this->input->post('idPg');
 		$nome_pg = $this->input->post('nome_pg');
 		$fotoOriginal = $this->input->post('fotoOriginal');
+		$autorizacao = $this->input->post('autorizacao');
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
@@ -1525,13 +1653,11 @@ class Welcome extends CI_Controller
 				}
 			}
 
-			$editar = $this->FSistema_model->editarPG($idPg, $nome_pg, $nomeImagem);
+			$editar = $this->FSistema_model->editarPG($idPg, $nome_pg, $nomeImagem, $autorizacao, $nivel);
 			if ($editar) {
-				echo '
-				<script>
-					window.location="../../pg";
-				</script>
-			';
+				$data = [];
+				$funcao = $this->FConsultas_model->red('../../pg', 0, $data);
+				echo $funcao;
 			} else {
 				echo '
 				<script>
@@ -1559,11 +1685,9 @@ class Welcome extends CI_Controller
 		$excluir = $this->FSistema_model->excluirPG($idPg, $nomePg, $idLider, $idResponsavel, $motivo, $nivel);
 
 		if ($excluir) {
-			echo '
-			<script>
-				window.location="../../pg";
-			</script>
-		';
+			$data = [];
+			$funcao = $this->FConsultas_model->red('../../pg', 0, $data);
+			echo $funcao;
 		} else {
 			echo '
 			<script>
@@ -1617,37 +1741,18 @@ class Welcome extends CI_Controller
 			$preenchimento = $this->FSistema_model->relatorio_encontro($id_lider, $id_pg2, $qtd_crianca2, $id_crianca2, $versiculo2, $presenca2, $misterio2, $devocional2, $ano2, $modulo2, $licao2, $data_aula2, $nivel);
 		}
 
+		$data = [
+			"<input type='hidden' name='id_pg' value='$id_pg'>",
+			"<input type='hidden' name='id_lider' value='$id_lider'>",
+			"<input type='hidden' name='ano' value='$ano'>",
+		];
+
 		if ($preenchimento == 'false') {
-			/*echo '
-				<script>
-					alert("erro");
-				</script>
-			';*/
-			echo '
-				<script>
-					if(window.confirm("ERRO!")) {
-						window.location="../../pg";
-					}else{
-						window.location="../../pg";
-					}
-				</script>
-			';
 		} else {
-			/*echo '
-				<script>
-					alert("SUCESSO");
-				</script>
-			';*/
-			echo '
-				<script>
-					if(window.confirm("SUCESSO!")) {
-						window.location="../../pg";
-					}else{
-						window.location="../../pg";
-					}
-				</script>
-			';
 		}
+
+		$funcao = $this->FConsultas_model->red('../../pg/licoes', 0, $data);
+		echo $funcao;
 	}
 
 	public function modulo_trilha()

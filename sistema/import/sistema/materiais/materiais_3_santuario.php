@@ -21,28 +21,32 @@ $materialSemanarioSantuario = array(
 
 $materialIntroducaoSantuario = array(
     'id' => 1,
-    'nome' => 'Introdução à Santuario',
+    'nome' => 'Introdução ao Santuário',
+    'nome_visivel' => 'Introdução',
     'arquivo' => 'import/sistema/arquivos/01/Santuario/introducao.pdf',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoSantuario = array(
     'id' => 2,
-    'nome' => 'Manual da Santuario',
+    'nome' => 'Manual do Santuário',
+    'nome_visivel' => 'Manual',
     'arquivo' => 'import/sistema/arquivos/01/Santuario/Santuario.php?id_lider=' . $id_usuario . '&id_modulo=3',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisSantuario1 = array(
     'id' => 3,
-    'nome' => 'Visuais da Santuario',
+    'nome' => 'Visuais do Santuário',
+    'nome_visivel' => 'Visuais',
     'arquivo' => 'import/sistema/arquivos/01/Santuario/visuais.pdf',
     'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisSantuario2 = array(
     'id' => 4,
-    'nome' => 'PowerPoint - Santuario',
+    'nome' => 'Lição em PowerPoint',
+    'nome_visivel' => 'Lição em PowerPoint',
     'arquivo' => 'import/sistema/arquivos/01/Santuario/Santuario.ppsx',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );

@@ -1,6 +1,11 @@
+<script>
+    const idpg = [];
+    const idmodulo = [];
+    const idmoduloslist = [];
+    const idcriancas = [];
+    const anomodulo = [];
+</script>
 <?php
-
-/** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../index");
 } else {
@@ -14,12 +19,134 @@ if (!isset($_SESSION['usuario'])) {
 
     $dadosPais = $this->FConsultas_model->consultaDadosPaisId($id_usuario, 1);
 
+    $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
+
+    if ($consultarPG['row'] == 0) {
+    } else {
+        foreach ($consultarPG['dados'] as $key => $value) {
+
+            $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $value['id_pg'], 1);
+
+            $ano = $value['ano'];
+
+            $modulos = $this->FConsultas_model->consultarModuloAno($ano);
+
+            foreach ($modulos as $key => $dadosModulos) {
+                echo '
+                    <script>
+                    idmoduloslist.push("' . $dadosModulos['id_modulo'] . '");
+                    </script>
+                ';
+            }
+
+            echo '
+                <script>
+                idpg.push("' . $value['id_pg'] . '");
+                idmodulo.push("' . $value['id_modulo'] . '");
+                idcriancas.push("' . $criancas['dados'][0]['id_crianca'] . '");
+                anomodulo.push("' . $ano . '");
+                </script>
+            ';
+        }
+    }
+
 ?>
     <!DOCTYPE html>
     <html>
     <?php
     $this->load->view('partes/head');
+    $this->load->view('partes/scripts2');
     ?>
+
+    <script>
+        function AjaxF() {
+            var ajax;
+
+            try {
+                ajax = new XMLHttpRequest();
+            } catch (e) {
+                try {
+                    ajax = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (e) {
+                        alert("Seu browser não da suporte à AJAX!");
+                        return false;
+                    }
+                }
+            }
+            return ajax;
+        }
+
+
+        $(document).ready(function() {
+            var count = idpg.length;
+            if (count == 0) {} else {
+
+                var id_lider = '<?= $id_usuario; ?>';
+
+                for (let index = 0; index < count; index++) {
+                    const id_pg = idpg[index];
+                    const id_modulo = idmodulo[index];
+                    const ano = anomodulo[index];
+                    const id_crianca = idcriancas[index];
+
+                    mostrarProgressoInicial(id_modulo, id_lider, id_pg, ano, id_crianca, index);
+                }
+            }
+        });
+
+
+        function mostrarProgressoInicial(idModulo, idLider, idPg, ano, id_crianca, index) {
+            var moduloAtual = idmodulo[index];
+            var respostas = idmoduloslist;
+
+            respostas.push(moduloAtual);
+
+            var radio = document.getElementsByName('modulos_escolhidos');
+
+            var total = 1;
+
+            var ajax = AjaxF();
+
+            ajax.onreadystatechange = function() {
+                if (ajax.readyState == 4) {
+                    document.getElementById('conteudos_table_0').innerHTML = ajax.responseText;
+                }
+            }
+
+            ajax.open("GET", "pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&id_crianca=" + id_crianca + "&ano=" + ano + "&page=individual", false);
+
+            ajax.setRequestHeader("Content-Type", "text/html");
+            ajax.send();
+        }
+
+        function atualizarProgresso(idModulo, idLider, idPg, ano, id_crianca, index, ilinha) {
+            var moduloAtual = idmodulo[index];
+            var respostas = idmoduloslist;
+
+            respostas.push(moduloAtual);
+
+            var radio = document.getElementsByName('modulos_escolhidos');
+
+            var total = 1;
+
+            var ajax = AjaxF();
+
+            ajax.onreadystatechange = function() {
+                if (ajax.readyState == 4) {
+                    document.getElementById('conteudos_table_' + ilinha).innerHTML = ajax.responseText;
+                }
+            }
+
+            ajax.open("GET", "pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&id_crianca=" + id_crianca + "&ano=" + ano + "&page=individual", false);
+
+            ajax.setRequestHeader("Content-Type", "text/html");
+            ajax.send();
+        }
+    </script>
+    <!-- Head -->
 
     <style>
         #texto_alerta {
@@ -568,6 +695,118 @@ if (!isset($_SESSION['usuario'])) {
                 </section>
                 <!-- /.content -->
 
+                <?php
+                if ($consultarPG['row'] == 0) {
+                } else {
+                    $i_modulo = 0;
+                    foreach ($consultarPG['dados'] as $key => $pg) {
+                        $id_pg = $pg['id_pg'];
+                        $ano = $pg['ano'];
+                        $nome_pg = $pg['nome_pg'];
+
+                        $id_m = $pg['id_modulo'];
+
+                        $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $id_pg, 1);
+                        $total_crianca = $criancas['row'];
+
+                        if ($total_crianca == 0) {
+                        } else {
+                ?>
+                            <section class="content">
+                                <!-- Small boxes (Stat box) -->
+                                <div class="row">
+                                    <!-- CRIANÇAS -->
+                                    <div class="box box-info">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">
+                                                <i class="fa fa-bar-chart"></i> Progresso
+                                            </h3>
+                                            <div class="box-tools pull-right">
+                                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-body chat" id="chat-box">
+                                            <div class="item">
+                                                <h4 style="text-align: center; font-weight: bold;"> PG - <?= $nome_pg; ?></h4>
+                                            </div>
+
+                                            <section class="content">
+                                                <div class="box-body chat" id="chat-box">
+                                                    <!-- NOME DAS CRIANÇAS -->
+                                                    <div class="nav-tabs-custom">
+                                                        <ul class="nav nav-tabs">
+                                                            <?php
+                                                            $i = 0;
+                                                            foreach ($criancas['dados'] as $key => $cri) {
+                                                                $id_crianca = $cri['id_crianca'];
+                                                                $nome = $cri['nome_crianca'];
+                                                                //atualizarProgresso(idModulo, idLider, idPg, ano, id_crianca, index)
+                                                                if ($i == 0) {
+                                                            ?>
+                                                                    <li class="active"><a href="#tab_<?= $i; ?>" data-toggle="tab"><?= $nome; ?></a></li>
+                                                                <?php } else {
+                                                                ?>
+                                                                    <li><a href="#tab_<?= $i; ?>" onclick="atualizarProgresso('<?= $id_m ?>', '<?= $id_usuario ?>', '<?= $id_pg ?>', '<?= $ano; ?>', '<?= $id_crianca; ?>', '<?= $i_modulo; ?>', '<?= $i; ?>')" data-toggle="tab"><?= $nome; ?></a></li>
+                                                                <?php } ?>
+                                                            <?php $i++;
+                                                            } ?>
+                                                        </ul>
+                                                    </div>
+
+
+                                                    <div class="tab-content">
+                                                        <?php
+                                                        $i = 0;
+
+                                                        foreach ($criancas['dados'] as $key => $cri) {
+                                                            $nome = $cri['nome_crianca'];
+                                                            if ($i == 0) {
+                                                        ?>
+                                                                <div class="tab-pane active" id="tab_<?= $i; ?>">
+                                                                    <div class="col-md-12">
+                                                                        <!-- Widget: user widget style 1 -->
+                                                                        <div class="box box-widget widget-user">
+                                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                                            <div id="conteudos_table_<?= $i; ?>"></div>
+                                                                        </div>
+                                                                        <!-- /.widget-user -->
+                                                                    </div>
+                                                                </div>
+                                                            <?php } else { ?>
+                                                                <div class="tab-pane" id="tab_<?= $i; ?>">
+                                                                    <div class="col-md-12">
+                                                                        <!-- Widget: user widget style 1 -->
+                                                                        <div class="box box-widget widget-user">
+                                                                            <div id="conteudos_table_<?= $i; ?>"></div>
+                                                                        </div>
+                                                                        <!-- /.widget-user -->
+                                                                    </div>
+                                                                </div>
+                                                            <?php } ?>
+                                                        <?php $i++;
+                                                        } ?>
+                                                    </div>
+                                                    <!-- NOME DAS CRIANÇAS -->
+                                                </div>
+                                                <!-- /.item -->
+                                            </section>
+                                        </div>
+                                        <!-- /.item -->
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </section>
+                <?php
+                        }
+                        $i_modulo++;
+                    }
+                } ?>
+                <!-- /.content -->
+
                 <section class="content">
                     <!-- Small boxes (Stat box) -->
                     <div class="row">
@@ -650,6 +889,7 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- /.box -->
                 </section>
                 <!-- /.content -->
+
             </div>
 
             <!-- /.content-wrapper -->
@@ -663,8 +903,6 @@ if (!isset($_SESSION['usuario'])) {
         </div>
         <!-- ./wrapper -->
         <!-- Links JavaScript -->
-        <?php $this->load->view('partes/scripts2');
-        ?>
 
         <script>
             $(document).ready(function() {

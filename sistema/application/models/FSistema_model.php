@@ -247,16 +247,25 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-	public function editarPG($id, $nomePg, $foto)
+	public function editarPG($id, $nomePg, $foto, $autorizacao, $x)
 	{
 		$this->db->set('nome_pg', $nomePg);
 		$this->db->set('foto', $foto);
+		$this->db->set('autorizacao', $autorizacao);
 		$this->db->where('id_pg ', $id);
 
-		if ($this->db->update('pg_pais')) {
-			return true;
-		} else {
-			return false;
+		if ($x == 1) {
+			if ($this->db->update('pg_pais')) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($x == 2) {
+			if ($this->db->update('pg_2')) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 

@@ -1,3 +1,28 @@
+<script>
+    const idpg = [];
+    const idmodulo = [];
+    const idmoduloslist = [];
+    const anomodulo = [];
+    const datasemana = [];
+
+    $(function() {
+        $("#datepicker_cadastro_pg").datepicker({
+            dateFormat: 'dd/mm/yy',
+            closeText: "Fechar",
+            prevText: "&#x3C;Anterior",
+            nextText: "Próximo&#x3E;",
+            currentText: "Hoje",
+            monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+            monthNamesShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+            dayNames: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
+            dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            dayNamesMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+            weekHeader: "Sm",
+            firstDay: 1,
+            minDate: 0,
+        });
+    });
+</script>
 <?php
 
 /** @var \$this */
@@ -13,6 +38,36 @@ if (!isset($_SESSION['usuario'])) {
 
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
+
+    $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
+
+    if ($consultarPG['row'] == 0) {
+    } else {
+        foreach ($consultarPG['dados'] as $key => $value) {
+
+            $ano = $value['ano'];
+
+            $modulos = $this->FConsultas_model->consultarModuloAno($ano);
+
+            foreach ($modulos as $key => $dadosModulos) {
+                echo '
+                    <script>
+                    idmoduloslist.push("' . $dadosModulos['id_modulo'] . '");
+                    </script>
+                ';
+            }
+
+            echo '
+                <script>
+                idpg.push("' . $value['id_pg'] . '");
+                idmodulo.push("' . $value['id_modulo'] . '");
+                anomodulo.push("' . $ano . '");
+                datasemana.push("' . $value['data_semana'] . '");
+                </script>
+            ';
+        }
+    }
+
 ?>
 
     <style>
@@ -53,13 +108,90 @@ if (!isset($_SESSION['usuario'])) {
             background-color: rgb(180, 180, 180);
             border: 5px solid #111;
         }
+
+
+        .disabledTab {
+            pointer-events: none;
+        }
     </style>
+
     <!DOCTYPE html>
     <html>
-    <!-- Head -->
+
     <?php
     $this->load->view('partes/head');
     ?>
+
+    <script>
+        $("ul.nav li").removeClass('active').addClass('disabledTab');
+
+        function AjaxF() {
+            var ajax;
+
+            try {
+                ajax = new XMLHttpRequest();
+            } catch (e) {
+                try {
+                    ajax = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (e) {
+                        alert("Seu browser não da suporte à AJAX!");
+                        return false;
+                    }
+                }
+            }
+            return ajax;
+        }
+
+        $(document).ready(function() {
+            var count = idpg.length;
+            if (count == 0) {} else {
+
+                var id_lider = '<?= $id_usuario; ?>';
+
+                for (let index = 0; index < count; index++) {
+                    const id_pg = idpg[index];
+                    const id_modulo = idmodulo[index];
+                    const check = datasemana[index];
+                    const ano = anomodulo[index];
+
+                    if (check == '' || check == '00') {
+                        $('#atulizarDataComeco').modal('show');
+                    }
+
+                    mostrarProgressoInicial(id_modulo, id_lider, id_pg, ano, index);
+                }
+            }
+        });
+
+
+        function mostrarProgressoInicial(idModulo, idLider, idPg, ano, index) {
+            var moduloAtual = idmodulo[index];
+            var respostas = idmoduloslist;
+
+            respostas.push(moduloAtual);
+
+            var radio = document.getElementsByName('modulos_escolhidos');
+
+            var total = 1;
+
+            var ajax = AjaxF();
+
+            ajax.onreadystatechange = function() {
+                if (ajax.readyState == 4) {
+                    document.getElementById('conteudos_table').innerHTML = ajax.responseText;
+                }
+            }
+
+            ajax.open("GET", "pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral", false);
+
+            ajax.setRequestHeader("Content-Type", "text/html");
+            ajax.send();
+        }
+    </script>
+    <!-- Head -->
 
     <body class="hold-transition skin-blue sidebar-mini">
         <div class="wrapper">
@@ -123,7 +255,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <div class="col-lg-12">
                                                         <div class="form-group">
                                                             <label for="exampleInputPassword1">Data de Início</label>
-                                                            <p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker" required></p>
+                                                            <p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker_cadastro_pg" required></p>
                                                         </div>
                                                     </div>
 
@@ -147,13 +279,12 @@ if (!isset($_SESSION['usuario'])) {
                                 </div>
 
                                 <?php
-                                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
-
                                 if ($consultarPG['row'] == 0) {
                                 } else {
                                     $i = 0;
                                     foreach ($consultarPG['dados'] as $key => $dadosPG) {
                                         $foto = $dadosPG['foto'];
+
                                         $id_pg = $dadosPG['id_pg'];
                                         $id_lider = $dadosPG['id_lider'];
                                         $id_ano = $dadosPG['ano'];
@@ -267,6 +398,33 @@ if (!isset($_SESSION['usuario'])) {
                                                                                 <input class="form-control" type="text" name="nome_pg" placeholder="Informe o nome para o PG" value="<?= $dadosPG['nome_pg']; ?>">
                                                                             </div>
                                                                         </div>
+
+                                                                        <script>
+                                                                            function mudarValor() {
+                                                                                var radio = document.getElementsByName('autorizacao_<?= $dadosPG['id_pg']; ?>');
+                                                                                if (radio[0].checked) {
+                                                                                    document.getElementById('aut_<?= $dadosPG['id_pg']; ?>').value = 1;
+                                                                                } else {
+                                                                                    document.getElementById('aut_<?= $dadosPG['id_pg']; ?>').value = 0;
+                                                                                }
+                                                                            }
+                                                                        </script>
+
+                                                                        <div class="col-lg-12">
+                                                                            <div class="form-group">
+                                                                                <label>
+                                                                                    <?php
+                                                                                    $checked_option = "";
+                                                                                    if ($dadosPG['autorizacao'] == 0) {
+                                                                                    } else {
+                                                                                        $checked_option = "checked";
+                                                                                    }
+                                                                                    ?>
+                                                                                    <input type="checkbox" name="autorizacao_<?= $dadosPG['id_pg']; ?>" value="<?= $dadosPG['autorizacao']; ?>" onclick="mudarValor()" <?= $checked_option; ?>> Desejo receber notificações por e-mail
+                                                                                    <input type="hidden" id="aut_<?= $dadosPG['id_pg']; ?>" name="autorizacao" value="<?= $dadosPG['autorizacao']; ?>">
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Sair</button>
@@ -317,9 +475,23 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
                                                 <div class="box-footer no-padding">
                                                     <ul class="nav nav-stacked">
-                                                        <li><a href="../page/criancas">Crianças <span class="pull-right badge bg-red"><?= $total_crianca ?></span></a></li>
-                                                        <li><a href="pg/progresso?id_pg=<?= $dadosPG['id_pg'] ?>&id_lider=<?= $id_lider; ?>">Progresso <span class="pull-right badge bg-<?= $color_modulo; ?>"><?= $nome_modulo ?></span></a></li>
-                                                        <li><a href="pg/licoes?id_pg=<?= $dadosPG['id_pg'] ?>&id_lider=<?= $id_lider; ?>&ano=<?= $id_ano; ?>">Preencher Relatório <span class="pull-right badge bg-<?= $color_modulo; ?>"><?= $nome_modulo ?> - Lição <?= $n_licao; ?></span></a></li>
+                                                        <li>
+                                                            <a href="#" onclick="document.getElementById('form1').submit();">Crianças <span class="pull-right badge bg-red"><?= $total_crianca ?></span>
+                                                            </a>
+
+                                                            <form action="../page/criancas" id="form1" method="post">
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" onclick="document.getElementById('form3').submit();">Preencher Relatório <span class="pull-right badge bg-<?= $color_modulo; ?>"><?= $nome_modulo ?> - Lição <?= $n_licao; ?></span>
+                                                            </a>
+
+                                                            <form action="pg/licoes" id="form3" method="post">
+                                                                <input type="hidden" name="id_pg" value="<?= $dadosPG['id_pg'] ?>">
+                                                                <input type="hidden" name="id_lider" value="<?= $id_lider; ?>">
+                                                                <input type="hidden" name="ano" value="<?= $id_ano; ?>">
+                                                            </form>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -334,33 +506,395 @@ if (!isset($_SESSION['usuario'])) {
                     </div>
                     <!-- /.box -->
                 </section>
+
+                <?php
+                if ($consultarPG['row'] == 0) {
+                } else {
+                    $i = 0;
+                    foreach ($consultarPG['dados'] as $key => $pg) {
+                        $nome_pg = $pg['nome_pg'];
+
+                        $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $id_pg, 1);
+                        $total_crianca = $criancas['row'];
+                ?>
+
+                        <!-- Main content -->
+                        <section class="content">
+                            <!-- Small boxes (Stat box) -->
+                            <div class="row">
+                                <!-- CRIANÇAS -->
+                                <div class="box box-info">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title"><i class="fa fa-heart"></i> Tempo de Conversa PG - <?= $nome_pg; ?></h3>
+
+                                        <div class="box-tools pull-right">
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <section class="content">
+                                        <div class="box-body chat" id="chat-box">
+                                            <?php
+                                            $diaComecou = $pg['data_semana'];
+
+                                            $id_pg = $pg['id_pg'];
+                                            $nome_pg = $pg['nome_pg'];
+
+                                            $id_modulo_pg = $pg['id_modulo'];
+                                            $licao_pg = $pg['n_licao'];
+
+                                            $ano_pg = $pg['ano'];
+
+                                            $id_modulo = $pg['modulo_devocional'];
+                                            $n_licao = $pg['licao_devocional'];
+
+                                            $devocionais =   $this->FConsultas_model->consultarDevocionalModuloLicao($ano_pg, $id_modulo, $n_licao);
+
+                                            //$dataHjTrocada = date('m/d/Y');
+
+                                            $dataHj = date('m/d/Y');
+
+                                            if ($diaComecou == '') { // abrir modal para cadastrar uma data de início
+                                            ?>
+                                                <div class="col-md-12">
+                                                    <div class="callout callout-warning"><br>
+                                                        <h4>
+                                                            Você receberá diaramente uma mensagem para um tempo de conversa!
+                                                        </h4><br>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal fade" id="atulizarDataComeco">
+                                                    <div class="modal-dialog modal-info">
+                                                        <div class="modal-content">
+                                                            <form action="pg/atualizar_data_pg" method="post" id="form__submit">
+                                                                <input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+                                                                <input type="hidden" name="id_pg" value="<?= $id_pg; ?>">
+
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title">Já sabe quando vai começar o PG? | <?= $nome_pg; ?></h4>
+                                                                </div>
+                                                                <div class="box-body">
+                                                                    <div class="form-group" style="text-align: center;">
+                                                                        <label for="exampleInputEmail1">Digite a data de início do PG</label>
+                                                                        <p style="color: black;">Data: <input type="text" name="data" id="datepicker" autocomplete="off" required></p>
+                                                                    </div>
+                                                                    <div class="form-group" style="text-align: center;">
+                                                                        <input type="checkbox" name="check" value="true"> Não mostrar novamente
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Não sei ainda</button>
+                                                                    <input type="submit" class="btn btn-default" value="Salvar">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+                                                <?php
+                                                // fim modal para cadastrar uma data de início
+                                            } else {
+                                                $dataSemana = "";
+
+                                                $dia = $diaComecou[0] . $diaComecou[1];
+                                                $mes = $diaComecou[3] . $diaComecou[4];
+                                                $ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
+                                                $data_trocada = $mes . "/" . $dia . "/" . $ano;
+
+                                                $dia2 = date('m/d/Y', strtotime('+2 day', strtotime($data_trocada)));
+                                                $dia3 = date('m/d/Y', strtotime('+3 day', strtotime($data_trocada)));
+                                                $dia4 = date('m/d/Y', strtotime('+4 day', strtotime($data_trocada)));
+                                                $dia5 = date('m/d/Y', strtotime('+5 day', strtotime($data_trocada)));
+                                                $dia6 = date('m/d/Y', strtotime('+6 day', strtotime($data_trocada)));
+
+                                                $class_day_2 = strtotime($dia2) <= strtotime($dataHj) ? '' : 'disabled disabledTab';
+                                                $class_day_3 = strtotime($dia3) <= strtotime($dataHj) ? '' : 'disabled disabledTab';
+                                                $class_day_4 = strtotime($dia4) <= strtotime($dataHj) ? '' : 'disabled disabledTab';
+                                                $class_day_5 = strtotime($dia5) <= strtotime($dataHj) ? '' : 'disabled disabledTab';
+                                                $class_day_6 = strtotime($dia6) <= strtotime($dataHj) ? '' : 'disabled disabledTab';
+
+                                                $checkNPreencheu = $licao_pg == $n_licao ? false : true;
+
+                                                if ($devocionais) {
+                                                ?>
+
+                                                    <!-- Existe o devocional -->
+
+
+                                                    <!-- Check se já preencheu -->
+                                                    <div>
+                                                        <?php
+                                                        if ($checkNPreencheu) { ?>
+
+                                                            <div class="col-md-12">
+                                                                <div class="callout callout-warning">
+                                                                    <h4>
+                                                                        Lembre-se de manter o relatório atualizado!
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        <?php
+                                                        } else {
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                    <!-- Check se já preencheu -->
+
+
+                                                    <!-- NOME DOS DIAS -->
+                                                    <div class="nav-tabs-custom">
+                                                        <ul class="nav nav-tabs">
+                                                            <?php
+                                                            $i = 0;
+                                                            foreach ($devocionais as $key => $d) {
+                                                                $diaSemana = $d['dia'];
+                                                                if ($i == 0) {
+                                                            ?>
+                                                                    <li class="active"><a href="#tab_<?= $i; ?>" data-toggle="tab">Dia <?= $diaSemana; ?></a></li>
+                                                                <?php } else {
+                                                                    $check = "";
+                                                                    switch ($i) {
+                                                                        case 1:
+                                                                            $check = $class_day_2;
+                                                                            break;
+                                                                        case 2:
+                                                                            $check = $class_day_3;
+                                                                            break;
+                                                                        case 3:
+                                                                            $check = $class_day_4;
+                                                                            break;
+                                                                        case 4:
+                                                                            $check = $class_day_5;
+                                                                            break;
+                                                                        case 5:
+                                                                            $check = $class_day_6;
+                                                                            break;
+                                                                        default:
+                                                                            $check = 'disabled disabledTab';
+                                                                            break;
+                                                                    }
+                                                                ?>
+                                                                    <li class="<?= $check; ?>"><a href="#tab_<?= $i; ?>" data-toggle="tab">Dia <?= $diaSemana; ?></a></li>
+                                                                <?php } ?>
+                                                            <?php $i++;
+                                                            } ?>
+                                                        </ul>
+                                                    </div>
+                                                    <!-- NOME DOS DIAS -->
+
+                                                    <div class="tab-content">
+                                                        <?php
+                                                        $i = 0;
+                                                        $color_modulo = "";
+
+                                                        switch ($id_modulo) {
+                                                            case 1:
+                                                                $color_modulo = 'green';
+                                                                break;
+                                                            case 2:
+                                                                $color_modulo = 'blue';
+                                                                break;
+                                                            case 3:
+                                                                $color_modulo = 'gray';
+                                                                break;
+                                                            case 4:
+                                                                $color_modulo = 'red';
+                                                                $nome_modulo = 'Arco';
+                                                                break;
+                                                            case 5:
+                                                                $color_modulo = 'yellow';
+                                                                break;
+                                                            case 6:
+                                                                $color_modulo = 'orange-active';
+                                                                break;
+                                                            case 7:
+                                                                $color_modulo = 'orange';
+                                                                break;
+                                                            case 8:
+                                                                $color_modulo = 'navy';
+                                                                break;
+                                                            case 9:
+                                                                $color_modulo = 'brown';
+                                                                break;
+                                                            case 10:
+                                                                $color_modulo = 'brown-active';
+                                                                break;
+                                                            default:
+                                                                $color_modulo = 'green';
+                                                                break;
+                                                        }
+
+                                                        foreach ($devocionais as $key => $d) {
+                                                            $diaSemana = $d['dia'];
+                                                            $title = $d['titulo'];
+                                                            $devocional = $d['texto'];
+                                                            $file = base_url($d['file']);
+                                                            if ($i == 0) {
+                                                        ?>
+                                                                <div class="tab-pane active" id="tab_<?= $i; ?>">
+                                                                    <div class="col-md-6 col-xs-offset-3">
+                                                                        <!-- Widget: user widget style 1 -->
+                                                                        <div class="box box-widget widget-user">
+                                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                                            <div class="widget-user-header bg-<?= $color_modulo; ?>" style="display: table;">
+                                                                                <h5 class="widget-user-desc" style="text-align: center;display: table-cell; vertical-align: middle;"><?= $devocional ?></h5>
+                                                                            </div>
+                                                                            <div class="box-footer">
+                                                                                <div class="row">
+                                                                                    <div class="form-group mb-2">
+                                                                                        <div class="col px-0">
+                                                                                            <h5 class="widget-user-desc" style="text-align: center;">
+                                                                                                <?= $title ?>
+                                                                                            </h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <!-- /.row -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- /.widget-user -->
+                                                                    </div>
+                                                                </div>
+                                                            <?php } else { ?>
+                                                                <div class="tab-pane" id="tab_<?= $i; ?>">
+                                                                    <div class="col-md-6 col-xs-offset-3">
+                                                                        <!-- Widget: user widget style 1 -->
+                                                                        <div class="box box-widget widget-user">
+                                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                                            <div class="widget-user-header bg-<?= $color_modulo; ?>" style="display: table;">
+                                                                                <h5 class="widget-user-desc" style="text-align: center;display: table-cell; vertical-align: middle;"><?= $devocional ?></h5>
+                                                                            </div>
+                                                                            <div class="box-footer">
+                                                                                <div class="row">
+                                                                                    <div class="form-group mb-2">
+                                                                                        <div class="col px-0">
+                                                                                            <h5 class="widget-user-desc" style="text-align: center;">
+                                                                                                <?= $title ?>
+                                                                                            </h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <!-- /.row -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <!-- /.widget-user -->
+                                                                    </div>
+                                                                </div>
+                                                            <?php } ?>
+                                                        <?php $i++;
+                                                        } ?>
+                                                    </div>
+                                                    <!-- /.tab-content -->
+                                                <?php } else { ?>
+                                                    <!-- Não Existe o devocional -->
+
+                                                    <div class="col-md-12">
+                                                        <div class="callout callout-danger">
+                                                            <h4>
+                                                                Estamos trabalhando nisso! Adicionando novos Tempos de Conversa!
+                                                            </h4>
+                                                            <p>Tente novamente mais tarde!
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                <?php } ?>
+
+                                            <?php } ?>
+                                        </div>
+                                        <!-- /.item -->
+                                    </section>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </section>
+                        <!-- /.content -->
+
+                        <section class="content">
+                            <!-- Small boxes (Stat box) -->
+                            <div class="row">
+                                <!-- CRIANÇAS -->
+                                <div class="box box-info">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">
+                                            <i class="fa fa-bar-chart"></i> Progresso Geral
+                                        </h3>
+
+                                        <div class="box-tools pull-right">
+                                            <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#termos"><i class="fa fa-question"></i>
+                                            </button>
+                                            <div class="modal fade" id="termos">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span></button>
+                                                            <h4 class="modal-title">Tabela de Progresso</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="box-body">
+                                                                <p style="text-align: justify;">
+                                                                    <i><b>O que é?</b></i><br>
+                                                                    Essa tabela contém informações do progresso do seu PG ao longo dos modúlos. <br>
+                                                                    Ela contém informações de <b>Presença</b>, <b>Versículo</b>, <b>Mistério</b> e uma <b>Pontuação</b> total do Grupo. <br><br>
+                                                                    <i><b>Como ela é calculada?</b></i><br>
+                                                                    É calculada baseada nas informações do preenchimento dos relatórios dos encontros (IMPORTANTE: MANTENHA SEMPRE ELES ATUALIZADOS), o primeiro número de acordo com o preenchimento do relatório e o segundo número é o total do módulo multiplicado pelo número de crianças do PG. <br><br>
+                                                                    <i><b>Exemplos:</b></i><br>
+                                                                    <i>Grupo de 5 crianças que estão no Módulo Trilha na Lição 2</i><br>
+                                                                    Na coluna Presença será assim: <u>10/40</u> (40 é minha meta e 10 é o caminho que estou pecorrendo) <br>
+                                                                    Na coluna Versículo será assim: <u>5/20</u> (20 é minha meta e 5 é o caminho que estou pecorrendo) <br>
+                                                                    Na coluna Mistério será assim: <u>5/20</u> (20 é minha meta e 5 é o caminho que estou pecorrendo) <br>
+                                                                    A pontuação final será <u>190</u> <br><br>
+
+                                                                    <i><b>Você também consegue vê o progresso individual de cada criança, ficando mais fácil a visualização e premiação</b></i><br>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    </div>
+
+                                    <div class="box-body chat" id="chat-box">
+                                        <div class="item">
+                                            <h4 style="text-align: center; font-weight: bold;"> PG - <?= $nome_pg; ?></h4>
+                                            <h4 style="text-align: center;"> Quantidade de Crianças - <?= $total_crianca; ?></h4>
+                                        </div>
+
+                                        <div id="conteudos_table"></div>
+                                    </div>
+                                    <!-- /.item -->
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </section>
+
+                <?php
+                    }
+                } ?>
                 <!-- /.content -->
             </div>
-
-
-            <script>
-                $(function() {
-                    $("#datepicker").datepicker({
-                        dateFormat: 'dd/mm/yy',
-                        closeText: "Fechar",
-                        prevText: "&#x3C;Anterior",
-                        nextText: "Próximo&#x3E;",
-                        currentText: "Hoje",
-                        monthNames: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
-                        monthNamesShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
-                        dayNames: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
-                        dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
-                        dayNamesMin: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
-                        weekHeader: "Sm",
-                        firstDay: 1,
-                        minDate: 0,
-                    });
-                });
-            </script>
 
             <!-- Footer -->
             <?php
             $this->load->view('partes/footer');
+            $this->load->view('partes/scripts2');
             ?>
             <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
@@ -368,10 +902,9 @@ if (!isset($_SESSION['usuario'])) {
         </div>
         <!-- ./wrapper -->
         <!-- Links JavaScript -->
-        <?php
-        $this->load->view('partes/scripts2');
-        ?>
+
     </body>
+
 
     </html>
 <?php } ?>

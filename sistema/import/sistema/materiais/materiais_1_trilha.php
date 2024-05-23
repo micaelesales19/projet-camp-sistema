@@ -10,6 +10,7 @@ $materialContraCapaTrilha = array(
 );
 
 $materialCardsTrilha = array(
+    'nome_visivel' => 'Versículos e Mistérios',
     'nome' => 'Versículos e Mistérios',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/cards_novos.pdf'
 );
@@ -22,27 +23,31 @@ $materialSemanarioTrilha = array(
 $materialIntroducaoTrilha = array(
     'id' => 1,
     'nome' => 'Introdução à Trilha',
+    'nome_visivel' => 'Introdução',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/introducao.pdf',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoTrilha = array(
     'id' => 2,
     'nome' => 'Manual da Trilha',
+    'nome_visivel' => 'Manual',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/Trilha.php?id_lider=' . $id_usuario . '&id_modulo=1',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisTrilha1 = array(
     'id' => 3,
     'nome' => 'Visuais da Trilha',
+    'nome_visivel' => 'Visuais',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/visuais.pdf',
     'imagem' => 'import/sistema/img/documento.png',
 );
 
 $materialLicaoVisuaisTrilha2 = array(
     'id' => 4,
-    'nome' => 'PowerPoint - Trilha',
+    'nome' => 'Lição em PowerPoint da Trilha',
+    'nome_visivel' => 'Lição em PowerPoint',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/Trilha.ppsx',
-    'imagem' => 'import/sistema/img/livro.png',
+    'imagem' => 'import/sistema/img/documento.png',
 );

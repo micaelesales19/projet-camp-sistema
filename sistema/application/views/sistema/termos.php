@@ -22,7 +22,7 @@ $this->load->view('partes/head');
 
         <div class="login-box-body">
             <p class="login-box-msg">TERMO DE ADESÃO A SERVIÇO VOLUNTÁRIO E RESPONSABILIDADE PESSOAL</p>
-            <form action="primeiro_acesso" method="GET">
+            <form action="primeiro_acesso" method="POST">
                 <!-- <form action="#" method="POST"> -->
                 <div class="form-group has-feedback">
                     <p>
@@ -36,15 +36,12 @@ $this->load->view('partes/head');
                     </p>
                 </div>
                 <?php
-                $x = "";
-                $nivel = $_GET['nivel'];
-
                 if ($x == "") {
                     $x .= 2;
                 } else {
                 }
                 ?>
-                <input type="hidden" value="<?= $id_usuario; ?>" name="id_usuario">
+                <input type="hidden" value="<?= $id_usuario_2; ?>" name="id_usuario">
                 <input type="hidden" value="<?= $x; ?>" name="x_ir">
                 <input type="hidden" value="<?= $nivel; ?>" name="nivel">
                 <div class="row">
