@@ -48,7 +48,6 @@ class Pais extends CI_Controller
 		$foto_antiga = $this->input->post("foto_antiga");
 
 		$filesCount1 = count($_FILES['files']['name']);
-		$filesCount2 = count($_FILES['filesColider']['name']);
 
 		// Colider
 		$id_colider = $this->input->post("id_colider");
@@ -121,26 +120,21 @@ class Pais extends CI_Controller
 			}
 		}
 
-		// Colíder
-		for ($i = 0; $i < $filesCount2; $i++) {
-			$_FILES['file']['name']     = $_FILES['filesColider']['name'][$i];
-			$_FILES['file']['type']     = $_FILES['filesColider']['type'][$i];
-			$_FILES['file']['tmp_name'] = $_FILES['filesColider']['tmp_name'][$i];
-			$_FILES['file']['error']     = $_FILES['filesColider']['error'][$i];
-			$_FILES['file']['size']     = $_FILES['filesColider']['size'][$i];
+		if ($nome_colider == '') {
+		} else {
+			$filesCount2 = count($_FILES['filesColider']['name']);
+			// Colíder
+			for ($i = 0; $i < $filesCount2; $i++) {
+				$_FILES['file']['name']     = $_FILES['filesColider']['name'][$i];
+				$_FILES['file']['type']     = $_FILES['filesColider']['type'][$i];
+				$_FILES['file']['tmp_name'] = $_FILES['filesColider']['tmp_name'][$i];
+				$_FILES['file']['error']     = $_FILES['filesColider']['error'][$i];
+				$_FILES['file']['size']     = $_FILES['filesColider']['size'][$i];
 
-			$uploadPath = 'import/sistema/fotoU/colider/';
-			$foto = 'fotoU/colider/' . $_FILES['filesColider']['name'][$i];
+				$uploadPath = 'import/sistema/fotoU/colider/';
+				$foto = 'fotoU/colider/' . $_FILES['filesColider']['name'][$i];
 
-			if ($_FILES['filesColider']['name'][$i] == '') {
-				$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga_colider);
-				if ($cadastro) {
-					array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
-				} else {
-					array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
-				}
-			} else {
-				if ($foto_antiga_colider == $foto) {
+				if ($_FILES['filesColider']['name'][$i] == '') {
 					$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga_colider);
 					if ($cadastro) {
 						array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
@@ -148,33 +142,42 @@ class Pais extends CI_Controller
 						array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
 					}
 				} else {
-					if (file_exists($foto)) {
-						$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga);
+					if ($foto_antiga_colider == $foto) {
+						$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga_colider);
 						if ($cadastro) {
-							array_push($mensagem, "A foto do seu colíder já existe em nosso servidor, tente com outra foto com nome diferente!");
+							array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
 						} else {
 							array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
 						}
 					} else {
-						// File upload configuration
-						$config['upload_path'] = $uploadPath;
-						$config['allowed_types'] = 'jpg|jpeg|png|gif';
-
-						// Load and initialize upload library
-						$this->load->library('upload', $config);
-						$this->upload->initialize($config);
-
-						// Upload file to server
-						if ($this->upload->do_upload('file')) {
-							$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email, $telefone_colider, $nascimento_colider, $foto);
+						if (file_exists($foto)) {
+							$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga);
 							if ($cadastro) {
-								array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+								array_push($mensagem, "A foto do seu colíder já existe em nosso servidor, tente com outra foto com nome diferente!");
 							} else {
 								array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
 							}
 						} else {
-							$erros = $this->upload->display_errors() . " - colíder";
-							array_push($mensagem, $erros);
+							// File upload configuration
+							$config['upload_path'] = $uploadPath;
+							$config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+							// Load and initialize upload library
+							$this->load->library('upload', $config);
+							$this->upload->initialize($config);
+
+							// Upload file to server
+							if ($this->upload->do_upload('file')) {
+								$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email, $telefone_colider, $nascimento_colider, $foto);
+								if ($cadastro) {
+									array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+								} else {
+									array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+								}
+							} else {
+								$erros = $this->upload->display_errors() . " - colíder";
+								array_push($mensagem, $erros);
+							}
 						}
 					}
 				}

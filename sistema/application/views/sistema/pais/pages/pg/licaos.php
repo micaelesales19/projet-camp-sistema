@@ -538,7 +538,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                 $n_licao_tabela = $dados_pg['n_licao'];
                                                                                 $n_licao = $m['n_licao'];
                                                                             } else if ($i < $id_modulo || $i > $id_modulo) {
-                                                                                $dadosModulos = $this->FConsultas_model->list_modulos_informacoes(1, $i);
+                                                                                $dadosModulos = $this->FConsultas_model->list_modulos_informacoes($ano, $i);
                                                                                 $licaoBase = $dadosModulos['n_licao'];
                                                                                 $n_licao_tabela = $licaoBase;
                                                                                 $n_licao = $licaoBase;

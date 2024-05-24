@@ -596,7 +596,6 @@ class Welcome extends CI_Controller
 		$check = $this->input->post('x_ir');
 
 		if ($check == '2') {
-
 			$consultar_termos = $this->db->select("*")
 				->from("termos")
 				->where("id_usuario", $id_usuario)
@@ -610,15 +609,29 @@ class Welcome extends CI_Controller
 		}
 
 		if ($nivel == 8) {
-			$this->load->view('sistema/pais/primeiro_acesso');
+			$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 1);
+			$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_usuario, 1);
+
+			if ($consultarPG['row'] == 0 || $consultaCriancas['row'] == 0 || $check == 3) {
+				$this->load->view('sistema/pais/primeiro_acesso');
+			} else {
+				$this->load->view('sistema/pais/home');
+			}
 		} else if ($nivel == 1) {
-			$this->load->view('sistema/lider/primeiro_acesso');
+			$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
+			$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_usuario, 2);
+
+			if ($consultarPG['row'] == 0 || $consultaCriancas['row'] == 0 || $check == 3) {
+				$this->load->view('sistema/lider/primeiro_acesso');
+			} else {
+				$this->load->view('sistema/lider/home');
+			}
 		}
 	}
 
 	public function sair()
 	{
-		$id_usuario = $this->input->get("id_usuario");
+		$id_usuario = $this->input->post("id_usuario");
 
 		$ativo = 0;
 
@@ -814,7 +827,7 @@ class Welcome extends CI_Controller
 			"<input type='hidden' name='nivel' value='$nivel'>",
 			"<input type='hidden' name='x_ir' value='3'>",
 		];
-		$funcao = $this->FConsultas_model->red('../../../../primeiro_acesso', 0, $data);
+		$funcao = $this->FConsultas_model->red('../../primeiro_acesso', 0, $data);
 		echo $funcao;
 	}
 	public function editar_crianca()
@@ -1521,7 +1534,7 @@ class Welcome extends CI_Controller
 		echo $dados;
 	}
 
-	public function cadastro_pg_pagina_inicial()
+	public function cadastro_pg_inicial_pular()
 	{
 		$idLider = $this->input->post("idLider");
 		$nome = $this->input->post("nome");
@@ -1529,14 +1542,14 @@ class Welcome extends CI_Controller
 
 		$nivel_2 = $this->input->post("nivel_2") == '' ? 1 : $this->input->post("nivel_2");
 
-		$this->FSistema_model->cadastro_pg_pagina_inicial($idLider, $nome, $nivel_2);
+		$this->FSistema_model->cadastro_pg_pular($idLider, $nome, $nivel_2);
 
 		$data = [
 			"<input type='hidden' name='id_usuario' value='$idLider'>",
 			"<input type='hidden' name='nivel' value='$nivel'>",
 			"<input type='hidden' name='x_ir' value='1'>",
 		];
-		$funcao = $this->FConsultas_model->red('../../../../primeiro_acesso', 0, $data);
+		$funcao = $this->FConsultas_model->red('../primeiro_acesso', 0, $data);
 		echo $funcao;
 
 		//header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
@@ -1559,7 +1572,7 @@ class Welcome extends CI_Controller
 			"<input type='hidden' name='nivel' value='$nivel'>",
 			"<input type='hidden' name='x_ir' value='1'>",
 		];
-		$funcao = $this->FConsultas_model->red('../../../../primeiro_acesso', 0, $data);
+		$funcao = $this->FConsultas_model->red('../../primeiro_acesso', 0, $data);
 		echo $funcao;
 
 		//header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
@@ -1671,7 +1684,6 @@ class Welcome extends CI_Controller
 			}
 		}
 	}
-
 	public function desativar_pg()
 	{
 		$idPg = $this->input->post("idPg");

@@ -122,7 +122,7 @@ class FSistema_model extends CI_Model
 	}
 
 	// PG
-	public function cadastro_pg_pagina_inicial($idLider, $nome, $x)
+	public function cadastro_pg_pular($idLider, $nome, $x)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');

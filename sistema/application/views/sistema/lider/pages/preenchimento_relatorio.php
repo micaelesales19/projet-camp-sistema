@@ -14,11 +14,11 @@ if (!isset($_SESSION['usuario'])) {
   date_default_timezone_set('America/Sao_Paulo');
   $data = date("d/m/Y");
 
-  $id_pg = $this->input->get('id_pg');
-  $id_lider = $this->input->get('id_lider');
-  $ano = $this->input->get('ano');
-  $id_modulo = $this->input->get('id_modulo');
-  $licao = $this->input->get('licao');
+  $id_pg = $this->input->post('id_pg');
+  $id_lider = $this->input->post('id_lider');
+  $ano = $this->input->post('ano');
+  $id_modulo = $this->input->post('id_modulo');
+  $licao = $this->input->post('licao');
 
   $CI = &get_instance();
   $CI->load->model('FConsultas_model');
@@ -165,28 +165,28 @@ if (!isset($_SESSION['usuario'])) {
                 <center><button class="btn btn-info" onclick="pesquisar_criancas()" id="b_modulo">Mostrar Crianças</button></center><br>
                 <form name="coder" action="preenchimento/salvar" method="post" autocomplete="off">
                   <input type="hidden" name="data_aula" value="<?= $data; ?>">
-                  <input type="hidden" name="nivel" value="2">
-                  <div id="conteudo">
-                    <center>
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <div class="form-group">
-                            <center><label for="exampleInputEmail1"><b>Dados das Crianças</b></label></center>
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                              <thead>
-                                <tr>
-                                  <th><input type="checkbox" id="todos" name="checkTodos" value="t"> Selecionar todos</th>
-                                </tr>
-                              </thead>
-                            </table>
-                            <div id="conteudo_crianca"></div>
-                          </div>
-                          <div>
-                          </div>
-                    </center>
-                    <div class="row" style="float:none;margin:auto; margin-bottom: 20px;">
-                      <div class="col-lg-6" style="float:none;margin:auto;">
-                        <br><input type="submit" class="btn btn-success btn-block" value="Salvar" /><br>
+                  <input type="hidden" name="nivel" value="2>
+                  <div id=" conteudo">
+                  <center>
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <div class="form-group">
+                          <center><label for="exampleInputEmail1"><b>Dados das Crianças</b></label></center>
+                          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                              <tr>
+                                <th><input type="checkbox" id="todos" name="checkTodos" value="t"> Selecionar todos</th>
+                              </tr>
+                            </thead>
+                          </table>
+                          <div id="conteudo_crianca"></div>
+                        </div>
+                        <div>
+                        </div>
+                  </center>
+                  <div class="row" style="float:none;margin:auto; margin-bottom: 20px;">
+                    <div class="col-lg-6" style="float:none;margin:auto;">
+                      <br><input type="submit" class="btn btn-success btn-block" value="Salvar" /><br>
                 </form>
                 <a href="../../page/pg" class="btn btn-primary btn-block">Voltar</a>
               </div>

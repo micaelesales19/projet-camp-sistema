@@ -1,14 +1,14 @@
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#table_criancas_pais').DataTable();
+        $('#table_progresso').DataTable();
     });
 </script>
 
 <div style="overflow-x:auto;">
-    <table class="table table-bordered" id="table_criancas_pais" width="100%" cellspacing="0">
+    <table class="table table-bordered" id="table_progresso" width="100%" cellspacing="0">
         <thead>
             <tr>
-                <th>Nome</th>
+                <th>Módulo</th>
                 <th>Presença</th>
                 <th>Versículo</th>
                 <th>Mistério</th>
@@ -17,196 +17,220 @@
         </thead>
         <tbody>
             <?php
-            
-            $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_lider, $id_pg, 2);
+            $modulos = $this->FConsultas_model->consultarModuloAno($ano);
 
-            $qtdPresenca = "0";
-            $qtdVersiculo = "0";
-            $qtdMisterio = "0";
+            $somaTotalPresencaModulo = 0;
+            $somaTotalVersiculoModulo = 0;
+            $somaTotalMisterioModulo = 0;
 
-            if ($consultaCriancas['row'] == 0) {
-            } else {
+            $somaTotalPresencaPG = 0;
+            $somaTotalVersiculoPG = 0;
+            $somaTotalMisterioPG = 0;
+            $somaTotalPontuacaoPG = 0;
 
-                if ($total == 0) {
-                } else if ($total == 1) {
-                    $id1 = $id_modulo[0];
-                    $consultarModuloId1 = $this->FConsultas_model->consultarModuloId($id1);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId1['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId1['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId1['qtdMisterios'];
-                } else if ($total == 2) {
-                    $id1 = $id_modulo[0];
-                    $id2 = $id_modulo[2];
+            if ($modulos) {
 
-                    $consultarModuloId1 = $this->FConsultas_model->consultarModuloId($id1);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId1['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId1['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId1['qtdMisterios'];
+                $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisID($id_lider, $id_pg, 2, $id_crianca);
 
-                    $consultarModuloId2 = $this->FConsultas_model->consultarModuloId($id2);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId2['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId2['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId2['qtdMisterios'];
-                } else if ($total == 3) {
-                    $id1 = $id_modulo[0];
-                    $id2 = $id_modulo[2];
-                    $id3 = $id_modulo[4];
+                $qtdPresenca = 0;
+                $qtdVersiculo = 0;
+                $qtdMisterio = 0;
 
-                    $consultarModuloId1 = $this->FConsultas_model->consultarModuloId($id1);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId1['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId1['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId1['qtdMisterios'];
+                $id_modulos  = [];
 
-                    $consultarModuloId2 = $this->FConsultas_model->consultarModuloId($id2);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId2['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId2['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId2['qtdMisterios'];
-
-                    $consultarModuloId3 = $this->FConsultas_model->consultarModuloId($id3);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId3['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId3['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId3['qtdMisterios'];
-                } else if ($total == 4) {
-                    $id1 = $id_modulo[0];
-                    $id2 = $id_modulo[2];
-                    $id3 = $id_modulo[4];
-                    $id4 = $id_modulo[6];
-
-                    $consultarModuloId1 = $this->FConsultas_model->consultarModuloId($id1);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId1['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId1['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId1['qtdMisterios'];
-
-                    $consultarModuloId2 = $this->FConsultas_model->consultarModuloId($id2);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId2['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId2['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId2['qtdMisterios'];
-
-                    $consultarModuloId3 = $this->FConsultas_model->consultarModuloId($id3);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId3['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId3['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId3['qtdMisterios'];
-
-                    $consultarModuloId4 = $this->FConsultas_model->consultarModuloId($id4);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId4['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId4['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId4['qtdMisterios'];
-                } else if ($total == 5) {
-                    $id1 = $id_modulo[0];
-                    $id2 = $id_modulo[2];
-                    $id3 = $id_modulo[4];
-                    $id4 = $id_modulo[6];
-                    $id5 = $id_modulo[8];
-
-                    $consultarModuloId1 = $this->FConsultas_model->consultarModuloId($id1);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId1['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId1['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId1['qtdMisterios'];
-
-                    $consultarModuloId2 = $this->FConsultas_model->consultarModuloId($id2);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId2['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId2['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId2['qtdMisterios'];
-
-                    $consultarModuloId3 = $this->FConsultas_model->consultarModuloId($id3);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId3['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId3['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId3['qtdMisterios'];
-
-                    $consultarModuloId4 = $this->FConsultas_model->consultarModuloId($id4);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId4['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId4['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId4['qtdMisterios'];
-
-                    $consultarModuloId5 = $this->FConsultas_model->consultarModuloId($id5);
-                    $qtdPresenca = $qtdPresenca + $consultarModuloId5['n_licao'];
-                    $qtdVersiculo = $qtdVersiculo + $consultarModuloId5['qtdVersiculo'];
-                    $qtdMisterio = $qtdMisterio + $consultarModuloId5['qtdMisterios'];
+                foreach ($modulos as $key => $m) {
+                    $id_modulos[] = $m['id_modulo'];
                 }
 
-                foreach ($consultaCriancas['dados'] as $key => $linha) {
+                $i = 0;
+                foreach ($modulos as $key => $m) {
+
+                    $total_aulas = $m['n_licao'];
+
+                    $consultarModuloId = $this->FConsultas_model->consultarModuloId($m['id_modulo']);
+                    $qtdPresenca = $consultarModuloId['n_licao'];
+                    $qtdVersiculo =  $consultarModuloId['qtdVersiculo'];
+                    $qtdMisterio =  $consultarModuloId['qtdMisterios'];
+
+                    $qtdPresenca = $qtdPresenca * $consultaCriancas['row'];
+                    $qtdVersiculo = $qtdVersiculo * $consultaCriancas['row'];
+                    $qtdMisterio = $qtdMisterio * $consultaCriancas['row'];
+
+                    $somaTotalPresencaModulo = $somaTotalPresencaModulo + $qtdPresenca;
+                    $somaTotalVersiculoModulo = $somaTotalVersiculoModulo + $qtdVersiculo;
+                    $somaTotalMisterioModulo = $somaTotalMisterioModulo + $qtdMisterio;
 
                     $pontuacao = 0;
                     $presencaTotal = 0;
                     $versiculoTotal = 0;
                     $misterioTotal = 0;
 
-                    if ($total == 0) {
-                    } else if ($total == 1) {
-                        $id1 = $id_modulo[0];
+                    $consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $consultaCriancas['dados']['id_crianca'], $id_modulos[0], 2);
+                    $consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $consultaCriancas['dados']['id_crianca'], $id_modulos[1], 2);
+                    $consultarProgresso3 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $consultaCriancas['dados']['id_crianca'], $id_modulos[2], 2);
+                    $consultarProgresso4 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $consultaCriancas['dados']['id_crianca'], $id_modulos[3], 2);
+                    $consultarProgresso5 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $consultaCriancas['dados']['id_crianca'], $id_modulos[4], 2);
+                    //$consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados'], $consultarProgresso3['dados'], $consultarProgresso4['dados'], $consultarProgresso5['dados'],);
 
-                        $consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id1, 2);
-                        $consultarProgresso = array_merge($consultarProgresso1['dados']);
-                    } else if ($total == 2) {
-                        $id1 = $id_modulo[0];
-                        $id2 = $id_modulo[2];
 
-                        $consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id1, 2);
-                        $consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id2, 2);
-                        $consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados']);
-                    } else if ($total == 3) {
-                        $id1 = $id_modulo[0];
-                        $id2 = $id_modulo[2];
-                        $id3 = $id_modulo[4];
+                    //$totalRelatorio = count($consultarProgresso);
 
-                        $consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id1, 2);
-                        $consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id2, 2);
-                        $consultarProgresso3 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id3, 2);
-                        $consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados'], $consultarProgresso3['dados']);
-                    } else if ($total == 4) {
-                        $id1 = $id_modulo[0];
-                        $id2 = $id_modulo[2];
-                        $id3 = $id_modulo[4];
-                        $id4 = $id_modulo[6];
+                    $query = [];
 
-                        $consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id1, 2);
-                        $consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id2, 2);
-                        $consultarProgresso3 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id3, 2);
-                        $consultarProgresso4 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id4, 2);
-                        $consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados'], $consultarProgresso3['dados'], $consultarProgresso4['dados']);
-                    } else if ($total == 5) {
-                        $id1 = $id_modulo[0];
-                        $id2 = $id_modulo[2];
-                        $id3 = $id_modulo[4];
-                        $id4 = $id_modulo[6];
-                        $id5 = $id_modulo[8];
+                    if ($i == 0) {
+                        if ($consultarProgresso1['row'] == 0) {
+                            $presencaTotal = 0;
+                            $versiculoTotal = 0;
+                            $misterioTotal = 0;
+                            $pontuacao = 0;
+                        } else {
+                            $query = $consultarProgresso1['dados'];
+                            foreach ($query as $key => $value) {
+                                $presenca = $value['presenca'];
+                                $versiculo = $value['versiculo_memorizado'];
+                                $misterio = $value['misterio_respondido'];
+                                $devocional = $value['devocional_respondido'];
 
-                        $consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id1, 2);
-                        $consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id2, 2);
-                        $consultarProgresso3 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id3, 2);
-                        $consultarProgresso4 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id4, 2);
-                        $consultarProgresso5 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id5, 2);
-                        $consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados'], $consultarProgresso3['dados'], $consultarProgresso4['dados'], $consultarProgresso5['dados']);
-                    }
+                                $presencaTotal = $presencaTotal + $presenca;
+                                $versiculoTotal = $versiculoTotal + $versiculo;
+                                $misterioTotal = $misterioTotal + $misterio;
 
-                    $totalRelatorio = count($consultarProgresso);
-
-                    if ($totalRelatorio == 0) {;
-                    } else {
-                        foreach ($consultarProgresso as $key => $progresso) {
-                            $presenca = $progresso['presenca'];
-                            $versiculo = $progresso['versiculo_memorizado'];
-                            $misterio = $progresso['misterio_respondido'];
-                            $devocional = $progresso['devocional_respondido'];
-
-                            $presencaTotal = $presencaTotal + $presenca;
-                            $versiculoTotal = $versiculoTotal + $versiculo;
-                            $misterioTotal = $misterioTotal + $misterio;
-
-                            $pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
-                            $pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
-                            $pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
-                            $pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+                                $pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+                                $pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+                                $pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+                                $pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+                            }
+                            $somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+                            $somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+                            $somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+                            $somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
                         }
-                    }
+                    } else  if ($i == 1) {
+                        if ($consultarProgresso2['row'] == 0) {
 
-                    if ($linha['nome_crianca'] == "") {
-                        $linha['nome_crianca'] = "-";
+                            $presencaTotal = 0;
+                            $versiculoTotal = 0;
+                            $misterioTotal = 0;
+
+                            $pontuacao = 0;
+                        } else {
+                            $query = $consultarProgresso2['dados'];
+                            foreach ($query as $key => $value) {
+
+                                $presenca = $value['presenca'];
+                                $versiculo = $value['versiculo_memorizado'];
+                                $misterio = $value['misterio_respondido'];
+                                $devocional = $value['devocional_respondido'];
+
+                                $presencaTotal = $presencaTotal + $presenca;
+                                $versiculoTotal = $versiculoTotal + $versiculo;
+                                $misterioTotal = $misterioTotal + $misterio;
+
+                                $pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+                                $pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+                                $pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+                                $pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+                            }
+                            $somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+                            $somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+                            $somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+                            $somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+                        }
+                    } else  if ($i == 2) {
+                        if ($consultarProgresso3['row'] == 0) {
+
+                            $presencaTotal = 0;
+                            $versiculoTotal = 0;
+                            $misterioTotal = 0;
+
+                            $pontuacao = 0;
+                        } else {
+                            $query = $consultarProgresso3['dados'];
+                            foreach ($query as $key => $value) {
+                                $presenca = $value['presenca'];
+                                $versiculo = $value['versiculo_memorizado'];
+                                $misterio = $value['misterio_respondido'];
+                                $devocional = $value['devocional_respondido'];
+
+                                $presencaTotal = $presencaTotal + $presenca;
+                                $versiculoTotal = $versiculoTotal + $versiculo;
+                                $misterioTotal = $misterioTotal + $misterio;
+
+                                $pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+                                $pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+                                $pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+                                $pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+                            }
+                            $somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+                            $somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+                            $somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+                            $somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+                        }
+                    } else  if ($i == 3) {
+                        if ($consultarProgresso4['row'] == 0) {
+
+                            $presencaTotal = 0;
+                            $versiculoTotal = 0;
+                            $misterioTotal = 0;
+
+                            $pontuacao = 0;
+                        } else {
+                            $query = $consultarProgresso4['dados'];
+                            foreach ($query as $key => $value) {
+                                $presenca = $value['presenca'];
+                                $versiculo = $value['versiculo_memorizado'];
+                                $misterio = $value['misterio_respondido'];
+                                $devocional = $value['devocional_respondido'];
+
+                                $presencaTotal = $presencaTotal + $presenca;
+                                $versiculoTotal = $versiculoTotal + $versiculo;
+                                $misterioTotal = $misterioTotal + $misterio;
+
+                                $pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+                                $pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+                                $pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+                                $pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+                            }
+                            $somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+                            $somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+                            $somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+                            $somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+                        }
+                    } else  if ($i == 4) {
+                        if ($consultarProgresso5['row'] == 0) {
+
+                            $presencaTotal = 0;
+                            $versiculoTotal = 0;
+                            $misterioTotal = 0;
+
+                            $pontuacao = 0;
+                        } else {
+                            $query = $consultarProgresso5['dados'];
+                            foreach ($query as $key => $value) {
+                                $presenca = $value['presenca'];
+                                $versiculo = $value['versiculo_memorizado'];
+                                $misterio = $value['misterio_respondido'];
+                                $devocional = $value['devocional_respondido'];
+
+                                $presencaTotal = $presencaTotal + $presenca;
+                                $versiculoTotal = $versiculoTotal + $versiculo;
+                                $misterioTotal = $misterioTotal + $misterio;
+
+                                $pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+                                $pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+                                $pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+                                $pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+                            }
+                            $somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+                            $somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+                            $somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+                            $somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+                        }
                     }
             ?>
                     <tr>
                         <td>
-                            <?= $linha['nome_crianca']; ?>
+                            <?php echo  $m['nome_modulo']; ?>
                         </td>
                         <td>
                             <?= $presencaTotal; ?>/<?= $qtdPresenca; ?>
@@ -223,9 +247,22 @@
                         </td>
                     </tr>
             <?php
+                    $i++;
                 }
             }
             ?>
         </tbody>
+        <tfoot>
+            <tr>
+                <th>Total</th>
+                <th><?= $somaTotalPresencaPG; ?>/<?= $somaTotalPresencaModulo; ?></th>
+                <th><?= $somaTotalVersiculoPG; ?>/<?= $somaTotalVersiculoModulo; ?></th>
+                <th><?= $somaTotalMisterioPG; ?>/<?= $somaTotalMisterioModulo; ?></th>
+                <th>
+                    <i class="fa fa-dollar"></i>
+                    <?= $somaTotalPontuacaoPG; ?>
+                </th>
+            </tr>
+        </tfoot>
     </table>
 </div>

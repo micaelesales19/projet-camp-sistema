@@ -21,9 +21,9 @@ if (!isset($_SESSION['usuario'])) {
   date_default_timezone_set('America/Sao_Paulo');
   $data = date("d/m/Y");
 
-  $id_pg = $this->input->get('id_pg');
-  $id_lider = $this->input->get('id_lider');
-  $id_modulo = $this->input->get('id_modulo');
+  $id_pg = $this->input->post('id_pg');
+  $id_lider = $this->input->post('id_lider');
+  $id_modulo = $this->input->post('id_modulo');
 
   $CI = &get_instance();
   $CI->load->model('FConsultas_model');

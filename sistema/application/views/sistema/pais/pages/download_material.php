@@ -14,9 +14,6 @@ if (!isset($_SESSION['usuario'])) {
   date_default_timezone_set('America/Sao_Paulo');
   $data = date("d/m/Y");
 
-  $id_pg = $this->input->get('id_pg');
-  $id_lider = $this->input->get('id_lider');
-
   $CI = &get_instance();
   $CI->load->model('FConsultas_model');
 ?>
@@ -33,6 +30,7 @@ if (!isset($_SESSION['usuario'])) {
       cursor: default;
       color: red;
     }
+
     .quadrados {
       height: 300px;
       margin-bottom: 10px;
@@ -419,7 +417,13 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box box-primary box-solid">
                               <p>
                                 <center>
-                                  <a href="modulo?id_pg=<?= $idPG ?>&id_lider=<?= $id_usuario; ?>&id_modulo=<?= $id_modulo; ?>"> Detalhe do material</a><br>
+                                  <a href="#" onclick="document.getElementById('download').submit();">Detalhe do material</a><br>
+
+                                  <form action="modulo" id="download" method="post">
+                                    <input type="hidden" name="id_pg" value="<?= $idPG ?>">
+                                    <input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+                                    <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">
+                                  </form>
                                 </center>
                               </p>
                             </div>

@@ -1,6 +1,11 @@
+<script>
+    const idpg = [];
+    const idmodulo = [];
+    const idmoduloslist = [];
+    const idcriancas = [];
+    const anomodulo = [];
+</script>
 <?php
-
-/** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../index");
 } else {
@@ -14,12 +19,134 @@ if (!isset($_SESSION['usuario'])) {
 
     $dadosPais = $this->FConsultas_model->consultaDadosPaisId($id_usuario, 2);
 
+    $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
+
+    if ($consultarPG['row'] == 0) {
+    } else {
+        foreach ($consultarPG['dados'] as $key => $value) {
+
+            $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $value['id_pg'], 2);
+            $idCri = $criancas['row'] == 0 ? 0 : $criancas['dados'][0]['id_crianca'];
+            $ano = $value['ano'];
+
+            $modulos = $this->FConsultas_model->consultarModuloAno($ano);
+
+            foreach ($modulos as $key => $dadosModulos) {
+                echo '
+                    <script>
+                    idmoduloslist.push("' . $dadosModulos['id_modulo'] . '");
+                    </script>
+                ';
+            }
+
+            echo '
+                <script>
+                idpg.push("' . $value['id_pg'] . '");
+                idmodulo.push("' . $value['id_modulo'] . '");
+                idcriancas.push("' . $idCri . '");
+                anomodulo.push("' . $ano . '");
+                </script>
+            ';
+        }
+    }
+
 ?>
     <!DOCTYPE html>
     <html>
     <?php
     $this->load->view('partes/head');
+    $this->load->view('partes/scripts2');
     ?>
+
+    <script>
+        function AjaxF() {
+            var ajax;
+
+            try {
+                ajax = new XMLHttpRequest();
+            } catch (e) {
+                try {
+                    ajax = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (e) {
+                        alert("Seu browser não da suporte à AJAX!");
+                        return false;
+                    }
+                }
+            }
+            return ajax;
+        }
+
+
+        $(document).ready(function() {
+            var count = idpg.length;
+            if (count == 0) {} else {
+
+                var id_lider = '<?= $id_usuario; ?>';
+
+                for (let index = 0; index < count; index++) {
+                    const id_pg = idpg[index];
+                    const id_modulo = idmodulo[index];
+                    const ano = anomodulo[index];
+                    const id_crianca = idcriancas[index];
+
+                    mostrarProgressoInicial(id_modulo, id_lider, id_pg, ano, id_crianca, index);
+                }
+            }
+        });
+
+
+        function mostrarProgressoInicial(idModulo, idLider, idPg, ano, id_crianca, index) {
+            var moduloAtual = idmodulo[index];
+            var respostas = idmoduloslist;
+
+            respostas.push(moduloAtual);
+
+            var radio = document.getElementsByName('modulos_escolhidos');
+
+            var total = 1;
+
+            var ajax = AjaxF();
+
+            ajax.onreadystatechange = function() {
+                if (ajax.readyState == 4) {
+                    document.getElementById('conteudos_table_0').innerHTML = ajax.responseText;
+                }
+            }
+
+            ajax.open("GET", "pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&id_crianca=" + id_crianca + "&ano=" + ano + "&page=individual", false);
+
+            ajax.setRequestHeader("Content-Type", "text/html");
+            ajax.send();
+        }
+
+        function atualizarProgresso(idModulo, idLider, idPg, ano, id_crianca, index, ilinha) {
+            var moduloAtual = idmodulo[index];
+            var respostas = idmoduloslist;
+
+            respostas.push(moduloAtual);
+
+            var radio = document.getElementsByName('modulos_escolhidos');
+
+            var total = 1;
+
+            var ajax = AjaxF();
+
+            ajax.onreadystatechange = function() {
+                if (ajax.readyState == 4) {
+                    document.getElementById('conteudos_table_' + ilinha).innerHTML = ajax.responseText;
+                }
+            }
+
+            ajax.open("GET", "pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&id_crianca=" + id_crianca + "&ano=" + ano + "&page=individual", false);
+
+            ajax.setRequestHeader("Content-Type", "text/html");
+            ajax.send();
+        }
+    </script>
+    <!-- Head -->
 
     <style>
         #texto_alerta {
@@ -132,7 +259,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <select name="opcao[]" class="form-control" required>
                                                             <option value="0" selected>Escolha uma opção</option>
                                                             <option value="1">Sim</option>
-                                                            <option value="0">Não</option>
+                                                            <option value="2">Não</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -537,7 +664,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="box-body" style="height: 150px;">
 
                                                 <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
-                                                <input type="hidden" name="nivel" value="2">
+                                                <input type="hidden" name="nivel" value="1">
                                                 <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
                                                     <div class="form-group">
                                                         <label for="opc">Selecione a Criança:</label>
@@ -566,6 +693,118 @@ if (!isset($_SESSION['usuario'])) {
                     </div>
                     <!-- /.box -->
                 </section>
+                <!-- /.content -->
+
+                <?php
+                if ($consultarPG['row'] == 0) {
+                } else {
+                    $i_modulo = 0;
+                    foreach ($consultarPG['dados'] as $key => $pg) {
+                        $id_pg = $pg['id_pg'];
+                        $ano = $pg['ano'];
+                        $nome_pg = $pg['nome_pg'];
+
+                        $id_m = $pg['id_modulo'];
+
+                        $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $id_pg, 2);
+                        $total_crianca = $criancas['row'];
+
+                        if ($total_crianca == 0) {
+                        } else {
+                ?>
+                            <section class="content">
+                                <!-- Small boxes (Stat box) -->
+                                <div class="row">
+                                    <!-- CRIANÇAS -->
+                                    <div class="box box-info">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">
+                                                <i class="fa fa-bar-chart"></i> Progresso
+                                            </h3>
+                                            <div class="box-tools pull-right">
+                                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-body chat" id="chat-box">
+                                            <div class="item">
+                                                <h4 style="text-align: center; font-weight: bold;"> PG - <?= $nome_pg; ?></h4>
+                                            </div>
+
+                                            <section class="content">
+                                                <div class="box-body chat" id="chat-box">
+                                                    <!-- NOME DAS CRIANÇAS -->
+                                                    <div class="nav-tabs-custom">
+                                                        <ul class="nav nav-tabs">
+                                                            <?php
+                                                            $i = 0;
+                                                            foreach ($criancas['dados'] as $key => $cri) {
+                                                                $id_crianca = $cri['id_crianca'];
+                                                                $nome = $cri['nome_crianca'];
+                                                                //atualizarProgresso(idModulo, idLider, idPg, ano, id_crianca, index)
+                                                                if ($i == 0) {
+                                                            ?>
+                                                                    <li class="active"><a href="#tab_<?= $i; ?>" data-toggle="tab"><?= $nome; ?></a></li>
+                                                                <?php } else {
+                                                                ?>
+                                                                    <li><a href="#tab_<?= $i; ?>" onclick="atualizarProgresso('<?= $id_m ?>', '<?= $id_usuario ?>', '<?= $id_pg ?>', '<?= $ano; ?>', '<?= $id_crianca; ?>', '<?= $i_modulo; ?>', '<?= $i; ?>')" data-toggle="tab"><?= $nome; ?></a></li>
+                                                                <?php } ?>
+                                                            <?php $i++;
+                                                            } ?>
+                                                        </ul>
+                                                    </div>
+
+
+                                                    <div class="tab-content">
+                                                        <?php
+                                                        $i = 0;
+
+                                                        foreach ($criancas['dados'] as $key => $cri) {
+                                                            $nome = $cri['nome_crianca'];
+                                                            if ($i == 0) {
+                                                        ?>
+                                                                <div class="tab-pane active" id="tab_<?= $i; ?>">
+                                                                    <div class="col-md-12">
+                                                                        <!-- Widget: user widget style 1 -->
+                                                                        <div class="box box-widget widget-user">
+                                                                            <!-- Add the bg color to the header using any of the bg-* classes -->
+                                                                            <div id="conteudos_table_<?= $i; ?>"></div>
+                                                                        </div>
+                                                                        <!-- /.widget-user -->
+                                                                    </div>
+                                                                </div>
+                                                            <?php } else { ?>
+                                                                <div class="tab-pane" id="tab_<?= $i; ?>">
+                                                                    <div class="col-md-12">
+                                                                        <!-- Widget: user widget style 1 -->
+                                                                        <div class="box box-widget widget-user">
+                                                                            <div id="conteudos_table_<?= $i; ?>"></div>
+                                                                        </div>
+                                                                        <!-- /.widget-user -->
+                                                                    </div>
+                                                                </div>
+                                                            <?php } ?>
+                                                        <?php $i++;
+                                                        } ?>
+                                                    </div>
+                                                    <!-- NOME DAS CRIANÇAS -->
+                                                </div>
+                                                <!-- /.item -->
+                                            </section>
+                                        </div>
+                                        <!-- /.item -->
+                                    </div>
+                                    <!-- /.box-body -->
+                                </div>
+                                <!-- /.box -->
+                            </section>
+                <?php
+                        }
+                        $i_modulo++;
+                    }
+                } ?>
                 <!-- /.content -->
 
                 <section class="content">
@@ -650,6 +889,7 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- /.box -->
                 </section>
                 <!-- /.content -->
+
             </div>
 
             <!-- /.content-wrapper -->
@@ -663,8 +903,6 @@ if (!isset($_SESSION['usuario'])) {
         </div>
         <!-- ./wrapper -->
         <!-- Links JavaScript -->
-        <?php $this->load->view('partes/scripts2');
-        ?>
 
         <script>
             $(document).ready(function() {
@@ -690,7 +928,7 @@ if (!isset($_SESSION['usuario'])) {
 
                     $("#conteudo").append('<div id="' + conteudo2 + '"></div>');
 
-                    $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-6"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-6"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="0">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCamposPais(' + i + ');" class="form-control" required><option value="<?= $dadosPais['nome_lider'] ?>" selected><?= $dadosPais['nome_lider'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total" name="total[]">');
+                    $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-6"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-6"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="2">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCamposPais(' + i + ');" class="form-control" required><option value="<?= $dadosPais['nome_lider'] ?>" selected><?= $dadosPais['nome_lider'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total" name="total[]">');
                     return false;
                 });
 

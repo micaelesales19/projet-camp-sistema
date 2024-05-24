@@ -55,7 +55,7 @@ if (!isset($_SESSION['usuario'])) {
 						<!-- Small boxes (Stat box) -->
 						<div class="row">
 							<div class="box-body chat" id="chat-box">
-								<form action="lider/page/pg/cadastro/paginaInicial" role="form" method="POST" enctype="multipart/form-data">
+								<form action="pg/cadastro/salvar" role="form" method="POST" enctype="multipart/form-data">
 									<div class="box-body">
 										<input class="form-control" type="hidden" name="idLider" value="<?= $id_usuario; ?>">
 										<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">
@@ -71,7 +71,7 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="col-lg-12">
 											<div class="form-group">
 												<label for="exampleInputPassword1">Data de Início</label>
-												<p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker" required></p>
+												<p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker_cadastro_pg" required></p>
 											</div>
 										</div>
 
@@ -88,11 +88,11 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="pull-right">
 											<input type="submit" class="btn btn-success" name="btn_form" value="Salvar">
 								</form>
-
-								<form action="lider/page/pg/cadastro/primeiroAcesso" method="post">
+								<form action="pg/pular" method="post">
 									<input type="hidden" name="idLider" value="<?= $id_usuario ?>">
-									<input type="hidden" name="nome" value="<?= $dadosPais['nome']; ?>">
+									<input type="hidden" name="nome" value="<?= $dadosPais['nome_lider']; ?>">
 									<input type="hidden" name="nivel" value="1">
+									<input type="hidden" name="nivel_2" value="2">
 									<br><input type="submit" value="Pular" class="btn btn-warning">
 								</form>
 							</div>
@@ -100,7 +100,7 @@ if (!isset($_SESSION['usuario'])) {
 
 						<script>
 							$(function() {
-								$("#datepicker").datepicker({
+								$("#datepicker_cadastro_pg").datepicker({
 									dateFormat: 'dd/mm/yy',
 									closeText: "Fechar",
 									prevText: "&#x3C;Anterior",
@@ -148,7 +148,7 @@ if (!isset($_SESSION['usuario'])) {
 				<!-- Small boxes (Stat box) -->
 				<div class="row">
 					<div class="box-body chat" id="chat-box">
-						<form action="lider/page/criancas/cadastro/paginaInicial" role="form" method="POST" enctype="multipart/form-data">
+						<form action="criancas/cadastro/salvar" role="form" method="POST" enctype="multipart/form-data">
 							<div class="box-body">
 								<input class="form-control" id="id_lider" type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
 								<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">
@@ -265,7 +265,16 @@ if (!isset($_SESSION['usuario'])) {
 				<!-- /.box -->
 			</section>
 
-		<?php } ?>
+		<?php } else {
+						/*$data = [
+					"<input type='hidden' name='id_usuario' value='$id_usuario'>",
+					"<input type='hidden' name='nivel' value='$nivel'>",
+					"<input type='hidden' name='x_ir' value='3'>",
+				];
+				$funcao = $this->FConsultas_model->red('primeiro_acesso', 0, $data);
+				echo $funcao;*/
+					}
+		?>
 
 	<?php }
 				if ($x_ir == 3) { ?>
@@ -400,8 +409,8 @@ if (!isset($_SESSION['usuario'])) {
 					array_push($materialCards, $materialSemanarioTrilha);
 					array_push($materialLicao, $materialIntroducaoTrilha);
 					array_push($materialLicao, $materialLicaoTrilha);
-					array_push($materialLicao, $materialLicaoVisuais2);
-					array_push($materialLicao, $materialLicaoVisuais1);
+					array_push($materialLicao, $materialLicaoVisuaisTrilha2);
+					array_push($materialLicao, $materialLicaoVisuaisTrilha1);
 
 					if ($consultarPG['row'] == 0) {
 				?>
@@ -999,77 +1008,80 @@ if (!isset($_SESSION['usuario'])) {
 											<?php
 											foreach ($materialLicao as $key => $licao) {
 
-												if ($licao['id'] == 2 && $consultarPG['dados']['data_inicio'] == '') {
+												if ($licao['id'] == 0) {
+												} else {
+
+													if ($licao['id'] == 2 && $consultarPG['dados']['data_inicio'] == '') {
 											?>
-													<div class="succ">
-														<a data-toggle="modal" data-target="<?= "#" . $licao['id']; ?>download" href="#">
-															<div class="img-center">
-																<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-capa" alt="User Image">
-															</div>
-															<label for=""><?= $licao['nome_visivel']; ?></label>
-														</a>
-													</div>
-
-													<div class="modal fade" id="<?= $licao['id']; ?>download">
-														<div class="modal-dialog modal-info">
-															<div class="modal-content">
-																<form action="donwload_material" method="post" target="_blank" id="form__submit">
-																	<input type="hidden" name="id" value="<?= $licao['id']; ?>">
-																	<input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
-																	<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
-																	<input type="hidden" name="title" value="<?= $licao['nome']; ?>" style="color: black;">
-																	<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>" style="color: black;">
-																	<input type="hidden" name="nivel" value="1">
-
-																	<div class="modal-header">
-																		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																			<span aria-hidden="true">&times;</span></button>
-																		<h4 class="modal-title">Download do Material | <?= $nome_modulo; ?></h4>
-																	</div>
-																	<div class="box-body">
-																		<div class="form-group" style="text-align: center;">
-																			<label for="exampleInputEmail1">Digite a data de início do PG</label>
-																			<p style="color: black;">Data: <input type="text" name="data" id="datepicker" autocomplete="off" required></p>
-																		</div>
-																	</div>
-																	<div class="modal-footer">
-																		<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Sair</button>
-																		<input type="submit" class="btn btn-default" onclick="fecharModal();" value="Baixar">
-																	</div>
-
-																	<script>
-																		function fecharModal() {
-																			let form = document.getElementById("form__submit");
-																			form.submit();
-																			$('.modal').modal('hide');
-																			window.location.reload(true);
-																		}
-																	</script>
-																</form>
-															</div>
-															<!-- /.modal-content -->
+														<div class="succ">
+															<a data-toggle="modal" data-target="<?= "#" . $licao['id']; ?>download" href="#">
+																<div class="img-center">
+																	<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-capa" alt="User Image">
+																</div>
+																<label for=""><?= $licao['nome_visivel']; ?></label>
+															</a>
 														</div>
-														<!-- /.modal-dialog -->
-													</div>
-												<?php } else { ?>
-													<div class="succ">
-														<form action="download_material" method="post" target="_blank" download>
-															<input type="hidden" name="id" value="<?= $licao['id']; ?>">
-															<input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
-															<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
-															<input type="hidden" name="title" value="<?= $licao['nome']; ?>">
-															<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>">
-															<input type="hidden" name="nivel" value="1">
 
-															<div class="img-center">
-																<button type="submit" style="background-color: transparent; border: none;">
-																	<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
-																</button>
+														<div class="modal fade" id="<?= $licao['id']; ?>download">
+															<div class="modal-dialog modal-info">
+																<div class="modal-content">
+																	<form action="download_material" method="post" target="_blank" id="form__submit">
+																		<input type="hidden" name="id" value="<?= $licao['id']; ?>">
+																		<input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+																		<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
+																		<input type="hidden" name="title" value="<?= $licao['nome']; ?>" style="color: black;">
+																		<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>" style="color: black;">
+																		<input type="hidden" name="nivel" value="1">
+
+																		<div class="modal-header">
+																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<span aria-hidden="true">&times;</span></button>
+																			<h4 class="modal-title">Download do Material | <?= $nome_modulo; ?></h4>
+																		</div>
+																		<div class="box-body">
+																			<div class="form-group" style="text-align: center;">
+																				<label for="exampleInputEmail1">Digite a data de início do PG</label>
+																				<p style="color: black;">Data: <input type="text" name="data" id="datepicker" autocomplete="off" required></p>
+																			</div>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Sair</button>
+																			<input type="submit" class="btn btn-default" onclick="fecharModal();" value="Baixar">
+																		</div>
+
+																		<script>
+																			function fecharModal() {
+																				let form = document.getElementById("form__submit");
+																				form.submit();
+																				$('.modal').modal('hide');
+																				window.location.reload(true);
+																			}
+																		</script>
+																	</form>
+																</div>
+																<!-- /.modal-content -->
 															</div>
-															<label for=""><?= $licao['nome_visivel']; ?></label>
-														</form>
-													</div>
+															<!-- /.modal-dialog -->
+														</div>
+													<?php } else { ?>
+														<div class="succ">
+															<form action="download_material" method="post" target="_blank" download>
+																<input type="hidden" name="id" value="<?= $licao['id']; ?>">
+																<input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+																<input type="hidden" name="id_pg" value="<?= $idPG; ?>">
+																<input type="hidden" name="title" value="<?= $licao['nome']; ?>">
+																<input type="hidden" name="download" value="<?= $licao['arquivo']; ?>">
+																<input type="hidden" name="nivel" value="1">
 
+																<div class="img-center">
+																	<button type="submit" style="background-color: transparent; border: none;">
+																		<img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
+																	</button>
+																</div>
+																<label for=""><?= $licao['nome_visivel']; ?></label>
+															</form>
+														</div>
+													<?php } ?>
 												<?php } ?>
 											<?php } ?>
 										</div>
@@ -1190,6 +1202,5 @@ if (!isset($_SESSION['usuario'])) {
 
 	</html>
 <?php
-
 }
 ?>

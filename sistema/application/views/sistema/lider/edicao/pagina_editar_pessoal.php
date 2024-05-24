@@ -1,5 +1,4 @@
 <?php
-/** @var \$this */
 if (!isset($_SESSION['usuario'])) {
   header("location: ../../index");
 } else {
@@ -57,7 +56,7 @@ if (!isset($_SESSION['usuario'])) {
     <div class="wrapper">
       <!-- Menu -->
       <?php
-      $this->load->view('sistema/pais/partes/menu_lateral', $array);
+      $this->load->view('sistema/lider/partes/menu_lateral', $array);
       ?>
 
       <!-- Content Wrapper. Contains page content -->
@@ -89,7 +88,7 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="box-body chat" id="chat-box">
                     <div class="box-footer">
                       <?php
-                      $dados_pessoal = $this->FConsultas_model->consultaDadosPaisId($id_usuario);
+                      $dados_pessoal = $this->FConsultas_model->consultaDadosPaisId($id_usuario, 2);
 
                       $foto_original = $dados_pessoal['foto'];
                       //$foto_original = 'fotoU/pais/WhatsApp_Image_2022-12-05_at_08_30_33.jpeg';
@@ -97,7 +96,7 @@ if (!isset($_SESSION['usuario'])) {
                       $foto = base_url('import/sistema/' . $foto_original);
                       ?>
 
-                      <input class="form-control" id="exampleInputText1" type="hidden" name="id" aria-describedby="emailHelp" value="<?= $dados_pessoal['id'] ?>">
+                      <input class="form-control" id="exampleInputText1" type="hidden" name="id" aria-describedby="emailHelp" value="<?= $dados_pessoal['id_lider'] ?>">
 
                       <script type="text/javascript">
                         $(document).ready(function() {
@@ -156,8 +155,8 @@ if (!isset($_SESSION['usuario'])) {
                       <div class="col-lg-6">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Nome</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados_pessoal['nome']; ?>" placeholder="Nome" required>
-                          <input type="hidden" name="nome_antigo" value="<?= $dados_pessoal['nome']; ?>">
+                          <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados_pessoal['nome_lider']; ?>" placeholder="Nome" required>
+                          <input type="hidden" name="nome_antigo" value="<?= $dados_pessoal['nome_lider']; ?>">
                         </div>
 
                         <div class="form-group">

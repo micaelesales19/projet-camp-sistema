@@ -55,7 +55,7 @@ if (!isset($_SESSION['usuario'])) {
 						<!-- Small boxes (Stat box) -->
 						<div class="row">
 							<div class="box-body chat" id="chat-box">
-								<form action="pais/page/pg/cadastro/paginaInicial" role="form" method="POST" enctype="multipart/form-data">
+								<form action="pg/cadastro/salvar" role="form" method="POST" enctype="multipart/form-data">
 									<div class="box-body">
 										<input class="form-control" type="hidden" name="idLider" value="<?= $id_usuario; ?>">
 										<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">
@@ -71,7 +71,7 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="col-lg-12">
 											<div class="form-group">
 												<label for="exampleInputPassword1">Data de Início</label>
-												<p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker" required></p>
+												<p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker_cadastro_pg" required></p>
 											</div>
 										</div>
 
@@ -88,9 +88,10 @@ if (!isset($_SESSION['usuario'])) {
 										<div class="pull-right">
 											<input type="submit" class="btn btn-success" name="btn_form" value="Salvar">
 								</form>
-								<form action="pais/page/pg/cadastro/primeiroAcesso" method="post">
+								<form action="pg/pular" method="post">
 									<input type="hidden" name="idLider" value="<?= $id_usuario ?>">
 									<input type="hidden" name="nome" value="<?= $dadosPais['nome']; ?>">
+									<input class="form-control" type="hidden" name="nivel_2" value="1">
 									<input type="hidden" name="nivel" value="8">
 									<br><input type="submit" value="Pular" class="btn btn-warning">
 								</form>
@@ -99,7 +100,7 @@ if (!isset($_SESSION['usuario'])) {
 
 						<script>
 							$(function() {
-								$("#datepicker").datepicker({
+								$("#datepicker_cadastro_pg").datepicker({
 									dateFormat: 'dd/mm/yy',
 									closeText: "Fechar",
 									prevText: "&#x3C;Anterior",
@@ -147,7 +148,7 @@ if (!isset($_SESSION['usuario'])) {
 				<!-- Small boxes (Stat box) -->
 				<div class="row">
 					<div class="box-body chat" id="chat-box">
-						<form action="pais/page/criancas/cadastro/paginaInicial" role="form" method="POST" enctype="multipart/form-data">
+						<form action="criancas/cadastro/salvar" role="form" method="POST" enctype="multipart/form-data">
 							<div class="box-body">
 								<input class="form-control" id="id_lider" type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
 								<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">

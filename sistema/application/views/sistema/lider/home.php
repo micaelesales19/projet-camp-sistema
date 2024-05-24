@@ -264,9 +264,8 @@ if (!isset($_SESSION['usuario'])) {
                     $dadosDevocionais = $this->FConsultas_model->consultarDevocionalModuloLicaoDia($ano_pg, $id_modulo, $n_licao, 2);
                     $devocionais = $dadosDevocionais;
 
-                    $file = $devocionais['file'];
-
                     if ($devocionais) {
+                      $file = $devocionais['file'];
                     ?>
                       <div>
                         <?php
@@ -302,7 +301,7 @@ if (!isset($_SESSION['usuario'])) {
                           <div class="box-body chat"><br>
                             <div class="callout callout-danger">
                               <h4>
-                                Estamos trabalhando nisso
+                                Estamos trabalhando nisso! Adicionando novos Tempos de Conversa!
                               </h4>
                               <p>Tente novamente mais tarde!
                               </p>

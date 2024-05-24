@@ -26,6 +26,7 @@ if (!isset($_SESSION['usuario'])) {
         foreach ($consultarPG['dados'] as $key => $value) {
 
             $criancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $value['id_pg'], 1);
+            $idCri = $criancas['row'] == 0 ? 0 : $criancas['dados'][0]['id_crianca'];
 
             $ano = $value['ano'];
 
@@ -43,7 +44,7 @@ if (!isset($_SESSION['usuario'])) {
                 <script>
                 idpg.push("' . $value['id_pg'] . '");
                 idmodulo.push("' . $value['id_modulo'] . '");
-                idcriancas.push("' . $criancas['dados'][0]['id_crianca'] . '");
+                idcriancas.push("' . $idCri . '");
                 anomodulo.push("' . $ano . '");
                 </script>
             ';

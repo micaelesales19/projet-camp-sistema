@@ -343,7 +343,6 @@ if (!isset($_SESSION['usuario'])) {
 
                                                         <?php } else { ?>
                                                             <li><a href="#tab_<?= $i; ?>" data-toggle="tab"><?= $m['nome_modulo']; ?></a></li>
-
                                                     <?php }
                                                         $i++;
                                                     } ?>
@@ -401,33 +400,33 @@ if (!isset($_SESSION['usuario'])) {
                                                                         if ($ativo == 0) {
                                                                             echo "Acesso temporariamente negado, peça aos seus superiores para autorizar o acesso.";
                                                                         } else {
-                                                                            $n_licao_tabela = $dados_pg['n_licao'];
                                                                             $nome_pg = $dados_pg['nome_pg'];
 
                                                                             $nome_modulo = $m['nome_modulo'];
                                                                             $ano = $m['ano'];
-                                                                            $n_licao = $m['n_licao'];
+
+                                                                            if ($i == $id_modulo) {
+                                                                                $n_licao_tabela = $dados_pg['n_licao'];
+                                                                                $n_licao = $m['n_licao'];
+                                                                            } else if ($i < $id_modulo || $i > $id_modulo) {
+                                                                                $dadosModulos = $this->FConsultas_model->list_modulos_informacoes(1, $i);
+                                                                                $licaoBase = $dadosModulos['n_licao'];
+                                                                                $n_licao_tabela = $licaoBase;
+                                                                                $n_licao = $licaoBase;
+                                                                            } else {
+                                                                                $n_licao_tabela = $dados_pg['n_licao'];
+                                                                                $n_licao = $m['n_licao'];
+                                                                            }
 
                                                                             for ($i2 = 1; $i2 <= $n_licao; $i2++) {
 
                                                                                 $consultar_progresso = $this->FConsultas_model->consultarProgressoPG($id_pg, $i, $i2, 2);
                                                                                 $x = $consultar_progresso['row'];
-
                                                                                 $dados_licao = $this->FConsultas_model->consultarLicaoId($i, $i2);
                                                                                 $nome_licao = $dados_licao['nome_licao'];
 
-                                                                                if ($i != $id_modulo) {
+                                                                                if ($pg['row'] == 0 || !$checksCriancas ||  $i > $id_modulo) {
                                                                         ?>
-                                                                                    <tr>
-                                                                                        <td><?= $i2; ?> - <?= $nome_licao; ?></td>
-                                                                                        <td><span class="label label-danger">Bloqueada</span></td>
-                                                                                        <td>
-                                                                                            <div class="sparkbar" data-color="#f56954" data-height="20">Preencher</div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                <?php
-                                                                                } else if ($pg['row'] == 0 || !$checksCriancas) {
-                                                                                ?>
                                                                                     <tr>
                                                                                         <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                         <td><span class="label label-danger">Bloqueada</span></td>
@@ -444,7 +443,18 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                 <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                                 <td><span class="label label-info">Liberada</span></td>
                                                                                                 <td>
-                                                                                                    <div class="sparkbar" data-color="#00c0ef" data-height="20"><a href="../pg/preenchimento?id_pg=<?= $id_pg; ?>&id_lider=<?= $id_lider; ?>&ano=<?= $ano; ?>&id_modulo=<?= $id_modulo; ?>&licao=<?= $i2; ?>">Preencher</a></div>
+                                                                                                    <div class="sparkbar" data-color="#00c0ef" data-height="20">
+                                                                                                        <a href="#" onclick="document.getElementById('form1').submit();">Preencher
+                                                                                                        </a>
+
+                                                                                                        <form action="../pg/preenchimento" id="form1" method="post">
+                                                                                                            <input type="hidden" name="id_pg" value="<?= $id_pg; ?>">
+                                                                                                            <input type="hidden" name="id_lider" value="<?= $id_lider; ?>">
+                                                                                                            <input type="hidden" name="ano" value="<?= $ano; ?>">
+                                                                                                            <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">
+                                                                                                            <input type="hidden" name="licao" value="<?= $i2; ?>">
+                                                                                                        </form>
+                                                                                                    </div>
                                                                                                 </td>
                                                                                             </tr>
                                                                                         <?php } else { ?>
@@ -455,7 +465,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                     <div class="sparkbar" data-color="#00a65a" data-height="20">Preencher</div>
                                                                                                 </td>
                                                                                             </tr>
-                                                                                        <?php }
+                                                                                        <?php } // fim do x
                                                                                     } else {
                                                                                         ?>
                                                                                         <tr>
@@ -465,10 +475,11 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                 <div class="sparkbar" data-color="#f56954" data-height="20">Preencher</div>
                                                                                             </td>
                                                                                         </tr>
-                                                                        <?php }
-                                                                                }
-                                                                            }
-                                                                        } ?>
+                                                                        <?php } // fim do check das lições
+                                                                                } // check das crianças
+                                                                            } // fim do for
+                                                                        }
+                                                                        ?>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
@@ -502,7 +513,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                 <table class="table no-margin">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th>Módulo</th>
                                                                             <th>Lição</th>
                                                                             <th>Status</th>
                                                                             <th>Ação</th>
@@ -519,37 +529,35 @@ if (!isset($_SESSION['usuario'])) {
                                                                         if ($ativo == 0) {
                                                                             echo "Acesso temporariamente negado, peça aos seus superiores para autorizar o acesso.";
                                                                         } else {
-                                                                            $n_licao_tabela = $dados_pg['n_licao'];
                                                                             $nome_pg = $dados_pg['nome_pg'];
 
                                                                             $nome_modulo = $m['nome_modulo'];
                                                                             $ano = $m['ano'];
-                                                                            $n_licao = $m['n_licao'];
+
+                                                                            if ($i == $id_modulo) {
+                                                                                $n_licao_tabela = $dados_pg['n_licao'];
+                                                                                $n_licao = $m['n_licao'];
+                                                                            } else if ($i < $id_modulo || $i > $id_modulo) {
+                                                                                $dadosModulos = $this->FConsultas_model->list_modulos_informacoes($ano, $i);
+                                                                                $licaoBase = $dadosModulos['n_licao'];
+                                                                                $n_licao_tabela = $licaoBase;
+                                                                                $n_licao = $licaoBase;
+                                                                            } else {
+                                                                                $n_licao_tabela = $dados_pg['n_licao'];
+                                                                                $n_licao = $m['n_licao'];
+                                                                            }
 
                                                                             for ($i2 = 1; $i2 <= $n_licao; $i2++) {
 
                                                                                 $consultar_progresso = $this->FConsultas_model->consultarProgressoPG($id_pg, $i, $i2, 2);
                                                                                 $x = $consultar_progresso['row'];
-
                                                                                 $dados_licao = $this->FConsultas_model->consultarLicaoId($i, $i2);
                                                                                 $nome_licao = $dados_licao['nome_licao'];
 
-                                                                                if ($i != $id_modulo) {
+                                                                                if ($pg['row'] == 0 || !$checksCriancas ||  $i > $id_modulo) {
                                                                         ?>
                                                                                     <tr>
-                                                                                        <td><?= $nome_modulo; ?></td>
-                                                                                        <td><?= $nome_licao; ?></td>
-                                                                                        <td><span class="label label-danger">Bloqueada</span></td>
-                                                                                        <td>
-                                                                                            <div class="sparkbar" data-color="#f56954" data-height="20">Preencher</div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                <?php
-                                                                                } else if ($pg['row'] == 0 || !$checksCriancas) {
-                                                                                ?>
-                                                                                    <tr>
-                                                                                        <td><?= $nome_modulo; ?></td>
-                                                                                        <td><?= $nome_licao; ?></td>
+                                                                                        <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                         <td><span class="label label-danger">Bloqueada</span></td>
                                                                                         <td>
                                                                                             <div class="sparkbar" data-color="#f56954" data-height="20">Preencher</div>
@@ -561,37 +569,46 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         if ($x == 0) {
                                                                                     ?>
                                                                                             <tr>
-                                                                                                <td><?= $nome_modulo; ?></td>
-                                                                                                <td><?= $nome_licao; ?></td>
+                                                                                                <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                                 <td><span class="label label-info">Liberada</span></td>
                                                                                                 <td>
-                                                                                                    <div class="sparkbar" data-color="#00c0ef" data-height="20"><a href="../pg/preenchimento?id_pg=<?= $id_pg; ?>&id_lider=<?= $id_lider; ?>&ano=<?= $ano; ?>&id_modulo=<?= $id_modulo; ?>&licao=<?= $i2; ?>">Preencher</a></div>
+                                                                                                    <div class="sparkbar" data-color="#00c0ef" data-height="20">
+                                                                                                        <a href="#" onclick="document.getElementById('form1').submit();">Preencher
+                                                                                                        </a>
+
+                                                                                                        <form action="../pg/preenchimento" id="form1" method="post">
+                                                                                                            <input type="hidden" name="id_pg" value="<?= $id_pg; ?>">
+                                                                                                            <input type="hidden" name="id_lider" value="<?= $id_lider; ?>">
+                                                                                                            <input type="hidden" name="ano" value="<?= $ano; ?>">
+                                                                                                            <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">
+                                                                                                            <input type="hidden" name="licao" value="<?= $i2; ?>">
+                                                                                                        </form>
+                                                                                                    </div>
                                                                                                 </td>
                                                                                             </tr>
                                                                                         <?php } else { ?>
                                                                                             <tr>
-                                                                                                <td><?= $nome_modulo; ?></td>
-                                                                                                <td><?= $nome_licao; ?></td>
+                                                                                                <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                                 <td><span class="label label-success">Feita</span></td>
                                                                                                 <td>
                                                                                                     <div class="sparkbar" data-color="#00a65a" data-height="20">Preencher</div>
                                                                                                 </td>
                                                                                             </tr>
-                                                                                        <?php }
+                                                                                        <?php } // fim do x
                                                                                     } else {
                                                                                         ?>
                                                                                         <tr>
-                                                                                            <td><?= $nome_modulo; ?></td>
-                                                                                            <td><?= $nome_licao; ?></td>
+                                                                                            <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                             <td><span class="label label-danger">Bloqueada</span></td>
                                                                                             <td>
                                                                                                 <div class="sparkbar" data-color="#f56954" data-height="20">Preencher</div>
                                                                                             </td>
                                                                                         </tr>
-                                                                        <?php }
-                                                                                }
-                                                                            }
-                                                                        } ?>
+                                                                        <?php } // fim do check das lições
+                                                                                } // check das crianças
+                                                                            } // fim do for
+                                                                        }
+                                                                        ?>
                                                                     </tbody>
                                                                 </table>
                                                             </div>

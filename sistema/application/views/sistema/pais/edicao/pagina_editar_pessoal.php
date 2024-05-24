@@ -1,5 +1,5 @@
 <?php
-/** @var \$this */
+
 if (!isset($_SESSION['usuario'])) {
   header("location: ../../index");
 } else {
@@ -89,7 +89,7 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="box-body chat" id="chat-box">
                     <div class="box-footer">
                       <?php
-                      $dados_pessoal = $this->FConsultas_model->consultaDadosPaisId($id_usuario);
+                      $dados_pessoal = $this->FConsultas_model->consultaDadosPaisId($id_usuario, 1);
 
                       $foto_original = $dados_pessoal['foto'];
                       //$foto_original = 'fotoU/pais/WhatsApp_Image_2022-12-05_at_08_30_33.jpeg';
@@ -162,29 +162,29 @@ if (!isset($_SESSION['usuario'])) {
 
                         <div class="form-group">
                           <label for="exampleInputEmail1">CPF</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" name="cpf" value="<?= $dados_pessoal['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required>
+                          <input type="text" class="form-control" id="exampleInputEmail1" name="cpf" value="<?= $dados_pessoal['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11">
                         </div>
                       </div>
 
                       <div class="col-lg-6">
                         <div class="form-group">
                           <label for="exampleInputEmail1">E-mail</label>
-                          <input type="email" class="form-control" id="exampleInputEmail1" name="email" value="<?= $dados_pessoal['email']; ?>" placeholder="E-mail" required>
+                          <input type="email" class="form-control" id="exampleInputEmail1" name="email" value="<?= $dados_pessoal['email']; ?>" placeholder="E-mail">
                         </div>
                         <div class="form-group">
                           <label for="exampleInputEmail1">Telefone</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" name="telefone" value="<?= $dados_pessoal['telefone_whatsapp']; ?>" placeholder="Telefone" minlength="11" required>
+                          <input type="text" class="form-control" id="exampleInputEmail1" name="telefone" value="<?= $dados_pessoal['telefone_whatsapp']; ?>" placeholder="Telefone" minlength="11">
                         </div>
                       </div>
 
                       <div class="col-lg-6">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Igreja</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" name="igreja" value="<?= $dados_pessoal['igreja']; ?>" placeholder="Igreja" minlength="5" required>
+                          <input type="text" class="form-control" id="exampleInputEmail1" name="igreja" value="<?= $dados_pessoal['igreja']; ?>" placeholder="Igreja" minlength="5">
                         </div>
                         <div class="form-group">
                           <label for="exampleInputEmail1">Data de Nascimento</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" name="nascimento" value="<?= $dados_pessoal['nascimento']; ?>" maxlength="10" minlength="10" placeholder="Data de Nascimento" required>
+                          <input type="text" class="form-control" id="exampleInputEmail1" name="nascimento" value="<?= $dados_pessoal['nascimento']; ?>" maxlength="10" minlength="10" placeholder="Data de Nascimento">
                         </div>
                       </div>
 

@@ -255,7 +255,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <div class="col-lg-12">
                                                         <div class="form-group">
                                                             <label for="exampleInputPassword1">Data de Início</label>
-                                                            <p style="color: black;"><input type="text" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker_cadastro_pg" required></p>
+                                                            <p style="color: black;"><input type="text" minlength="10" autocomplete="off" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker_cadastro_pg" required></p>
                                                         </div>
                                                     </div>
 
@@ -476,17 +476,17 @@ if (!isset($_SESSION['usuario'])) {
                                                 <div class="box-footer no-padding">
                                                     <ul class="nav nav-stacked">
                                                         <li>
-                                                            <a href="#" onclick="document.getElementById('form1').submit();">Crianças <span class="pull-right badge bg-red"><?= $total_crianca ?></span>
+                                                            <a href="#" onclick="document.getElementById('form_mostrar_criancas').submit();">Crianças <span class="pull-right badge bg-red"><?= $total_crianca ?></span>
                                                             </a>
 
-                                                            <form action="../page/criancas" id="form1" method="post">
+                                                            <form action="../page/criancas" id="form_mostrar_criancas" method="post">
                                                             </form>
                                                         </li>
                                                         <li>
-                                                            <a href="#" onclick="document.getElementById('form3').submit();">Preencher Relatório <span class="pull-right badge bg-<?= $color_modulo; ?>"><?= $nome_modulo ?> - Lição <?= $n_licao; ?></span>
+                                                            <a href="#" onclick="document.getElementById('form_preencher_relatorio').submit();">Preencher Relatório <span class="pull-right badge bg-<?= $color_modulo; ?>"><?= $nome_modulo ?> - Lição <?= $n_licao; ?></span>
                                                             </a>
 
-                                                            <form action="pg/licoes" id="form3" method="post">
+                                                            <form action="pg/licoes" id="form_preencher_relatorio" method="post">
                                                                 <input type="hidden" name="id_pg" value="<?= $dadosPG['id_pg'] ?>">
                                                                 <input type="hidden" name="id_lider" value="<?= $id_lider; ?>">
                                                                 <input type="hidden" name="ano" value="<?= $id_ano; ?>">

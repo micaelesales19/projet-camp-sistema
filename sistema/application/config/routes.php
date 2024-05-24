@@ -65,6 +65,12 @@ $route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
 
 $route['download_material'] = 'welcome/downloadMaterial';
 
+// Primeiro Acesso
+$route['pg/cadastro/salvar'] = 'welcome/cadastro_pg_inicial';
+$route['pg/pular'] = 'welcome/cadastro_pg_inicial_pular';
+
+$route['criancas/cadastro/salvar'] = 'welcome/cadastro_crianca_inicial';
+
 // PAIS	
 $route['cadastro'] = 'welcome/cadastro';
 $route['cadastro/salvar'] = 'welcome/salvar_cadastro';
@@ -82,7 +88,6 @@ $route['pais/page/criancas'] = 'Pais/pagina_visualizacao_criancas';
 $route['pais/page/criancas/cadastro'] = 'Pais/pagina_cadastro_criancas';
 
 $route['pais/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
-$route['pais/page/criancas/cadastro/paginaInicial'] = 'welcome/cadastro_crianca_inicial';
 $route['pais/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';
 $route['pais/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca';
 $route['pais/page/criancas/ativar'] = 'welcome/ativar_crianca';
@@ -94,8 +99,6 @@ $route['pais/page/pg'] = 'Pais/pagina_visualizacao_pg';
 $route['pais/page/pg/get-informacoes-pg'] = 'welcome/get_informacoes_pg';
 
 $route['pais/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
-$route['pais/page/pg/cadastro/paginaInicial'] = 'welcome/cadastro_pg_inicial';
-$route['pais/page/pg/cadastro/primeiroAcesso'] = 'welcome/cadastro_pg_pagina_inicial';
 $route['pais/page/pg/edicao/salvar'] = 'welcome/editar_pg';
 $route['pais/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
 
@@ -137,7 +140,6 @@ $route['lider/page/criancas'] = 'Lider/pagina_visualizacao_criancas';
 $route['lider/page/criancas/cadastro'] = 'Lider/pagina_cadastro_criancas';
 
 $route['lider/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
-$route['lider/page/criancas/cadastro/paginaInicial'] = 'welcome/cadastro_crianca_inicial';
 $route['lider/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';
 $route['lider/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca';
 $route['lider/page/criancas/ativar'] = 'welcome/ativar_crianca';
@@ -147,11 +149,7 @@ $route['lider/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas';
 // PG
 $route['lider/page/pg'] = 'Lider/pagina_visualizacao_pg';
 
-$route['lider/page/pg/progresso'] = 'Lider/pagina_ver_progresso';
-
 $route['lider/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
-$route['lider/page/pg/cadastro/paginaInicial'] = 'welcome/cadastro_pg_inicial';
-$route['lider/page/pg/cadastro/primeiroAcesso'] = 'welcome/cadastro_pg_pagina_inicial';
 $route['lider/page/pg/edicao/salvar'] = 'welcome/editar_pg';
 $route['lider/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
 

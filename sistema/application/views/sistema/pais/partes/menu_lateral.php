@@ -51,10 +51,19 @@ $color = "#46734C";
             <!-- Menu Footer-->
             <li class="user-footer">
               <div class="pull-left">
-                <a href="<?= $voltar; ?>pagina_editar_pessoal?x=1" class="btn btn-default btn-flat">Editar de Dados</a>
+                <a href="#" onclick="document.getElementById('page_editar_dados').submit();" class="btn btn-default btn-flat">Editar de Dados</a>
+
+                <form action="<?= $voltar; ?>pagina_editar_pessoal" id="page_editar_dados" method="post">
+                  <input type="hidden" name="x" value="1">
+                </form>
               </div>
               <div class="pull-right">
-                <a href="../<?= $voltar; ?>sair?id_usuario=<?= $id_usuario_2; ?>" class="btn btn-default btn-flat">Sair</a>
+
+                <a href="#" onclick="document.getElementById('page_sair').submit();" class="btn btn-default btn-flat">Sair</a>
+
+                <form action="../<?= $voltar; ?>sair" id="page_sair" method="post">
+                  <input type="hidden" name="id_usuario" value="<?= $id_usuario_2; ?>">
+                </form>
               </div>
             </li>
           </ul>
