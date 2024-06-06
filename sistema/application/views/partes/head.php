@@ -45,6 +45,7 @@
     $(document).ready(function() {
       $('#table_criancas_pais').DataTable();
       $('#table_devocionais').DataTable();
+      $('#table_lideres').DataTable();
       var x = window.matchMedia("(max-width: 480px)")
       responsive_function(x) // Call listener function at run time
       //x.addListener(responsive_function)

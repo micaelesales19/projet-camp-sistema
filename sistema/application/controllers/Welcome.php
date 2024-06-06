@@ -53,6 +53,46 @@ class Welcome extends CI_Controller
 		$this->load->view('sistema/cadastro');
 	}
 
+	public function listar_lideres_segundo_ciclo()
+	{
+
+		$consultar_pg = $this->db->query("SELECT * FROM pg WHERE ano = 2");
+		$resultado = $consultar_pg->result_array();
+
+		foreach ($resultado as $key => $pg) {
+			$id_lider = $pg['id_lider'];
+
+			$consultar_dados_lideres = $this->db->query("SELECT * FROM lider WHERE id_lider = $id_lider");
+			$count_lideres = $consultar_dados_lideres->num_rows();
+			$lideres = $consultar_dados_lideres->row_array();
+
+			$consultar_dados_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = $id_lider");
+			$count_coordenador = $consultar_dados_coordenador->num_rows();
+			$coordenador = $consultar_dados_coordenador->row_array();
+
+			$consultar_dados_sr = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorR = $id_lider");
+			$count_sr = $consultar_dados_sr->num_rows();
+			$sr = $consultar_dados_sr->row_array();
+
+			$consultar_dados_se = $this->db->query("SELECT * FROM supervisore WHERE id_supervisorEs = $id_lider");
+			$count_se = $consultar_dados_se->num_rows();
+			$se = $consultar_dados_se->row_array();
+
+			$consultar_dados_criancas = $this->db->query("SELECT * FROM crianca WHERE lider = $id_lider");
+			$count_criancas = $consultar_dados_criancas->num_rows();
+
+			if ($count_lideres != 0) {
+				echo $lideres['nome_lider'] . "(lider) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
+			} else if ($count_coordenador != 0) {
+				echo $coordenador['nome_coordenador'] . "(coordenador) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
+			} else if ($count_sr != 0) {
+				echo $sr['nome_supervisorR'] . "(sr) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
+			} else if ($count_se != 0) {
+				echo $se['nome_supervisorE'] . "(se) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
+			}
+		}
+	}
+
 	public function enviarEmailDevocionalDiario()
 	{
 		$todosPais = $this->FConsultas_model->mostrarTodosPais();
@@ -460,15 +500,19 @@ class Welcome extends CI_Controller
 				$this->db->where('id_usuario', $id_usuario);
 				$this->db->update('usuario');
 
-				$consultar_lider = $this->db->query("SELECT * FROM lider WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_lider LIKE '$nome%' OR nome_lider LIKE '$nome_base%')");
+				$consultar_lider = $this->db->query("SELECT * FROM lider WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_lider LIKE '$nome' OR nome_lider LIKE '$nome_base')");
 				$dados_lider = $consultar_lider->row_array();
 				$total_lider = $consultar_lider->num_rows();
 
-				$consultar_pais = $this->db->query("SELECT * FROM pais WHERE (email = '$email' OR cpf = '$cpf_completo') AND  (nome LIKE '$nome%' OR nome LIKE '$nome_base%')");
+				$consultar_pais = $this->db->query("SELECT * FROM pais WHERE (email = '$email' OR cpf = '$cpf_completo') AND  (nome LIKE '$nome' OR nome LIKE '$nome_base')");
 				$dados_pais = $consultar_pais->row_array();
 				$total_pais = $consultar_pais->num_rows();
 
-				$consultar_adm = $this->db->query("SELECT * FROM direcao WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_direcao LIKE '$nome%' OR nome_direcao LIKE '$nome_base%')");
+				$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE (email = '$email' OR cpf = '$cpf_completo') AND  (nome_coordenador LIKE '$nome' OR nome_coordenador LIKE '$nome_base')");
+				$dados_coordenador = $consultar_coordenador->row_array();
+				$total_coordenador = $consultar_coordenador->num_rows();
+
+				$consultar_adm = $this->db->query("SELECT * FROM direcao WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_direcao LIKE '$nome' OR nome_direcao LIKE '$nome_base')");
 				$dados_adm = $consultar_adm->row_array();
 				$total_adm = $consultar_adm->num_rows();
 
@@ -576,6 +620,39 @@ class Welcome extends CI_Controller
 							}
 						}
 					}
+				} else if ($nivel == 3) { // coordenador
+					if ($total_coordenador == 0) {
+						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$data = [
+							"<input type='hidden' name='x' value='$x'>"
+						];
+						$funcao = $this->FConsultas_model->red('index', 2000, $data);
+						echo $funcao;
+					} else {
+						echo "Bem Vindo - " . $dados['nome'];
+						$_SESSION['id_usuario'] .= $dados_coordenador['id_coordenador'];
+						$_SESSION['id_usuario_2'] .= $id_usuario;
+
+						$consultar_termos = $this->db->select("*")
+							->from("termos")
+							->where("id_usuario", $id_usuario)
+							->get();
+						$termos = $consultar_termos->num_rows();
+
+						if ($termos == 0) {
+							$data = [
+								"<input type='hidden' name='nivel' value='3'>"
+							];
+							$funcao = $this->FConsultas_model->red('termos', 2000, $data);
+							echo $funcao;
+						} else {
+							if ($x == 1) {
+								$data = [];
+								$funcao = $this->FConsultas_model->red('coordenador/home', 2000, $data);
+								echo $funcao;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -626,6 +703,8 @@ class Welcome extends CI_Controller
 			} else {
 				$this->load->view('sistema/lider/home');
 			}
+		} else if ($nivel == 3) {
+			$this->load->view('sistema/coordenador/home');
 		}
 	}
 

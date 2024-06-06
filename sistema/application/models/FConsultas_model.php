@@ -387,6 +387,16 @@ class FConsultas_model extends CI_Model
 				'dados' => $dados_consulta_pg,
 			);
 			return $dados;
+		} else if ($x == 3) {
+			$consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario ORDER BY id_modulo DESC");
+			$row = $consultar_pg->num_rows();
+			$dados_consulta_pg = $consultar_pg->row_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_pg,
+			);
+			return $dados;
 		}
 	}
 
@@ -500,7 +510,7 @@ class FConsultas_model extends CI_Model
 
 	public function consultarModuloId($id_modulo)
 	{
-		$consultar = $this->db->query("SELECT * FROM modulo WHERE id_modulo LIKE $id_modulo");
+		$consultar = $this->db->query("SELECT * FROM modulo WHERE id_modulo = '$id_modulo'");
 		$dados = $consultar->row_array();
 		return $dados;
 	}
@@ -552,10 +562,37 @@ class FConsultas_model extends CI_Model
 		}
 	}
 
+	public function consultarProgressoGeral($id_lider, $x)
+	{
+		if ($x == 1) {
+			$consultar = $this->db->query("SELECT * FROM progresso_pg_pais WHERE id_lider = $id_lider");
+			$row = $consultar->num_rows();
+			$dados = $consultar->result_array();
+
+			$array = array(
+				'row' => $row,
+				'dados' => $dados,
+			);
+
+			return $array;
+		} else if ($x == 2) {
+			$consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_lider = $id_lider");
+			$row = $consultar->num_rows();
+			$dados = $consultar->result_array();
+
+			$array = array(
+				'row' => $row,
+				'dados' => $dados,
+			);
+
+			return $array;
+		}
+	}
+
 	public function consultarProgressoPG($id_pg, $id_modulo, $numero_licao, $x)
 	{
 		if ($x == 1) {
-			$consultar = $this->db->query("SELECT * FROM progresso_pg_pais WHERE id_pg = $id_pg AND id_modulo = $id_modulo AND numero_licao = $numero_licao");
+			$consultar = $this->db->query("SELECT * FROM progresso_pg_pais WHERE id_pg = $id_pg AND id_modulo = '$id_modulo' AND numero_licao = '$numero_licao'");
 			$row = $consultar->num_rows();
 			$dados = $consultar->row_array();
 
@@ -566,7 +603,7 @@ class FConsultas_model extends CI_Model
 
 			return $array;
 		} else if ($x == 2) {
-			$consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_pg = $id_pg AND id_modulo = $id_modulo AND numero_licao = $numero_licao");
+			$consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_pg = $id_pg AND id_modulo = '$id_modulo' AND numero_licao = '$numero_licao'");
 			$row = $consultar->num_rows();
 			$dados = $consultar->row_array();
 
@@ -681,6 +718,17 @@ class FConsultas_model extends CI_Model
 			);
 
 			return $dados;
+		} else if ($x == 3) {
+			$consultar_criancas = $this->db->query("SELECT * FROM crianca WHERE lider LIKE $id_usuario");
+			$row = $consultar_criancas->num_rows();
+			$dados_consulta_criancas = $consultar_criancas->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_criancas,
+			);
+
+			return $dados;
 		}
 	}
 
@@ -699,6 +747,17 @@ class FConsultas_model extends CI_Model
 			return $dados;
 		} else if ($x == 2) {
 			$consultar_criancas = $this->db->query("SELECT * FROM criancas_2 WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1 ORDER BY nome_crianca ASC");
+			$row = $consultar_criancas->num_rows();
+			$dados_consulta_criancas = $consultar_criancas->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_criancas,
+			);
+
+			return $dados;
+		} else if ($x == 3) {
+			$consultar_criancas = $this->db->query("SELECT * FROM crianca WHERE lider LIKE $id_usuario AND ativo = 1 ORDER BY nome_crianca ASC");
 			$row = $consultar_criancas->num_rows();
 			$dados_consulta_criancas = $consultar_criancas->result_array();
 
@@ -870,5 +929,225 @@ class FConsultas_model extends CI_Model
 		$consultar = $this->db->query("SELECT * FROM semanarios");
 		$dados_consula_colider = $consultar->result_array();
 		return $dados_consula_colider;
+	}
+
+	public function checkPorcentagem($x)
+	{
+		if ($x < 20) {
+			return 'danger';
+		} else if ($x > 20 && $x < 80) {
+			return 'warning';
+		} else {
+			return 'success';
+		}
+	}
+	public function getInfoLiderId($id)
+	{
+		$consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_lider LIKE $id");
+		$row = $consultar_lider->num_rows();
+		$dados_consulta_lider = $consultar_lider->row_array();
+
+		$dados = array(
+			'row' => $row,
+			'dados' => $dados_consulta_lider,
+		);
+
+		return $dados;
+	}
+
+	public function getInfoCoordenadorId($id)
+	{
+		$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador LIKE $id");
+		$row = $consultar_coordenador->num_rows();
+		$dados_consulta_coordenador = $consultar_coordenador->row_array();
+
+		$dados = array(
+			'row' => $row,
+			'dados' => $dados_consulta_coordenador,
+		);
+
+		return $dados;
+	}
+
+	public function getLideres($id_usuario, $opc, $opc2, $datas)
+	{
+		if ($opc == 1 && $opc2 == 1) {
+			// Consulta na tabela de líderes: líderes ativos pelo id coordenador
+			$id_coordenador = $id_usuario[0];
+
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_coordenador AND confirmado = 2 ORDER BY nome_lider ASC");
+			$row = $consultar_lideres->num_rows();
+			$dados_consulta_lideres = $consultar_lideres->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_lideres,
+			);
+
+			return $dados;
+		} else if ($opc2 == 'nao') {
+			// Consulta na tabela de líderes entre datas geral
+			$id_coordenador = $id_usuario[0];
+
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_coordenador AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
+			$row = $consultar_lideres->num_rows();
+			$dados_consulta_lideres = $consultar_lideres->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_lideres,
+			);
+
+			return $dados;
+		} else if ($opc2 == 'sim') {
+			// Consulta na tabela de líderes entre datas geral
+			$id_coordenador = $id_usuario[0];
+
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			//echo "Datas 1 - " . $data_inicio . " - " . $data_final . "<br>";
+
+			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
+			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
+
+			//echo "Datas 2 - " . $data_inicio_menos_um_ano . " - " . $data_final_menos_um_ano;
+
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_coordenador AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
+			$row = $consultar_lideres->num_rows();
+			$dados_consulta_lideres = $consultar_lideres->result_array();
+
+			$consultar_lideres_menos_um_ano = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_coordenador AND data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_lider ASC");
+			$row_menos_um_ano = $consultar_lideres_menos_um_ano->num_rows();
+			$dados_consulta_lideres_menos_um_ano = $consultar_lideres_menos_um_ano->result_array();
+
+			$newconsulta = array(
+				'row' => $row_menos_um_ano,
+				'dados' => $dados_consulta_lideres_menos_um_ano,
+			);
+
+			$lideres_ativos_comparacao = $this->lideresAtivos($newconsulta);
+
+			$total_criancas_geral = $this->getNumerosCriancas([$id_coordenador], $newconsulta, 'criancas_coord_1');
+			$total_criancas_ativos = $this->getNumerosCriancas([$id_coordenador], $lideres_ativos_comparacao, 'criancas_coord_1');
+
+			$ativos_comparacao = $lideres_ativos_comparacao['row'];
+
+			$comparacao = array(
+				'lideres' => $row_menos_um_ano,
+				'lideres_ativos' => $ativos_comparacao,
+				'criancas' => $total_criancas_geral,
+				'criancas_ativas' => $total_criancas_ativos,
+			);
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_lideres,
+				'row_menos_um_ano' => $row_menos_um_ano,
+				'comparacao' => $comparacao,
+			);
+
+			return $dados;
+		}
+	}
+
+	public function getUsuario($nome, $email, $cpf)
+	{
+		$consultar_usuario = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf' AND nome LIKE '$nome'");
+		$dados_usuario = $consultar_usuario->row_array();
+		$total_usuario = $consultar_usuario->num_rows();
+
+		$dados = array(
+			'row' => $total_usuario,
+			'dados' => $dados_usuario,
+		);
+
+		return $dados;
+	}
+	public function getNumerosCriancas($id_usuario, $users, $opc)
+	{
+
+		$total_criancas = 0;
+
+		if ($opc == 'criancas_coord_1') {
+			$id_coordenador = $id_usuario[0];
+
+			$consultar_criancas = $this->db->query("SELECT * FROM crianca WHERE lider = $id_coordenador");
+			$row = $consultar_criancas->num_rows();
+
+			$total_criancas = $total_criancas + $row;
+
+			if ($users['row'] == 0) {
+			} else {
+				foreach ($users['dados'] as $key => $dados) {
+					$id = $dados['id_lider'];
+
+					$consultar_criancas_lider = $this->db->query("SELECT * FROM crianca WHERE lider = $id");
+					$row_lider = $consultar_criancas_lider->num_rows();
+
+					$total_criancas = $total_criancas + $row_lider;
+				}
+			}
+		}
+
+		return $total_criancas;
+	}
+
+	public function converterData($data)
+	{
+		$dia = $data[0] . $data[1];
+
+		$mes = $data[3] . $data[4];
+
+		$ano = $data[6] . $data[7] . $data[8] . $data[9];
+
+		$data_nova = $ano . "-" . $mes . "-" . $dia;
+
+		return $data_nova;
+	}
+
+	public function lideresAtivos($list)
+	{
+		$lista = $list['dados'];
+		$total_ativos = 0;
+		$dados_lider = [];
+
+		if ($list['row'] == 0) {
+		} else {
+			foreach ($lista as $key => $lideres) {
+				$id = $lideres['id_lider'];
+				$nome = $lideres['nome_lider'];
+				$email = $lideres['email'];
+				$cpf = $lideres['cpf'];
+
+				$usuario = $this->getUsuario($nome, $email, $cpf);
+
+				$ativo = $usuario['row'] == 0 ? 0 : $usuario['dados']['ativo'];
+
+				$check_lider_pg = $this->db->query("SELECT COUNT(1) FROM pg WHERE id_lider = $id");
+				$total_pg = $check_lider_pg->num_rows();
+
+				$consultar_criancas = $this->db->query("SELECT COUNT(1) FROM crianca WHERE lider = $id");
+				$total_criancas = $consultar_criancas->num_rows();
+
+				$check_lider_progresso = $this->db->query("SELECT COUNT(1) FROM progresso_pg WHERE id_lider = $id");
+				$total_progresso = $check_lider_progresso->num_rows();
+
+				if ($ativo == 0 || $total_pg == 0 || $total_criancas == 0 || $total_progresso == 0) {
+				} else {
+					array_push($dados_lider, $lideres);
+					$total_ativos = $total_ativos + 1;
+				}
+			}
+		}
+
+		$dados = array(
+			'row' => $total_ativos,
+			'dados' => $dados_lider,
+		);
+		return $dados;
 	}
 }

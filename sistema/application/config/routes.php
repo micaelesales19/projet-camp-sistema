@@ -54,6 +54,9 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['offline'] = 'welcome/offline';
+$route['segundociclo'] = 'welcome/listar_lideres_segundo_ciclo';
+
+//$route['mudar_data'] = 'Coordenador/mudar_data';
 
 $route['index'] = 'welcome/index';
 $route['sair'] = 'welcome/sair';
@@ -70,6 +73,11 @@ $route['pg/cadastro/salvar'] = 'welcome/cadastro_pg_inicial';
 $route['pg/pular'] = 'welcome/cadastro_pg_inicial_pular';
 
 $route['criancas/cadastro/salvar'] = 'welcome/cadastro_crianca_inicial';
+
+// CronJobs
+$route['controller/devocionalDiario'] = 'welcome/enviarEmailDevocionalDiario';
+$route['controller/atualizacaoModuloMensal'] = 'welcome/atualizarModuloMensal';
+$route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDevocional';
 
 // PAIS	
 $route['cadastro'] = 'welcome/cadastro';
@@ -116,11 +124,6 @@ $route['pais/colider/cadastro/salvar'] = 'Pais/cadastro_colider';
 $route['pais/colider/desativar'] = 'Pais/desativar_colider';
 $route['pais/colider/ativar'] = 'Pais/ativar_colider';
 // Colíderes
-
-// CronJobs
-$route['controller/devocionalDiario'] = 'welcome/enviarEmailDevocionalDiario';
-$route['controller/atualizacaoModuloMensal'] = 'welcome/atualizarModuloMensal';
-$route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDevocional';
 
 // Download de Material
 $route['pais/page/download'] = 'Pais/pagina_download_material';
@@ -172,6 +175,16 @@ $route['lider/colider/ativar'] = 'Lider/ativar_colider';
 $route['lider/page/download'] = 'Lider/pagina_download_material';
 $route['lider/page/modulo'] = 'Lider/pagina_download_material_modulo';
 // FIM LÍDER
+
+/* NÍVEL COORDENADOR */
+$route['coordenador/home'] = 'Coordenador/home';
+
+$route['coordenador/page/lideres'] = 'Coordenador/pagina_ver_lideres';
+$route['coordenador/page/lideres/mostrar1'] = 'Coordenador/mostrar_table_parte_1';
+$route['coordenador/page/lideres/mostrar2'] = 'Coordenador/mostrar_table_parte_2';
+$route['coordenador/page/lideres/gerar_excel'] = 'Coordenador/gerar_excel';
+
+// FIM COORDENADOR
 
 // MÓDULOS
 $route['modulo/trilha'] = 'welcome/modulo_trilha';
