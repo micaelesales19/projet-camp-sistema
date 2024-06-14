@@ -21,44 +21,27 @@ if (!isset($_SESSION['usuario'])) {
     $this->load->view('partes/head');
     ?>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script>
-        /*$(document).ready(function() {
-
+        function loader_1() {
             var loader = document.getElementById("preloader");
-            var message = document.getElementById("message");
-
-            var dismissLoadingScreen = function() {
-                message.style.display = "none";
-                loader.style.display = "inline";
-            };
-
-            var wait3seconds = function() {
-                var result = setTimeout(dismissLoadingScreen, 300);
-            };
-
-            window.addEventListener("load", wait3seconds);
-        });*/
-
-        function loader() {
-            var loader = document.getElementById("preloader");
+            var loader2 = document.getElementById("preloader2");
             var message = document.getElementById("message");
             var botao = document.getElementById("btn_gerar");
 
             message.style.display = "inline";
             loader.style.display = "none";
+            loader2.style.display = "none";
             botao.disabled = true;
 
             var dismissLoadingScreen = function() {
                 message.style.display = "none";
                 loader.style.display = "inline";
+                loader2.style.display = "inline";
                 botao.disabled = false;
             };
 
             setTimeout(dismissLoadingScreen, 3000);
-            /*var wait3seconds = function() {
-            };
-
-            window.addEventListener("click", wait3seconds);*/
         }
     </script>
     <!-- Head -->
@@ -90,7 +73,7 @@ if (!isset($_SESSION['usuario'])) {
 
         function mostrarResultado() {
 
-            loader();
+            loader_1();
             var opc1 = $('input[name="opc"]:checked').val();
 
             var dataIn = document.getElementById('datepicker_de').value;
@@ -129,6 +112,8 @@ if (!isset($_SESSION['usuario'])) {
         function consultardb() {
             var ajax = AjaxF();
 
+            document.getElementById('_controller').value = 0;
+
             var id_coordenador = '<?= $id_usuario; ?>';
 
             var opc2 = '';
@@ -152,29 +137,76 @@ if (!isset($_SESSION['usuario'])) {
 
             ajax.onreadystatechange = function() {
                 if (ajax.readyState == 4) {
-                    document.getElementById('conteudos_table_1').innerHTML = ajax.responseText;
+                    document.getElementById('conteudos_table_informacoes_gerais').innerHTML = ajax.responseText;
                 }
             }
 
             ajax.open("GET", "lideres/mostrar1?id_coordenador=" + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim, false);
 
-            //setTimeout( 3000);
-
             ajax.setRequestHeader("Content-Type", "text/html");
             ajax.send();
 
-            ajax.onreadystatechange = function() {
-                if (ajax.readyState == 4) {
-                    document.getElementById('conteudos_table_2').innerHTML = ajax.responseText;
-                }
+            /*var url;
+            url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
+            jQuery.get(url, function(data) {
+                $('#conteudos_table_info_lideres').empty().append(data);
+            });*/
+
+            var control = document.getElementById('_controller').value;
+            if (control == 0) {
+                list_lideres();
+            } else {}
+        }
+
+
+        function list_lideres() {
+
+            loader_1();
+            var id_coordenador = '<?= $id_usuario; ?>';
+
+            document.getElementById('_controller').value = 0;
+
+            var opc2 = '';
+
+            var opc1 = $('input[name="opc"]:checked').val();
+
+            if (opc1 == 'opc3') {
+                opc2 = 'nao';
+            } else {
+                opc2 = $('input[name="comparar_msm_ano"]:checked').val();
             }
 
-            ajax.open("GET", "lideres/mostrar2?id_coordenador=" + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim, false);
+            var dataIn = document.getElementById('datepicker_de').value;
+            var dataFim = document.getElementById('datepicker_ate').value;
 
-            //setTimeout( 3000);
+            $('#conteudos_table_info_lideres').empty();
 
-            ajax.setRequestHeader("Content-Type", "text/html");
-            ajax.send();
+            var url;
+            url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
+            jQuery.get(url, function(data) {
+                $('#conteudos_table_info_lideres').empty().append(data);
+            });
+        }
+
+        function list_lideres_ativos() {
+
+            loader_1();
+            var id_coordenador = '<?= $id_usuario; ?>';
+
+            document.getElementById('_controller').value = 1;
+
+            var opc1 = document.getElementById('opc1_').value;
+            var opc2 = document.getElementById('opc2_').value;
+            var dataIn = document.getElementById('dataInicio_').value;
+            var dataFim = document.getElementById('dataAte_').value;
+
+            $('#conteudos_table_info_lideres').empty();
+
+            var url;
+            url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
+            jQuery.get(url, function(data) {
+                $('#conteudos_table_info_lideres').empty().append(data);
+            });
         }
     </script>
 
@@ -188,6 +220,21 @@ if (!isset($_SESSION['usuario'])) {
             -webkit-animation: spin 2s linear infinite;
             /* Safari */
             animation: spin 2s linear infinite;
+        }
+
+        #clicar {
+            cursor: pointer;
+        }
+
+        #imgPhoto_usuario {
+            margin-top: 1%;
+            width: 50px;
+            height: 50px;
+            padding: 1px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            transition: background .3s;
         }
 
         /* Safari */
@@ -219,6 +266,8 @@ if (!isset($_SESSION['usuario'])) {
             $this->load->view('sistema/coordenador/partes/menu_lateral', $array);
             ?>
 
+            <input type="hidden" id="_controller" value="0">
+
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
@@ -238,6 +287,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="row">
                         <!-- CRIANÇAS -->
                         <div class="box box-info">
+
                             <div class="box-header with-border">
                                 <h3 class="box-title"><i class="fa fa-table"></i> Seus Líderes</h3>
 
@@ -350,6 +400,13 @@ if (!isset($_SESSION['usuario'])) {
                                     </div>
 
                                     <!-- fa-mouse-pointer -->
+                                    <div class="table-responsive" id="preloader" style="display: none;">
+                                        <div id="conteudos_table_informacoes_gerais"></div>
+                                    </div>
+
+                                    <div class="table-responsive" id="preloader2" style="display: none;">
+                                        <div id="conteudos_table_info_lideres"></div>
+                                    </div>
 
                                     <div class="box-body" id="message">
                                         <center>
@@ -357,198 +414,193 @@ if (!isset($_SESSION['usuario'])) {
                                             <h5><i>Carregando as Informações...</i></h5>
                                         </center>
                                     </div>
-
-                                    <div class="table-responsive" id="preloader" style="display: none;">
-                                        <div id="conteudos_table_1"></div>
-                                        <div id="conteudos_table_2"></div>
-                                    </div>
                                 </div>
+                                <!-- /.box-body -->
                             </div>
-                            <!-- /.box-body -->
                         </div>
+                        <!-- /.box-body -->
                     </div>
-                    <!-- /.box-body -->
+                    <!-- /.box -->
+                </section>
+                <!-- /.content -->
             </div>
-            <!-- /.box -->
-            </section>
-            <!-- /.content -->
             <!-- Footer -->
             <?php
             $this->load->view('partes/footer');
+            ?>
+            <!-- Links JavaScript -->
+
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Create the tabs -->
+                <ul class="nav nav-tabs control-sidebar-tabs">
+                    <li class="active">
+                        <a href="#control-sidebar-settings-tab" data-toggle="control-sidebar">
+                            <i class="fa fa-table"></i> Gerar Excel
+                        </a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <!-- Settings tab content -->
+                    <div class="tab-pane active" id="control-sidebar-settings-tab">
+                        <form action="lideres/gerar_excel" method="post">
+
+                            <input type="hidden" name="id_coordenador" value="<?= $id_usuario; ?>">
+                            <input type="hidden" name="opc1" id="opc1_" value="">
+                            <input type="hidden" name="opc2" id="opc2_" value="">
+                            <input type="hidden" name="dataInicio" id="dataInicio_" value="">
+                            <input type="hidden" name="dataAte" id="dataAte_" value="">
+
+                            <h3 class="control-sidebar-heading">Informações Gerais</h3>
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Total de Líderes
+                                    <input type="checkbox" class="pull-right" name="columns[]" value="total_lideres_1" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Total de Líderes Ativos
+                                    <input type="checkbox" class="pull-right" name="columns[]" value="total_lideres_2" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Total de Crianças
+                                    <input type="checkbox" class="pull-right" name="columns[]" value="total_criancas_1" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Total de Crianças Ativas
+                                    <input type="checkbox" class="pull-right" name="columns[]" value="total_criancas_2" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <h3 class="control-sidebar-heading">Informações do PG</h3>
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Quantidade de Criança
+                                    <input type="checkbox" class="pull-right" name="columns_pg[]" value="column1" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Ciclo
+                                    <input type="checkbox" class="pull-right" name="columns_pg[]" value="column2" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Módulo
+                                    <input type="checkbox" class="pull-right" name="columns_pg[]" value="column3" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Lição
+                                    <input type="checkbox" class="pull-right" name="columns_pg[]" value="column4" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <h3 class="control-sidebar-heading">Informações dos Líderes</h3>
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Nome
+                                    <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column1" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    E-mail
+                                    <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column2" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Telefone
+                                    <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column3" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Pais
+                                    <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column4" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Estado
+                                    <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column5" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Cidade
+                                    <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column6" onclick="controler()" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+                            <h3 class="control-sidebar-heading">Informações das Crianças</h3>
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Nome
+                                    <input type="checkbox" class="pull-right" name="columns_criancas[]" onclick="controler()" value="column1" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="control-sidebar-subheading">
+                                    Data de Nascimento
+                                    <input type="checkbox" class="pull-right" name="columns_criancas[]" onclick="controler()" value="column2" checked>
+                                </label>
+                            </div>
+                            <!-- /.form-group -->
+                            <p id="mensagem_n_pode"></p>
+                            <input type="submit" class="btn btn-success btn-block" name="gerarExcel" id="btn_gerar" value="Gerar" />
+                        </form>
+
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+            </aside>
+            <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+            <div class="control-sidebar-bg"></div>
+            <?php
             $this->load->view('partes/scripts2');
             ?>
-        </div>
-        <!-- Links JavaScript -->
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Create the tabs -->
-            <ul class="nav nav-tabs control-sidebar-tabs">
-                <li class="active">
-                    <a href="#control-sidebar-settings-tab" data-toggle="tab">
-                        <i class="fa fa-table"></i> Gerar Excel
-                    </a>
-                </li>
-            </ul>
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <!-- Settings tab content -->
-                <div class="tab-pane active" id="control-sidebar-settings-tab">
-                    <form action="lideres/gerar_excel" method="post">
-
-                        <input type="hidden" name="id_coordenador" value="<?= $id_usuario; ?>">
-                        <input type="hidden" name="opc1" id="opc1_" value="">
-                        <input type="hidden" name="opc2" id="opc2_" value="">
-                        <input type="hidden" name="dataInicio" id="dataInicio_" value="">
-                        <input type="hidden" name="dataAte" id="dataAte_" value="">
-
-                        <h3 class="control-sidebar-heading">Informações Gerais</h3>
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Total de Líderes
-                                <input type="checkbox" class="pull-right" name="columns[]" value="total_lideres_1" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Total de Líderes Ativos
-                                <input type="checkbox" class="pull-right" name="columns[]" value="total_lideres_2" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Total de Crianças
-                                <input type="checkbox" class="pull-right" name="columns[]" value="total_criancas_1" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Total de Crianças Ativas
-                                <input type="checkbox" class="pull-right" name="columns[]" value="total_criancas_2" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <h3 class="control-sidebar-heading">Informações do PG</h3>
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Quantidade de Criança
-                                <input type="checkbox" class="pull-right" name="columns_pg[]" value="column1" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Ciclo
-                                <input type="checkbox" class="pull-right" name="columns_pg[]" value="column2" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Módulo
-                                <input type="checkbox" class="pull-right" name="columns_pg[]" value="column3" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Lição
-                                <input type="checkbox" class="pull-right" name="columns_pg[]" value="column4" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <h3 class="control-sidebar-heading">Informações dos Líderes</h3>
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Nome
-                                <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column1" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                E-mail
-                                <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column2" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Telefone
-                                <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column3" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Pais
-                                <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column4" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Estado
-                                <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column5" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Cidade
-                                <input type="checkbox" class="pull-right" name="columns_lideres[]" value="column6" onclick="controler()" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-                        <h3 class="control-sidebar-heading">Informações das Crianças</h3>
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Nome
-                                <input type="checkbox" class="pull-right" name="columns_criancas[]" onclick="controler()" value="column1" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-
-                        <div class="form-group">
-                            <label class="control-sidebar-subheading">
-                                Data de Nascimento
-                                <input type="checkbox" class="pull-right" name="columns_criancas[]" onclick="controler()" value="column2" checked>
-                            </label>
-                        </div>
-                        <!-- /.form-group -->
-                        <p id="mensagem_n_pode"></p>
-                        <input type="submit" class="btn btn-success btn-block" name="gerarExcel" id="btn_gerar" value="Gerar" />
-                    </form>
-
-                </div>
-                <!-- /.tab-pane -->
-            </div>
-        </aside>
-        <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-        <div class="control-sidebar-bg"></div>
     </body>
-
 
     </html>
 <?php } ?>

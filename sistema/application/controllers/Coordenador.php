@@ -283,7 +283,9 @@ class Coordenador extends CI_Controller
 		$dataInicio = $this->input->get("dataInicio");
 		$dataFim = $this->input->get("dataAte");
 
-		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim);
+		//echo 'OPC 1 - ' . $opc1 . ' OPC 2 - ' . $opc2 . "<br>";
+
+		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, '', $dataInicio, $dataFim);
 
 		$this->load->view('sistema/coordenador/pages/consultas/mostrar_tabela_lideres_1', $dados);
 	}
@@ -293,16 +295,19 @@ class Coordenador extends CI_Controller
 		$id_coordenador = $this->input->get("id_coordenador");
 		$opc1 = $this->input->get("opc1");
 		$opc2 = $this->input->get("opc2");
+		$opc3 = $this->input->get("opc3");
+
+		//echo 'OPC 1 - ' . $opc1 . ' OPC 2 - ' . $opc2;
 
 		$dataInicio = $this->input->get("dataInicio");
 		$dataFim = $this->input->get("dataAte");
 
-		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim);
+		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, $opc3, $dataInicio, $dataFim);
 
 		$this->load->view('sistema/coordenador/pages/consultas/mostrar_tabela_lideres_2', $dados);
 	}
 
-	public function consultasBD($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim)
+	public function consultasBD($id_coordenador, $opc1, $opc2, $opc3, $dataInicio, $dataFim)
 	{
 		$dados_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_coordenador);
 
@@ -383,16 +388,29 @@ class Coordenador extends CI_Controller
 		$total_criancas_geral = $this->FConsultas_model->getNumerosCriancas([$id_coordenador], $consultarLideres, 'criancas_coord_1');
 		$total_criancas_ativos = $this->FConsultas_model->getNumerosCriancas([$id_coordenador], $consultarLideresAtivos, 'criancas_coord_1');
 
-		$dados = array(
-			'dados_coordenador' => $dados_coordenador,
-			'dados_lideres_gerais' => $consultarLideres,
-			'dados_lideres_ativos' => $consultarLideresAtivos,
-			'dados_criancas_gerais' => $total_criancas_geral,
-			'dados_criancas_ativos' => $total_criancas_ativos,
-			'mostrar_comparacao' => $opc2,
-		);
+		if ($opc3 == 'lideres_ativos') {
+			$dados = array(
+				'dados_coordenador' => $dados_coordenador,
+				'dados_lideres_gerais' => $consultarLideresAtivos,
+				'dados_lideres_ativos' => $consultarLideresAtivos,
+				'dados_criancas_gerais' => $total_criancas_geral,
+				'dados_criancas_ativos' => $total_criancas_ativos,
+				'mostrar_comparacao' => $opc2,
+			);
 
-		return $dados;
+			return $dados;
+		} else {
+			$dados = array(
+				'dados_coordenador' => $dados_coordenador,
+				'dados_lideres_gerais' => $consultarLideres,
+				'dados_lideres_ativos' => $consultarLideresAtivos,
+				'dados_criancas_gerais' => $total_criancas_geral,
+				'dados_criancas_ativos' => $total_criancas_ativos,
+				'mostrar_comparacao' => $opc2,
+			);
+
+			return $dados;
+		}
 	}
 
 	public function gerar_excel()
@@ -413,7 +431,7 @@ class Coordenador extends CI_Controller
 
 		$data = date('d/m/Y');
 
-		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim);
+		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, '', $dataInicio, $dataFim);
 
 		$total_lideres_gerais = $dados['dados_lideres_gerais']['row'];
 		$dados_lideres_gerais = $dados['dados_lideres_gerais']['dados'];
@@ -1020,13 +1038,18 @@ class Coordenador extends CI_Controller
 		for ($i = 0; $i < count($dados_lideres_gerais); $i++) {
 			$lider = $dados_lideres_gerais[$i];
 			$id_lider = $lider['id_lider'];
+			$data_cadastro = $lider['data_cadastro'];
+			$ativo = $lider['ativo'];
+			$confirmado = $lider['confirmado'];
 
 			$excel->getSheet(2)->getColumnDimension($letras[$i_cl_pg2])->setAutoSize(true);
 
 			$info_criancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 3);
 			$info_pg = $this->FConsultas_model->mostrarPG($id_lider, 3);
 
-			if ($info_criancas['row'] == 0) {
+			$check = $this->FConsultas_model->check_lider_is_ativo($id_lider, $data_cadastro, $ativo, $confirmado);
+
+			if (!$check) {
 				array_push($pg_n_ativos_row, $row2);
 			} else {
 			}

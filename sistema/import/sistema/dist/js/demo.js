@@ -346,7 +346,7 @@ $(function () {
     $demoSettings.append($skinsList)
 
     $tabPane.append($demoSettings)*/
-    $('#control-sidebar-home-tab').after($tabPane)
+    //$('#control-sidebar-home-tab').after($tabPane)
 
     setup()
 

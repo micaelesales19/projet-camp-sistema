@@ -975,7 +975,7 @@ class FConsultas_model extends CI_Model
 			// Consulta na tabela de líderes: líderes ativos pelo id coordenador
 			$id_coordenador = $id_usuario[0];
 
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_coordenador AND confirmado = 2 ORDER BY nome_lider ASC");
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_coordenador ORDER BY nome_lider ASC");
 			$row = $consultar_lideres->num_rows();
 			$dados_consulta_lideres = $consultar_lideres->result_array();
 
@@ -1118,26 +1118,22 @@ class FConsultas_model extends CI_Model
 		if ($list['row'] == 0) {
 		} else {
 			foreach ($lista as $key => $lideres) {
-				$id = $lideres['id_lider'];
+				$id_lider = $lideres['id_lider'];
 				$nome = $lideres['nome_lider'];
 				$email = $lideres['email'];
 				$cpf = $lideres['cpf'];
+				$confirmado = $lideres['confirmado'];
 
 				$usuario = $this->getUsuario($nome, $email, $cpf);
+				$data_cadastro = $lideres['data_cadastro'];
 
 				$ativo = $usuario['row'] == 0 ? 0 : $usuario['dados']['ativo'];
 
-				$check_lider_pg = $this->db->query("SELECT COUNT(1) FROM pg WHERE id_lider = $id");
-				$total_pg = $check_lider_pg->num_rows();
+				$check = $this->check_lider_is_ativo($id_lider, $data_cadastro, $ativo, $confirmado);
 
-				$consultar_criancas = $this->db->query("SELECT COUNT(1) FROM crianca WHERE lider = $id");
-				$total_criancas = $consultar_criancas->num_rows();
-
-				$check_lider_progresso = $this->db->query("SELECT COUNT(1) FROM progresso_pg WHERE id_lider = $id");
-				$total_progresso = $check_lider_progresso->num_rows();
-
-				if ($ativo == 0 || $total_pg == 0 || $total_criancas == 0 || $total_progresso == 0) {
+				if (!$check) {
 				} else {
+					// líder novo
 					array_push($dados_lider, $lideres);
 					$total_ativos = $total_ativos + 1;
 				}
@@ -1149,5 +1145,60 @@ class FConsultas_model extends CI_Model
 			'dados' => $dados_lider,
 		);
 		return $dados;
+	}
+
+	public function check_lider_is_ativo($id_lider, $data_cadastro, $ativo, $confirmado)
+	{
+		$data = date('Y-m-d');
+		$data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
+
+		$qtd_criancas = $this->mostrarCriancasPais($id_lider, 3);
+		$qtd_criancas_ativas = $this->mostrarCriancasPaisPg($id_lider, 0, 3);
+
+		$pgs = $this->mostrarPG($id_lider, 3);
+
+		if ($ativo == 0 || $confirmado == 0 || $confirmado == 1) {
+			return false;
+		} else {
+			if (strtotime($data_mais_um_mes) > strtotime($data)) {
+				return true;
+			} else {
+				if ($pgs['row'] == 0 && $qtd_criancas_ativas['row'] == 0 && $qtd_criancas['row'] == 0) {
+					// inativo por n ter pg e nem crianças
+					return false;
+				} else {
+					$id_modulo = $pgs['dados']['id_modulo'] ?? 1;
+					$numero_licao = $pgs['dados']['n_licao'] ?? 1;
+					$modulo = $this->consultarModuloId($id_modulo);
+					$progresso = $this->consultarProgressoGeral($id_lider, 2);
+					$data_ultimo_relatorio = "";
+					$i = 0;
+					foreach ($progresso['dados'] as $key => $p) {
+						$data_ultimo = $p['data_aula'];
+						$i++;
+						if ($i == $progresso['row']) {
+							$data_ultimo_relatorio = $data_ultimo;
+						}
+					}
+
+					if ($data_ultimo_relatorio == '') {
+						// inativo por não preenchimento de relatórios
+						return false;
+					} else {
+						$data_convertida = $this->converterData($data_ultimo_relatorio);
+						$data_mais_2_meses = date('Y-m-d', strtotime('+2 months', strtotime($data_convertida)));
+
+						if (strtotime($data_mais_2_meses) < strtotime($data)) {
+							// inativo por ter passado mais de 2 meses inativos
+							return false;
+						} else if ($id_modulo == 10 && $numero_licao == $modulo['n_licao']) {
+							return true;
+						} else {
+							return true;
+						}
+					}
+				}
+			}
+		}
 	}
 }

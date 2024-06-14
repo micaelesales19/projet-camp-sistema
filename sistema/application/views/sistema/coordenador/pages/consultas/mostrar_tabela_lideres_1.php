@@ -2,11 +2,11 @@
     <thead>
         <tr>
             <th>Perfil</th>
-            <th onclick="list_lideres(this);">Líderes <i class="fa fa-hand-pointer-o"></i></th>
-            <th>Líderes Ativos <i class="fa fa-hand-pointer-o"></i></th>
+            <th id="clicar" onclick="list_lideres(this);">Líderes <i class="fa fa-hand-pointer-o"></i></th>
+            <th id="clicar" onclick="list_lideres_ativos(this);">Líderes Ativos <i class="fa fa-hand-pointer-o"></i></th>
             <th>% L.A.</th>
-            <th>Crianças <i class="fa fa-hand-pointer-o"></i></th>
-            <th>Crianças Ativas <i class="fa fa-hand-pointer-o"></i></th>
+            <th id="clicar" onclick="list_lideres(this);">Crianças <i class="fa fa-hand-pointer-o"></i></th>
+            <th id="clicar" onclick="list_lideres_ativos(this);">Crianças Ativas <i class="fa fa-hand-pointer-o"></i></th>
             <th>% C.A.</th>
         </tr>
     </thead>
