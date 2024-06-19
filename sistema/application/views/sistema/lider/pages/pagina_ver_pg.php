@@ -366,6 +366,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     </div>
                                                                     <div class="box-body">
                                                                         <input type="hidden" name="idPg" id="id_pg<?= $i ?>" value="<?= $dadosPG['id_pg']; ?>">
+                                                                        <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
                                                                         <input type="hidden" name="fotoOriginal" value="<?= $dadosPG['foto']; ?>">
                                                                         <input type="hidden" name="nivel" value="2">
                                                                         <div class="col-lg-12" style="display: flex; justify-content: center;">

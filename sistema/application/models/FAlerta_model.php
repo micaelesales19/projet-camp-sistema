@@ -16,91 +16,23 @@ class FAlerta_model extends CI_Model
 		$id_remetente = 6003;
 
 		// Consulta
-		$query_rementente_pais = $this->db->select('*')
-			->from('pais')
-			->where('id', $id_responsavel)
-			->get();
-		$dadosPais = $query_rementente_pais->row_array();
-		$contPais = $query_rementente_pais->num_rows();
-
-		$query_rementente_lider = $this->db->select('*')
-			->from('lider')
-			->where('id_lider', $id_responsavel)
-			->get();
-		$dadosLider = $query_rementente_lider->row_array();
-		$contLider = $query_rementente_lider->num_rows();
-
-		$query_rementente_coord = $this->db->select('*')
-			->from('coordenador')
-			->where('id_coordenador', $id_responsavel)
-			->get();
-		$dadosCoord = $query_rementente_coord->row_array();
-		$contCoord = $query_rementente_coord->num_rows();
-
-		$query_rementente_sr = $this->db->select('*')
-			->from('supervisorr')
-			->where('id_supervisorR', $id_responsavel)
-			->get();
-		$dadosSuperR = $query_rementente_sr->row_array();
-		$contSurpR = $query_rementente_sr->num_rows();
-
-		$query_rementente_se = $this->db->select('*')
-			->from('supervisore')
-			->where('id_supervisorEs', $id_responsavel)
-			->get();
-		$dadosSuperE = $query_rementente_se->row_array();
-		$contSuperE = $query_rementente_se->num_rows();
-
-		$query_rementente_direcao = $this->db->select('*')
-			->from('direcao')
-			->where('id_direcao', $id_responsavel)
-			->get();
-		$dadosDirecao = $query_rementente_direcao->row_array();
-		$contDirecao = $query_rementente_direcao->num_rows();
-
-		$nome_resposanvel = "";
-
-		if ($contPais == 0) {
-		} else {
-			$nome_resposanvel .= $dadosPais['nome'];
-		}
-
-		if ($contLider == 0) {
-		} else {
-			$nome_resposanvel .= $dadosLider['nome_lider'];
-		}
-
-		if ($contCoord == 0) {
-		} else {
-			$nome_resposanvel .= $dadosCoord['nome_coordenador'];
-		}
-
-		if ($contSurpR == 0) {
-		} else {
-			$nome_resposanvel .= $dadosSuperR['nome_supervisorR'];
-		}
-
-		if ($contSuperE == 0) {
-		} else {
-			$nome_resposanvel .= $dadosSuperE['nome_supervisorE'];
-		}
-
-		if ($contDirecao == 0) {
-		} else {
-			$nome_resposanvel .= $dadosDirecao['nome_direcao'];
-		}
+		$dados = $this->FConsultas_model->getNomeUserId($id_responsavel);
 		// Fim Consulta	
 
 		$texto_motivo = "";
 
 		if ($acao == "EX_CL_1") {
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " excluiu um de seus colíderes ID - ($id). Por esse motivo - " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus colíderes ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_2") {
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_3") {
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
+		} else if ($acao == "RE_PG_1") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " reativou um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "MUDANCA_DE_MODULO") {
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " ($id). " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
+		} else if ($acao == "SOLICITACAO_TROCA_CSS") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
 		}
 
 		$inserir['id_alerta'] = NULL;
@@ -122,79 +54,8 @@ class FAlerta_model extends CI_Model
 		$hora = date('H:i');
 
 		// Consulta
-		$query_rementente_pais = $this->db->select('*')
-			->from('pais')
-			->where('id', $id_responsavel)
-			->get();
-		$dadosPais = $query_rementente_pais->row_array();
-		$contPais = $query_rementente_pais->num_rows();
+		$dados = $this->FConsultas_model->getNomeUserId($id_responsavel);
 
-		$query_rementente_lider = $this->db->select('*')
-			->from('lider')
-			->where('id_lider', $id_responsavel)
-			->get();
-		$dadosLider = $query_rementente_lider->row_array();
-		$contLider = $query_rementente_lider->num_rows();
-
-		$query_rementente_coord = $this->db->select('*')
-			->from('coordenador')
-			->where('id_coordenador', $id_responsavel)
-			->get();
-		$dadosCoord = $query_rementente_coord->row_array();
-		$contCoord = $query_rementente_coord->num_rows();
-
-		$query_rementente_sr = $this->db->select('*')
-			->from('supervisorr')
-			->where('id_supervisorR', $id_responsavel)
-			->get();
-		$dadosSuperR = $query_rementente_sr->row_array();
-		$contSurpR = $query_rementente_sr->num_rows();
-
-		$query_rementente_se = $this->db->select('*')
-			->from('supervisore')
-			->where('id_supervisorEs', $id_responsavel)
-			->get();
-		$dadosSuperE = $query_rementente_se->row_array();
-		$contSuperE = $query_rementente_se->num_rows();
-
-		$query_rementente_direcao = $this->db->select('*')
-			->from('direcao')
-			->where('id_direcao', $id_responsavel)
-			->get();
-		$dadosDirecao = $query_rementente_direcao->row_array();
-		$contDirecao = $query_rementente_direcao->num_rows();
-
-		$nome_resposanvel = "";
-
-		if ($contPais == 0) {
-		} else {
-			$nome_resposanvel .= $dadosPais['nome'];
-		}
-
-		if ($contLider == 0) {
-		} else {
-			$nome_resposanvel .= $dadosLider['nome_lider'];
-		}
-
-		if ($contCoord == 0) {
-		} else {
-			$nome_resposanvel .= $dadosCoord['nome_coordenador'];
-		}
-
-		if ($contSurpR == 0) {
-		} else {
-			$nome_resposanvel .= $dadosSuperR['nome_supervisorR'];
-		}
-
-		if ($contSuperE == 0) {
-		} else {
-			$nome_resposanvel .= $dadosSuperE['nome_supervisorE'];
-		}
-
-		if ($contDirecao == 0) {
-		} else {
-			$nome_resposanvel .= $dadosDirecao['nome_direcao'];
-		}
 		// Fim Consulta			
 
 		$texto_motivo = "";
@@ -202,13 +63,15 @@ class FAlerta_model extends CI_Model
 
 		if ($acao == "EX_CL_1") {
 			$nome_acao = "Exclusão de Colíder";
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " excluiu o seu colíderes ID - ($id). Por esse motivo - " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu o seu colíderes ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_2") {
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_3") {
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "MUDANCA_DE_MODULO") {
-			$texto_motivo .= "O (A) " . $nome_resposanvel . " ($id). " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
+		} else if ($acao == "SOLICITACAO_TROCA_CSS") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
 		}
 
 		$inserir['id_alerta'] = NULL;

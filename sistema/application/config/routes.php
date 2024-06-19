@@ -61,7 +61,7 @@ $route['segundociclo'] = 'welcome/listar_lideres_segundo_ciclo';
 $route['index'] = 'welcome/index';
 $route['sair'] = 'welcome/sair';
 $route['login'] = 'welcome/login';
-$route['acesso'] = 'welcome/autenticacao_login'; //ok
+$route['acesso'] = 'welcome/autenticacao_login';
 
 $route['termos'] = 'welcome/PaginaDosTermos';
 $route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
@@ -71,7 +71,6 @@ $route['download_material'] = 'welcome/downloadMaterial';
 // Primeiro Acesso
 $route['pg/cadastro/salvar'] = 'welcome/cadastro_pg_inicial';
 $route['pg/pular'] = 'welcome/cadastro_pg_inicial_pular';
-
 $route['criancas/cadastro/salvar'] = 'welcome/cadastro_crianca_inicial';
 
 // CronJobs
@@ -120,9 +119,9 @@ $route['pais/page/pg/consultarProgresso'] = 'Pais/consulta_progresso_pg';
 // Fim das PG
 
 // Colíderes
-$route['pais/colider/cadastro/salvar'] = 'Pais/cadastro_colider';
-$route['pais/colider/desativar'] = 'Pais/desativar_colider';
-$route['pais/colider/ativar'] = 'Pais/ativar_colider';
+$route['pais/colider/cadastro/salvar'] = 'welcome/cadastro_colider';
+$route['pais/colider/desativar'] = 'welcome/desativar_colider';
+$route['pais/colider/ativar'] = 'welcome/ativar_colider';
 // Colíderes
 
 // Download de Material
@@ -166,9 +165,9 @@ $route['lider/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg';
 // Fim das PG
 
 // Colíderes
-$route['lider/colider/cadastro/salvar'] = 'Lider/cadastro_colider';
-$route['lider/colider/desativar'] = 'Lider/desativar_colider';
-$route['lider/colider/ativar'] = 'Lider/ativar_colider';
+$route['lider/colider/cadastro/salvar'] = 'welcome/cadastro_colider';
+$route['lider/colider/desativar'] = 'welcome/desativar_colider';
+$route['lider/colider/ativar'] = 'welcome/ativar_colider';
 // Colíderes
 
 // Download de Material
@@ -180,21 +179,42 @@ $route['lider/page/modulo'] = 'Lider/pagina_download_material_modulo';
 $route['coordenador/home'] = 'Coordenador/home';
 
 $route['coordenador/page/lideres'] = 'Coordenador/pagina_ver_lideres';
+$route['coordenador/page/lideres/detalhes/:any'] = 'Coordenador/pagina_ver_detalhes_lideres';
 $route['coordenador/page/lideres/mostrar1'] = 'Coordenador/mostrar_table_parte_1';
 $route['coordenador/page/lideres/mostrar2'] = 'Coordenador/mostrar_table_parte_2';
 $route['coordenador/page/lideres/gerar_excel'] = 'Coordenador/gerar_excel';
 
-// FIM COORDENADOR
+$route['coordenador/page/lideres/salvar'] = 'Coordenador/editar_lideres';
 
-// MÓDULOS
-$route['modulo/trilha'] = 'welcome/modulo_trilha';
-$route['modulo/mergulho'] = 'welcome/modulo_mergulho';
-$route['modulo/santuario'] = 'welcome/modulo_santuario';
-$route['modulo/arco'] = 'welcome/modulo_arco';
-$route['modulo/estacao'] = 'welcome/modulo_estacao';
+// pg
+$route['coordenador/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
+$route['coordenador/page/pg/edicao/salvar'] = 'welcome/editar_pg';
+$route['coordenador/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
+$route['coordenador/page/pg/exclusao/ativar'] = 'welcome/ativar_pg';
+$route['coordenador/page/pg/exclusao/permanente'] = 'welcome/excluir_pg_permanentemente';
+
+$route['coordenador/page/pg/licoes'] = 'Coordenador/pagina_licoes';
+
+$route['coordenador/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
+$route['coordenador/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';
+$route['coordenador/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca';
+$route['coordenador/page/criancas/exclusao/ativar'] = 'welcome/ativar_crianca';
+
+// Colíderes
+$route['coordenador/colider/cadastro/salvar'] = 'welcome/cadastro_colider';
+$route['coordenador/colider/desativar'] = 'welcome/desativar_colider';
+$route['coordenador/colider/ativar'] = 'welcome/ativar_colider';
+$route['coordenador/colider/exclusao/permanente'] = 'welcome/excluir_colider_permanentemente';
+// Colíderes
+
+// FIM COORDENADOR
 
 // adm
 $route['adm/home'] = 'adm/index';
 $route['adm/devocionais/mostrar'] = 'adm/mostrar_devocionais';
 $route['adm/devocionais/cadastrar'] = 'adm/cadastrar_devocionais';
 $route['adm/devocionais/salvar'] = 'adm/salvar_cadastro_devocionais';
+
+// alertas
+$route['alerta/solicitar/troca_de_css'] = 'welcome/enviando_alerta_troca_de_css';
+$route['alerta/solicitar/troca_de_lider_pg'] = 'welcome/enviando_alerta_troca_de_lider_pg';

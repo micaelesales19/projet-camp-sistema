@@ -53,6 +53,152 @@ class Welcome extends CI_Controller
 		$this->load->view('sistema/cadastro');
 	}
 
+	// Colíderes
+	public function cadastro_colider()
+	{
+		$idLider = $this->input->post('idLider');
+		$nomeColider = $this->input->post('nomeColider');
+		$emailColider = $this->input->post('emailColider');
+		$cpfColider = $this->input->post('cpfColider');
+		$telefoneColider = $this->input->post('telefoneColider');
+		$nascimentoColider = $this->input->post('nascimentoColider');
+
+		$consultarColider = $this->FConsultas_model->checkColider($nomeColider, $cpfColider, $emailColider, $telefoneColider);
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+		$routa = "";
+
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "../../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		}
+
+		if ($consultarColider) {
+			$cadastroColider = $this->FSistema_model->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
+
+			if ($cadastroColider) {
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Cadastro Relizado com Sucesso!']);
+				$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+				echo $funcao;
+			} else {
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
+				$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+				echo $funcao;
+			}
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Colíder já cadastrado']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function desativar_colider()
+	{
+		$idLider = $this->input->post("idLider");
+		$idColider = $this->input->post("idColider");
+		$nomeColider = $this->input->post("nomeColider");
+
+		$idResponsavel = $this->input->post("idResponsavel");
+		$motivo = $this->input->post("motivo");
+
+		$reativar = $this->FSistema_model->excluirColider($idColider, $nomeColider, $idLider, $idResponsavel, $motivo);
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+		$routa = "";
+
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		}
+
+		if ($reativar) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Colíder Desativado com Sucesso!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function ativar_colider()
+	{
+		$idLider = $this->input->post("idLider");
+		$idColider = $this->input->post("opc");
+
+		$reativar = $this->FSistema_model->reativarColider($idColider, $idLider);
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+		$routa = "";
+
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		}
+
+		if ($reativar) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Colíder Ativado com Sucesso!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function excluir_colider_permanentemente()
+	{
+		$idLider = $this->input->post("idLider");
+		$idUsuario = $this->input->post("idUsuario");
+		$id_colider = $this->input->post("opc");
+
+		$excluir = $this->FSistema_model->excluirColiderPermanentemente($id_colider, $idLider, $idUsuario);
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+
+		$routa = "";
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "../../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../../pagina_editar_pessoal";
+		}
+
+		if ($excluir) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Atenção! Colíder Excluido Permanentemente!"]);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
 	public function listar_lideres_segundo_ciclo()
 	{
 
@@ -832,8 +978,24 @@ class Welcome extends CI_Controller
 			</script>
 		';*/
 
-		$data = [];
-		$funcao = $this->FConsultas_model->red('../../criancas', 0, $data);
+		$red = $this->input->post('red') ?? 'criancas';
+		$routa = "";
+
+		if ($red == 'criancas') {
+			$data = [];
+			$routa = "criancas";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$lider'>",
+			];
+			$routa = "lideres/detalhes/$lider";
+		} else {
+			$data = [];
+			$routa = "criancas";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Cadastro Relizado com Sucesso!']);
+		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 		echo $funcao;
 	}
 	public function cadastro_crianca_inicial()
@@ -929,34 +1091,37 @@ class Welcome extends CI_Controller
 
 		$checkCriancas = $this->FConsultas_model->consultarCriancasNomeEIdade($nome, $lider, $id_pg, $nascimento, $opcao, $obs, $nome_responsavel, $nivel);
 
+		$red = $this->input->post('red') ?? 'criancas';
+		$routa = "";
+
+		if ($red == 'criancas') {
+			$data = [];
+			$routa = "criancas";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$lider'>",
+			];
+			$routa = "lideres/detalhes/$lider";
+		} else {
+			$data = [];
+			$routa = "criancas";
+		}
 
 		if ($checkCriancas) {
 			$editar = $this->FSistema_model->editaCrianca($id_crianca, $nome, $nascimento, $lider, $id_pg, $obs, $opcao, $nome_responsavel, $email_responsavel, $telefone_responsavel, $nivel);
 			if ($editar) {
-				$data = [];
-				$funcao = $this->FConsultas_model->red('../../criancas', 0, $data);
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Edição Relizada com Sucesso!']);
+				$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 				echo $funcao;
 			} else {
-				echo '
-				<script>
-					if(window.confirm("ERRO!")) {
-						window.location="../../criancas";
-					}else{
-						window.location="../../criancas";
-					}
-				</script>
-			';
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente novamente!']);
+				$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+				echo $funcao;
 			}
 		} else {
-			echo '
-				<script>
-					if(window.confirm("JÁ TEM UMA CRIANÇA COM ESSES DADOS!")) {
-						window.location="../../criancas";
-					}else{
-						window.location="../../criancas";
-					}
-				</script>
-			';
+			$this->FConsultas_model->mensagem('danget', 'Erro!', ['Já tem uma criança com esses dados!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
 		}
 	}
 	public function desativar_crianca()
@@ -971,20 +1136,28 @@ class Welcome extends CI_Controller
 
 		$excluir = $this->FSistema_model->excluirCrianca($idCrianca, $nomeCrianca, $idLider, $idResponsavel, $motivo, $nivel);
 
-		if ($excluir) {
+		$red = $this->input->post('red') ?? 'criancas';
+		$routa = "";
+
+		if ($red == 'criancas') {
 			$data = [];
-			$funcao = $this->FConsultas_model->red('../../criancas', 0, $data);
+			$routa = "criancas";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "criancas";
+		}
+
+		if ($excluir) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Desativação Relizada com Sucesso!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 			echo $funcao;
 		} else {
-			echo '
-			<script>
-				if(window.confirm("ERRO!")) {
-					window.location="../../criancas";
-				}else{
-					window.location="../../criancas";
-				}
-			</script>
-		';
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Erro! Tente novamente!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
 		}
 	}
 
@@ -997,20 +1170,29 @@ class Welcome extends CI_Controller
 
 		$reativar = $this->FSistema_model->reativarCrianca($idCrianca, $nivel);
 
-		if ($reativar) {
+		$red = $this->input->post('red') ?? 'criancas';
+		$routa = "";
+
+		if ($red == 'criancas') {
 			$data = [];
-			$funcao = $this->FConsultas_model->red('../criancas', 0, $data);
+			$routa = "criancas";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "criancas";
+		}
+
+		if ($reativar) {
+
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Ativação Relizada com Sucesso!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 			echo $funcao;
 		} else {
-			echo '
-			<script>
-				if(window.confirm("ERRO!")) {
-					window.location="../criancas";
-				}else{
-					window.location="../criancas";
-				}
-			</script>
-		';
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Erro! Tente novamente!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
 		}
 	}
 
@@ -1668,38 +1850,43 @@ class Welcome extends CI_Controller
 
 		$consultarPg = $this->FConsultas_model->consultarPgCadastrado($idLider, $nome_pg, $nivel);
 
+		$red = $this->input->post('red') ?? 'pg';
+		$routa = "";
+
+		if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "pg";
+		}
+
 		if ($consultarPg) {
 			$cadastro = $this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $autorizacao, $nivel);
 
 			if ($cadastro) {
-				$data = [];
-				$funcao = $this->FConsultas_model->red('../../pg', 0, $data);
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Cadastro Realizado com Sucesso!']);
+				$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 				echo $funcao;
 			} else {
-				echo '
-				<script>
-					if(window.confirm("ERRO!")) {
-						window.location="../../pg";
-					}else{
-						window.location="../../pg";
-					}
-				</script>
-			';
+				// ERRO
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente novamente!']);
+				$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+				echo $funcao;
 			}
 		} else {
-			echo '
-				<script>
-					if(window.confirm("PG JÁ CADASTRADO, TENTE NOVAMENTE!")) {
-						window.location="../../pg";
-					}else{
-						window.location="../../pg";
-					}
-				</script>
-			';
+			// PG JÁ CADASTRADO
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['PG já Cadastrado!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
 		}
 	}
 	public function editar_pg()
 	{
+		$idLider = $this->input->post('idLider');
 		$idPg = $this->input->post('idPg');
 		$nome_pg = $this->input->post('nome_pg');
 		$fotoOriginal = $this->input->post('fotoOriginal');
@@ -1707,8 +1894,23 @@ class Welcome extends CI_Controller
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
+		$red = $this->input->post('red') ?? 'pg';
+
+		$routa = "";
+
+		if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "pg";
+		}
+
 		if ($idPg == '' || $nome_pg == '') {
-			echo '
+			/*echo '
 				<script>
 					if(window.confirm("DADOS VAZIOS! TENTE NOVAMENTE!")) {
 						window.location="../../pg";
@@ -1716,7 +1918,11 @@ class Welcome extends CI_Controller
 						window.location="../../pg";
 					}
 				</script>
-			';
+			';*/
+
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Dados Vazios! Tente novamente!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
 		} else {
 
 			$config['allowed_types'] = 'jpg|jpeg|png|gif';
@@ -1733,33 +1939,20 @@ class Welcome extends CI_Controller
 					$nomeImagem = 'import/sistema/fotoPG/' . $this->upload->data('file_name');
 				} else {
 					$erro1 = $this->upload->display_errors();
-					echo '
-                    <script>
-						if(window.confirm("Erro no upload da imagem do PG"+ ' . $erro1 . ')) {
-							window.location="../../pg";
-						}else{
-							window.location="../../pg";
-						}
-                    </script>
-                ';
+					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Erro no upload da imagem do PG $erro1"]);
+					$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+					echo $funcao;
 				}
 			}
-
 			$editar = $this->FSistema_model->editarPG($idPg, $nome_pg, $nomeImagem, $autorizacao, $nivel);
 			if ($editar) {
-				$data = [];
-				$funcao = $this->FConsultas_model->red('../../pg', 0, $data);
+				$this->FConsultas_model->mensagem('success', 'Sucesso', ['Cadastro Realizado com Sucesso!']);
+				$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 				echo $funcao;
 			} else {
-				echo '
-				<script>
-					if(window.confirm("ERRO!")) {
-						window.location="../../pg";
-					}else{
-						window.location="../../pg";
-					}
-				</script>
-			';
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
+				$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+				echo $funcao;
 			}
 		}
 	}
@@ -1773,24 +1966,103 @@ class Welcome extends CI_Controller
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
+		$red = $this->input->post('red') ?? 'pg';
+
+		$routa = "";
+		if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "pg";
+		}
+
 		$excluir = $this->FSistema_model->excluirPG($idPg, $nomePg, $idLider, $idResponsavel, $motivo, $nivel);
 
 		if ($excluir) {
-			$data = [];
-			$funcao = $this->FConsultas_model->red('../../pg', 0, $data);
+			$this->FConsultas_model->mensagem('success', 'Sucesso', ['PG desativado com Sucesso!']);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 			echo $funcao;
 		} else {
-			echo '
-			<script>
-				if(window.confirm("ERRO!")) {
-					window.location="../../pg";
-				}else{
-					window.location="../../pg";
-				}
-			</script>
-		';
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
 		}
 	}
+
+	public function ativar_pg()
+	{
+		$idLider = $this->input->post("idLider");
+		$idUsuario = $this->input->post("idUsuario");
+		$id_pg = $this->input->post("id_pg");
+
+		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
+
+		$reativar = $this->FSistema_model->reativarPg($id_pg, $idUsuario, $nivel);
+
+		$red = $this->input->post('red') ?? 'pg';
+
+		$routa = "";
+		if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "pg";
+		}
+
+		if ($reativar) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ["PG Reativado com Sucesso!"]);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function excluir_pg_permanentemente()
+	{
+		$idLider = $this->input->post("idLider");
+		$idUsuario = $this->input->post("idUsuario");
+		$id_pg = $this->input->post("id_pg");
+
+		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
+
+		$excluir = $this->FSistema_model->excluirPgPermanentemente($id_pg, $idLider, $idUsuario, $nivel);
+
+		$red = $this->input->post('red') ?? 'pg';
+
+		$routa = "";
+		if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [];
+			$routa = "lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "pg";
+		}
+
+		if ($excluir) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ["PG Excluido Permanentemente!"]);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
+			$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
 	public function salvar_relatorio()
 	{
 		$id_lider = $this->input->post('id_lider');
@@ -1846,28 +2118,65 @@ class Welcome extends CI_Controller
 		echo $funcao;
 	}
 
-	public function modulo_trilha()
+	public function enviando_alerta_troca_de_css()
 	{
-		$this->load->view("../../import/sistema/arquivos/01/Trilha/Trilha.php");
+		$id_usuario = $this->input->post('id_usuario');
+		$id_lider = $this->input->post('id_lider');
+		$id_troca_1 = $this->input->post('id_troca_1');
+		$id_troca_2 = $this->input->post('id_troca_2');
+
+		$str = explode(" ", $id_troca_1);
+
+		if ($str[0] == 'coord') {
+			$nivel = "Coordenador (a)";
+		} else if ($str[0] == 'sl') {
+			$nivel = "Supervisor Local";
+		} else if ($str[0] == 'sr') {
+			$nivel = "Supervisor Regional";
+		}
+
+		$dados = $this->FConsultas_model->getNomeUserId($str[1]);
+
+		$nome = $dados['nome'];
+
+		$motivo = " pediu a solicitação de troca do $nivel: $nome (id: $str[1]) para $nivel $id_troca_2";
+		$acao = "SOLICITACAO_TROCA_CSS";
+
+		$this->FAlerta_model->alerta_controle($id_usuario, $id_usuario, $motivo, $acao);
+
+		$data = [
+			"<input type='hidden' name='id_lider' value='$id_lider'>",
+		];
+
+		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
+
+		$funcao = $this->FConsultas_model->red("../../coordenador/page/lideres/detalhes/$id_lider", 3000, $data);
+		echo $funcao;
 	}
 
-	public function modulo_mergulho()
+	public function enviando_alerta_troca_de_lider_pg()
 	{
-		$this->load->view("../../import/sistema/arquivos/01/Mergulho/Mergulho.php");
-	}
+		$id_usuario = $this->input->post('id_usuario');
+		$id_lider = $this->input->post('id_lider');
+		$id_pg = $this->input->post('id_pg');
+		$id_lider_troca = $this->input->post('id_lider_troca');
 
-	public function modulo_arco()
-	{
-		$this->load->view("../../import/sistema/arquivos/01/Arco/Arco.php");
-	}
+		$dados = $this->FConsultas_model->getNomeUserId($id_usuario);
 
-	public function modulo_estacao()
-	{
-		$this->load->view("../../import/sistema/arquivos/01/Estacao/Estacao.php");
-	}
+		$nome = $dados['nome'];
 
-	public function modulo_santuario()
-	{
-		$this->load->view("../../import/sistema/arquivos/01/Santuario/Santuario.php");
+		$motivo = "O $nome pediu a solicitação de troca de líderes entre o PG ($id_pg) (id líder 1: $id_lider para $id_lider_troca";
+		$acao = "SOLICITACAO_TROCA_LIDER_PG";
+
+		$this->FAlerta_model->alerta_controle($id_usuario, $id_usuario, $motivo, $acao);
+
+		$data = [
+			"<input type='hidden' name='id_lider' value='$id_lider'>",
+		];
+
+		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
+
+		$funcao = $this->FConsultas_model->red("../../coordenador/page/lideres/detalhes/$id_lider", 3000, $data);
+		echo $funcao;
 	}
 }

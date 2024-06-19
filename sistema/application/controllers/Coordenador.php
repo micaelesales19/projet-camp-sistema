@@ -9,6 +9,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property $db
  * @property $upload
  * @property $email
+ * @property $uri
  */
 
 class Coordenador extends CI_Controller
@@ -218,60 +219,393 @@ class Coordenador extends CI_Controller
 	}
 	// Fim Dados Pessoal
 
-
 	// Líderes
 	public function pagina_ver_lideres()
 	{
 		$this->load->view('sistema/coordenador/pages/pagina_ver_lideres');
 	}
 
-	public function mudar_data()
+	public function pagina_ver_detalhes_lideres()
 	{
-		$consultar_lideres = $this->db->query("SELECT * FROM lider");
-		$dados_consulta_lideres = $consultar_lideres->result_array();
+		//$id_lider = $this->input->post('id_lider');
 
-		foreach ($dados_consulta_lideres as $key => $value) {
-			$id = $value['id_lider'];
-			$data = $value['data'];
+		$id_lider = $this->uri->segment(5);
+		$dados_lider = $this->FConsultas_model->getInfoLiderId($id_lider);
 
-			//echo $id . ": ";
+		$dados = array(
+			'dados_do_lider' => $dados_lider,
+		);
 
-			if ($data == '') {
-				$consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider = $id");
-				$dados_consulta_pg = $consultar_pg->row_array();
-				$row = $consultar_pg->num_rows();
+		$this->load->view('sistema/coordenador/pages/lideres/pagina_ver_info_lideres', $dados);
+	}
 
-				if ($row == 0) {
-					$data_nova = '2018-08-10';
-					//echo $data_nova . "<br>";
+	public function editar_lideres()
+	{
+		$idLider = $this->input->post("id");
+		$nome = $this->input->post("nome");
+		$cpf = $this->input->post("cpf");
+		$email = $this->input->post("email");
+		$telefone = $this->input->post("telefone");
+		$igreja = $this->input->post("igreja");
+		$nascimento = $this->input->post("nascimento");
+		$estado = $this->input->post("estados");
+		$cidade = $this->input->post("cidades");
+
+		$id_coordenador = $this->input->post("id_coordenador");
+		$id_sl = $this->input->post("id_sl");
+		$id_sr = $this->input->post("id_sr");
+
+		$foto_antiga = $this->input->post("foto_antiga");
+
+		$filesCount1 = count($_FILES['files']['name']);
+
+		// Colider
+		$id_colider = $this->input->post("id_colider");
+		$nome_colider = $this->input->post("nome_colider");
+		$cpf_colider = $this->input->post("cpf_colider");
+		$email_colider = $this->input->post("email_colider");
+		$telefone_colider = $this->input->post("telefone_colider");
+		$nascimento_colider = $this->input->post("nascimento_colider");
+		$foto_antiga_colider = $this->input->post("foto_antiga_colider");
+
+		$mensagem = [];
+
+		// Pais
+		for ($i = 0; $i < $filesCount1; $i++) {
+			$_FILES['file']['name']     = $_FILES['files']['name'][$i];
+			$_FILES['file']['type']     = $_FILES['files']['type'][$i];
+			$_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+			$_FILES['file']['error']     = $_FILES['files']['error'][$i];
+			$_FILES['file']['size']     = $_FILES['files']['size'][$i];
+
+			$uploadPath = 'import/sistema/fotoU/lider/';
+			$foto = 'fotoU/lider/' . $_FILES['files']['name'][$i];
+
+			if ($_FILES['files']['name'][$i] == '') {
+				$cadastro = $this->FSistema_model->editarPessoalLider($idLider, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $id_coordenador, $id_sl, $id_sr, $foto_antiga);
+				if ($cadastro) {
+					array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
 				} else {
-					$data2 = $dados_consulta_pg['data_inicio'];
-					if ($data2 == '') {
-						$data_nova = '2018-08-10';
-						//echo $data_nova . "<br>";
-					} else {
-						$dia = $data2[0] . $data2[1];
-						$mes = $data2[3] . $data2[4];
-						$ano = $data2[6] . $data2[7] . $data2[8] . $data2[9];
-						$data_nova = $ano . "-" . $mes . "-" . $dia;
-
-						//echo $data_nova . "<br>";
-					}
+					array_push($mensagem, "Erro! Seus dados estão inválidos!");
 				}
 			} else {
+				if ($foto_antiga == $foto) {
+					$cadastro = $this->FSistema_model->editarPessoalLider($idLider, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $id_coordenador, $id_sl, $id_sr, $foto_antiga);
+					if ($cadastro) {
+						array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+					} else {
+						array_push($mensagem, "Erro! Seus dados estão inválidos!");
+					}
+				} else {
+					if (file_exists($foto)) {
+						$cadastro = $this->FSistema_model->editarPessoalLider($idLider, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $id_coordenador, $id_sl, $id_sr, $foto_antiga);
+						if ($cadastro) {
+							array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
+						} else {
+							array_push($mensagem, "Erro! Seus dados estão inválidos!");
+						}
+					} else {
+						// File upload configuration
+						$config['upload_path'] = $uploadPath;
+						$config['allowed_types'] = 'jpg|jpeg|png|gif';
 
-				$dia = $data[0] . $data[1];
-				$mes = $data[3] . $data[4];
-				$ano = $data[6] . $data[7] . $data[8] . $data[9];
-				$data_nova = $ano . "-" . $mes . "-" . $dia;
+						// Load and initialize upload library
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
 
-				//echo $data_nova . "<br>";
+						// Upload file to server
+						if ($this->upload->do_upload('file')) {
+							$cadastro = $this->FSistema_model->editarPessoalLider($idLider, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $id_coordenador, $id_sl, $id_sr, $foto);
+							if ($cadastro) {
+								array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+							} else {
+								array_push($mensagem, "Erro! Seus dados estão inválidos!");
+							}
+						} else {
+							$erros = $this->upload->display_errors() + " - meus dados pessoais";
+							array_push($mensagem, $erros);
+						}
+					}
+				}
 			}
-
-			$this->db->set('data_cadastro', $data_nova);
-			$this->db->where('id_lider', $id);
-			$this->db->update('lider');
 		}
+
+		if ($nome_colider == '') {
+		} else {
+
+			$filesCount2 = count($_FILES['filesColider']['name']);
+			// Colíder
+			for ($i = 0; $i < $filesCount2; $i++) {
+				$_FILES['file']['name']     = $_FILES['filesColider']['name'][$i];
+				$_FILES['file']['type']     = $_FILES['filesColider']['type'][$i];
+				$_FILES['file']['tmp_name'] = $_FILES['filesColider']['tmp_name'][$i];
+				$_FILES['file']['error']     = $_FILES['filesColider']['error'][$i];
+				$_FILES['file']['size']     = $_FILES['filesColider']['size'][$i];
+
+				$uploadPath = 'import/sistema/fotoU/colider/';
+				$foto = 'fotoU/colider/' . $_FILES['filesColider']['name'][$i];
+
+				if ($_FILES['filesColider']['name'][$i] == '') {
+					$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga_colider);
+					if ($cadastro) {
+						array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+					} else {
+						array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+					}
+				} else {
+					if ($foto_antiga_colider == $foto) {
+						$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga_colider);
+						if ($cadastro) {
+							array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+						} else {
+							array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+						}
+					} else {
+						if (file_exists($foto)) {
+							$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga);
+							if ($cadastro) {
+								array_push($mensagem, "A foto do seu colíder já existe em nosso servidor, tente com outra foto com nome diferente!");
+							} else {
+								array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+							}
+						} else {
+							// File upload configuration
+							$config['upload_path'] = $uploadPath;
+							$config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+							// Load and initialize upload library
+							$this->load->library('upload', $config);
+							$this->upload->initialize($config);
+
+							// Upload file to server
+							if ($this->upload->do_upload('file')) {
+								$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email, $telefone_colider, $nascimento_colider, $foto);
+								if ($cadastro) {
+									array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+								} else {
+									array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+								}
+							} else {
+								$erros = $this->upload->display_errors() . " - colíder";
+								array_push($mensagem, $erros);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// atualizarCriancas
+		$nome_antigo = $this->input->post("nome_antigo");
+
+		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($idLider, 2);
+
+		if ($consultarCriancas['row'] == 0) {
+		} else {
+			foreach ($consultarCriancas['dados'] as $key => $dadosCriancas) {
+				$id = $dadosCriancas['id_crianca'];
+				$nome_responsavel = $dadosCriancas['nome_responsavel'];
+
+				if ($nome_responsavel == $nome_antigo) {
+					$this->FSistema_model->editaCriancaResponsavel($idLider, $nome, $email, $telefone, 2);
+				}
+			}
+		}
+
+		//echo '<script>alert("' . implode("\\n", $mensagem) . '");</script>';
+		/*echo '
+			<script>
+				if(window.confirm("' . implode("\\n", $mensagem) . '")) {
+					window.location="pagina_editar_pessoal";
+				}else{
+					window.location="pagina_editar_pessoal";
+				}	
+			</script>
+		';*/
+
+		$data = [];
+
+		$this->FConsultas_model->mensagem('success', 'Edição de Líderes!', $mensagem);
+		$funcao = $this->FConsultas_model->red("../lideres/detalhes/$idLider", 2000, $data);
+		echo $funcao;
+	}
+	public function editar_info_lideres()
+	{
+		$id = $this->input->post("id");
+		$nome = $this->input->post("nome");
+		$cpf = $this->input->post("cpf");
+		$email = $this->input->post("email");
+		$telefone = $this->input->post("telefone");
+		$igreja = $this->input->post("igreja");
+		$nascimento = $this->input->post("nascimento");
+		$estado = $this->input->post("estados");
+		$cidade = $this->input->post("cidades");
+
+		$foto_antiga = $this->input->post("foto_antiga");
+
+		$filesCount1 = count($_FILES['files']['name']);
+
+		// Colider
+		$id_colider = $this->input->post("id_colider");
+		$nome_colider = $this->input->post("nome_colider");
+		$cpf_colider = $this->input->post("cpf_colider");
+		$email_colider = $this->input->post("email_colider");
+		$telefone_colider = $this->input->post("telefone_colider");
+		$nascimento_colider = $this->input->post("nascimento_colider");
+		$foto_antiga_colider = $this->input->post("foto_antiga_colider");
+
+		$mensagem = [];
+
+		// Pais
+		for ($i = 0; $i < $filesCount1; $i++) {
+			$_FILES['file']['name']     = $_FILES['files']['name'][$i];
+			$_FILES['file']['type']     = $_FILES['files']['type'][$i];
+			$_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+			$_FILES['file']['error']     = $_FILES['files']['error'][$i];
+			$_FILES['file']['size']     = $_FILES['files']['size'][$i];
+
+			$uploadPath = 'import/sistema/fotoU/lider/';
+			$foto = 'fotoU/lider/' . $_FILES['files']['name'][$i];
+
+			if ($_FILES['files']['name'][$i] == '') {
+				$cadastro = $this->FSistema_model->editarPessoalPais($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $foto_antiga);
+				if ($cadastro) {
+					array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+				} else {
+					array_push($mensagem, "Erro! Seus dados estão inválidos!");
+				}
+			} else {
+				if ($foto_antiga == $foto) {
+					$cadastro = $this->FSistema_model->editarPessoalPais($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $foto_antiga);
+					if ($cadastro) {
+						array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+					} else {
+						array_push($mensagem, "Erro! Seus dados estão inválidos!");
+					}
+				} else {
+					if (file_exists($foto)) {
+						$cadastro = $this->FSistema_model->editarPessoalPais($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $foto_antiga);
+						if ($cadastro) {
+							array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
+						} else {
+							array_push($mensagem, "Erro! Seus dados estão inválidos!");
+						}
+					} else {
+						// File upload configuration
+						$config['upload_path'] = $uploadPath;
+						$config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+						// Load and initialize upload library
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+
+						// Upload file to server
+						if ($this->upload->do_upload('file')) {
+							$cadastro = $this->FSistema_model->editarPessoalPais($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $foto);
+							if ($cadastro) {
+								array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+							} else {
+								array_push($mensagem, "Erro! Seus dados estão inválidos!");
+							}
+						} else {
+							$erros = $this->upload->display_errors() + " - meus dados pessoais";
+							array_push($mensagem, $erros);
+						}
+					}
+				}
+			}
+		}
+
+		if ($nome_colider == '') {
+		} else {
+			$filesCount2 = count($_FILES['filesColider']['name']);
+			// Colíder
+			for ($i = 0; $i < $filesCount2; $i++) {
+				$_FILES['file']['name']     = $_FILES['filesColider']['name'][$i];
+				$_FILES['file']['type']     = $_FILES['filesColider']['type'][$i];
+				$_FILES['file']['tmp_name'] = $_FILES['filesColider']['tmp_name'][$i];
+				$_FILES['file']['error']     = $_FILES['filesColider']['error'][$i];
+				$_FILES['file']['size']     = $_FILES['filesColider']['size'][$i];
+
+				$uploadPath = 'import/sistema/fotoU/colider/';
+				$foto = 'fotoU/colider/' . $_FILES['filesColider']['name'][$i];
+
+				if ($_FILES['filesColider']['name'][$i] == '') {
+					$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga_colider);
+					if ($cadastro) {
+						array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+					} else {
+						array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+					}
+				} else {
+					if ($foto_antiga_colider == $foto) {
+						$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga_colider);
+						if ($cadastro) {
+							array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+						} else {
+							array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+						}
+					} else {
+						if (file_exists($foto)) {
+							$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto_antiga);
+							if ($cadastro) {
+								array_push($mensagem, "A foto do seu colíder já existe em nosso servidor, tente com outra foto com nome diferente!");
+							} else {
+								array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+							}
+						} else {
+							// File upload configuration
+							$config['upload_path'] = $uploadPath;
+							$config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+							// Load and initialize upload library
+							$this->load->library('upload', $config);
+							$this->upload->initialize($config);
+
+							// Upload file to server
+							if ($this->upload->do_upload('file')) {
+								$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email, $telefone_colider, $nascimento_colider, $foto);
+								if ($cadastro) {
+									array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
+								} else {
+									array_push($mensagem, "Erro! Dados do colíder estão inválidos!");
+								}
+							} else {
+								$erros = $this->upload->display_errors() . " - colíder";
+								array_push($mensagem, $erros);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// atualizarCriancas
+		$nome_antigo = $this->input->post("nome_antigo");
+
+		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id, 2);
+
+		if ($consultarCriancas['row'] == 0) {
+		} else {
+			foreach ($consultarCriancas['dados'] as $key => $dadosCriancas) {
+				$id = $dadosCriancas['id_crianca'];
+				$nome_responsavel = $dadosCriancas['nome_responsavel'];
+
+				if ($nome_responsavel == $nome_antigo) {
+					$this->FSistema_model->editaCriancaResponsavel($id, $nome, $email, $telefone, 2);
+				}
+			}
+		}
+
+		echo '
+			<script>
+				if(window.confirm("' . implode("\\n", $mensagem) . '")) {
+					window.location="pagina_editar_pessoal";
+				}else{
+					window.location="pagina_editar_pessoal";
+				}
+			</script>
+		';
 	}
 
 	public function mostrar_table_parte_1()
@@ -287,7 +621,7 @@ class Coordenador extends CI_Controller
 
 		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, '', $dataInicio, $dataFim);
 
-		$this->load->view('sistema/coordenador/pages/consultas/mostrar_tabela_lideres_1', $dados);
+		$this->load->view('sistema/coordenador/pages/lideres/mostrar_tabela_lideres_1', $dados);
 	}
 
 	public function mostrar_table_parte_2()
@@ -304,7 +638,7 @@ class Coordenador extends CI_Controller
 
 		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, $opc3, $dataInicio, $dataFim);
 
-		$this->load->view('sistema/coordenador/pages/consultas/mostrar_tabela_lideres_2', $dados);
+		$this->load->view('sistema/coordenador/pages/lideres/mostrar_tabela_lideres_2', $dados);
 	}
 
 	public function consultasBD($id_coordenador, $opc1, $opc2, $opc3, $dataInicio, $dataFim)
@@ -1161,14 +1495,32 @@ class Coordenador extends CI_Controller
 		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
 		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
 
+		$pages = [];
+
+		$page1 = array(
+			"red" => "../lideres",
+			"name" => "Líderes",
+			"icon" => "fa fa-group",
+		);
+
+		$page2 = array(
+			"red" => "../lideres/detalhes/$id_lider",
+			"name" => "Informações",
+			"icon" => "fa fa-user",
+		);
+
+		array_push($pages, $page1);
+		array_push($pages, $page2);
+
 		$dados = array(
 			'id_lider' => $id_lider,
 			'id_pg' => $id_pg,
 			'modulos' => $modulos,
 			'pg' => $dadosPg,
+			'pages' => $pages,
 		);
 
-		$this->load->view('sistema/lider/pages/pg/licaos', $dados);
+		$this->load->view('sistema/coordenador/pages/pg/licaos', $dados);
 	}
 
 	public function pagina_preenchimento_relatorio_pg()
@@ -1260,99 +1612,4 @@ class Coordenador extends CI_Controller
 		$this->load->view('sistema/lider/pages/download_material_modulo');
 	}
 	/* FIM LÍDER */
-
-	// Colíderes
-	public function cadastro_colider()
-	{
-		$idLider = $this->input->post('idLider');
-		$nomeColider = $this->input->post('nomeColider');
-		$emailColider = $this->input->post('emailColider');
-		$cpfColider = $this->input->post('cpfColider');
-		$telefoneColider = $this->input->post('telefoneColider');
-		$nascimentoColider = $this->input->post('nascimentoColider');
-
-		$consultarColider = $this->FConsultas_model->checkColider($nomeColider, $cpfColider, $emailColider, $telefoneColider);
-
-		if ($consultarColider) {
-			$cadastroColider = $this->FSistema_model->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
-
-			if ($cadastroColider) {
-				$data = [];
-				$funcao = $this->FConsultas_model->red('../../pagina_editar_pessoal', 0, $data);
-				echo $funcao;
-			} else {
-				echo '
-				<script>
-					if(window.confirm("ERRO!")) {
-						window.location="../../pagina_editar_pessoal";
-					}else{
-						window.location="../../pagina_editar_pessoal";
-					}
-				</script>
-			';
-			}
-		} else {
-			echo '
-				<script>
-					if(window.confirm("COLÍDER JÁ CADASTRADO, TENTE NOVAMENTE!")) {
-						window.location="../../pagina_editar_pessoal";
-					}else{
-						window.location="../../pagina_editar_pessoal";
-					}
-				</script>
-			';
-		}
-	}
-
-	public function desativar_colider()
-	{
-		$idLider = $this->input->post("idLider");
-		$idColider = $this->input->post("idColider");
-		$nomeColider = $this->input->post("nomeColider");
-
-		$idResponsavel = $this->input->post("idResponsavel");
-		$motivo = $this->input->post("motivo");
-
-		$reativar = $this->FSistema_model->excluirColider($idColider, $nomeColider, $idLider, $idResponsavel, $motivo);
-
-		if ($reativar) {
-			$data = [];
-			$funcao = $this->FConsultas_model->red('../pagina_editar_pessoal', 0, $data);
-			echo $funcao;
-		} else {
-			echo '
-			<script>
-				if(window.confirm("ERRO!")) {
-					window.location="../pagina_editar_pessoal";
-				}else{
-					window.location="../pagina_editar_pessoal";
-				}
-			</script>
-		';
-		}
-	}
-
-	public function ativar_colider()
-	{
-		$idLider = $this->input->post("idLider");
-		$idColider = $this->input->post("opc");
-
-		$reativar = $this->FSistema_model->reativarColider($idColider, $idLider);
-
-		if ($reativar) {
-			$data = [];
-			$funcao = $this->FConsultas_model->red('../pagina_editar_pessoal', 0, $data);
-			echo $funcao;
-		} else {
-			echo '
-			<script>
-				if(window.confirm("ERRO!")) {
-					window.location="../pagina_editar_pessoal";
-				}else{
-					window.location="../pagina_editar_pessoal";
-				}
-			</script>
-		';
-		}
-	}
 }

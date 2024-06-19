@@ -290,7 +290,6 @@ class FSistema_model extends CI_Model
 			}
 		}
 	}
-
 	public function editarPGProgressoData($id, $ano, $modulo, $licao, $data, $x)
 	{
 		if ($x == 1) {
@@ -365,7 +364,93 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
+
+	public function reativarPg($id_pg, $id_responsavel, $nivel)
+	{
+		$ativo = "1";
+		$acao = "RE_PG_1";
+		$motivo = "Reativou seu PG";
+
+		$this->db->set('ativo', $ativo);
+		$this->db->where('id_pg', $id_pg);
+
+		if ($nivel == 1) {
+			if ($this->db->update('pg')) {
+				$this->FSistema_model->excluirPgAlcancado($id_pg);
+				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($nivel == 2) {
+			if ($this->db->update('pg_2')) {
+				$this->FSistema_model->excluirPgAlcancado($id_pg);
+				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	public function excluirPgPermanentemente($id_pg, $id_lider, $id_responsavel, $nivel)
+	{
+		$ativo = "1";
+		$acao = "EX_PG_1";
+		$motivo = "Excluiu seu PG Permanentemente";
+
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y');
+
+		$dadosPG = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 3);
+
+		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_pg WHERE id_pg LIKE $id_pg");
+		$row = $consultar_pg_desativado->num_rows();
+
+		if ($row == 0) {
+			$inserir['id_exclusao'] = NULL;
+			$inserir['id_pg'] = $id_pg;
+			$inserir['nome_pg'] = $dadosPG['dados']['nome_pg'];
+			$inserir['id_lider'] = $id_lider;
+			$inserir['id_responsavel'] = $id_responsavel;
+			$inserir['motivo'] = $motivo;
+			$inserir['data_saida'] = $data;
+
+			if ($this->db->insert('alcancado_pg', $inserir)) {
+			}
+		} else {
+		}
+
+		$this->db->where('id_pg', $id_pg);
+
+		if ($nivel == 1) {
+			if ($this->db->delete('pg_pais')) {
+				$this->FSistema_model->excluirProgresso($id_pg, $id_lider);
+				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($nivel == 2) {
+			if ($this->db->delete('pg_2')) {
+				$this->FSistema_model->excluirProgresso($id_pg, $id_lider);
+				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 	// Fim PG
+
+	public function excluirProgresso($id_pg, $id_lider)
+	{
+
+		$this->db->where('id_pg', $id_pg);
+		$this->db->where('id_lider', $id_lider);
+		$this->db->delete('progresso_pg');
+	}
+
 
 	// EDIÇÃO DE DADOS PESSOAIS PAIS
 	public function editarPessoalPais($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $foto)
@@ -469,6 +554,44 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
+
+
+	public function excluirColiderPermanentemente($id_colider, $id_lider, $id_responsavel)
+	{
+		$acao = "EX_CL_1";
+		$motivo = "Excluiu seu Colider Permanentemente";
+
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y');
+
+		$dadosPG = $this->FConsultas_model->getNomeUserId($id_colider);
+
+		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_colider WHERE id_colider = '$id_colider'");
+		$row = $consultar_pg_desativado->num_rows();
+
+		if ($row == 0) {
+			$inserir['id_exclusao'] = NULL;
+			$inserir['id_colider'] = $id_colider;
+			$inserir['nome_colider'] = $dadosPG['nome'];
+			$inserir['id_lider'] = $id_lider;
+			$inserir['id_responsavel'] = $id_responsavel;
+			$inserir['motivo'] = $motivo;
+			$inserir['data_saida'] = $data;
+
+			if ($this->db->insert('alcancado_colider', $inserir)) {
+			}
+		} else {
+		}
+
+		$this->db->where('id_colider', $id_colider);
+
+		if ($this->db->delete('colider')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_colider, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
 	// Fim EXCLUSÂO		
 
 	// EXCLUSÃO ALCANÇADO
@@ -483,6 +606,16 @@ class FSistema_model extends CI_Model
 		}
 	}
 
+	public function excluirPgAlcancado($id_pg)
+	{
+		$this->db->where('id_pg', $id_pg);
+
+		if ($this->db->delete('alcancado_pg')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	public function excluirCriancaAlcancado($id_crianca)
 	{
 		$this->db->where('id_crianca', $id_crianca);
@@ -980,4 +1113,29 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
+
+	// EDIÇÃO DE DADOS PESSOAIS LÍDER
+	public function editarPessoalLider($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $estado, $cidade, $id_coord, $id_sl, $id_sr, $foto)
+	{
+		$this->db->set('nome_lider', $nome);
+		$this->db->set('cpf', $cpf);
+		$this->db->set('email', $email);
+		$this->db->set('telefone_whatsapp', $telefone);
+		$this->db->set('igreja', $igreja);
+		$this->db->set('nascimento', $nascimento);
+		$this->db->set('estado', $estado);
+		$this->db->set('cidade', $cidade);
+		$this->db->set('id_coordenador', $id_coord);
+		$this->db->set('id_supervisorR', $id_sl);
+		$this->db->set('id_supervisorE', $id_sr);
+		$this->db->set('foto', $foto);
+		$this->db->where('id_lider', $id);
+
+		if ($this->db->update('lider')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	// Fim EDIÇÃO DE DADOS PESSOAIS LÍDER
 }

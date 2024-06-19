@@ -664,7 +664,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="box-body" style="height: 150px;">
 
                                                 <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
-                                                <input type="hidden" name="nivel" value="1">
+                                                <input type="hidden" name="nivel" value="2">
                                                 <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
                                                     <div class="form-group">
                                                         <label for="opc">Selecione a Criança:</label>

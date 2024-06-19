@@ -273,7 +273,7 @@ if (!isset($_SESSION['usuario'])) {
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        PG
+                        Líderes
                         <small>Painel de Controle</small>
                     </h1>
                     <ol class="breadcrumb">

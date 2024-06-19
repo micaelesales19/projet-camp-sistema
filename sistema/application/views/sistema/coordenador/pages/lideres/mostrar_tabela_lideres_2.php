@@ -122,7 +122,12 @@
                 <td><?= $qtd_criancas_ativas['row']; ?></td>
                 <td><?= $nome_modulo; ?></td>
                 <td><span class="label label-<?= $class1; ?>"><?= $progresso; ?></span></td>
-                <td><input type="submit" class="btn btn-info" value="Visualizar" /></td>
+                <td>
+                    <form action="lideres/detalhes/<?= $lider['id_lider']; ?>" method="post">
+                        <input type="hidden" name="id_lider" value="<?= $lider['id_lider']; ?>">
+                        <input type="submit" class="btn btn-info" value="Visualizar" />
+                    </form>
+                </td>
                 <td><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
             </tr>
         <?php } ?>
