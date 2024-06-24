@@ -649,6 +649,44 @@ class FSistema_model extends CI_Model
 	// Fim REATIVAR
 	/*Colíder*/
 
+	/*LÍDÉR*/
+
+	public function cadastro_lider($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional)
+	{
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y'); // tirar
+		$data_2 = date('Y-m-d');
+
+		$foto = "fotoU/geral.jpg";
+
+		$inserir['nome_lider'] = $nome;
+		$inserir['cpf'] = $cpf;
+		$inserir['email'] = $email;
+		$inserir['telefone_whatsapp'] = $telefone;
+		$inserir['igreja'] = $igreja;
+		$inserir['nascimento'] = $nascimento;
+		$inserir['id_pastor'] = $id_pastor;
+		$inserir['pais'] = $pais;
+		$inserir['estado'] = $estado;
+		$inserir['cidade'] = $cidade;
+		$inserir['id_coordenador'] = $id_coordenador;
+		$inserir['id_supervisorR'] = $id_slocal;
+		$inserir['id_supervisorE'] = $id_sregional;
+		$inserir['foto'] = $foto;
+		$inserir['foto_2'] = '';
+		$inserir['confirmado'] = 2;
+		$inserir['data'] = $data;
+		$inserir['data_cadastro'] = $data_2;
+
+		if ($this->db->insert("lider", $inserir)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/*LÍDER*/
+
 	// Crianças
 	public function cadastro_crianca($nome, $nascimento, $idLider, $id_pg, $obs, $opcao, $nomePai, $emailPai, $telefonePai, $x)
 	{

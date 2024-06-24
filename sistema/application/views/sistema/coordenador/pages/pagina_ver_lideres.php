@@ -13,6 +13,15 @@ if (!isset($_SESSION['usuario'])) {
 
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
+
+    $dados_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_usuario);
+
+    $id_pastor = "2000";
+    $id_sr = $dados_coordenador['dados']['id_supervisorR'];
+    $id_se = $dados_coordenador['dados']['id_supervisorE'];
+
+    $link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_usuario&tres=$id_sr&quatro=$id_se";
+
 ?>
     <!DOCTYPE html>
     <html>
@@ -42,6 +51,42 @@ if (!isset($_SESSION['usuario'])) {
             };
 
             setTimeout(dismissLoadingScreen, 3000);
+        }
+
+        let copiarTexto = (texto) => {
+            //O texto que será copiado
+            //const texto = "00020126470014br.gov.bcb.pix0125campbrasilemail@gmail.com27600016BR.COM.PAGSEGURO013659BAD104-74E5-4E29-8EE8-9738E5D5784A5204000053039865802BR5925CAMP - CENTRO DE APOIO MI6007Caucaia62290525PAGS0000000002404131224896304431F";
+            //Cria um elemento input (pode ser um textarea)
+            let inputTest = document.createElement("input");
+            inputTest.value = texto;
+            //Anexa o elemento ao body
+            document.body.appendChild(inputTest);
+            //seleciona todo o texto do elemento
+            inputTest.select();
+            //executa o comando copy
+            //aqui é feito o ato de copiar para a area de trabalho com base na seleção
+            document.execCommand('copy');
+            //remove o elemento
+            document.body.removeChild(inputTest);
+
+            document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
+        };
+
+        function aparecer_select() {
+            var opc = document.getElementById('pais').value;
+            if (opc == "br") {
+                document.getElementById('estaods2').value = '';
+                document.getElementById('cidades2').value = '';
+                document.getElementById('consultar_endereco').style.display = "inline";
+                document.getElementById('escrever_endereco').style.display = "none";
+            }
+
+            if (opc == "outro") {
+                document.getElementById('estados').value = '';
+                document.getElementById('cidades').value = '';
+                document.getElementById('escrever_endereco').style.display = "inline";
+                document.getElementById('consultar_endereco').style.display = "none";
+            }
         }
     </script>
     <!-- Head -->
@@ -226,6 +271,14 @@ if (!isset($_SESSION['usuario'])) {
             cursor: pointer;
         }
 
+        #consultar_endereco {
+            display: none;
+        }
+
+        #escrever_endereco {
+            display: none;
+        }
+
         #imgPhoto_usuario {
             margin-top: 1%;
             width: 50px;
@@ -290,6 +343,128 @@ if (!isset($_SESSION['usuario'])) {
 
                             <div class="box-header with-border">
                                 <h3 class="box-title"><i class="fa fa-table"></i> Seus Líderes</h3>
+
+                                <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="btn btn-success">
+                                    Copiar Link de Cadastro <i class="fa fa-link"></i>
+                                </a>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_lider">Cadastrar +</button>
+
+                                <p id="text_sucess"></p>
+
+                                <div class="modal fade" id="cadastro_lider">
+                                    <div class="modal-dialog modal-success">
+                                        <div class="modal-content">
+                                            <form action="../../lider/salvar" method="POST">
+                                                <input type="hidden" name="id_pastor" value="<?= $id_pastor; ?>">
+                                                <input type="hidden" name="id_coordenador" value="<?= $id_usuario; ?>">
+                                                <input type="hidden" name="id_slocal" value="<?= $id_sr; ?>">
+                                                <input type="hidden" name="id_sregional" value="<?= $id_se; ?>">
+                                                <input type="hidden" name="red" value="coordenador/lideres">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title">Cadastro | Líder</h4>
+                                                </div>
+                                                <div class="box-body">
+
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome">
+                                                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="email" class="form-control" placeholder="Email" name="email">
+                                                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11">
+                                                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone">
+                                                            <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento">
+                                                            <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12">
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group has-feedback">
+                                                                <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
+                                                                    <option value="" selected>País</option>
+                                                                    <option value="br">Brasil</option>
+                                                                    <option value="outro">Outros</option>
+                                                                </select>
+                                                                <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div id="escrever_endereco">
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" id="estaods2" class="form-control" placeholder="Estado" name="estados2">
+                                                                    <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2">
+                                                                    <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="consultar_endereco">
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group has-feedback">
+                                                                    <select id="estados" name="estados" class="form-control">
+                                                                        <option value=""></option>
+                                                                    </select>
+                                                                    <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <div class="form-group has-feedback">
+                                                                    <select id="cidades" name="cidades" class="form-control">
+                                                                    </select>
+                                                                    <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" placeholder="Igreja" minlength="5" name="igreja">
+                                                            <span class="glyphicon glyphicon-home form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                    <input type="submit" class="btn btn-default pull-right" value="Salvar">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
 
                                 <div class="box-tools pull-right">
                                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -600,6 +775,34 @@ if (!isset($_SESSION['usuario'])) {
             <?php
             $this->load->view('partes/scripts2');
             ?>
+
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $.getJSON('<?php echo base_url('import/sistema/dist/js/estados_cidades.json'); ?>', function(data) {
+                        var items = [];
+                        var options = '<option value="">escolha um estado</option>';
+                        $.each(data, function(key, val) {
+                            options += '<option value="' + val.nome + '">' + val.nome + '</option>';
+                        });
+                        $("#estados").html(options);
+                        $("#estados").change(function() {
+                            var options_cidades = '';
+                            var str = "";
+                            $("#estados option:selected").each(function() {
+                                str += $(this).text();
+                            });
+                            $.each(data, function(key, val) {
+                                if (val.nome == str) {
+                                    $.each(val.cidades, function(key_city, val_city) {
+                                        options_cidades += '<option value="' + val_city + '" class="form-control">' + val_city + '</option>';
+                                    });
+                                }
+                            });
+                            $("#cidades").html(options_cidades);
+                        }).change();
+                    });
+                });
+            </script>
     </body>
 
     </html>

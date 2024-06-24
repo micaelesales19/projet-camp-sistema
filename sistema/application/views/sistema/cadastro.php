@@ -123,7 +123,7 @@ $this->load->view('partes/head');
         border-radius: 50%;
     }
 
-    h4{
+    h4 {
         text-align: center;
     }
 </style>

@@ -1491,6 +1491,7 @@ class Coordenador extends CI_Controller
 		$id_pg = $this->input->post("id_pg");
 		$id_lider = $this->input->post("id_lider");
 		$ano = $this->input->post("ano");
+		$routa = $this->input->post('routa');
 
 		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
 		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
@@ -1518,6 +1519,7 @@ class Coordenador extends CI_Controller
 			'modulos' => $modulos,
 			'pg' => $dadosPg,
 			'pages' => $pages,
+			'routa' => $routa,
 		);
 
 		$this->load->view('sistema/coordenador/pages/pg/licaos', $dados);
@@ -1525,12 +1527,46 @@ class Coordenador extends CI_Controller
 
 	public function pagina_preenchimento_relatorio_pg()
 	{
-		$this->load->view('sistema/lider/pages/preenchimento_relatorio');
+		$id_pg = $this->input->post('id_pg');
+		$id_lider = $this->input->post('id_lider');
+		$ano = $this->input->post('ano');
+		$id_modulo = $this->input->post('id_modulo');
+		$licao = $this->input->post('licao');
+		$routa = $this->input->post('routa');
+
+		$pages = [];
+
+		$page1 = array(
+			"red" => "../lideres",
+			"name" => "Líderes",
+			"icon" => "fa fa-group",
+		);
+
+		$page2 = array(
+			"red" => "../lideres/detalhes/$id_lider",
+			"name" => "Informações",
+			"icon" => "fa fa-user",
+		);
+
+		array_push($pages, $page1);
+		array_push($pages, $page2);
+
+		$dados = array(
+			'id_lider' => $id_lider,
+			'id_pg' => $id_pg,
+			'ano' => $ano,
+			'id_modulo' => $id_modulo,
+			'licao' => $licao,
+			'routa' => $routa,
+			'pages' => $pages,
+		);
+
+		$this->load->view('sistema/coordenador/pages/preenchimento_relatorio', $dados);
 	}
 
 	public function consulta_criancas_relatorios()
 	{
-		$this->load->view('sistema/lider/pages/consultas/retornar_infomacoes');
+		$this->load->view('sistema/coordenador/pages/consultas/retornar_infomacoes');
 	}
 
 	public function consulta_progresso_pg()
@@ -1604,12 +1640,12 @@ class Coordenador extends CI_Controller
 	// Download de Material
 	public function pagina_download_material()
 	{
-		$this->load->view('sistema/lider/pages/download_material');
+		$this->load->view('sistema/coordenador/pages/download_material');
 	}
 
 	public function pagina_download_material_modulo()
 	{
-		$this->load->view('sistema/lider/pages/download_material_modulo');
+		$this->load->view('sistema/coordenador/pages/download_material_modulo');
 	}
 	/* FIM LÍDER */
 }

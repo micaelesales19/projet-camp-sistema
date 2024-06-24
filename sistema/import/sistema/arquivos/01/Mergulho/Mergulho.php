@@ -193,7 +193,7 @@ $pdf->ln(10);
 // Select Arial italic 8
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number		    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 // Lição 02
@@ -272,7 +272,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 // Lição 02
@@ -356,7 +356,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 // Lição 04
@@ -428,7 +428,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Lição 05
 $pdf->AddPage();
@@ -498,7 +498,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Lição 06
 $pdf->AddPage();
@@ -568,7 +568,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Lição 07
 $pdf->AddPage();
@@ -644,7 +644,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Lição 08
 $pdf->AddPage();
@@ -720,7 +720,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Respostas dos mistérios
 $pdf->AddPage();
@@ -785,7 +785,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 $nome_relatorio = $pdf->textoUTF8("Mergulho");

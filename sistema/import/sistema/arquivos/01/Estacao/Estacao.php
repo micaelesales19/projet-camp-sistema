@@ -196,7 +196,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que o Espírito Santo faz?"), 0, 'J'
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);		    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 3		
 $pdf->AddPage();
@@ -273,7 +273,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que o Espírito Santo faz?"), 0, 'J'
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 4	
 $pdf->AddPage();
@@ -370,7 +370,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quem serve nosso trem?"), 0, 'J')
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 5
 $pdf->AddPage();
@@ -464,7 +464,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quem serve nosso trem?"), 0, 'J')
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);			    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 6	
 $pdf->AddPage();
@@ -549,7 +549,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ter este contato?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 7
 $pdf->AddPage();
@@ -628,7 +628,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ter este contato?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);			    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 8
 $pdf->AddPage();
@@ -718,7 +718,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Ela é o fim ou o começo?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);			    
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 $pdf->AddPage();
@@ -820,7 +820,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Ela é o fim ou o começo?"), 0, 'J');
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $pdf->AddPage();
 
@@ -886,7 +886,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Ela é o fim ou o começo? - O começo
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $nome_relatorio = $pdf->textoUTF8("Estação Final");
 $pdf->Output("$nome_relatorio.pdf", "I");

@@ -527,7 +527,7 @@ class FConsultas_model extends CI_Model
 
 	public function consultarModulo()
 	{
-		$consultar = $this->db->query("SELECT * FROM modulo WHERE ano = 1 ORDER BY ordem ASC");
+		$consultar = $this->db->query("SELECT * FROM modulo ORDER BY id_modulo ASC");
 		$row = $consultar->num_rows();
 		$dados = $consultar->result_array();
 
@@ -732,8 +732,6 @@ class FConsultas_model extends CI_Model
 				'row' => $row,
 				'dados' => $dados_consulta_criancas,
 			);
-
-			return $dados;
 		} else if ($x == 2) {
 			$consultar_criancas = $this->db->query("SELECT * FROM criancas_2 WHERE lider LIKE $id_usuario");
 			$row = $consultar_criancas->num_rows();
@@ -743,8 +741,6 @@ class FConsultas_model extends CI_Model
 				'row' => $row,
 				'dados' => $dados_consulta_criancas,
 			);
-
-			return $dados;
 		} else if ($x == 3) {
 			$consultar_criancas = $this->db->query("SELECT * FROM crianca WHERE lider LIKE $id_usuario");
 			$row = $consultar_criancas->num_rows();
@@ -754,9 +750,9 @@ class FConsultas_model extends CI_Model
 				'row' => $row,
 				'dados' => $dados_consulta_criancas,
 			);
-
-			return $dados;
 		}
+
+		return $dados;
 	}
 
 	public function mostrarCriancasPaisPg($id_usuario, $idPG, $x)
@@ -933,6 +929,17 @@ class FConsultas_model extends CI_Model
 	public function consultaraisJaCadastrado($nome, $cpf, $cpf2, $email)
 	{
 		$consultar = $this->db->query("SELECT * FROM pais WHERE nome LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+		$row = $consultar->num_rows();
+		if ($row == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function consultarLiderJaCadastrado($nome, $cpf, $cpf2, $email)
+	{
+		$consultar = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
 		$row = $consultar->num_rows();
 		if ($row == 0) {
 			return true;

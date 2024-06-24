@@ -186,7 +186,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que você pode construir com ela?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 3		
 $pdf->AddPage();
@@ -256,7 +256,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que você pode construir sobre ela?"
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 4	
 $pdf->AddPage();
@@ -328,7 +328,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual nossa parte no projeto?"), 0, 'J'
 $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 5
 
@@ -431,7 +431,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual nossa parte no projeto?"), 0, 'J'
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 6	
 $pdf->AddPage();
@@ -530,7 +530,7 @@ $pdf->ln(10);
 
 $pdf->SetFont('arial', 'I', 8);
 
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 // Página 7
@@ -596,7 +596,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quê devemos consultar esse orác
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 8
 $pdf->AddPage();
@@ -671,7 +671,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual é o material de construção?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 $pdf->AddPage();
@@ -760,7 +760,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual é o material de construção"), 
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 // Página 9
@@ -856,7 +856,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Por que ele aponta para esse local?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9
 
@@ -978,7 +978,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Por que ele aponta para esse local?"),
 
 $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 $pdf->AddPage();
 
@@ -1043,7 +1043,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Por que ele aponta para esse local? - 
 
 $pdf->ln(200);
 $pdf->SetFont('arial', 'I', 8);
-$pdf->Cell(0, 10, "Este material foi impresso pelo " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
+$pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 
 $nome_relatorio = $pdf->textoUTF8("Santuário");

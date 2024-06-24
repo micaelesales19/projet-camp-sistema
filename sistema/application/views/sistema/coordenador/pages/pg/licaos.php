@@ -26,124 +26,6 @@ if (!isset($_SESSION['usuario'])) {
 
     <script>
         $("ul.nav li").removeClass('active').addClass('disabledTab');
-
-        $(document).ready(function() {
-            var check = '<?= $pg['data_semana']; ?>';
-            var id_lider = '<?= $id_usuario; ?>';
-            var id_pg = '<?= $pg['id_pg']; ?>';
-            var id_modulo = ['<?= $pg['id_modulo']; ?>'];
-
-            if (check == '' || check == '00') {
-                $('#atulizarDataComeco').modal('show');
-            }
-
-            mostrarProgressoInicial('1', id_lider, id_pg);
-        });
-
-        function AjaxF() {
-            var ajax;
-
-            try {
-                ajax = new XMLHttpRequest();
-            } catch (e) {
-                try {
-                    ajax = new ActiveXObject("Msxml2.XMLHTTP");
-                } catch (e) {
-                    try {
-                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
-                    } catch (e) {
-                        alert("Seu browser não da suporte à AJAX!");
-                        return false;
-                    }
-                }
-            }
-            return ajax;
-        }
-
-        function mostrarProgressoInicial(idModulo, idLider, idPg) {
-            var moduloAtual = '<?= $pg['id_modulo']; ?>';
-            var respostas = [];
-
-            var radio = document.getElementsByName('modulos_escolhidos');
-
-            radio[moduloAtual - 1].checked = true;
-            document.getElementById('controllerClickModulo_' + idModulo).value = 1;
-            document.getElementById('linha_licoes').style.display = 'inline';
-
-            var total = 0;
-
-            for (var i = 0; i < radio.length; i++) {
-                if (radio[i].checked) {
-                    respostas.push(radio[i].value);
-                    total = total + 1;
-                }
-            }
-
-            var ajax = AjaxF();
-
-            ajax.onreadystatechange = function() {
-                if (ajax.readyState == 4) {
-                    document.getElementById('conteudo').innerHTML = ajax.responseText;
-                }
-            }
-
-            ajax.open("GET", "consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total, false);
-
-            ajax.setRequestHeader("Content-Type", "text/html");
-            ajax.send();
-        }
-
-
-        function atualizarProgresso(idModulo, idLider, idPg) {
-            var respostas = [];
-            var moduloAtual = '<?= $pg['id_modulo']; ?>';
-
-            var radio = document.getElementsByName('modulos_escolhidos');
-
-            if (radio[idModulo - 1].checked) {
-                document.getElementById('controllerClickModulo_' + idModulo).value = 1;
-            } else {
-                document.getElementById('controllerClickModulo_' + idModulo).value = 0;
-            }
-
-            var check1 = document.getElementById('controllerClickModulo_1').value;
-            var check2 = document.getElementById('controllerClickModulo_2').value;
-            var check3 = document.getElementById('controllerClickModulo_3').value;
-            var check4 = document.getElementById('controllerClickModulo_4').value;
-            var check5 = document.getElementById('controllerClickModulo_5').value;
-            var checks = document.getElementById('controllerClickModulo_' + idModulo).value;
-
-            if (check1 == 0 && check2 == 0 && check3 == 0 && check4 == 0 && check5 == 0) {
-                radio[moduloAtual - 1].checked = true;
-                document.getElementById('controllerClickModulo_' + idModulo).value = 1;
-                document.getElementById('linha_licoes').style.display = 'inline';
-            } else {
-                document.getElementById('linha_licoes').style.display = 'none';
-            }
-
-            var total = 0;
-
-
-            for (var i = 0; i < radio.length; i++) {
-                if (radio[i].checked) {
-                    respostas.push(radio[i].value);
-                    total = total + 1;
-                }
-            }
-
-            var ajax = AjaxF();
-
-            ajax.onreadystatechange = function() {
-                if (ajax.readyState == 4) {
-                    document.getElementById('conteudo').innerHTML = ajax.responseText;
-                }
-            }
-
-            ajax.open("GET", "consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total, false);
-
-            ajax.setRequestHeader("Content-Type", "text/html");
-            ajax.send();
-        }
     </script>
 
     <style>
@@ -459,6 +341,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                             <input type="hidden" name="ano" value="<?= $ano; ?>">
                                                                                                             <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">
                                                                                                             <input type="hidden" name="licao" value="<?= $i2; ?>">
+                                                                                                            <input type="hidden" name="routa" value="<?= $routa; ?>">
                                                                                                         </form>
                                                                                                     </div>
                                                                                                 </td>

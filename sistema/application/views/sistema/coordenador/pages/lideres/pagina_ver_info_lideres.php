@@ -691,6 +691,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     <input type="hidden" name="id_pg" value="<?= $dadosPG['id_pg']; ?>">
                                                                     <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
                                                                     <input type="hidden" name="ano" value="<?= $dadosPG['ano']; ?>">
+                                                                    <input type="hidden" name="routa" value="lideres/detalhes">
                                                                 </form>
                                                             </td>
                                                             <td>
@@ -783,35 +784,89 @@ if (!isset($_SESSION['usuario'])) {
                                                     <div class="modal fade" id="criancas_desativadas">
                                                         <div class="modal-dialog modal-warning">
                                                             <div class="modal-content">
-                                                                <form action="../../criancas/exclusao/ativar" method="POST">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">&times;</span></button>
-                                                                        <h4 class="modal-title">Ativar | Crianças</h4>
-                                                                    </div>
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title">Ativar | Desativar | Crianças</h4>
+                                                                </div>
 
-                                                                    <div class="box-body" style="height: 150px;">
-                                                                        <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
-                                                                        <input type="hidden" name="nivel" value="2">
-                                                                        <input type="hidden" name="red" value="lideres/detalhes">
-                                                                        <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
+                                                                <div class="box-body">
+
+                                                                    <script>
+                                                                        function trocar_id_crianca() {
+                                                                            var id_cri = document.getElementById('opc_id_crianca').value;
+
+                                                                            document.getElementById('id_crianca_escolhido_1').value = id_cri;
+                                                                            document.getElementById('id_crianca_escolhido_2').value = id_cri;
+                                                                        }
+                                                                    </script>
+
+                                                                    <div class="col-lg-12">
+
+                                                                        <div class="col-lg-5">
                                                                             <div class="form-group">
-                                                                                <label for="opc">Selecione a Criança:</label>
-                                                                                <select name="opc" class="form-control">
+                                                                                <label for="opc">PG:</label>
+                                                                                <select name="opc" id="opc_id_crianca" onchange="trocar_id_crianca()" class="form-control">
                                                                                     <?php
                                                                                     foreach ($criancas_desativadas['dados'] as $key => $dadosCriancas) {
                                                                                     ?>
                                                                                         <option value="<?= $dadosCriancas['id_crianca']; ?>"><?= $dadosCriancas['nome_crianca']; ?> </option>
                                                                                     <?php } ?>
-                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-lg-3">
+                                                                            <div class="form-group">
+                                                                                <form action="../../criancas/exclusao/ativar" method="POST">
+                                                                                    <input type="hidden" name="id_pg" id="id_crianca_escolhido_1" value="<?= $dadosCriancas['dados'][0]['id_crianca']; ?>">
+                                                                                    <input type="hidden" name="nivel" value="2">
+                                                                                    <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                                                                                    <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
+                                                                                    <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                    <center>
+                                                                                        <label for="opc">Opção 1:</label><br>
+                                                                                        <input type="submit" class="btn btn-success" value="Ativar">
+                                                                                    </center>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-lg-4">
+                                                                            <div class="form-group">
+                                                                                <form action="../../criancas/exclusao/permanente" method="POST">
+                                                                                    <input type="hidden" name="id_pg" id="id_crianca_escolhido_2" value="<?= $dadosCriancas['dados'][0]['id_crianca']; ?>">
+                                                                                    <input type="hidden" name="nivel" value="2">
+                                                                                    <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                                                                                    <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
+                                                                                    <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                    <center>
+                                                                                        <label for="opc">Opção 2:</label><br>
+                                                                                        <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
+                                                                                    </center>
+                                                                                </form>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                                                        <input type="submit" class="btn btn-default pull-right" value="Ativar">
+                                                                    <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
+                                                                    <input type="hidden" name="nivel" value="2">
+                                                                    <input type="hidden" name="red" value="lideres/detalhes">
+                                                                    <div class="col-lg-12">
+                                                                        <div class="form-group">
+                                                                            <label for="opc">Selecione a Criança:</label>
+                                                                            <select name="opc" class="form-control">
+                                                                                <?php
+                                                                                foreach ($criancas_desativadas['dados'] as $key => $dadosCriancas) {
+                                                                                ?>
+                                                                                    <option value="<?= $dadosCriancas['id_crianca']; ?>"><?= $dadosCriancas['nome_crianca']; ?> </option>
+                                                                                <?php } ?>
+                                                                            </select>
+                                                                        </div>
                                                                     </div>
-                                                                </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                                    <input type="submit" class="btn btn-default pull-right" value="Ativar">
+                                                                </div>
                                                             </div>
                                                             <!-- /.modal-content -->
                                                         </div>
@@ -1122,6 +1177,65 @@ if (!isset($_SESSION['usuario'])) {
                                             <?php
                                             }
                                             ?>
+
+                                            <div class="item">
+                                                <center>
+                                                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#gerar_relatorio">
+                                                        Gerar PDF
+                                                    </button>
+                                                </center>
+                                                <div class="modal fade" id="gerar_relatorio">
+                                                    <div class="modal-dialog modal-warning">
+                                                        <div class="modal-content">
+                                                            <form action="../../criancas/gerar/relatorio" target="_blank" method="post">
+                                                                <input type="hidden" name="id" value="<?= $dados_lider['id_lider']; ?>">
+                                                                <input type="hidden" name="nivel" value="2">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span></button>
+                                                                    <h4 class="modal-title">PDF | Criança</h4>
+                                                                </div>
+                                                                <div class="box-body" style="height: 250px;">
+                                                                    <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
+                                                                        <div class="form-group">
+                                                                            <label for="opc">Selecione</label>
+                                                                            <select name="opc" class="form-control">
+                                                                                <optgroup label="Informações Gerais">
+                                                                                    <option value="1">Completo</option>
+                                                                                </optgroup>
+                                                                                <optgroup label="Personalizado">
+                                                                                    <option value="2">Ativas</option>
+                                                                                    <option value="3">Desativadas</option>
+                                                                                </optgroup>
+                                                                                <optgroup label="PG">
+                                                                                    <?php
+                                                                                    foreach ($pg['dados'] as $key => $dadosPG) {
+                                                                                    ?>
+                                                                                        <option value="pg <?= $dadosPG['id_pg']; ?>"> PG - <?= $dadosPG['nome_pg']; ?> </option>
+                                                                                    <?php } ?>
+                                                                                </optgroup>
+                                                                                <optgroup label="Por Pontuação">
+                                                                                    <?php
+                                                                                    foreach ($pg['dados'] as $key => $dadosPG) {
+                                                                                    ?>
+                                                                                        <option value="pontuacao <?= $dadosPG['id_pg']; ?>">PG - <?= $dadosPG['nome_pg']; ?> </option>
+                                                                                    <?php } ?>
+                                                                                </optgroup>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                                    <input type="submit" class="btn btn-default" value="Gerar">
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
