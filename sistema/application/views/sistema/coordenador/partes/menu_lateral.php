@@ -112,7 +112,7 @@ $color = "#39cccc";
       </li>
 
       <li>
-        <a href="<?= $voltar; ?>page/criancas">
+        <a href="<?= $voltar; ?>page/lideres">
           <i class="fa fa-users"></i>
           <span>Líderes</span>
         </a>
@@ -132,7 +132,7 @@ $color = "#39cccc";
       <?php } ?>
 
       <li>
-        <a href="<?= $voltar; ?>page/download">
+        <a href="<?= $voltar; ?>page/material-apoio-treinamento">
           <i class="fa fa-book"></i>
           <span>Treinamentos</span>
         </a>

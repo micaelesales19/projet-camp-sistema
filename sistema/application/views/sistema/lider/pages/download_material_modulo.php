@@ -15,6 +15,12 @@ if (!isset($_SESSION['usuario'])) {
   require_once(APPPATH . '../import/sistema/materiais/materiais_5_estacao.php');
   require_once(APPPATH . '../import/sistema/materiais/materiais_6_exped_ani_1_os_segredos.php');
 
+  $dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
+
+  $nome_modulo = $dadosModulos['nome_modulo'];
+  $aprenderemos = $dadosModulos['aprenderemos'];
+  $descricao = $dadosModulos['descricao'];
+
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
@@ -113,8 +119,9 @@ if (!isset($_SESSION['usuario'])) {
             <small>Painel de Controle</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="<?= $voltar ?>page/download"><i class="fa fa-home"></i> Home</a></li>
-            <li class="active">Download do Material | CAMP Brasil</li>
+            <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="<?= $voltar ?>page/download"><i class="fa fa-download"></i> Download do Material</a></li>
+            <li class="active">Download do Material | <?= $nome_modulo; ?></li>
           </ol>
         </section>
         <!-- Main content -->
@@ -124,11 +131,6 @@ if (!isset($_SESSION['usuario'])) {
             <?php
 
             $consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario, 2);
-            $dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
-
-            $nome_modulo = $dadosModulos['nome_modulo'];
-            $aprenderemos = $dadosModulos['aprenderemos'];
-            $descricao = $dadosModulos['descricao'];
 
             $color_h3 = 'black';
 

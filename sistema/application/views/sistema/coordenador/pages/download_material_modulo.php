@@ -26,6 +26,12 @@ if (!isset($_SESSION['usuario'])) {
 
   $CI = &get_instance();
   $CI->load->model('FConsultas_model');
+
+  $dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
+
+  $nome_modulo = $dadosModulos['nome_modulo'];
+  $aprenderemos = $dadosModulos['aprenderemos'];
+  $descricao = $dadosModulos['descricao'];
 ?>
   <!DOCTYPE html>
   <html>
@@ -112,8 +118,9 @@ if (!isset($_SESSION['usuario'])) {
             <small>Painel de Controle</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="<?= $voltar ?>page/download"><i class="fa fa-home"></i> Home</a></li>
-            <li class="active">Download do Material | CAMP Brasil</li>
+            <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="<?= $voltar ?>page/download"><i class="fa fa-download"></i> Download do Material</a></li>
+            <li class="active">Download do Material | <?= $nome_modulo; ?></li>
           </ol>
         </section>
         <!-- Main content -->
@@ -121,12 +128,6 @@ if (!isset($_SESSION['usuario'])) {
 
           <div class="row">
             <?php
-
-            $dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
-
-            $nome_modulo = $dadosModulos['nome_modulo'];
-            $aprenderemos = $dadosModulos['aprenderemos'];
-            $descricao = $dadosModulos['descricao'];
 
             $color_h3 = 'black';
 
