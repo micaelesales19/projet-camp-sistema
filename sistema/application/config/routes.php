@@ -56,12 +56,13 @@ $route['translate_uri_dashes'] = FALSE;
 $route['offline'] = 'welcome/offline';
 $route['segundociclo'] = 'welcome/listar_lideres_segundo_ciclo';
 
-//$route['mudar_data'] = 'Coordenador/mudar_data';
+$route['gerar_certificado'] = 'welcome/gerar_certificado';
 
 $route['index'] = 'welcome/index';
 $route['sair'] = 'welcome/sair';
 $route['login'] = 'welcome/login';
 $route['acesso'] = 'welcome/autenticacao_login';
+$route['atualizar_session'] = 'welcome/atualizar_session';
 
 $route['termos'] = 'welcome/PaginaDosTermos';
 $route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
@@ -69,6 +70,7 @@ $route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
 $route['lider/salvar'] = 'welcome/cadastro_lider';
 
 $route['download_material'] = 'welcome/downloadMaterial';
+$route['download'] = 'welcome/download_material';
 
 // Primeiro Acesso
 $route['pg/cadastro/salvar'] = 'welcome/cadastro_pg_inicial';

@@ -70,6 +70,12 @@ if (!isset($_SESSION['usuario'])) {
             document.body.removeChild(inputTest);
 
             document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
+
+            function msgEncerramento() {
+                document.getElementById('text_sucess').innerHTML = '';
+            }
+
+            setTimeout(msgEncerramento, 3000);
         };
 
         function aparecer_select() {

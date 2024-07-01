@@ -37,7 +37,7 @@ $route['coordenador/colider/exclusao/permanente'] = 'welcome/excluir_colider_per
 // Colíderes
 
 // Material de Apoio Treinamento
-$route['coordenador/page/download'] = 'Coordenador/pagina_material_apoio_treinamento';
+$route['coordenador/page/material-apoio-treinamento'] = 'Coordenador/pagina_material_apoio_treinamento';
 
 // Download de Material
 $route['coordenador/page/download'] = 'Coordenador/pagina_download_material';

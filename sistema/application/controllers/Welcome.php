@@ -9,6 +9,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property $db
  * @property $email
  * @property $upload
+ * @property $image_lib
  */
 
 class Welcome extends CI_Controller
@@ -46,6 +47,123 @@ class Welcome extends CI_Controller
 		);
 
 		$this->load->view('errors/html/error_404', $dados);
+	}
+
+	public function atualizar_session()
+	{
+		$dados = json_decode(file_get_contents('php://input'), true);
+
+		$_SESSION[$dados['session']] = $dados['valor'];
+
+		echo json_encode($_SESSION[$dados['session']]);
+	}
+
+	public function gerar_certificado()
+	{
+
+		$nome = $this->input->post('nome');
+
+		$opc = $this->input->post('opc');
+
+		$img = $this->input->post('img');
+		$nome_user = $this->input->post('nome_user');
+		$nome_curso = "";
+
+		$pdf = new FPDF("L", "mm", "A4");
+		$pdf->SetCreator('CAMP Brasil');
+
+		//$name = text to be added, $x= x cordinate, $y = y coordinate, $a = alignment , $f= Font Name, $t = Bold / Italic, $s = Font Size, $r = Red, $g = Green Font color, $b = Blue Font Color
+		function AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b)
+		{
+			$pdf->SetFont($f, $t, $s);
+			$pdf->SetXY($x, $y);
+			$pdf->SetTextColor($r, $g, $b);
+			$pdf->Cell(0, 10, $pdf->textoUTF8($text), 0, 0, $a);
+		}
+
+		function AddText($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b)
+		{
+			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
+			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
+			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
+		}
+
+		if ($opc == 1) {
+			$nome_curso = "Certificado Treinamento Presencial";
+			$carga_horaria = $this->input->post('carga_horaria');
+			$data_treinamento = $this->input->post('data_treinamento');
+
+			$nome_carga_horaria = "";
+
+			if ($carga_horaria <= 1) {
+				$nome_carga_horaria = $carga_horaria . " hora";
+			} else {
+				$nome_carga_horaria = $carga_horaria . " horas";
+			}
+
+			$dia = $data_treinamento[0] . $data_treinamento[1];
+			$mes = $data_treinamento[3] . $data_treinamento[4];
+			$ano = $data_treinamento[6] . $data_treinamento[7] . $data_treinamento[8] . $data_treinamento[9];
+
+			$pdf->AddPage();
+			$pdf->SetTitle($nome_curso, true);
+			$pdf->Image($img, 0, 0, 297, 210);
+			$x_letra = strlen($nome);
+			$font1 = $x_letra < 40 ? 16 : 14;
+			AddText($pdf, $nome, 71, 95, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
+			AddText($pdf, $nome_user, 60, 125, 'L', 'Helvetica', 'B', 16, 0, 0, 0);
+			AddText($pdf, $dia, 30, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $mes, 70, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $ano, 110, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $nome_carga_horaria, 60, 148, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+		} else if ($opc == 2) {
+
+			$nome_curso = "Certificado LOL 1";
+
+			$de = $this->input->post('de_1');
+			$ate = $this->input->post('ate_1');
+			$mes = $this->input->post('mes_1');
+			$ano = $this->input->post('ano_1');
+			$estado = $this->input->post('estado');
+			$cidade = $this->input->post('cidade');
+
+			$nome_estado = $estado . ", " . $cidade;
+
+			$pdf->AddPage();
+			$pdf->SetTitle($nome_curso, true);
+			$pdf->Image($img, 0, 0, 297, 210);
+			$x_letra = strlen($nome);
+			$font1 = $x_letra < 40 ? 16 : 14;
+			AddText($pdf, $nome, 71, 93, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
+			AddText($pdf, $nome_user, 132, 126, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $de, 110, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $ate, 126, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $mes, 145, 136, 'L', 'Helvetica', 'B', 18, 0, 0, 0);
+			AddText($pdf, $ano, 189, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $nome_estado, 120, 146, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+		} else if ($opc == 3) {
+
+			$nome_curso = "Certificado LOL 2";
+
+			$img2 = $this->input->post('img2');
+			$mes = $this->input->post('mes_2');
+			$ano = $this->input->post('ano_2');
+
+			$pdf->AddPage();
+			$pdf->SetTitle($nome_curso, true);
+			$pdf->Image($img, 0, 0, 297, 210);
+			$x_letra = strlen($nome);
+			$font1 = $x_letra < 40 ? 16 : 14;
+			AddText($pdf, $nome, 91, 99, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
+			AddText($pdf, $mes, 195, 139, 'L', 'Helvetica', 'B', 18, 0, 0, 0);
+			AddText($pdf, $ano, 255, 139, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+
+			$pdf->AddPage();
+			$pdf->Image($img2, 0, 0, 297, 210);
+		}
+
+		$nome_arquivo = $nome_curso . " - " . $nome . ".pdf";
+		$pdf->Output('D', $nome_arquivo);
 	}
 
 	public function cadastro()
@@ -913,6 +1031,14 @@ class Welcome extends CI_Controller
 		$pth = file_get_contents(base_url() . $download);
 		force_download($nme, $pth);
 	}
+	public function download_material()
+	{
+		$nome = $this->input->post("nome");
+		$download = $this->input->post("download");
+		$pth = file_get_contents($download);
+		force_download($nome, $pth);
+	}
+
 	public function cadastro_crianca()
 	{
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");

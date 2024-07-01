@@ -25,7 +25,7 @@ class Coordenador extends CI_Controller
 			['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 		);
 	}
-	/* LÍDER */
+	/* COORDENADOR */
 
 	public function home()
 	{
@@ -1647,5 +1647,12 @@ class Coordenador extends CI_Controller
 	{
 		$this->load->view('sistema/coordenador/pages/download_material_modulo');
 	}
-	/* FIM LÍDER */
+
+
+	public function pagina_material_apoio_treinamento()
+	{
+		$this->load->view('sistema/coordenador/pages/material_apoio_treinamento');
+	}
+
+	/* FIM COORDENADOR */
 }
