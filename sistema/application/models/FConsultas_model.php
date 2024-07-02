@@ -619,10 +619,10 @@ class FConsultas_model extends CI_Model
 		}
 	}
 
-	public function consultarProgressoPG($id_pg, $id_modulo, $numero_licao, $x)
+	public function consultarProgressoPG($id_pg, $id_lider, $id_modulo, $numero_licao, $x)
 	{
 		if ($x == 1) {
-			$consultar = $this->db->query("SELECT * FROM progresso_pg_pais WHERE id_pg = $id_pg AND id_modulo = '$id_modulo' AND numero_licao = '$numero_licao'");
+			$consultar = $this->db->query("SELECT * FROM progresso_pg_pais WHERE id_pg = $id_pg AND id_lider = '$id_lider' AND id_modulo = '$id_modulo' AND numero_licao = '$numero_licao'");
 			$row = $consultar->num_rows();
 			$dados = $consultar->row_array();
 
@@ -633,7 +633,7 @@ class FConsultas_model extends CI_Model
 
 			return $array;
 		} else if ($x == 2) {
-			$consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_pg = $id_pg AND id_modulo = '$id_modulo' AND numero_licao = '$numero_licao'");
+			$consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_pg = $id_pg AND id_lider = '$id_lider'  AND id_modulo = '$id_modulo' AND numero_licao = '$numero_licao'");
 			$row = $consultar->num_rows();
 			$dados = $consultar->row_array();
 
@@ -974,6 +974,32 @@ class FConsultas_model extends CI_Model
 		} else {
 			return 'success';
 		}
+	}
+
+	public function getInfoCrianca($id, $nivel)
+	{
+
+		if ($nivel == 1) {
+			$consultar_crianca = $this->db->query("SELECT * FROM crianca WHERE id_crianca LIKE '$id'");
+			$row = $consultar_crianca->num_rows();
+			$dados_consulta_coordenador = $consultar_crianca->row_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenador,
+			);
+		} else if ($nivel == 2) {
+			$consultar_crianca = $this->db->query("SELECT * FROM criancas_2 WHERE id_crianca LIKE '$id'");
+			$row = $consultar_crianca->num_rows();
+			$dados_consulta_coordenador = $consultar_crianca->row_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenador,
+			);
+		}
+
+		return $dados;
 	}
 	public function getInfoLiderId($id)
 	{

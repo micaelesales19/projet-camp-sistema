@@ -418,9 +418,9 @@ if (!isset($_SESSION['usuario'])) {
                               <p>
 
                                 <center>
-                                  <a href="#" onclick="document.getElementById('download').submit();">Detalhe do material</a><br>
+                                  <a href="#" onclick="document.getElementById('download_<?= $id_modulo ?>').submit();">Detalhe do material</a><br>
 
-                                  <form action="modulo" id="download" method="post">
+                                  <form action="modulo" id="download_<?= $id_modulo ?>" method="post">
                                     <input type="hidden" name="id_pg" value="<?= $idPG ?>">
                                     <input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">

@@ -49,7 +49,7 @@
         } else {
           for ($i = 0; $i < $rowC; $i++) {
             $dadosCrianca = $consultaC->fetch(PDO::FETCH_ASSOC);
-            $sqlProgresso = "SELECT * FROM progresso_pg WHERE id_crianca_presente LIKE :ID_USUARIO AND numero_licao LIKE :LICAO AND id_modulo LIKE :MODULO";
+            $sqlProgresso = "SELECT * FROM progresso_pg_pais WHERE id_crianca_presente LIKE :ID_USUARIO AND numero_licao LIKE :LICAO AND id_modulo LIKE :MODULO";
             $consultaProgresso = $pdo->prepare($sqlProgresso);
             $consultaProgresso->bindValue(":ID_USUARIO", $dadosCrianca['id_crianca']);
             $consultaProgresso->bindValue(":LICAO", $licao);

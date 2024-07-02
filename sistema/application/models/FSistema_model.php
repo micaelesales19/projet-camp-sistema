@@ -402,7 +402,7 @@ class FSistema_model extends CI_Model
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
 
-		$dadosPG = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 3);
+		$dadosPG = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
 
 		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_pg WHERE id_pg LIKE $id_pg");
 		$row = $consultar_pg_desativado->num_rows();
@@ -448,6 +448,12 @@ class FSistema_model extends CI_Model
 
 		$this->db->where('id_pg', $id_pg);
 		$this->db->where('id_lider', $id_lider);
+		$this->db->delete('progresso_pg');
+	}
+
+	public function excluirProgressoCriancaId($id_crianca)
+	{
+		$this->db->where('id_crianca_presente', $id_crianca);
 		$this->db->delete('progresso_pg');
 	}
 
@@ -847,6 +853,55 @@ class FSistema_model extends CI_Model
 	}
 	// Fim REATIVAR
 
+	public function excluirCriancaPermanentemente($id_crianca, $id_lider, $id_responsavel, $nivel)
+	{
+		$ativo = "1";
+		$acao = "EX_CL_3";
+		$motivo = "Excluiu seu PG Permanentemente";
+
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y');
+
+		$dadosPG = $this->FConsultas_model->getInfoCrianca($id_lider, $nivel);
+
+		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_crianca WHERE id_crianca LIKE $id_crianca");
+		$row = $consultar_pg_desativado->num_rows();
+
+		if ($row == 0) {
+			$inserir['id_exclusao'] = NULL;
+			$inserir['id_crianca'] = $id_crianca;
+			$inserir['nome_crianca'] = $dadosPG['dados']['nome_crianca'];
+			$inserir['id_lider'] = $id_lider;
+			$inserir['id_responsavel'] = $id_responsavel;
+			$inserir['motivo'] = $motivo;
+			$inserir['data_saida'] = $data;
+
+			if ($this->db->insert('alcancado_crianca', $inserir)) {
+			}
+		} else {
+		}
+
+		$this->db->where('id_crianca', $id_crianca);
+
+		if ($nivel == 1) {
+			if ($this->db->delete('crianca')) {
+				$this->FSistema_model->excluirProgressoCriancaId($id_crianca);
+				$this->FAlerta_model->alerta_controle($id_responsavel, $id_crianca, $motivo, $acao);
+				return true;
+			} else {
+				return false;
+			}
+		} else if ($nivel == 2) {
+			if ($this->db->delete('criancas_2')) {
+				$this->FSistema_model->excluirProgressoCriancaId($id_crianca);
+				$this->FAlerta_model->alerta_controle($id_responsavel, $id_crianca, $motivo, $acao);
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
 	public function editarAtivo($id_pg, $idlider, $x)
 	{
 
@@ -873,7 +928,7 @@ class FSistema_model extends CI_Model
 	{
 		$data = $data_aula;
 
-		$consulta = $this->FConsultas_model->consultarProgressoPG($id_pg, $modulo, $licao, $nivel);
+		$consulta = $this->FConsultas_model->consultarProgressoPG($id_pg, $id_lider, $modulo, $licao, $nivel);
 		$resultados = $consulta['row'];
 
 		$consulta_pg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, $nivel);

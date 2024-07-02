@@ -1467,22 +1467,10 @@ class Coordenador extends CI_Controller
 		$file->save('php://output');
 	}
 
-	// Crianças
-	public function pagina_visualizacao_criancas()
-	{
-		$this->load->view('sistema/lider/pages/pagina_ver_criancas');
-	}
-
-	public function pagina_cadastro_criancas()
-	{
-		$this->load->view('sistema/lider/cadastro/pagina_cadastro_crianca');
-	}
-	// Fim Crianças
-
 	// PG
 	public function pagina_visualizacao_pg()
 	{
-		$this->load->view('sistema/lider/pages/pagina_ver_pg');
+		$this->load->view('sistema/coordenador/pages/pagina_pg_usuario');
 	}
 
 	public function pagina_licoes()
@@ -1498,20 +1486,30 @@ class Coordenador extends CI_Controller
 
 		$pages = [];
 
-		$page1 = array(
-			"red" => "../lideres",
-			"name" => "Líderes",
-			"icon" => "fa fa-group",
-		);
+		if ($routa == 'pg') {
+			$page1 = array(
+				"red" => "../pg",
+				"name" => "Meu PG",
+				"icon" => "fa fa-group",
+			);
+			array_push($pages, $page1);
+		} else {
 
-		$page2 = array(
-			"red" => "../lideres/detalhes/$id_lider",
-			"name" => "Informações",
-			"icon" => "fa fa-user",
-		);
+			$page1 = array(
+				"red" => "../lideres",
+				"name" => "Líderes",
+				"icon" => "fa fa-group",
+			);
 
-		array_push($pages, $page1);
-		array_push($pages, $page2);
+			$page2 = array(
+				"red" => "../lideres/detalhes/$id_lider",
+				"name" => "Informações",
+				"icon" => "fa fa-user",
+			);
+
+			array_push($pages, $page1);
+			array_push($pages, $page2);
+		}
 
 		$dados = array(
 			'id_lider' => $id_lider,
@@ -1536,20 +1534,30 @@ class Coordenador extends CI_Controller
 
 		$pages = [];
 
-		$page1 = array(
-			"red" => "../lideres",
-			"name" => "Líderes",
-			"icon" => "fa fa-group",
-		);
+		if ($routa == 'pg') {
+			$page1 = array(
+				"red" => "../pg",
+				"name" => "Meu PG",
+				"icon" => "fa fa-group",
+			);
+			array_push($pages, $page1);
+		} else {
 
-		$page2 = array(
-			"red" => "../lideres/detalhes/$id_lider",
-			"name" => "Informações",
-			"icon" => "fa fa-user",
-		);
+			$page1 = array(
+				"red" => "../lideres",
+				"name" => "Líderes",
+				"icon" => "fa fa-group",
+			);
 
-		array_push($pages, $page1);
-		array_push($pages, $page2);
+			$page2 = array(
+				"red" => "../lideres/detalhes/$id_lider",
+				"name" => "Informações",
+				"icon" => "fa fa-user",
+			);
+
+			array_push($pages, $page1);
+			array_push($pages, $page2);
+		}
 
 		$dados = array(
 			'id_lider' => $id_lider,
@@ -1647,7 +1655,6 @@ class Coordenador extends CI_Controller
 	{
 		$this->load->view('sistema/coordenador/pages/download_material_modulo');
 	}
-
 
 	public function pagina_material_apoio_treinamento()
 	{

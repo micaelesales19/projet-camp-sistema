@@ -118,18 +118,12 @@ $color = "#39cccc";
         </a>
       </li>
 
-      <?php
-      $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
-      if ($consultarPG['row'] == 0) {
-      } else {
-      ?>
-        <li>
-          <a href="<?= $voltar; ?>page/pg">
-            <i class="fa fa-group"></i>
-            <span>Seu PG</span>
-          </a>
-        </li>
-      <?php } ?>
+      <li>
+        <a href="<?= $voltar; ?>page/pg">
+          <i class="fa fa-group"></i>
+          <span>Seu PG</span>
+        </a>
+      </li>
 
       <li>
         <a href="<?= $voltar; ?>page/material-apoio-treinamento">

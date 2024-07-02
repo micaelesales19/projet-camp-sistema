@@ -17,7 +17,7 @@
 <table class="table table-bordered table-hover" id="table_lider" width="100%">
     <thead>
         <tr>
-            <th width="200px;">Nome</th>
+            <th width="200px;">Líder</th>
             <th width="10px;">Crianças</th>
             <th width="10px;">Crianças Ativas</th>
             <th width="10px;">Módulo</th>
@@ -41,6 +41,7 @@
             $foto_original = $lider['foto'];
 
             $foto = base_url('import/sistema/' . $foto_original);
+            $telefone = $lider['telefone_whatsapp'];
 
             $qtd_criancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 3);
             $qtd_criancas_ativas = $this->FConsultas_model->mostrarCriancasPaisPg($id_lider, 0, 3);
@@ -128,7 +129,7 @@
                         <input type="submit" class="btn btn-info" value="Visualizar" />
                     </form>
                 </td>
-                <td><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
+                <td id="clicar" onclick="enviar_whatsapp('<?= $telefone; ?>');"><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
             </tr>
         <?php } ?>
     </tbody>

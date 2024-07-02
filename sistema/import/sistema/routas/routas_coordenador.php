@@ -43,4 +43,7 @@ $route['coordenador/page/material-apoio-treinamento'] = 'Coordenador/pagina_mate
 $route['coordenador/page/download'] = 'Coordenador/pagina_download_material';
 $route['coordenador/page/modulo'] = 'Coordenador/pagina_download_material_modulo';
 
+// PG
+$route['coordenador/page/pg'] = 'Coordenador/pagina_visualizacao_pg';
+
 return $route;

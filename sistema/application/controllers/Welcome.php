@@ -1042,6 +1042,7 @@ class Welcome extends CI_Controller
 	public function cadastro_crianca()
 	{
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
+		$nivel_2 = $this->input->post("nivel_2") == '' ? 2 : $this->input->post("nivel_2");
 
 		$total = $this->input->post('total');
 		$lider = $this->input->post('id_lider');
@@ -1057,6 +1058,7 @@ class Welcome extends CI_Controller
 		$telefone_responsavel = $this->input->post('telefone_responsavel');
 
 		$dadosPais = $this->FConsultas_model->consultaDadosPaisId($lider, $nivel);
+		$dadosusuario = $this->FConsultas_model->getInfoCoordenadorId($lider);
 
 		$total_count = count($total);
 
@@ -1080,14 +1082,18 @@ class Welcome extends CI_Controller
 				$emailPai = $email_responsavel[$i];
 				$telefonePai = $telefone_responsavel[$i];
 			} else {
-				if ($nivel == 1) {
+				if ($nivel_2 == 1) {
 					$nomePai = $dadosPais['nome'];
 					$emailPai = $dadosPais['email'];
 					$telefonePai = $dadosPais['telefone_whatsapp'];
-				} else if ($nivel == 2) {
+				} else if ($nivel_2 == 2) {
 					$nomePai = $dadosPais['nome_lider'];
 					$emailPai = $dadosPais['email'];
 					$telefonePai = $dadosPais['telefone_whatsapp'];
+				} else if ($nivel_2 == 3) {
+					$nomePai = $dadosusuario['dados']['nome_coordenador'];
+					$emailPai = $dadosusuario['dados']['email'];
+					$telefonePai = $dadosusuario['dados']['telefone_whatsapp'];
 				}
 			}
 
@@ -1116,6 +1122,9 @@ class Welcome extends CI_Controller
 				"<input type='hidden' name='id_lider' value='$lider'>",
 			];
 			$routa = "lideres/detalhes/$lider";
+		} else if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
 		} else {
 			$data = [];
 			$routa = "criancas";
@@ -1229,6 +1238,9 @@ class Welcome extends CI_Controller
 				"<input type='hidden' name='id_lider' value='$lider'>",
 			];
 			$routa = "lideres/detalhes/$lider";
+		} else if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
 		} else {
 			$data = [];
 			$routa = "criancas";
@@ -1272,6 +1284,9 @@ class Welcome extends CI_Controller
 		} else if ($red == 'lideres/detalhes') {
 			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
 		} else {
 			$data = [];
 			$routa = "criancas";
@@ -1306,6 +1321,9 @@ class Welcome extends CI_Controller
 		} else if ($red == 'lideres/detalhes') {
 			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
 		} else {
 			$data = [];
 			$routa = "criancas";
@@ -1327,13 +1345,13 @@ class Welcome extends CI_Controller
 	{
 		$idLider = $this->input->post("idLider");
 		$idUsuario = $this->input->post("idUsuario");
-		$id_pg = $this->input->post("id_pg");
 
+		$id_cri = $this->input->post("opc");
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
-		$excluir = $this->FSistema_model->excluirPgPermanentemente($id_pg, $idLider, $idUsuario, $nivel);
+		$excluir = $this->FSistema_model->excluirCriancaPermanentemente($id_cri, $idLider, $idUsuario, $nivel);
 
-		$red = $this->input->post('red') ?? 'pg';
+		$red = $this->input->post('red') ?? 'criancas';
 
 		if ($red == 'criancas') {
 			$data = [];
@@ -1341,6 +1359,9 @@ class Welcome extends CI_Controller
 		} else if ($red == 'lideres/detalhes') {
 			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'pg') {
+			$data = [];
+			$routa = "pg";
 		} else {
 			$data = [];
 			$routa = "criancas";
@@ -1364,10 +1385,18 @@ class Welcome extends CI_Controller
 		$opc = $this->input->post("opc");
 
 		$dados = $this->FConsultas_model->consultaDadosPaisId($idLider, $nivel);
+		$dados_c = $this->FConsultas_model->getInfoCoordenadorId($idLider);
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
+		$nivel_2 = $this->input->post("iscood") == '' ? false : $this->input->post("iscood");
 
-		$nome = $this->input->post("nivel") == 1 ? $dados['nome'] : $dados['nome_lider'];
+		if (!$nivel_2) {
+			$nome = $this->input->post("nivel") == 1 ? $dados['nome'] : $dados['nome_lider'];
+		} else {
+			$nome = $dados_c = $dados_c['dados']['nome_coordenador'];
+		}
+
+
 
 		$pdf = new FPDF("L", "pt", "A4");
 		$pdf->AddPage();
@@ -1381,6 +1410,8 @@ class Welcome extends CI_Controller
 			$consultarPG = $this->FConsultas_model->mostrarPG($idLider, $nivel);
 			$pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 200, 100, 500, 300);
 			// imagem em pé - $pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 50, 300, 500, 300);
+
+			$pdf->SetTitle($pdf->textoUTF8('Relatórios / Informações Gerais das Crianças / CAMP Brasil'));
 
 			$pdf->SetFont('arial', 'B', 12);
 			$pdf->SetXY(70, 30);
@@ -1515,6 +1546,8 @@ class Welcome extends CI_Controller
 
 			$pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 200, 100, 500, 300);
 
+			$pdf->SetTitle($pdf->textoUTF8('Relatórios / Informações das Crianças Ativas / CAMP Brasil'));
+
 			$pdf->SetFont('arial', 'B', 12);
 			$pdf->SetXY(70, 30);
 			$pdf->Cell(0, 5, $pdf->textoUTF8("Relatórios / Informações das Crianças Ativas / CAMP Brasil"), 0, 1, 'L');
@@ -1642,6 +1675,9 @@ class Welcome extends CI_Controller
 			$pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 200, 100, 500, 300);
 			// imagem em pé - $pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 50, 300, 500, 300);
 
+
+			$pdf->SetTitle($pdf->textoUTF8('Relatórios / Informações das Crianças Desativadas / CAMP Brasil'));
+
 			$pdf->SetFont('arial', 'B', 12);
 			$pdf->SetXY(70, 30);
 			$pdf->Cell(0, 5, $pdf->textoUTF8("Relatórios / Informações das Crianças Desativadas / CAMP Brasil"), 0, 1, 'L');
@@ -1716,6 +1752,8 @@ class Welcome extends CI_Controller
 			$consultarPG = $this->FConsultas_model->mostrarPGId($idLider, $idPg, $nivel);
 
 			$pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 200, 100, 500, 300);
+
+			$pdf->SetTitle($pdf->textoUTF8('Relatórios / Informações das Crianças por PG / CAMP Brasil'));
 
 			$pdf->SetFont('arial', 'B', 12);
 			$pdf->SetXY(70, 30);
@@ -1843,6 +1881,9 @@ class Welcome extends CI_Controller
 			$consultarPG = $this->FConsultas_model->mostrarPGId($idLider, $idPg, $nivel);
 
 			$pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 200, 100, 500, 300);
+
+
+			$pdf->SetTitle($pdf->textoUTF8('Relatórios / Pontuação das Crianças / CAMP Brasil'));
 
 			$pdf->SetFont('arial', 'B', 12);
 			$pdf->SetXY(70, 30);
@@ -2276,6 +2317,7 @@ class Welcome extends CI_Controller
 				"<input type='hidden' name='id_pg' value='$id_pg'>",
 				"<input type='hidden' name='id_lider' value='$id_lider'>",
 				"<input type='hidden' name='ano' value='$ano'>",
+				"<input type='hidden' name='routa' value='$red'>",
 			];
 			$routa = "pg/licoes";
 		} else if ($red == 'lideres/detalhes') {
@@ -2286,6 +2328,7 @@ class Welcome extends CI_Controller
 				"<input type='hidden' name='id_pg' value='$id_pg'>",
 				"<input type='hidden' name='id_lider' value='$id_lider'>",
 				"<input type='hidden' name='ano' value='$ano'>",
+				"<input type='hidden' name='routa' value='$red'>",
 			];
 			$routa = "pg/licoes";
 		}

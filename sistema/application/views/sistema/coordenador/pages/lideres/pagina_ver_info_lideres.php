@@ -522,7 +522,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <!-- /.modal-dialog -->
                                                     </div>
                                                 <?php } ?>
-                                            </div>
+                                            </div><br><br>
                                         </div>
                                         <div class="table-responsive">
 
@@ -805,13 +805,14 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                         <div class="col-lg-5">
                                                                             <div class="form-group">
-                                                                                <label for="opc">PG:</label>
+                                                                                <label for="opc">Criança:</label>
                                                                                 <select name="opc" id="opc_id_crianca" onchange="trocar_id_crianca()" class="form-control">
                                                                                     <?php
                                                                                     foreach ($criancas_desativadas['dados'] as $key => $dadosCriancas) {
                                                                                     ?>
                                                                                         <option value="<?= $dadosCriancas['id_crianca']; ?>"><?= $dadosCriancas['nome_crianca']; ?> </option>
                                                                                     <?php } ?>
+                                                                                </select>
                                                                             </div>
                                                                         </div>
 
@@ -820,7 +821,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                                 <form action="../../criancas/exclusao/ativar" method="POST">
                                                                                     <input type="hidden" name="id_pg" id="id_crianca_escolhido_1" value="<?= $dadosCriancas['dados'][0]['id_crianca']; ?>">
                                                                                     <input type="hidden" name="nivel" value="2">
-                                                                                    <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                                     <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                     <input type="hidden" name="red" value="lideres/detalhes">
                                                                                     <center>
@@ -836,8 +836,8 @@ if (!isset($_SESSION['usuario'])) {
                                                                                 <form action="../../criancas/exclusao/permanente" method="POST">
                                                                                     <input type="hidden" name="id_pg" id="id_crianca_escolhido_2" value="<?= $dadosCriancas['dados'][0]['id_crianca']; ?>">
                                                                                     <input type="hidden" name="nivel" value="2">
-                                                                                    <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                                     <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
+                                                                                    <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                                     <input type="hidden" name="red" value="lideres/detalhes">
                                                                                     <center>
                                                                                         <label for="opc">Opção 2:</label><br>
@@ -845,21 +845,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                                     </center>
                                                                                 </form>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
-                                                                    <input type="hidden" name="nivel" value="2">
-                                                                    <input type="hidden" name="red" value="lideres/detalhes">
-                                                                    <div class="col-lg-12">
-                                                                        <div class="form-group">
-                                                                            <label for="opc">Selecione a Criança:</label>
-                                                                            <select name="opc" class="form-control">
-                                                                                <?php
-                                                                                foreach ($criancas_desativadas['dados'] as $key => $dadosCriancas) {
-                                                                                ?>
-                                                                                    <option value="<?= $dadosCriancas['id_crianca']; ?>"><?= $dadosCriancas['nome_crianca']; ?> </option>
-                                                                                <?php } ?>
-                                                                            </select>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -873,7 +858,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <!-- /.modal-dialog -->
                                                     </div>
                                                 <?php } ?>
-                                            </div>
+                                            </div><br><br>
                                         </div>
                                         <div class="table-responsive">
                                             <script type="text/javascript">
