@@ -141,6 +141,10 @@ require_once(APPPATH . '../import/sistema/routas/routas_lider.php');
 require_once(APPPATH . '../import/sistema/routas/routas_coordenador.php');
 // FIM COORDENADOR
 
+/* NÍVEL SUPERVISOR LOCAL */
+require_once(APPPATH . '../import/sistema/routas/routas_slocal.php');
+// FIM SUPERVISOR LOCAL
+
 // adm
 $route['adm/home'] = 'adm/index';
 $route['adm/devocionais/mostrar'] = 'adm/mostrar_devocionais';

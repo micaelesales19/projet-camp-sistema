@@ -27,6 +27,8 @@ class FAlerta_model extends CI_Model
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_3") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
+		} else if ($acao == "EX_CL_4") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seu Líder ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "RE_PG_1") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " reativou um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "MUDANCA_DE_MODULO") {

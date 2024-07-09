@@ -819,7 +819,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <div class="col-lg-3">
                                                                             <div class="form-group">
                                                                                 <form action="../../criancas/exclusao/ativar" method="POST">
-                                                                                    <input type="hidden" name="id_pg" id="id_crianca_escolhido_1" value="<?= $dadosCriancas['dados'][0]['id_crianca']; ?>">
+                                                                                    <input type="hidden" name="opc" id="id_crianca_escolhido_1" value="<?= $criancas_desativadas['dados'][0]['id_crianca']; ?>">
                                                                                     <input type="hidden" name="nivel" value="2">
                                                                                     <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                     <input type="hidden" name="red" value="lideres/detalhes">
@@ -834,7 +834,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <div class="col-lg-4">
                                                                             <div class="form-group">
                                                                                 <form action="../../criancas/exclusao/permanente" method="POST">
-                                                                                    <input type="hidden" name="id_pg" id="id_crianca_escolhido_2" value="<?= $dadosCriancas['dados'][0]['id_crianca']; ?>">
+                                                                                    <input type="hidden" name="opc" id="id_crianca_escolhido_2" value="<?= $criancas_desativadas['dados'][0]['id_crianca']; ?>">
                                                                                     <input type="hidden" name="nivel" value="2">
                                                                                     <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
@@ -850,7 +850,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                                                    <input type="submit" class="btn btn-default pull-right" value="Ativar">
                                                                 </div>
                                                             </div>
                                                             <!-- /.modal-content -->
@@ -1428,6 +1427,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                 <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                 <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
+                                <input type="hidden" name="red" value="coordenador>">
 
                                 <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
                                     <div class="form-group">

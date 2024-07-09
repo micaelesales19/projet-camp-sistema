@@ -186,14 +186,15 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
 		$routa = "";
 
+		$data = [];
+
 		if ($red == 'pagina_editar_pessoal') {
-			$data = [];
 			$routa = "../pagina_editar_pessoal";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "../../page/lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "../../page/slocal/detalhes/$idLider";
 		} else {
-			$data = [];
 			$routa = "../pagina_editar_pessoal";
 		}
 
@@ -233,7 +234,7 @@ class Welcome extends CI_Controller
 		if ($red == 'pagina_editar_pessoal') {
 			$data = [];
 			$routa = "../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes') {
+		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
 			$data = [];
 			$routa = "../page/lideres/detalhes/$idLider";
 		} else {
@@ -265,7 +266,7 @@ class Welcome extends CI_Controller
 		if ($red == 'pagina_editar_pessoal') {
 			$data = [];
 			$routa = "../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes') {
+		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
 			$data = [];
 			$routa = "../page/lideres/detalhes/$idLider";
 		} else {
@@ -298,7 +299,7 @@ class Welcome extends CI_Controller
 		if ($red == 'pagina_editar_pessoal') {
 			$data = [];
 			$routa = "../../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes') {
+		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
 			$data = [];
 			$routa = "../../page/lideres/detalhes/$idLider";
 		} else {
@@ -776,6 +777,10 @@ class Welcome extends CI_Controller
 				$dados_coordenador = $consultar_coordenador->row_array();
 				$total_coordenador = $consultar_coordenador->num_rows();
 
+				$consultar_slocal = $this->db->query("SELECT * FROM supervisorr WHERE (email = '$email' OR cpf = '$cpf_completo') AND  (nome_supervisorR LIKE '$nome' OR nome_supervisorR LIKE '$nome_base')");
+				$dados_slocal = $consultar_slocal->row_array();
+				$total_slocal = $consultar_slocal->num_rows();
+
 				$consultar_adm = $this->db->query("SELECT * FROM direcao WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_direcao LIKE '$nome' OR nome_direcao LIKE '$nome_base')");
 				$dados_adm = $consultar_adm->row_array();
 				$total_adm = $consultar_adm->num_rows();
@@ -917,6 +922,39 @@ class Welcome extends CI_Controller
 							}
 						}
 					}
+				} else if ($nivel == 4) { // coordenador
+					if ($total_slocal == 0) {
+						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$data = [
+							"<input type='hidden' name='x' value='$x'>"
+						];
+						$funcao = $this->FConsultas_model->red('index', 2000, $data);
+						echo $funcao;
+					} else {
+						echo "Bem Vindo - " . $dados['nome'];
+						$_SESSION['id_usuario'] .= $dados_slocal['id_supervisorR'];
+						$_SESSION['id_usuario_2'] .= $id_usuario;
+
+						$consultar_termos = $this->db->select("*")
+							->from("termos")
+							->where("id_usuario", $id_usuario)
+							->get();
+						$termos = $consultar_termos->num_rows();
+
+						if ($termos == 0) {
+							$data = [
+								"<input type='hidden' name='nivel' value='4'>"
+							];
+							$funcao = $this->FConsultas_model->red('termos', 2000, $data);
+							echo $funcao;
+						} else {
+							if ($x == 1) {
+								$data = [];
+								$funcao = $this->FConsultas_model->red('slocal/home', 2000, $data);
+								echo $funcao;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -956,7 +994,12 @@ class Welcome extends CI_Controller
 			if ($consultarPG['row'] == 0 || $consultaCriancas['row'] == 0 || $check == 3) {
 				$this->load->view('sistema/pais/primeiro_acesso');
 			} else {
-				$this->load->view('sistema/pais/home');
+				//$this->load->view('sistema/pais/home');
+				echo '
+					<script>
+						setTimeout(function(){ window.location="pais/home"}, 0)
+					</script>
+				';
 			}
 		} else if ($nivel == 1) {
 			$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
@@ -965,10 +1008,31 @@ class Welcome extends CI_Controller
 			if ($consultarPG['row'] == 0 || $consultaCriancas['row'] == 0 || $check == 3) {
 				$this->load->view('sistema/lider/primeiro_acesso');
 			} else {
-				$this->load->view('sistema/lider/home');
+				//$this->load->view('sistema/lider/home');
+				echo '
+					<script>
+						setTimeout(function(){ window.location="lider/home"}, 0)
+					</script>
+				';
 			}
 		} else if ($nivel == 3) {
-			$this->load->view('sistema/coordenador/home');
+			//$this->load->view('sistema/coordenador/home');
+			echo '
+				<script>
+					setTimeout(function(){ window.location="coordenador/home"}, 0)
+				</script>
+			';
+		} else if ($nivel == 4) {
+
+
+			echo '
+				<script>
+					setTimeout(function(){ window.location="slocal/home"}, 0)
+				</script>
+			';
+
+
+			//$this->load->view('sistema/slocal/home');
 		}
 	}
 
@@ -1114,19 +1178,15 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
 
+		$data = [];
+
 		if ($red == 'criancas') {
-			$data = [];
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_lider' value='$lider'>",
-			];
 			$routa = "lideres/detalhes/$lider";
 		} else if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else {
-			$data = [];
 			$routa = "criancas";
 		}
 
@@ -1230,19 +1290,17 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
 
+		$data = [];
+
 		if ($red == 'criancas') {
-			$data = [];
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_lider' value='$lider'>",
-			];
 			$routa = "lideres/detalhes/$lider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$lider";
 		} else if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else {
-			$data = [];
 			$routa = "criancas";
 		}
 
@@ -1277,18 +1335,17 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
+		$data = [];
 
 		if ($red == 'criancas') {
-			$data = [];
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else {
-			$data = [];
 			$routa = "criancas";
 		}
 
@@ -1315,17 +1372,17 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
 
+		$data = [];
+
 		if ($red == 'criancas') {
-			$data = [];
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else {
-			$data = [];
 			$routa = "criancas";
 		}
 
@@ -1353,17 +1410,17 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'criancas';
 
+		$data = [];
+
 		if ($red == 'criancas') {
-			$data = [];
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else {
-			$data = [];
 			$routa = "criancas";
 		}
 
@@ -1395,8 +1452,6 @@ class Welcome extends CI_Controller
 		} else {
 			$nome = $dados_c = $dados_c['dados']['nome_coordenador'];
 		}
-
-
 
 		$pdf = new FPDF("L", "pt", "A4");
 		$pdf->AddPage();
@@ -2055,14 +2110,15 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'pg';
 		$routa = "";
 
+		$data = [];
+
 		if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else {
-			$data = [];
 			$routa = "pg";
 		}
 
@@ -2099,15 +2155,15 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'pg';
 
 		$routa = "";
+		$data = [];
 
 		if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else {
-			$data = [];
 			$routa = "pg";
 		}
 
@@ -2171,14 +2227,15 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'pg';
 
 		$routa = "";
+		$data = [];
+
 		if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else {
-			$data = [];
 			$routa = "pg";
 		}
 
@@ -2208,14 +2265,15 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'pg';
 
 		$routa = "";
+		$data = [];
+
 		if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else {
-			$data = [];
 			$routa = "pg";
 		}
 
@@ -2243,14 +2301,15 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'pg';
 
 		$routa = "";
+		$data = [];
+
 		if ($red == 'pg') {
-			$data = [];
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
 			$routa = "lideres/detalhes/$idLider";
+		} else if ($red == 'slocal/detalhes') {
+			$routa = "slocal/detalhes/$idLider";
 		} else {
-			$data = [];
 			$routa = "pg";
 		}
 
@@ -2323,6 +2382,9 @@ class Welcome extends CI_Controller
 		} else if ($red == 'lideres/detalhes') {
 			$data = [];
 			$routa = "lideres/detalhes/$id_lider";
+		} else if ($red == 'slocal/detalhes') {
+			$data = [];
+			$routa = "slocal/detalhes/$id_lider";
 		} else {
 			$data = [
 				"<input type='hidden' name='id_pg' value='$id_pg'>",
@@ -2364,13 +2426,29 @@ class Welcome extends CI_Controller
 
 		$this->FAlerta_model->alerta_controle($id_usuario, $id_usuario, $motivo, $acao);
 
-		$data = [
-			"<input type='hidden' name='id_lider' value='$id_lider'>",
-		];
+		$red = $this->input->post('red') ?? 'coordenador';
+
+		$routa = "";
+		if ($red == 'coordenador') {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$id_lider'>",
+			];
+			$routa = "coordenador/page/lideres/detalhes/$id_lider";
+		} else if ($red == 'slocal') {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$id_lider'>",
+			];
+			$routa = "slocal/page/lideres/detalhes/$id_lider";
+		} else {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$id_lider'>",
+			];
+			$routa = "coordenador/page/lideres/detalhes/$id_lider";
+		}
 
 		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
 
-		$funcao = $this->FConsultas_model->red("../../coordenador/page/lideres/detalhes/$id_lider", 3000, $data);
+		$funcao = $this->FConsultas_model->red("../../$routa", 3000, $data);
 		echo $funcao;
 	}
 
@@ -2390,13 +2468,29 @@ class Welcome extends CI_Controller
 
 		$this->FAlerta_model->alerta_controle($id_usuario, $id_usuario, $motivo, $acao);
 
-		$data = [
-			"<input type='hidden' name='id_lider' value='$id_lider'>",
-		];
+		$red = $this->input->post('red') ?? 'coordenador';
+
+		$routa = "";
+		if ($red == 'coordenador') {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$id_lider'>",
+			];
+			$routa = "coordenador/page/lideres/detalhes/$id_lider";
+		} else if ($red == 'slocal') {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$id_lider'>",
+			];
+			$routa = "slocal/page/lideres/detalhes/$id_lider";
+		} else {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$id_lider'>",
+			];
+			$routa = "coordenador/page/lideres/detalhes/$id_lider";
+		}
 
 		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
 
-		$funcao = $this->FConsultas_model->red("../../coordenador/page/lideres/detalhes/$id_lider", 3000, $data);
+		$funcao = $this->FConsultas_model->red("../../$routa", 3000, $data);
 		echo $funcao;
 	}
 
@@ -2447,6 +2541,9 @@ class Welcome extends CI_Controller
 		if ($red == 'coordenador/lideres') {
 			$data = [];
 			$routa = "coordenador/page/lideres";
+		} else if ($red == 'slocal/lideres') {
+			$data = [];
+			$routa = "slocal/page/lideres";
 		} else {
 			$data = [];
 			$routa = "coordenador/page/lideres";
@@ -2478,6 +2575,385 @@ class Welcome extends CI_Controller
 			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
 			$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
 			echo $funcao;
+		}
+	}
+
+	public function desativar_lider()
+	{
+		$id_lider = $this->input->post("id_lider");
+		$id_usuario = $this->input->post("id_usuario");
+		$motivo = "O usuário de ID (" . $id_usuario . ") desativou esse líder";
+
+		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->excluirPG($pg['id_pg'], $pg['nome_pg'], $id_lider, $id_usuario, $motivo, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->excluirCrianca($criancas['id_crianca'], $criancas['nome_crianca'], $id_lider, $id_usuario, $motivo, 2);
+			}
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->desativarLider($id_lider);
+
+		$this->FAlerta_model->alerta_controle($id_usuario, $id_lider, $motivo, "EX_CL_4");
+
+		$red = $this->input->post('red') ?? 'lideres/detalhes';
+		$routa = "";
+		$data = [];
+
+		if ($red == 'lideres/detalhes') {
+			$routa = "page/lideres/detalhes/$id_lider";
+		} else {
+			$routa = "coordenador/page/lideres";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder desativado!"]);
+		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+		echo $funcao;
+	}
+
+	public function ativar_lider()
+	{
+		$id_lider = $this->input->post("opc");
+		$id_usuario = $this->input->post("idUsuario");
+		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->reativarPg($pg['id_pg'], $id_usuario, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->reativarCrianca($criancas['id_crianca'], 2);
+			}
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->ativarLider($id_lider);
+
+		$red = $this->input->post('red') ?? 'lideres';
+		$routa = "";
+		$data = [];
+
+		if ($red == 'lideres') {
+			$routa = "lideres";
+		} else if ($red == 'lideres/detalhes') {
+			$routa = "lideres/detalhes/$id_lider";
+		} else {
+			$routa = "lideres";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Ativado!"]);
+		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+		echo $funcao;
+	}
+
+	public function excluir_lider_permanentemente()
+	{
+		$id_lider = $this->input->post("opc");
+		$id_usuario = $this->input->post("idUsuario");
+
+		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->excluirPgPermanentemente($pg['id_pg'], $id_lider, $id_usuario, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->excluirCriancaPermanentemente($criancas['id_crianca'], $id_lider, $id_usuario, 2);
+			}
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->excluirLiderPermanentemente($id_lider, $id_usuario);
+
+		$red = $this->input->post('red') ?? 'lideres';
+		$routa = "";
+		$data = [];
+
+		if ($red == 'lideres') {
+			$routa = "lideres";
+		} else if ($red == 'lideres/detalhes') {
+			$routa = "lideres";
+		} else {
+			$routa = "lideres";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Excluido Permanentemente!"]);
+		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+		echo $funcao;
+	}
+
+	public function gerar_pontuacao($id_lider, $id_pg)
+	{
+		$dados_pg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 3);
+
+		$ano = $dados_pg['id'];
+
+		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
+
+		$somaTotalPresencaModulo = 0;
+		$somaTotalVersiculoModulo = 0;
+		$somaTotalMisterioModulo = 0;
+
+		$somaTotalPresencaPG = 0;
+		$somaTotalVersiculoPG = 0;
+		$somaTotalMisterioPG = 0;
+		$somaTotalPontuacaoPG = 0;
+
+		if ($modulos) {
+
+			$consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_lider, $id_pg, 2);
+
+			$qtdPresenca = 0;
+			$qtdVersiculo = 0;
+			$qtdMisterio = 0;
+
+			$id_modulos  = [];
+
+			foreach ($modulos as $key => $m) {
+				$id_modulos[] = $m['id_modulo'];
+			}
+
+			$i = 0;
+			foreach ($modulos as $key => $m) {
+
+				$total_aulas = $m['n_licao'];
+
+				$consultarModuloId = $this->FConsultas_model->consultarModuloId($m['id_modulo']);
+				$qtdPresenca = $consultarModuloId['n_licao'];
+				$qtdVersiculo =  $consultarModuloId['qtdVersiculo'];
+				$qtdMisterio =  $consultarModuloId['qtdMisterios'];
+
+				$qtdPresenca = $qtdPresenca * $consultaCriancas['row'];
+				$qtdVersiculo = $qtdVersiculo * $consultaCriancas['row'];
+				$qtdMisterio = $qtdMisterio * $consultaCriancas['row'];
+
+				$somaTotalPresencaModulo = $somaTotalPresencaModulo + $qtdPresenca;
+				$somaTotalVersiculoModulo = $somaTotalVersiculoModulo + $qtdVersiculo;
+				$somaTotalMisterioModulo = $somaTotalMisterioModulo + $qtdMisterio;
+
+				$pontuacao = 0;
+				$presencaTotal = 0;
+				$versiculoTotal = 0;
+				$misterioTotal = 0;
+
+				if ($consultaCriancas['row'] == 0) {
+				} else {
+					foreach ($consultaCriancas['dados'] as $key => $linha) {
+						$consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[0], 2);
+						$consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[1], 2);
+						$consultarProgresso3 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[2], 2);
+						$consultarProgresso4 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[3], 2);
+						$consultarProgresso5 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[4], 2);
+						//$consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados'], $consultarProgresso3['dados'], $consultarProgresso4['dados'], $consultarProgresso5['dados'],);
+					}
+				}
+				//$totalRelatorio = count($consultarProgresso);
+
+				$query = [];
+
+				if ($consultaCriancas['row'] == 0) {
+				} else {
+					if ($i == 0) {
+						if ($consultarProgresso1['row'] == 0) {
+							$presencaTotal = 0;
+							$versiculoTotal = 0;
+							$misterioTotal = 0;
+							$pontuacao = 0;
+						} else {
+							$query = $consultarProgresso1['dados'];
+							foreach ($query as $key => $value) {
+								$presenca = $value['presenca'];
+								$versiculo = $value['versiculo_memorizado'];
+								$misterio = $value['misterio_respondido'];
+								$devocional = $value['devocional_respondido'];
+
+								$presencaTotal = $presencaTotal + $presenca;
+								$versiculoTotal = $versiculoTotal + $versiculo;
+								$misterioTotal = $misterioTotal + $misterio;
+
+								$pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+								$pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+								$pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+								$pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+							}
+							$somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+							$somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+							$somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+							$somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+						}
+					} else  if ($i == 1) {
+						if ($consultarProgresso2['row'] == 0) {
+
+							$presencaTotal = 0;
+							$versiculoTotal = 0;
+							$misterioTotal = 0;
+
+							$pontuacao = 0;
+						} else {
+							$query = $consultarProgresso2['dados'];
+							foreach ($query as $key => $value) {
+
+								$presenca = $value['presenca'];
+								$versiculo = $value['versiculo_memorizado'];
+								$misterio = $value['misterio_respondido'];
+								$devocional = $value['devocional_respondido'];
+
+								$presencaTotal = $presencaTotal + $presenca;
+								$versiculoTotal = $versiculoTotal + $versiculo;
+								$misterioTotal = $misterioTotal + $misterio;
+
+								$pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+								$pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+								$pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+								$pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+							}
+							$somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+							$somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+							$somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+							$somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+						}
+					} else  if ($i == 2) {
+						if ($consultarProgresso3['row'] == 0) {
+
+							$presencaTotal = 0;
+							$versiculoTotal = 0;
+							$misterioTotal = 0;
+
+							$pontuacao = 0;
+						} else {
+							$query = $consultarProgresso3['dados'];
+							foreach ($query as $key => $value) {
+								$presenca = $value['presenca'];
+								$versiculo = $value['versiculo_memorizado'];
+								$misterio = $value['misterio_respondido'];
+								$devocional = $value['devocional_respondido'];
+
+								$presencaTotal = $presencaTotal + $presenca;
+								$versiculoTotal = $versiculoTotal + $versiculo;
+								$misterioTotal = $misterioTotal + $misterio;
+
+								$pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+								$pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+								$pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+								$pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+							}
+							$somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+							$somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+							$somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+							$somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+						}
+					} else  if ($i == 3) {
+						if ($consultarProgresso4['row'] == 0) {
+
+							$presencaTotal = 0;
+							$versiculoTotal = 0;
+							$misterioTotal = 0;
+
+							$pontuacao = 0;
+						} else {
+							$query = $consultarProgresso4['dados'];
+							foreach ($query as $key => $value) {
+								$presenca = $value['presenca'];
+								$versiculo = $value['versiculo_memorizado'];
+								$misterio = $value['misterio_respondido'];
+								$devocional = $value['devocional_respondido'];
+
+								$presencaTotal = $presencaTotal + $presenca;
+								$versiculoTotal = $versiculoTotal + $versiculo;
+								$misterioTotal = $misterioTotal + $misterio;
+
+								$pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+								$pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+								$pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+								$pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+							}
+							$somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+							$somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+							$somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+							$somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+						}
+					} else  if ($i == 4) {
+						if ($consultarProgresso5['row'] == 0) {
+
+							$presencaTotal = 0;
+							$versiculoTotal = 0;
+							$misterioTotal = 0;
+
+							$pontuacao = 0;
+						} else {
+							$query = $consultarProgresso5['dados'];
+							foreach ($query as $key => $value) {
+								$presenca = $value['presenca'];
+								$versiculo = $value['versiculo_memorizado'];
+								$misterio = $value['misterio_respondido'];
+								$devocional = $value['devocional_respondido'];
+
+								$presencaTotal = $presencaTotal + $presenca;
+								$versiculoTotal = $versiculoTotal + $versiculo;
+								$misterioTotal = $misterioTotal + $misterio;
+
+								$pontuacao = $pontuacao + ($presenca == 1 ? 5 : 0);
+								$pontuacao = $pontuacao + ($versiculo == 1 ? 10 : 0);
+								$pontuacao = $pontuacao + ($misterio == 1 ? 8 : 0);
+								$pontuacao = $pontuacao + ($devocional   == 1 ? 5 : 0);
+							}
+							$somaTotalPresencaPG = $somaTotalPresencaPG + $presencaTotal;
+							$somaTotalVersiculoPG = $somaTotalVersiculoPG + $versiculoTotal;
+							$somaTotalMisterioPG = $somaTotalMisterioPG + $misterioTotal;
+							$somaTotalPontuacaoPG = $somaTotalPontuacaoPG + $pontuacao;
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -61,31 +61,117 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-	public function reativarUsuário($nome_usuario, $email, $cpf, $nivel)
+	public function desativarUsuário($nome_usuario, $email, $cpf)
 	{
 		$ativo = "0";
 
-		$ponto1 = $cpf[3];
-		$ponto2 = $cpf[7];
-		$ponto3 = $cpf[11];
+		$user = $this->FConsultas_model->getUsuario($nome_usuario, $email, $cpf);
+		$row = $user['row'];
 
-		$cpf_completo = "";
-		$nascimento_completo = "";
-
-		if ($ponto1 == "." && $ponto2 == "." && $ponto3 == "-") {
-			$cpf_completo .= $cpf;
+		if ($row == 0) {
+			return false;
 		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
+			$this->db->set('ativo', $ativo);
+			$this->db->where('id_usuario ', $user['dados']['id_usuario']);
+
+			if ($this->db->update('usuario')) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	public function desativarLider($id_lider)
+	{
+		$ativo = "3";
+
+		$this->db->set('confirmado', $ativo);
+		$this->db->where('id_lider ', $id_lider);
+
+		if ($this->db->update('lider')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function ativarUsuário($nome_usuario, $email, $cpf)
+	{
+		$ativo = "1";
+
+		$user = $this->FConsultas_model->getUsuario($nome_usuario, $email, $cpf);
+		$row = $user['row'];
+
+		if ($row == 0) {
+			return false;
+		} else {
+			$this->db->set('ativo', $ativo);
+			$this->db->where('id_usuario ', $user['dados']['id_usuario']);
+
+			if ($this->db->update('usuario')) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	public function ativarLider($id_lider)
+	{
+		$ativo = "2";
+
+		$this->db->set('confirmado', $ativo);
+		$this->db->where('id_lider ', $id_lider);
+
+		if ($this->db->update('lider')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function excluirLiderPermanentemente($id_lider, $id_responsavel)
+	{
+		$acao = "EX_CL_4";
+		$motivo = "Excluiu seu Líder Permanentemente";
+
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y');
+
+		$dados_lider = $this->FConsultas_model->getInfoLiderId($id_lider);
+
+		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_lider WHERE id_lider LIKE $id_lider");
+		$row = $consultar_pg_desativado->num_rows();
+
+		if ($row == 0) {
+			//$inserir['id_exclusao'] = NULL;
+			$inserir['id_lider'] = $id_lider;
+			$inserir['nome_lider'] = $dados_lider['dados']['nome_lider'];
+			$inserir['id_responsavel'] = $id_responsavel;
+			$inserir['motivo'] = $motivo;
+			$inserir['data_saida'] = $data;
+
+			if ($this->db->insert('alcancado_lider', $inserir)) {
+			}
+		} else {
 		}
 
-		$inserir['id_usuario'] = NULL;
-		$inserir['nome'] = $nome_usuario;
-		$inserir['email'] = $email;
-		$inserir['cpf'] = $cpf_completo;
-		$inserir['nivel'] = $nivel;
-		$inserir['ativo'] = $ativo;
+		$this->db->where('id_lider', $id_lider);
+		if ($this->db->delete('lider')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_lider, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function excluirUsuarioPermanentemente($nome_usuario, $email, $cpf)
+	{
+		$user = $this->FConsultas_model->getUsuario($nome_usuario, $email, $cpf);
 
-		if ($this->db->insert('usuario', $inserir)) {
+		$this->db->where('id_usuario ', $user['dados']['id_usuario']);
+
+		if ($this->db->delete('usuario')) {
 			return true;
 		} else {
 			return false;
