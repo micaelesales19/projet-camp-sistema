@@ -342,6 +342,8 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                             <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">
                                                                                                             <input type="hidden" name="licao" value="<?= $i2; ?>">
                                                                                                             <input type="hidden" name="routa" value="<?= $routa; ?>">
+                                                                                                            <input type="hidden" name="nivel_routa" value="<?= $nivel_routa; ?>">
+                                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
                                                                                                         </form>
                                                                                                     </div>
                                                                                                 </td>
@@ -471,6 +473,9 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                             <input type="hidden" name="ano" value="<?= $ano; ?>">
                                                                                                             <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">
                                                                                                             <input type="hidden" name="licao" value="<?= $i2; ?>">
+                                                                                                            <input type="hidden" name="routa" value="<?= $routa; ?>">
+                                                                                                            <input type="hidden" name="nivel_routa" value="<?= $nivel_routa; ?>">
+                                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
                                                                                                         </form>
                                                                                                     </div>
                                                                                                 </td>

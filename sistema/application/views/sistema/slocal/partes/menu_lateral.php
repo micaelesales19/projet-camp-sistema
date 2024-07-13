@@ -112,6 +112,14 @@ $color = "#605ca8";
       </li>
 
       <li>
+        <a href="<?= $voltar; ?>page/coordenadores">
+          <i class="fa fa-users"></i>
+          <span>Coordenadores</span>
+        </a>
+      </li>
+
+
+      <li>
         <a href="<?= $voltar; ?>page/lideres">
           <i class="fa fa-users"></i>
           <span>Líderes</span>

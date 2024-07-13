@@ -8,6 +8,10 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
+    $id_opc = $id_user ?? $id_usuario;
+
+    $check_is_coord_query = $id_user == '' ? false : true;
+
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
@@ -23,7 +27,7 @@ if (!isset($_SESSION['usuario'])) {
         echo $funcao;
     } else {
         $id_pastor = "2000";
-        $id_coord = "3000";
+        $id_coord = $id_user == '' ? "3000" : $id_user;
         $id_sr = $id_usuario;
         $id_se = $dados_slocal['dados']['id_supervisorE'];
 
@@ -59,6 +63,24 @@ if (!isset($_SESSION['usuario'])) {
                 setTimeout(dismissLoadingScreen, 3000);
             }
 
+            function loader_2() {
+                var loader2 = document.getElementById("preloader2");
+                var message = document.getElementById("message");
+                var botao = document.getElementById("btn_gerar");
+
+                message.style.display = "inline";
+                loader2.style.display = "none";
+                botao.disabled = true;
+
+                var dismissLoadingScreen = function() {
+                    message.style.display = "none";
+                    loader2.style.display = "inline";
+                    botao.disabled = false;
+                };
+
+                setTimeout(dismissLoadingScreen, 3000);
+            }
+
             function criar_link() {
                 var id_pastor = "2000";
                 var id_coord = document.getElementById('id_coord').value;
@@ -75,6 +97,31 @@ if (!isset($_SESSION['usuario'])) {
 
                 var texto = document.getElementById('link_user').value;
 
+                //O texto que será copiado
+                //const texto = "00020126470014br.gov.bcb.pix0125campbrasilemail@gmail.com27600016BR.COM.PAGSEGURO013659BAD104-74E5-4E29-8EE8-9738E5D5784A5204000053039865802BR5925CAMP - CENTRO DE APOIO MI6007Caucaia62290525PAGS0000000002404131224896304431F";
+                //Cria um elemento input (pode ser um textarea)
+                let inputTest = document.createElement("input");
+                inputTest.value = texto;
+                //Anexa o elemento ao body
+                document.body.appendChild(inputTest);
+                //seleciona todo o texto do elemento
+                inputTest.select();
+                //executa o comando copy
+                //aqui é feito o ato de copiar para a area de trabalho com base na seleção
+                document.execCommand('copy');
+                //remove o elemento
+                document.body.removeChild(inputTest);
+
+                document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
+
+                function msgEncerramento() {
+                    document.getElementById('text_sucess').innerHTML = '';
+                }
+
+                setTimeout(msgEncerramento, 3000);
+            };
+
+            let copiarTexto_2 = (texto) => {
                 //O texto que será copiado
                 //const texto = "00020126470014br.gov.bcb.pix0125campbrasilemail@gmail.com27600016BR.COM.PAGSEGURO013659BAD104-74E5-4E29-8EE8-9738E5D5784A5204000053039865802BR5925CAMP - CENTRO DE APOIO MI6007Caucaia62290525PAGS0000000002404131224896304431F";
                 //Cria um elemento input (pode ser um textarea)
@@ -186,7 +233,7 @@ if (!isset($_SESSION['usuario'])) {
 
                 document.getElementById('_controller').value = 0;
 
-                var id_coordenador = '<?= $id_usuario; ?>';
+                var id_usuario = '<?= $id_opc; ?>';
 
                 var opc2 = '';
 
@@ -213,7 +260,9 @@ if (!isset($_SESSION['usuario'])) {
                     }
                 }
 
-                ajax.open("GET", "lideres/mostrar1?id_coordenador=" + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim, false);
+                var check_is_coord_query = '<?= $check_is_coord_query; ?>';
+
+                ajax.open("GET", "lideres/mostrar1?id_user=" + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&check_is_coord_query=" + check_is_coord_query, false);
 
                 ajax.setRequestHeader("Content-Type", "text/html");
                 ajax.send();
@@ -230,55 +279,62 @@ if (!isset($_SESSION['usuario'])) {
                 } else {}
             }
 
-
             function list_lideres() {
 
-                loader_1();
-                var id_coordenador = '<?= $id_usuario; ?>';
+                loader_2();
 
-                document.getElementById('_controller').value = 0;
+                setTimeout(function() {
+                    var id_usuario = '<?= $id_opc; ?>';
 
-                var opc2 = '';
+                    document.getElementById('_controller').value = 0;
 
-                var opc1 = $('input[name="opc"]:checked').val();
+                    var opc2 = '';
 
-                if (opc1 == 'opc3') {
-                    opc2 = 'nao';
-                } else {
-                    opc2 = $('input[name="comparar_msm_ano"]:checked').val();
-                }
+                    var opc1 = $('input[name="opc"]:checked').val();
 
-                var dataIn = document.getElementById('datepicker_de').value;
-                var dataFim = document.getElementById('datepicker_ate').value;
+                    if (opc1 == 'opc3') {
+                        opc2 = 'nao';
+                    } else {
+                        opc2 = $('input[name="comparar_msm_ano"]:checked').val();
+                    }
 
-                $('#conteudos_table_info_lideres').empty();
+                    var dataIn = document.getElementById('datepicker_de').value;
+                    var dataFim = document.getElementById('datepicker_ate').value;
 
-                var url;
-                url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
-                jQuery.get(url, function(data) {
-                    $('#conteudos_table_info_lideres').empty().append(data);
-                });
+                    $('#conteudos_table_info_lideres').empty();
+                    var check_is_coord_query = '<?= $check_is_coord_query; ?>';
+
+                    var url;
+                    url = 'lideres/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&check_is_coord_query=" + check_is_coord_query;
+                    jQuery.get(url, function(data) {
+                        $('#conteudos_table_info_lideres').empty().append(data);
+                    });
+                }, 3000);
             }
 
             function list_lideres_ativos() {
 
-                loader_1();
-                var id_coordenador = '<?= $id_usuario; ?>';
+                loader_2();
 
-                document.getElementById('_controller').value = 1;
+                setTimeout(function() {
+                    var id_usuario = '<?= $id_opc; ?>';
 
-                var opc1 = document.getElementById('opc1_').value;
-                var opc2 = document.getElementById('opc2_').value;
-                var dataIn = document.getElementById('dataInicio_').value;
-                var dataFim = document.getElementById('dataAte_').value;
+                    document.getElementById('_controller').value = 1;
 
-                $('#conteudos_table_info_lideres').empty();
+                    var opc1 = document.getElementById('opc1_').value;
+                    var opc2 = document.getElementById('opc2_').value;
+                    var dataIn = document.getElementById('dataInicio_').value;
+                    var dataFim = document.getElementById('dataAte_').value;
 
-                var url;
-                url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
-                jQuery.get(url, function(data) {
-                    $('#conteudos_table_info_lideres').empty().append(data);
-                });
+                    $('#conteudos_table_info_lideres').empty();
+                    var check_is_coord_query = '<?= $check_is_coord_query; ?>';
+
+                    var url;
+                    url = 'lideres/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&check_is_coord_query=" + check_is_coord_query;
+                    jQuery.get(url, function(data) {
+                        $('#conteudos_table_info_lideres').empty().append(data);
+                    });
+                }, 3000);
             }
 
             function enviar_whatsapp(telefones) {
@@ -403,7 +459,13 @@ if (!isset($_SESSION['usuario'])) {
                             <small>Painel de Controle</small>
                         </h1>
                         <ol class="breadcrumb">
-                            <li><a href="../home"><i class="fa fa-home"></i> Home</a></li>
+                            <?php
+                            foreach ($pages as $key => $value) {
+                            ?>
+                                <li><a href="<?= $value['red']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
+                            <?php
+                            }
+                            ?>
                             <li class="active">Líderes</li>
                         </ol>
                     </section>
@@ -415,54 +477,75 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box box-info">
 
                                 <div class="box-header with-border">
-                                    <h3 class="box-title"><i class="fa fa-table"></i> Seus Líderes</h3>
+                                    <h3 class="box-title"><i class="fa fa-table"></i>
+                                        <?php
+                                        if ($check_is_coord_query) {
+                                            $nome_user = $this->FConsultas_model->getNomeUserId($id_user);
+                                        ?>
+                                            Líderes do Usuário: <?= $nome_user['nome']; ?>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            Seus Líderes
+                                        <?php } ?>
+                                    </h3>
 
-                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_lider_link">
-                                        Copiar Link de Cadastro <i class="fa fa-link"></i></button>
+                                    <?php
+                                    if ($check_is_coord_query) {
+                                    ?>
+                                        <button type="button" class="btn btn-success" onclick="copiarTexto_2('<?= $link; ?>')">
+                                            Copiar Link de Cadastro <i class="fa fa-link"></i></button>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_lider_link">
+                                            Copiar Link de Cadastro <i class="fa fa-link"></i></button>
 
-                                    <div class="modal fade" id="cadastro_lider_link">
-                                        <div class="modal-dialog modal-success">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title">Gerar Link | Líder</h4>
-                                                </div>
-                                                <div class="box-body">
-                                                    <input type="hidden" id="link_user" value="<?= $link; ?>">
-                                                    <div class="col-lg-12">
-                                                        <div class="form-group has-feedback">
-                                                            <label for="">Selecione o Coordenador</label>
-                                                            <select class="form-control" onclick="criar_link();" name="id_coord" id="id_coord">
-                                                                <?php
-                                                                $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
-
-                                                                if ($coordenadores['row'] == 0) {
-                                                                ?>
-                                                                    <option value="3000">Você não tem coordenadores cadastrados</option>
-                                                                <?php
-                                                                } else {
-                                                                ?>
-                                                                    <option value="3000" selected>Selecione um coordenador</option>
+                                        <div class="modal fade" id="cadastro_lider_link">
+                                            <div class="modal-dialog modal-success">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title">Gerar Link | Líder</h4>
+                                                    </div>
+                                                    <div class="box-body">
+                                                        <input type="hidden" id="link_user" value="<?= $link; ?>">
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group has-feedback">
+                                                                <label for="">Selecione o Coordenador</label>
+                                                                <select class="form-control" onclick="criar_link();" name="id_coord" id="id_coord">
                                                                     <?php
-                                                                    foreach ($coordenadores['dados'] as $key => $coord) {
+                                                                    $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
+
+                                                                    if ($coordenadores['row'] == 0) {
                                                                     ?>
-                                                                        <option value="<?= $coord['id_coordenador']; ?>"><?= $coord['nome_coordenador']; ?></option>
-                                                                <?php }
-                                                                } ?>
-                                                            </select>
+                                                                        <option value="3000">Você não tem coordenadores cadastrados</option>
+                                                                    <?php
+                                                                    } else {
+                                                                    ?>
+                                                                        <option value="3000" selected>Selecione um coordenador</option>
+                                                                        <option value="3000">Ainda não tem coordenador</option>
+                                                                        <?php
+                                                                        foreach ($coordenadores['dados'] as $key => $coord) {
+                                                                        ?>
+                                                                            <option value="<?= $coord['id_coordenador']; ?>"><?= $coord['nome_coordenador']; ?></option>
+                                                                    <?php }
+                                                                    } ?>
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                        <input type="submit" class="btn btn-default pull-right" onclick="copiarTexto()" data-dismiss="modal" value="Gerar">
+                                                    </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                                    <input type="submit" class="btn btn-default pull-right" onclick="copiarTexto()" data-dismiss="modal" value="Gerar">
-                                                </div>
+                                                <!-- /.modal-content -->
                                             </div>
-                                            <!-- /.modal-content -->
+                                            <!-- /.modal-dialog -->
                                         </div>
-                                        <!-- /.modal-dialog -->
-                                    </div>
+                                    <?php } ?>
 
                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_lider">Cadastrar +</button>
 
@@ -570,30 +653,46 @@ if (!isset($_SESSION['usuario'])) {
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-lg-12">
-                                                            <div class="form-group has-feedback">
-                                                                <label for="">Selecione o Coordenador</label>
-                                                                <select class="form-control" name="id_coordenador">
-                                                                    <?php
-                                                                    $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
-
-                                                                    if ($coordenadores['row'] == 0) {
-                                                                    ?>
-                                                                        <option value="3000">Você não tem coordenadores cadastrados</option>
-                                                                    <?php
-                                                                    } else {
-                                                                    ?>
-                                                                        <option value="3000" selected>Selecione um coordenador</option>
-                                                                        <?php
-                                                                        foreach ($coordenadores['dados'] as $key => $coord) {
-                                                                        ?>
-                                                                            <option value="<?= $coord['id_coordenador']; ?>"><?= $coord['nome_coordenador']; ?></option>
-                                                                    <?php }
-                                                                    } ?>
-                                                                </select>
+                                                        <?php
+                                                        if ($check_is_coord_query) {
+                                                            $nome_user = $this->FConsultas_model->getNomeUserId($id_user);
+                                                        ?>
+                                                            <div class="col-lg-12">
+                                                                <center>
+                                                                    <b>
+                                                                        <i>Você está cadastrando um líder para: <?= $nome_user['nome']; ?></i>
+                                                                    </b>
+                                                                </center>
+                                                                <input type="hidden" name="id_coordenador" value="<?= $id_user; ?>">
                                                             </div>
-                                                        </div>
+                                                        <?php
+                                                        } else {
+                                                        ?>
 
+                                                            <div class="col-lg-12">
+                                                                <div class="form-group has-feedback">
+                                                                    <label for="">Selecione o Coordenador</label>
+                                                                    <select class="form-control" name="id_coordenador">
+                                                                        <?php
+                                                                        $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
+
+                                                                        if ($coordenadores['row'] == 0) {
+                                                                        ?>
+                                                                            <option value="3000">Você não tem coordenadores cadastrados</option>
+                                                                        <?php
+                                                                        } else {
+                                                                        ?>
+                                                                            <option value="3000" selected>Selecione um coordenador</option>
+                                                                            <?php
+                                                                            foreach ($coordenadores['dados'] as $key => $coord) {
+                                                                            ?>
+                                                                                <option value="<?= $coord['id_coordenador']; ?>"><?= $coord['nome_coordenador']; ?></option>
+                                                                        <?php }
+                                                                        } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        <?php } ?>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>

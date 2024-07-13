@@ -191,7 +191,7 @@ if (!isset($_SESSION['usuario'])) {
 
                             <form action="modulo" id="download_<?= $id_modulo ?>" method="post">
                               <input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
-                              <input type="text" name="id_modulo" value="<?= $id_modulo; ?>">
+                              <input type="hidden" name="id_modulo" value="<?= $id_modulo; ?>">
                             </form>
                           </center>
                         </p>

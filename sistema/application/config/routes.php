@@ -54,7 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['offline'] = 'welcome/offline';
-$route['segundociclo'] = 'welcome/listar_lideres_segundo_ciclo';
+$route['atualizar_data'] = 'welcome/atualizar_data';
 
 $route['gerar_certificado'] = 'welcome/gerar_certificado';
 

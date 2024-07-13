@@ -13,7 +13,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $dados_usuario = $this->FConsultas_model->getInfoCoordenadorId($id_usuario);
+    $dados_usuario = $this->FConsultas_model->getInfoSLocalId($id_usuario);
 
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
@@ -312,7 +312,7 @@ if (!isset($_SESSION['usuario'])) {
         <div class="wrapper">
             <!-- Menu -->
             <?php
-            $this->load->view('sistema/coordenador/partes/menu_lateral', $array);
+            $this->load->view('sistema/slocal/partes/menu_lateral', $array);
             ?>
 
             <!-- Content Wrapper. Contains page content -->
@@ -427,7 +427,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <form action="../../gerar_certificado" method="POST">
                                         <input type="hidden" name="opc" value="1">
                                         <input type="hidden" name="img" value="<?= $treinamento_1_img; ?>">
-                                        <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_coordenador']; ?>">
+                                        <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_supervisorR']; ?>">
                                         <div class="col-xs-5">
                                             <label for="">Nome</label>
                                             <input type="text" class="form-control" placeholder="Nome" name="nome" required>
@@ -473,7 +473,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <form action="../../gerar_certificado" method="POST">
                                     <input type="hidden" name="opc" value="2">
                                     <input type="hidden" name="img" value="<?= $treinamento_2_img; ?>">
-                                    <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_coordenador']; ?>">
+                                    <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_supervisorR']; ?>">
                                     <input type="hidden" name="estado" value="<?= $dados_usuario['dados']['estado']; ?>">
                                     <input type="hidden" name="cidade" value="<?= $dados_usuario['dados']['cidade']; ?>">
                                     <div class="col-lg-12">
@@ -583,7 +583,7 @@ if (!isset($_SESSION['usuario'])) {
                                 </form>
 
                                 <form action="../../download" method="POST">
-                                    <input type="hidden" name="nome" value="Certificado Treinamento LOL 2.png">
+                                    <input type="hidden" name="nome" value="Certificado Treinamento LOL 2 - 1.png">
                                     <input type="hidden" name="download" value="<?= $treinamento_3_1_img; ?>">
                                     <button type="submit" class="btn btn-success">Download Imagem</button>
                                 </form>

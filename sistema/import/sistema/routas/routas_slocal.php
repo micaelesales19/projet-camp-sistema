@@ -2,17 +2,24 @@
 
 $route['slocal/home'] = 'SLocal/home';
 
+// lideres
 $route['slocal/page/lideres'] = 'SLocal/pagina_ver_lideres';
+$route['slocal/page/lideres/mostrar1'] = 'welcome/mostrar_table_parte_1';
+$route['slocal/page/lideres/mostrar2'] = 'welcome/mostrar_table_parte_2';
 $route['slocal/page/lideres/detalhes/:any'] = 'SLocal/pagina_ver_detalhes_lideres';
-$route['slocal/page/lideres/mostrar1'] = 'SLocal/mostrar_table_parte_1';
-$route['slocal/page/lideres/mostrar2'] = 'SLocal/mostrar_table_parte_2';
-$route['slocal/page/lideres/gerar_excel'] = 'SLocal/gerar_excel';
+$route['slocal/page/lideres/gerar_excel'] = 'welcome/gerar_excel';
 
+$route['slocal/page/lideres/salvar'] = 'SLocal/editar_lideres';
 $route['slocal/page/lideres/desativar'] = 'welcome/desativar_lider';
 $route['slocal/page/lideres/exclusao/ativar'] = 'welcome/ativar_lider';
 $route['slocal/page/lideres/exclusao/permanente'] = 'welcome/excluir_lider_permanentemente';
 
-$route['slocal/page/lideres/salvar'] = 'SLocal/editar_lideres';
+// coordenadores
+$route['slocal/page/coordenadores'] = 'SLocal/pagina_ver_coordenadores';
+$route['slocal/page/coordenadores/mostrar1'] = 'welcome/mostrar_table_parte_1';
+
+// red
+$route['slocal/page/lideres_do_coordenador/:any'] = 'welcome/red_lideres_coord';
 
 // pg
 $route['slocal/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';

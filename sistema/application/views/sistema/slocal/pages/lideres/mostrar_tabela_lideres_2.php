@@ -124,13 +124,33 @@
                 <td><?= $qtd_criancas_ativas['row']; ?></td>
                 <td><?= $nome_modulo; ?></td>
                 <td><span class="label label-<?= $class1; ?>"><?= $progresso; ?></span></td>
-                <td>
-                    <form action="lideres/detalhes/<?= $lider['id_lider']; ?>" method="post">
-                        <input type="hidden" name="id_lider" value="<?= $lider['id_lider']; ?>">
-                        <input type="submit" class="btn btn-info" value="Visualizar" />
-                    </form>
-                </td>
-                <td id="clicar" onclick="enviar_whatsapp('<?= $telefone; ?>');"><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
+                <?php
+                if (!$check_is_coord_query) {
+                ?>
+                    <td>
+                        <form action="lideres/detalhes/<?= $lider['id_lider']; ?>" method="post">
+                            <input type="hidden" name="id_lider" value="<?= $lider['id_lider']; ?>">
+                            <input type="hidden" name="nivel" value="lider">
+
+                            <input type="submit" class="btn btn-info" value="Visualizar" />
+                        </form>
+                    </td>
+                    <td id="clicar" onclick="enviar_whatsapp('<?= $telefone; ?>');"><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
+                <?php
+                } else {
+                ?>
+                    <td>
+                        <form action="lideres/detalhes/<?= $lider['id_lider']; ?>" method="post">
+                            <input type="hidden" name="id_coord" value="<?= $id_user; ?>">
+                            <input type="hidden" name="nivel" value="coordenador">
+
+                            <input type="submit" class="btn btn-info" value="Visualizar" />
+                        </form>
+                    </td>
+                    <td id="clicar" onclick="enviar_whatsapp('<?= $telefone; ?>');"><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
+                <?php
+                }
+                ?>
             </tr>
         <?php } ?>
     </tbody>

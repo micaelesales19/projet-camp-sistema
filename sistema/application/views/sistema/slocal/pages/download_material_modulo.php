@@ -106,7 +106,7 @@ if (!isset($_SESSION['usuario'])) {
     <div class="wrapper">
       <!-- Menu -->
       <?php
-      $this->load->view('sistema/coordenador/partes/menu_lateral', $array);
+      $this->load->view('sistema/slocal/partes/menu_lateral', $array);
       ?>
 
       <!-- Content Wrapper. Contains page content -->

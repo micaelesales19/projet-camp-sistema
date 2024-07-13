@@ -10,6 +10,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property $email
  * @property $upload
  * @property $image_lib
+ * @property $uri
  */
 
 class Welcome extends CI_Controller
@@ -37,6 +38,84 @@ class Welcome extends CI_Controller
 		date_default_timezone_set('America/Sao_Paulo');
 		require_once 'import/sistema/fpdf/fpdf.php';
 		define('PDF_PATH', 'import/sistema/temp/');
+
+		require_once 'import/PHPExcel.php';
+		define(
+			'LETRAS',
+			['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+		);
+	}
+
+	public function atualizar_data()
+	{
+		// coordenadores
+		$coordenadores = $this->FConsultas_model->mostrar_all_coordenador();
+
+		foreach ($coordenadores['dados'] as $key => $coord) {
+			echo $coord['id_coordenador'] . ": " . $coord['nome_coordenador'] . "<br>";
+			$lideres = $this->FConsultas_model->getLideres([$coord['id_coordenador']], 1, 2, []);
+
+			$data = "";
+
+			if ($lideres['row'] == 0) {
+				//echo "<b><i>O coordenador não tem líder cadastrado</i></b><br>";
+				// consultando de o coordenador tem pg
+				$pg = $this->FConsultas_model->mostrarPG($coord['id_coordenador'], 4);
+
+				if ($pg['row'] == 0) {
+					// o coordenador não tem pg
+
+					// 1ª consulta - SUPERVISOR LOCAL
+					$id_local = $coord['id_supervisorR'];
+					$lideres_sr = $this->FConsultas_model->getLideres([$id_local], 2, 2, []);
+					if ($lideres_sr['row'] == 0) {
+
+						// o supervisor local não tem lideres vê se ele tem pg
+						$pg_sr = $this->FConsultas_model->mostrarPG($id_local, 4);
+
+						if ($pg_sr['row'] == 0) {
+							// 2ª consulta - SUPERVISOR REGIONAL
+						} else {
+							$data_pg_sr = $pg_sr['dados'][0]['data_inicio'];
+
+							if ($data_pg_sr == '') {
+								echo "<b><i>Data Vazia</i></b><br>";
+							} else {
+								$dia = $data_pg_sr[0] . $data_pg_sr[1];
+								$mes = $data_pg_sr[3] . $data_pg_sr[4];
+								$ano = $data_pg_sr[6] . $data_pg_sr[7] . $data_pg_sr[8] . $data_pg_sr[9];
+
+								$data = $ano . "-" . $mes . "-" . $dia;
+							}
+						}
+					} else {
+						$data = $lideres_sr['dados'][0]['data_cadastro'];
+					}
+				} else {
+					// o coordenador tem pg - add a data de inicio do pg
+					$data_pg = $pg['dados'][0]['data_inicio'];
+					if ($data_pg == '') {
+						echo "<b><i>Data Vazia</i></b><br>";
+					} else {
+						$dia = $data_pg[0] . $data_pg[1];
+						$mes = $data_pg[3] . $data_pg[4];
+						$ano = $data_pg[6] . $data_pg[7] . $data_pg[8] . $data_pg[9];
+						$data = $ano . "-" . $mes . "-" . $dia;
+					}
+				}
+			} else {
+				if ($coord['id_coordenador'] == '3000' || $coord['id_coordenador'] == '3003' || $coord['id_coordenador'] == '3004' || $coord['id_coordenador'] == '3006' || $coord['id_coordenador'] == '3015' || $coord['id_coordenador'] == '3017'  || $coord['id_coordenador'] == '3033') {
+					$data = "2017-02-18";
+				} else {
+					$data = $lideres['dados'][0]['data_cadastro'];
+				}
+			}
+
+			echo $data . "<br><br>";
+			$this->db->set('data_cadastro', $data);
+			$this->db->where('id_coordenador  ', $coord['id_coordenador']);
+			$this->db->update('coordenador');
+		}
 	}
 
 	public function offline()
@@ -47,6 +126,19 @@ class Welcome extends CI_Controller
 		);
 
 		$this->load->view('errors/html/error_404', $dados);
+	}
+
+	public function red_lideres_coord()
+	{
+
+		$id_coord = $this->uri->segment(4);
+
+		$data = [
+			"<input type='hidden' name='id_user' value='$id_coord'>"
+		];
+
+		$funcao = $this->FConsultas_model->red('../lideres', 0, $data);
+		echo $funcao;
 	}
 
 	public function atualizar_session()
@@ -183,18 +275,23 @@ class Welcome extends CI_Controller
 
 		$consultarColider = $this->FConsultas_model->checkColider($nomeColider, $cpfColider, $emailColider, $telefoneColider);
 
+		$nivel = $this->input->post("nivel") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
 		$routa = "";
 
-		$data = [];
-
 		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
 			$routa = "../pagina_editar_pessoal";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel'>"
+			];
 			$routa = "../../page/lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "../../page/slocal/detalhes/$idLider";
 		} else {
+			$data = [];
 			$routa = "../pagina_editar_pessoal";
 		}
 
@@ -226,6 +323,9 @@ class Welcome extends CI_Controller
 		$idResponsavel = $this->input->post("idResponsavel");
 		$motivo = $this->input->post("motivo");
 
+		$nivel = $this->input->post("nivel") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$reativar = $this->FSistema_model->excluirColider($idColider, $nomeColider, $idLider, $idResponsavel, $motivo);
 
 		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
@@ -234,8 +334,11 @@ class Welcome extends CI_Controller
 		if ($red == 'pagina_editar_pessoal') {
 			$data = [];
 			$routa = "../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
-			$data = [];
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel'>"
+			];
 			$routa = "../page/lideres/detalhes/$idLider";
 		} else {
 			$data = [];
@@ -258,6 +361,9 @@ class Welcome extends CI_Controller
 		$idLider = $this->input->post("idLider");
 		$idColider = $this->input->post("opc");
 
+		$nivel = $this->input->post("nivel") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$reativar = $this->FSistema_model->reativarColider($idColider, $idLider);
 
 		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
@@ -266,8 +372,11 @@ class Welcome extends CI_Controller
 		if ($red == 'pagina_editar_pessoal') {
 			$data = [];
 			$routa = "../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
-			$data = [];
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel'>"
+			];
 			$routa = "../page/lideres/detalhes/$idLider";
 		} else {
 			$data = [];
@@ -293,6 +402,9 @@ class Welcome extends CI_Controller
 
 		$excluir = $this->FSistema_model->excluirColiderPermanentemente($id_colider, $idLider, $idUsuario);
 
+		$nivel = $this->input->post("nivel") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
 
 		$routa = "";
@@ -300,7 +412,10 @@ class Welcome extends CI_Controller
 			$data = [];
 			$routa = "../../pagina_editar_pessoal";
 		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
-			$data = [];
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel'>"
+			];
 			$routa = "../../page/lideres/detalhes/$idLider";
 		} else {
 			$data = [];
@@ -315,46 +430,6 @@ class Welcome extends CI_Controller
 			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
 			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
 			echo $funcao;
-		}
-	}
-
-	public function listar_lideres_segundo_ciclo()
-	{
-
-		$consultar_pg = $this->db->query("SELECT * FROM pg WHERE ano = 2");
-		$resultado = $consultar_pg->result_array();
-
-		foreach ($resultado as $key => $pg) {
-			$id_lider = $pg['id_lider'];
-
-			$consultar_dados_lideres = $this->db->query("SELECT * FROM lider WHERE id_lider = $id_lider");
-			$count_lideres = $consultar_dados_lideres->num_rows();
-			$lideres = $consultar_dados_lideres->row_array();
-
-			$consultar_dados_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = $id_lider");
-			$count_coordenador = $consultar_dados_coordenador->num_rows();
-			$coordenador = $consultar_dados_coordenador->row_array();
-
-			$consultar_dados_sr = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorR = $id_lider");
-			$count_sr = $consultar_dados_sr->num_rows();
-			$sr = $consultar_dados_sr->row_array();
-
-			$consultar_dados_se = $this->db->query("SELECT * FROM supervisore WHERE id_supervisorEs = $id_lider");
-			$count_se = $consultar_dados_se->num_rows();
-			$se = $consultar_dados_se->row_array();
-
-			$consultar_dados_criancas = $this->db->query("SELECT * FROM crianca WHERE lider = $id_lider");
-			$count_criancas = $consultar_dados_criancas->num_rows();
-
-			if ($count_lideres != 0) {
-				echo $lideres['nome_lider'] . "(lider) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
-			} else if ($count_coordenador != 0) {
-				echo $coordenador['nome_coordenador'] . "(coordenador) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
-			} else if ($count_sr != 0) {
-				echo $sr['nome_supervisorR'] . "(sr) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
-			} else if ($count_se != 0) {
-				echo $se['nome_supervisorE'] . "(se) Crianças: " . $count_criancas . " Módulo: " . $pg['id_modulo'] . "/" . $pg['n_licao'] . "<br>";
-			}
 		}
 	}
 
@@ -699,7 +774,6 @@ class Welcome extends CI_Controller
 
 		$this->load->view('sistema/page_login', $dados);
 	}
-
 	public function autenticacao_login()
 	{
 		$email = $this->input->post('email');
@@ -1102,11 +1176,9 @@ class Welcome extends CI_Controller
 		$pth = file_get_contents($download);
 		force_download($nome, $pth);
 	}
-
 	public function cadastro_crianca()
 	{
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
-		$nivel_2 = $this->input->post("nivel_2") == '' ? 2 : $this->input->post("nivel_2");
 
 		$total = $this->input->post('total');
 		$lider = $this->input->post('id_lider');
@@ -1121,8 +1193,8 @@ class Welcome extends CI_Controller
 		$email_responsavel = $this->input->post('email_responsavel');
 		$telefone_responsavel = $this->input->post('telefone_responsavel');
 
-		$dadosPais = $this->FConsultas_model->consultaDadosPaisId($lider, $nivel);
-		$dadosusuario = $this->FConsultas_model->getInfoCoordenadorId($lider);
+		$dadosusuario = $this->FConsultas_model->getInfoUserId($lider);
+		$dadosnomeusuario = $this->FConsultas_model->getNomeUserId($lider);
 
 		$total_count = count($total);
 
@@ -1146,19 +1218,9 @@ class Welcome extends CI_Controller
 				$emailPai = $email_responsavel[$i];
 				$telefonePai = $telefone_responsavel[$i];
 			} else {
-				if ($nivel_2 == 1) {
-					$nomePai = $dadosPais['nome'];
-					$emailPai = $dadosPais['email'];
-					$telefonePai = $dadosPais['telefone_whatsapp'];
-				} else if ($nivel_2 == 2) {
-					$nomePai = $dadosPais['nome_lider'];
-					$emailPai = $dadosPais['email'];
-					$telefonePai = $dadosPais['telefone_whatsapp'];
-				} else if ($nivel_2 == 3) {
-					$nomePai = $dadosusuario['dados']['nome_coordenador'];
-					$emailPai = $dadosusuario['dados']['email'];
-					$telefonePai = $dadosusuario['dados']['telefone_whatsapp'];
-				}
+				$nomePai = $dadosnomeusuario['nome'];
+				$emailPai = $dadosusuario['dados']['email'];
+				$telefonePai = $dadosusuario['dados']['telefone_whatsapp'];
 			}
 
 			$checkCriancas = $this->FConsultas_model->consultarCriancasNomeEIdade($nome2, $lider2, $id_pg2, $nascimento2, $opcao2, $obs2, $nomePai, $nivel);
@@ -1178,11 +1240,18 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$data = [];
 
 		if ($red == 'criancas') {
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$lider";
 		} else if ($red == 'pg') {
 			$routa = "pg";
@@ -1290,14 +1359,19 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$data = [];
 
 		if ($red == 'criancas') {
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$lider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$lider";
 		} else if ($red == 'pg') {
 			$routa = "pg";
 		} else {
@@ -1333,6 +1407,9 @@ class Welcome extends CI_Controller
 
 		$excluir = $this->FSistema_model->excluirCrianca($idCrianca, $nomeCrianca, $idLider, $idResponsavel, $motivo, $nivel);
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
 		$data = [];
@@ -1340,9 +1417,11 @@ class Welcome extends CI_Controller
 		if ($red == 'criancas') {
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else if ($red == 'pg') {
 			$routa = "pg";
 		} else {
@@ -1372,14 +1451,19 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red') ?? 'criancas';
 		$routa = "";
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$data = [];
 
 		if ($red == 'criancas') {
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else if ($red == 'pg') {
 			$routa = "pg";
 		} else {
@@ -1410,14 +1494,19 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'criancas';
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$data = [];
 
 		if ($red == 'criancas') {
 			$routa = "criancas";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else if ($red == 'pg') {
 			$routa = "pg";
 		} else {
@@ -1441,17 +1530,11 @@ class Welcome extends CI_Controller
 		$nivel = $this->input->post("nivel");
 		$opc = $this->input->post("opc");
 
-		$dados = $this->FConsultas_model->consultaDadosPaisId($idLider, $nivel);
-		$dados_c = $this->FConsultas_model->getInfoCoordenadorId($idLider);
+		$dados = $this->FConsultas_model->getNomeUserId($idLider);
+
+		$nome = $dados['nome'];
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
-		$nivel_2 = $this->input->post("iscood") == '' ? false : $this->input->post("iscood");
-
-		if (!$nivel_2) {
-			$nome = $this->input->post("nivel") == 1 ? $dados['nome'] : $dados['nome_lider'];
-		} else {
-			$nome = $dados_c = $dados_c['dados']['nome_coordenador'];
-		}
 
 		$pdf = new FPDF("L", "pt", "A4");
 		$pdf->AddPage();
@@ -1461,7 +1544,6 @@ class Welcome extends CI_Controller
 
 		// INFORMAÇÕES GERAIS
 		if ($opc == "1") {
-
 			$consultarPG = $this->FConsultas_model->mostrarPG($idLider, $nivel);
 			$pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 200, 100, 500, 300);
 			// imagem em pé - $pdf->Image('import/sistema/dist/img/capa_relatorio.jpg', 50, 300, 500, 300);
@@ -2095,7 +2177,6 @@ class Welcome extends CI_Controller
 
 		//header('Location: ../../../../primeiro_acesso?id_usuario=' . $idLider . '&nivel=' . $nivel . '&x_ir=1');
 	}
-
 	public function cadastro_pg()
 	{
 		$idLider = $this->input->post('idLider');
@@ -2112,12 +2193,17 @@ class Welcome extends CI_Controller
 
 		$data = [];
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		if ($red == 'pg') {
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else {
 			$routa = "pg";
 		}
@@ -2154,15 +2240,20 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'pg';
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$routa = "";
 		$data = [];
 
 		if ($red == 'pg') {
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else {
 			$routa = "pg";
 		}
@@ -2226,15 +2317,20 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'pg';
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$routa = "";
 		$data = [];
 
 		if ($red == 'pg') {
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else {
 			$routa = "pg";
 		}
@@ -2264,15 +2360,20 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'pg';
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$routa = "";
 		$data = [];
 
 		if ($red == 'pg') {
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else {
 			$routa = "pg";
 		}
@@ -2300,15 +2401,20 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'pg';
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$routa = "";
 		$data = [];
 
 		if ($red == 'pg') {
 			$routa = "pg";
 		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'slocal/detalhes') {
-			$routa = "slocal/detalhes/$idLider";
 		} else {
 			$routa = "pg";
 		}
@@ -2371,6 +2477,10 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'pg';
 		$routa = "";
+
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		if ($red == 'pg') {
 			$data = [
 				"<input type='hidden' name='id_pg' value='$id_pg'>",
@@ -2380,11 +2490,11 @@ class Welcome extends CI_Controller
 			];
 			$routa = "pg/licoes";
 		} else if ($red == 'lideres/detalhes') {
-			$data = [];
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel' value='$nivel_routa'>"
+			];
 			$routa = "lideres/detalhes/$id_lider";
-		} else if ($red == 'slocal/detalhes') {
-			$data = [];
-			$routa = "slocal/detalhes/$id_lider";
 		} else {
 			$data = [
 				"<input type='hidden' name='id_pg' value='$id_pg'>",
@@ -2586,6 +2696,7 @@ class Welcome extends CI_Controller
 
 		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
 		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
+
 
 		// desativar pg
 		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
@@ -2955,5 +3066,912 @@ class Welcome extends CI_Controller
 				}
 			}
 		}
+	}
+
+	public function mostrar_table_parte_1()
+	{
+		$id_user = $this->input->get("id_user");
+		$opc1 = $this->input->get("opc1");
+		$opc2 = $this->input->get("opc2");
+
+		$dataInicio = $this->input->get("dataInicio");
+		$dataFim = $this->input->get("dataAte");
+
+		$nivel = $this->input->get("nivel") ?? "lideres";
+		$check_is_coord_query = $this->input->get("check_is_coord_query") ?? false;
+
+		$dados = $this->consultasBD($id_user, $opc1, $opc2, '', $dataInicio, $dataFim, $nivel, $check_is_coord_query);
+
+		if ($nivel == 'lideres') {
+			$this->load->view('sistema/slocal/pages/lideres/mostrar_tabela_lideres_1', $dados);
+		} else if ($nivel == 'coordenadores') {
+			$this->load->view('sistema/slocal/pages/coordenadores/mostrar_tabela_coord_1', $dados);
+		}
+	}
+
+	public function mostrar_table_parte_2()
+	{
+		$id_user = $this->input->get("id_user");
+		$opc1 = $this->input->get("opc1");
+		$opc2 = $this->input->get("opc2");
+		$opc3 = $this->input->get("opc3");
+
+		//echo 'OPC 1 - ' . $opc1 . ' OPC 2 - ' . $opc2;
+
+		$dataInicio = $this->input->get("dataInicio");
+		$dataFim = $this->input->get("dataAte");
+
+		$nivel = $this->input->get("nivel") ?? "lideres";
+		$check_is_coord_query = $this->input->get("check_is_coord_query") ?? false;
+
+		$dados = $this->consultasBD($id_user, $opc1, $opc2, $opc3, $dataInicio, $dataFim, $nivel, $check_is_coord_query);
+
+		if ($nivel == 'lideres') {
+			$this->load->view('sistema/slocal/pages/lideres/mostrar_tabela_lideres_2', $dados);
+		} else if ($nivel == 'coordenadores') {
+			$this->load->view('sistema/slocal/pages/coordenadores/mostrar_tabela_coordenador_2', $dados);
+		}
+	}
+
+	public function consultasBD($id_user, $opc1, $opc2, $opc3, $dataInicio, $dataFim, $nivel, $check_is_coord_query)
+	{
+
+		$data = date('Y-m-d');
+		$data_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($data)));
+
+		$data_formatada_1 = "";
+		$data_formatada_2 = "";
+
+		if ($opc2 == 'nao') {
+			if ($opc1 == 'opc1') {
+				// consulta baseada no ultimo mês
+				$menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
+				$data_formatada_1 = $menos_um_mes;
+				$data_formatada_2 = $data;
+			} else if ($opc1 == 'opc2') {
+				// consulta baseada nos últimos 6 meses
+				$data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
+				$data_formatada_1 = $data_menos_seis_meses;
+				$data_formatada_2 = $data;
+			} else if ($opc1 == 'opc3') {
+				// desde o inicio
+				$data_formatada_1 = "01-02-2017";
+				$data_formatada_2 = $data;
+			} else if ($opc1 == 'opc4') {
+				if ($dataInicio == '' || $dataFim == '') {
+				} else {
+					$data_formatada_1 = $dataInicio;
+					$data_formatada_2 = $dataFim;
+				}
+			}
+
+			$datas = array(
+				'dataInicio' => $data_formatada_1,
+				'dataFim' => $data_formatada_2,
+			);
+		} else {
+			if ($opc1 == 'opc1') {
+				// consulta baseada no ultimo mês
+				$menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
+				$menos_um_mes_ano = date('Y-m-d', strtotime('-1 year', strtotime($menos_um_mes)));
+				$data_formatada_1 = $menos_um_mes;
+				$data_formatada_2 = $data;
+				$data_formatada_3 = $menos_um_mes_ano;
+				$data_formatada_4 = $data_menos_um_ano;
+			} else if ($opc1 == 'opc2') {
+				// consulta baseada nos últimos 6 meses
+				$data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
+				$menos_seis_meses_ano = date('Y-m-d', strtotime('-1 year', strtotime($data_menos_seis_meses)));
+				$data_formatada_1 = $data_menos_seis_meses;
+				$data_formatada_2 = $data;
+				$data_formatada_3 = $menos_seis_meses_ano;
+				$data_formatada_4 = $data_menos_um_ano;
+			} else if ($opc1 == 'opc4') {
+				if ($dataInicio == '' || $dataFim == '') {
+				} else {
+					$data_inicio_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataInicio)));
+					$data_fim_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataFim)));
+
+					$data_formatada_1 = $dataInicio;
+					$data_formatada_2 = $dataFim;
+					$data_formatada_3 = $data_inicio_menos_um_ano;
+					$data_formatada_4 = $data_fim_menos_um_ano;
+				}
+			}
+
+			$datas = array(
+				'dataInicio' => $data_formatada_1,
+				'dataFim' => $data_formatada_2,
+				'dataInicioAnoPassado' => $data_formatada_3,
+				'dataFimAnoPassado' => $data_formatada_4,
+			);
+		}
+
+		$consultarCoordenadores = $this->FConsultas_model->getCoordenador([$id_user], $opc1, $opc2, $datas);
+		$consultarCoordenadoresAtivos = $this->FConsultas_model->coordenadoresAtivos($consultarCoordenadores);
+
+		$consultarLideres = $this->FConsultas_model->getLideres([$id_user], $opc1, $opc2, $datas);
+		$consultarLideresAtivos = $this->FConsultas_model->lideresAtivos($consultarLideres);
+
+		$total_criancas_geral = $this->FConsultas_model->getNumerosCriancas([$id_user], $consultarLideres, 'criancas_coord_1');
+		$total_criancas_ativos = $this->FConsultas_model->getNumerosCriancas([$id_user], $consultarLideresAtivos, 'criancas_coord_1');
+
+		if ($nivel == 'lideres') {
+			if ($opc3 == 'lideres_ativos') {
+				$dados = array(
+					'id_user' => $id_user,
+					'dados_lideres_gerais' => $consultarLideresAtivos,
+					'dados_lideres_ativos' => $consultarLideresAtivos,
+					'dados_criancas_gerais' => $total_criancas_geral,
+					'dados_criancas_ativos' => $total_criancas_ativos,
+					'mostrar_comparacao' => $opc2,
+					'check_is_coord_query' => $check_is_coord_query,
+				);
+
+				return $dados;
+			} else {
+				$dados = array(
+					'id_user' => $id_user,
+					'dados_lideres_gerais' => $consultarLideres,
+					'dados_lideres_ativos' => $consultarLideresAtivos,
+					'dados_criancas_gerais' => $total_criancas_geral,
+					'dados_criancas_ativos' => $total_criancas_ativos,
+					'mostrar_comparacao' => $opc2,
+					'check_is_coord_query' => $check_is_coord_query,
+				);
+
+				return $dados;
+			}
+		} else if ($nivel == 'coordenadores') {
+			if ($opc3 == 'coordenadores_ativos') {
+				$dados = array(
+					'id_user' => $id_user,
+					'dados_coordenadores_gerais' => $consultarCoordenadores,
+					'dados_coordenadores_ativos' => $consultarCoordenadoresAtivos,
+					'dados_lideres_gerais' => $consultarLideresAtivos,
+					'dados_lideres_ativos' => $consultarLideresAtivos,
+					'dados_criancas_gerais' => $total_criancas_geral,
+					'dados_criancas_ativos' => $total_criancas_ativos,
+					'mostrar_comparacao' => $opc2,
+					'check_is_coord_query' => $check_is_coord_query,
+				);
+
+				return $dados;
+			} else {
+				$dados = array(
+					'id_user' => $id_user,
+					'dados_coordenadores_gerais' => $consultarCoordenadores,
+					'dados_coordenadores_ativos' => $consultarCoordenadoresAtivos,
+					'dados_lideres_gerais' => $consultarLideres,
+					'dados_lideres_ativos' => $consultarLideresAtivos,
+					'dados_criancas_gerais' => $total_criancas_geral,
+					'dados_criancas_ativos' => $total_criancas_ativos,
+					'mostrar_comparacao' => $opc2,
+					'check_is_coord_query' => $check_is_coord_query,
+				);
+
+				return $dados;
+			}
+		}
+	}
+
+	public function gerar_excel()
+	{
+		$id_coordenador = $this->input->post("id_coordenador");
+		$opc1 = $this->input->post("opc1");
+		$opc2 = $this->input->post("opc2");
+
+		$dataInicio = $this->input->post("dataInicio");
+		$dataFim = $this->input->post("dataAte");
+
+		$nivel = $this->input->post("nivel") ?? "lideres";
+
+		$this->excel($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim, $nivel);
+	}
+
+	public function excel($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim, $nivel)
+	{
+		ob_start();
+
+		$data = date('d/m/Y');
+
+		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, '', $dataInicio, $dataFim, $nivel, false);
+
+		$total_lideres_gerais = $dados['dados_lideres_gerais']['row'];
+		$dados_lideres_gerais = $dados['dados_lideres_gerais']['dados'];
+
+		$total_lideres_ativos = $dados['dados_lideres_ativos']['row'];
+		$dados_lideres_ativos = $dados['dados_lideres_ativos']['dados'];
+
+		$columns = $this->input->post("columns");
+
+		$letras = LETRAS;
+
+		//create PHPExcel object
+		$excel = new PHPExcel();
+		$excel->setActiveSheetIndex(0);
+
+		$table1 = new PHPExcel_Worksheet($excel, 'Líderes');
+		$excel->addSheet($table1);
+
+		$table2 = new PHPExcel_Worksheet($excel, 'Informações Gerais');
+		$excel->addSheet($table2);
+
+		$excel->getActiveSheet()->setTitle("Crianças");
+
+		// planilha crianças
+
+		$colunas_titulo_3 = "B2";
+		$excel->getSheet(0)->getStyle('B2')->getAlignment()->setHorizontal('center');
+		$excel->getSheet(0)->setCellValue('B2', 'Crianças');
+
+		$row3 = 4;
+		$i_cl_5 = 1;
+		$i_cl_6 = 1;
+		$i_cl_7 = 1;
+
+		$linha_descricao_para_pintar = [];
+		$linha_nenhuma_crianca = [];
+		$linha_borda = [];
+
+		$columns2 = $this->input->post("columns_criancas");
+		$bol_check_2_col_1 = false;
+		$bol_check_2_col_2 = false;
+
+		if ($total_lideres_gerais == 0) {
+		} else {
+
+			$excel->getSheet(0)->setCellValue($letras[$i_cl_5] . $row3, 'Líder');
+			$i_cl_5++;
+
+			foreach ($columns2 as $key => $coluna) {
+				if ($coluna == 'column1') {
+					$bol_check_2_col_1 = true;
+					$excel->getSheet(0)->setCellValue($letras[$i_cl_5] . $row3, "Nome");
+					$i_cl_5++;
+				} else if ($coluna == 'column2') {
+					$bol_check_2_col_2 = true;
+					$excel->getSheet(0)->setCellValue($letras[$i_cl_5] . $row3, "Nascimento");
+					$i_cl_5++;
+				}
+			}
+			array_push($linha_descricao_para_pintar, $row3);
+			$row3++;
+
+			for ($i = 0; $i < count($dados_lideres_gerais); $i++) {
+
+
+				$lider = $dados_lideres_gerais[$i];
+				$id_lider = $lider['id_lider'];
+
+				$info_criancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 3);
+
+				if ($info_criancas['row'] == 0) {
+					$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
+					$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $lider['nome_lider']);
+					array_push($linha_borda, $letras[$i_cl_7] . $row3);
+					$i_cl_7++;
+					$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, "Nenhuma Criança");
+					array_push($linha_nenhuma_crianca, $row3);
+					$i_cl_7 = 1;
+					$row3++;
+				} else {
+					foreach ($info_criancas['dados'] as $linha  => $crianca) {
+						$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
+						$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $lider['nome_lider']);
+						array_push($linha_borda, $letras[$i_cl_7] . $row3);
+						$i_cl_7++;
+						if ($bol_check_2_col_1) {
+							$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
+							$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $crianca['nome_crianca']);
+							array_push($linha_borda, $letras[$i_cl_7] . $row3);
+							$i_cl_7++;
+						}
+						if ($bol_check_2_col_2) {
+							$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
+							$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $crianca['nascimento']);
+							array_push($linha_borda, $letras[$i_cl_7] . $row3);
+							$i_cl_7++;
+						}
+						$i_cl_7 = 1;
+						$row3++;
+					}
+				}
+			}
+		}
+
+		if ($bol_check_2_col_1) {
+			$i_cl_6 = $i_cl_6 + 1;
+		}
+		if ($bol_check_2_col_2) {
+			$i_cl_6 = $i_cl_6 + 1;
+		}
+
+		// style title
+		$colunas_titulo_3 = "";
+		if ($i_cl_6 == 1 || $i_cl_6 == 2) {
+			$colunas_titulo_3 = "B2";
+		} else {
+			$colunas_titulo_3 = "B2:D2";
+		}
+
+		if ($i_cl_6 == 1 || $i_cl_6 == 2) {
+		} else {
+			$excel->getSheet(0)->mergeCells($colunas_titulo_3);
+		}
+
+		$excel->getSheet(0)->getStyle($colunas_titulo_3)->applyFromArray(
+			array(
+				'font' => array(
+					'bold' => true,
+					'size' => 24,
+				),
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+				'fill' => array(
+					'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+					'rotation' => 90,
+					'startcolor' => array(
+						'argb' => 'FFA0A0A0',
+					),
+					'endcolor' => array(
+						'argb' => 'FFFFFFFF',
+					),
+				),
+			)
+		);
+		// fim title
+
+		// style colunas info crianças
+		foreach ($linha_descricao_para_pintar as $key => $linha) {
+			$linhas_descricoes_criancas = $letras[1] . $linha . ":" . $letras[$i_cl_5 - 1] . $linha;
+			$excel->getSheet(0)->getStyle($linhas_descricoes_criancas)->applyFromArray(
+				array(
+					'font' => array(
+						'bold' => true
+					),
+					'borders' => array(
+						'allborders' => array(
+							'style' => PHPExcel_Style_Border::BORDER_THIN
+						)
+					),
+					'fill' => array(
+						'type' => PHPExcel_Style_Fill::FILL_SOLID,
+						'rotation' => 90,
+						'startcolor' => array(
+							'argb' => 'FFA0A0A0',
+						),
+					),
+				)
+			);
+		}
+		// style colunas info crianças
+
+		// style bordas nenhuma criança
+		foreach ($linha_nenhuma_crianca as $key => $linha) {
+			$nenhuma_crianca = $letras[2] . $linha . ":" . $letras[$i_cl_6] . $linha;
+			$nenhuma_crianca2 = $letras[1] . $linha . ":" . $letras[$i_cl_6] . $linha;
+			$excel->getSheet(0)->mergeCells($nenhuma_crianca);
+			$excel->getSheet(0)->getStyle($nenhuma_crianca2)->applyFromArray(
+				array(
+					'borders' => array(
+						'allborders' => array(
+							'style' => PHPExcel_Style_Border::BORDER_THIN
+						)
+					), 'fill' => array(
+						'type' => PHPExcel_Style_Fill::FILL_SOLID,
+						'rotation' => 90,
+						'startcolor' => array(
+							'argb' => 'FFE58782',
+						),
+					),
+				)
+			);
+		}
+		// style bordas nenhuma criança
+
+		// style bordas
+		foreach ($linha_borda as $key => $linha) {
+			$excel->getSheet(0)->getStyle($linha)->applyFromArray(
+				array(
+					'borders' => array(
+						'allborders' => array(
+							'style' => PHPExcel_Style_Border::BORDER_THIN
+						)
+					),
+				)
+			);
+		}
+		// style bordas
+
+		$excel->getSheet(0)->getStyle('B4:Z' . $row3)->getAlignment()->setHorizontal('center');
+		// planilha crianças
+
+		// planilha líderes
+		$colunas_titulo_2 = "B2";
+		$excel->getSheet(1)->getStyle('B2')->getAlignment()->setHorizontal('center');
+		$excel->getSheet(1)->setCellValue('B2', 'Líderes');
+
+		$i_cl_2 = 1;
+
+		$columns1 = $this->input->post("columns_lideres");
+
+		$bol_check_col_1 = false;
+		$bol_check_col_2 = false;
+		$bol_check_col_3 = false;
+		$bol_check_col_4 = false;
+		$bol_check_col_5 = false;
+		$bol_check_col_6 = false;
+
+		foreach ($columns1 as $key => $coluna) {
+			$excel->getSheet(1)->getColumnDimension($letras[$i_cl_2])->setAutoSize(true);
+			if ($coluna == 'column1') {
+				$bol_check_col_1 = true;
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Nome');
+				$i_cl_2++;
+			} else if ($coluna == 'column2') {
+				$bol_check_col_2 = true;
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'E-mail');
+				$i_cl_2++;
+			} else if ($coluna == 'column3') {
+				$bol_check_col_3 = true;
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Telefone');
+				$i_cl_2++;
+			} else if ($coluna == 'column4') {
+				$bol_check_col_4 = true;
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Pais');
+				$i_cl_2++;
+			} else if ($coluna == 'column5') {
+				$bol_check_col_5 = true;
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Estado');
+				$i_cl_2++;
+			} else if ($coluna == 'column6') {
+				$bol_check_col_6 = true;
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Cidade');
+				$i_cl_2++;
+			}
+		}
+
+		if ($i_cl_2 == 1 || $i_cl_2 == 2) {
+		} else if ($i_cl_2 == 3) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":C2";
+		} else if ($i_cl_2 == 4) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":D2";
+		} else if ($i_cl_2 == 5) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":E2";
+		} else if ($i_cl_2 == 6) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":F2";
+		} else if ($i_cl_2 == 7) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":G2";
+		}
+
+		if ($i_cl_2 == 1 || $i_cl_2 == 2) {
+		} else {
+			$excel->getSheet(1)->mergeCells($colunas_titulo_2);
+		}
+
+		// style to title
+		$excel->getSheet(1)->getStyle($colunas_titulo_2)->applyFromArray(
+			array(
+				'font' => array(
+					'bold' => true,
+					'size' => 24,
+				),
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+				'fill' => array(
+					'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+					'rotation' => 90,
+					'startcolor' => array(
+						'argb' => 'FFA0A0A0',
+					),
+					'endcolor' => array(
+						'argb' => 'FFFFFFFF',
+					),
+				),
+			)
+		);
+		// fim title
+
+		$colunas_lideres = $letras[1] . "4:" . $letras[$i_cl_2 - 1] . "4";
+
+		// style to columns descricao
+		$excel->getSheet(1)->getStyle($colunas_lideres)->applyFromArray(
+			array(
+				'font' => array(
+					'bold' => true
+				),
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+				'fill' => array(
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'rotation' => 90,
+					'startcolor' => array(
+						'argb' => 'FFA0A0A0',
+					),
+				),
+			)
+		);
+		// style to columns descricao
+
+		$row2 = 5;
+
+		$i_cl_3 = 1;
+		$lideres_n_ativos_row = [];
+
+		for ($i = 0; $i < count($dados_lideres_gerais); $i++) {
+			$excel->getSheet(1)->getColumnDimension($letras[$i_cl_3])->setAutoSize(true);
+			$lideres = $dados_lideres_gerais[$i];
+
+			if (in_array($lideres, $dados_lideres_ativos)) {
+			} else {
+				array_push($lideres_n_ativos_row, $row2);
+			}
+
+			if ($bol_check_col_1) {
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['nome_lider']);
+				$i_cl_3++;
+			}
+			if ($bol_check_col_2) {
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['email']);
+				$i_cl_3++;
+			}
+			if ($bol_check_col_3) {
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['telefone_whatsapp']);
+				$i_cl_3++;
+			}
+			if ($bol_check_col_4) {
+				$nome_pais = "";
+				if ($lideres['pais'] == 'br') {
+					$nome_pais = "Brasil";
+				} else {
+					$nome_pais = $lideres['pais'];
+				}
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $nome_pais);
+				$i_cl_3++;
+			}
+			if ($bol_check_col_5) {
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['estado']);
+				$i_cl_3++;
+			}
+			if ($bol_check_col_6) {
+				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['cidade']);
+			}
+			$row2++;
+			$i_cl_3 = 1;
+		}
+
+		$linhas_2 = $row2 - 1;
+		$colunas_dados_lideres = $letras[1] . "4:" . $letras[$i_cl_2 - 1] . $linhas_2;
+
+		// style to columns descricao
+		$excel->getSheet(1)->getStyle($colunas_dados_lideres)->applyFromArray(
+			array(
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+			)
+		);
+
+		foreach ($lideres_n_ativos_row as $key => $linha) {
+			$colunas_dados_lideres = $letras[1] . $linha . ":" . $letras[$i_cl_2 - 1] . $linha;
+
+			// style to columns descricao
+			$excel->getSheet(1)->getStyle($colunas_dados_lideres)->applyFromArray(
+				array(
+					'fill' => array(
+						'type' => PHPExcel_Style_Fill::FILL_SOLID,
+						'rotation' => 90,
+						'startcolor' => array(
+							'argb' => 'FFE58782',
+						),
+					),
+				)
+			);
+		}
+		// style to columns descricao
+		$excel->getSheet(1)->getStyle('B4:Z' . $row2)->getAlignment()->setHorizontal('center');
+		// planilha líderes
+
+		// planilha informações gerais
+		$row = 5;
+
+		//tile
+		$excel->getSheet(2)->setCellValue('B2', 'CAMP Brasil');
+
+		$colunas_titulo_1 = "B2";
+		$excel->getSheet(2)->getStyle('B2')->getAlignment()->setHorizontal('center');
+
+		$i_cl_1 = 1;
+
+		foreach ($columns as $key => $coluna) {
+			$excel->getSheet(2)->getColumnDimension($letras[$i_cl_1])->setAutoSize(true);
+			if ($coluna == 'total_lideres_1') {
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1] . '4', 'Total de Líderes');
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1] . $row, $total_lideres_gerais);
+				$i_cl_1++; // 2
+			} else if ($coluna == 'total_lideres_2') {
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1] . '4', 'Total de Líderes Ativos');
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1] . $row, $total_lideres_ativos);
+				$i_cl_1++; // 3
+			} else if ($coluna == 'total_criancas_1') {
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1] . '4', 'Total de Crianças');
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1] . $row, $dados['dados_criancas_gerais']);
+				$i_cl_1++; // 4
+			} else if ($coluna == 'total_criancas_2') {
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1] . '4', 'Total de Crianças Ativas');
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_1]  . $row, $dados['dados_criancas_ativos']);
+				$i_cl_1++; // 5
+			}
+		}
+
+		$colunas_descricao = "";
+
+		if ($i_cl_1 == 1 || $i_cl_1 == 2) {
+			$colunas_descricao = "B4";
+		} else if ($i_cl_1 == 3) {
+			$colunas_titulo_1 = $colunas_titulo_1 . ":C2";
+			$colunas_descricao = "B4:C4";
+		} else if ($i_cl_1 == 4) {
+			$colunas_titulo_1 = $colunas_titulo_1 . ":D2";
+			$colunas_descricao = "B4:D4";
+		} else if ($i_cl_1 == 5) {
+			$colunas_titulo_1 = $colunas_titulo_1 . ":E2";
+			$colunas_descricao = "B4:E4";
+		}
+
+		if ($i_cl_1 == 1) {
+		} else {
+			$excel->getSheet(2)->mergeCells($colunas_titulo_1);
+		}
+
+		// style to title
+		$excel->getSheet(2)->getStyle($colunas_titulo_1)->applyFromArray(
+			array(
+				'font' => array(
+					'bold' => true,
+					'size' => 24,
+				),
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+				'fill' => array(
+					'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+					'rotation' => 90,
+					'startcolor' => array(
+						'argb' => 'FFA0A0A0',
+					),
+					'endcolor' => array(
+						'argb' => 'FFFFFFFF',
+					),
+				),
+			)
+		);
+		// fim title
+
+		// style to columns descricao
+		$excel->getSheet(2)->getStyle($colunas_descricao)->applyFromArray(
+			array(
+				'font' => array(
+					'bold' => true
+				),
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+				'fill' => array(
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'rotation' => 90,
+					'startcolor' => array(
+						'argb' => 'FFA0A0A0',
+					),
+				),
+			)
+		);
+
+		$colunas_dados_lideres = $letras[1] . "5:" . $letras[$i_cl_1 - 1] . "5";
+
+		// style to columns descricao
+		$excel->getSheet(2)->getStyle($colunas_dados_lideres)->applyFromArray(
+			array(
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+			)
+		);
+		// style to columns descricao
+
+		// informações dos pgs
+
+		$columns3 = $this->input->post("columns_pg");
+
+		$i_cl_pg = 1;
+
+		$bol_check_col_1 = false;
+		$bol_check_col_2 = false;
+		$bol_check_col_3 = false;
+		$bol_check_col_4 = false;
+
+		$row++;
+		$row++;
+
+		$excel->getSheet(2)->setCellValue($letras[$i_cl_pg] . $row, 'Líder');
+		$i_cl_pg++;
+
+		foreach ($columns3 as $key => $coluna) {
+			$excel->getSheet(2)->getColumnDimension($letras[$i_cl_pg])->setAutoSize(true);
+
+			if ($coluna == 'column1') {
+				$bol_check_col_1 = true;
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg] . $row, 'Quantidade de Crianças');
+				$i_cl_pg++;
+			} else if ($coluna == 'column2') {
+				$bol_check_col_2 = true;
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg] . $row, 'Ciclo');
+				$i_cl_pg++;
+			} else if ($coluna == 'column3') {
+				$bol_check_col_3 = true;
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg] . $row, 'Módulo');
+				$i_cl_pg++;
+			} else if ($coluna == 'column4') {
+				$bol_check_col_4 = true;
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg] . $row, 'Lição');
+				$i_cl_pg++;
+			}
+		}
+
+		if ($i_cl_pg == 1 || $i_cl_pg == 2) {
+		} else if ($i_cl_pg == 3) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":C2";
+		} else if ($i_cl_pg == 4) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":D2";
+		} else if ($i_cl_pg == 5) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":E2";
+		} else if ($i_cl_pg == 6) {
+			$colunas_titulo_2 = $colunas_titulo_2 . ":F2";
+		}
+
+		$colunas_lideres = $letras[1] . $row . ":" . $letras[$i_cl_pg - 1] . $row;
+
+		// style to columns descricao
+		$excel->getSheet(2)->getStyle($colunas_lideres)->applyFromArray(
+			array(
+				'font' => array(
+					'bold' => true
+				),
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+				'fill' => array(
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'rotation' => 90,
+					'startcolor' => array(
+						'argb' => 'FFA0A0A0',
+					),
+				),
+			)
+		);
+		// style to columns descricao
+
+		$row++;
+		$row2 = $row;
+
+		$i_cl_pg2 = 1;
+		$pg_n_ativos_row = [];
+
+		for ($i = 0; $i < count($dados_lideres_gerais); $i++) {
+			$lider = $dados_lideres_gerais[$i];
+			$id_lider = $lider['id_lider'];
+			$data_cadastro = $lider['data_cadastro'];
+			$ativo = $lider['ativo'];
+			$confirmado = $lider['confirmado'];
+
+			$excel->getSheet(2)->getColumnDimension($letras[$i_cl_pg2])->setAutoSize(true);
+
+			$info_criancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 3);
+			$info_pg = $this->FConsultas_model->mostrarPG($id_lider, 3);
+
+			$check = $this->FConsultas_model->check_lider_is_ativo($id_lider, $data_cadastro, $ativo, $confirmado);
+
+			if (!$check) {
+				array_push($pg_n_ativos_row, $row2);
+			} else {
+			}
+
+			$excel->getSheet(2)->setCellValue($letras[$i_cl_pg2] . $row2, $lider['nome_lider']);
+			$i_cl_pg2++;
+
+			if ($bol_check_col_1) {
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg2] . $row2, $info_criancas['row']);
+				$i_cl_pg2++;
+			}
+			if ($bol_check_col_2) {
+				$nome_ciclo = "";
+				if ($info_pg['dados']['ano'] == 1) {
+					$nome_ciclo = "1º Ciclo";
+				} else if ($info_pg['dados']['ano'] == 2) {
+					$nome_ciclo = "2º Ciclo";
+				} else if ($info_pg['dados']['ano'] == 3) {
+					$nome_ciclo = "3º Ciclo";
+				}
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_ciclo);
+				$i_cl_pg2++;
+			}
+			if ($bol_check_col_3) {
+				$id_modulo = $info_pg['dados']['id_modulo'];
+				$modulo = $this->FConsultas_model->consultarModuloId($id_modulo);
+				$nome_modulo = $modulo['nome_modulo'];
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_modulo);
+				$i_cl_pg2++;
+			}
+			if ($bol_check_col_4) {
+				$excel->getSheet(2)->setCellValue($letras[$i_cl_pg2] . $row2, $info_pg['dados']['n_licao']);
+				$i_cl_pg2++;
+			}
+			$row2++;
+			$i_cl_pg2 = 1;
+		}
+
+		$linhas_2 = $row2 - 1;
+		$colunas_dados_lideres = $letras[1] . $row . ":" . $letras[$i_cl_pg - 1] . $linhas_2;
+
+		// style to columns descricao
+		$excel->getSheet(2)->getStyle($colunas_dados_lideres)->applyFromArray(
+			array(
+				'borders' => array(
+					'allborders' => array(
+						'style' => PHPExcel_Style_Border::BORDER_THIN
+					)
+				),
+			)
+		);
+
+		foreach ($pg_n_ativos_row as $key => $linha) {
+			$colunas_dados_lideres = $letras[1] . $linha . ":" . $letras[$i_cl_pg - 1] . $linha;
+
+			// style to columns descricao
+			$excel->getSheet(2)->getStyle($colunas_dados_lideres)->applyFromArray(
+				array(
+					'fill' => array(
+						'type' => PHPExcel_Style_Fill::FILL_SOLID,
+						'rotation' => 90,
+						'startcolor' => array(
+							'argb' => 'FFE58782',
+						),
+					),
+				)
+			);
+		}
+		// style to columns descricao*/
+
+		$excel->getSheet(2)->getStyle('B4:Z' . $row2)->getAlignment()->setHorizontal('center');
+		// planilha informações gerais
+
+		header('Content-Type: text/csv; charset=UTF-8');
+		header('Content-Disposition: attachment; filename=Planilha CAMP Brasil - Líderes (' . $data . ').csv');
+		header('Cache-Control: max-age=0');
+
+		$file = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+
+		ob_end_clean();
+		$file->save('php://output');
 	}
 }

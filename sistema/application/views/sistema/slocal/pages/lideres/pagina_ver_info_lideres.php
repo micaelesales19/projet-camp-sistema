@@ -6,7 +6,15 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-    $voltar = "../../";
+    $check_is_coord_query = $id_coord == '' ? false : true;
+
+    if (!$check_is_coord_query) {
+        $voltar = "../../";
+    } else {
+        $voltar = "../../../";
+    }
+    echo $id_coord;
+
     $array = array('voltar' => $voltar);
 ?>
     <!DOCTYPE html>
@@ -124,8 +132,13 @@ if (!isset($_SESSION['usuario'])) {
                     </h1>
 
                     <ol class="breadcrumb">
-                        <li><a href="../../../home"><i class="fa fa-home"></i> Home</a></li>
-                        <li><a href="../../lideres"><i class="fa fa-group"></i> Líderes</a></li>
+                        <?php
+                        foreach ($pages as $key => $value) {
+                        ?>
+                            <li><a href="<?= $value['red']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
+                        <?php
+                        }
+                        ?>
                         <li class="active">Informações</li>
                     </ol>
                 </section>
@@ -178,6 +191,17 @@ if (!isset($_SESSION['usuario'])) {
                                                                 <input type="hidden" name="nivel" value="2">
                                                                 <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                 <input type="hidden" name="red" value="lideres/detalhes">
+
+                                                                <?php
+                                                                if (!$check_is_coord_query) {
+                                                                ?>
+                                                                    <input type="hidden" name="nivel" value="lider">
+                                                                <?php
+                                                                } else {
+                                                                ?>
+                                                                    <input type="hidden" name="nivel" value="coordenador">
+                                                                    <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                <?php } ?>
                                                                 <center>
                                                                     <label for="opc">Opção 1:</label><br>
                                                                     <input type="submit" class="btn btn-success" value="Ativar">
@@ -193,6 +217,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                 <input type="hidden" name="nivel" value="2">
                                                                 <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                 <input type="hidden" name="red" value="lideres/detalhes">
+                                                                <?php
+                                                                if (!$check_is_coord_query) {
+                                                                ?>
+                                                                    <input type="hidden" name="nivel" value="lider">
+                                                                <?php
+                                                                } else {
+                                                                ?>
+                                                                    <input type="hidden" name="nivel" value="coordenador">
+                                                                    <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                <?php } ?>
                                                                 <center>
                                                                     <label for="opc">Opção 2:</label><br>
                                                                     <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
@@ -589,6 +623,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                                         <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                         <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
                                                                                         <center>
                                                                                             <label for="opc">Opção 1:</label><br>
                                                                                             <input type="submit" class="btn btn-success" value="Ativar">
@@ -605,6 +649,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                                         <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                         <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
                                                                                         <center>
                                                                                             <label for="opc">Opção 2:</label><br>
                                                                                             <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
@@ -679,6 +733,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                         <input type="hidden" name="red" value="lideres/detalhes">
                                                                                         <input type="hidden" name="nivel" value="2">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
                                                                                         <div class="col-lg-12" style="display: flex; justify-content: center;">
                                                                                             <div class="col-lg-4">
                                                                                                 <div class="form-group">
@@ -769,6 +833,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="idPg" value="<?= $dadosPG['id_pg']; ?>">
                                                                                         <input type="hidden" name="nomePg" value="<?= $dadosPG['nome_pg']; ?>">
                                                                                         <input type="hidden" name="nivel" value="2">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
                                                                                         <div class="form-group">
                                                                                             <label for="exampleInputEmail1">Deseja realmente retirar essa PG do projeto CAMP?</label>
                                                                                             <label for="exampleInputPassword1">Conte-nos o motivo:</label>
@@ -794,6 +868,17 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
                                                                         <input type="hidden" name="ano" value="<?= $dadosPG['ano']; ?>">
                                                                         <input type="hidden" name="routa" value="lideres/detalhes">
+
+                                                                        <?php
+                                                                        if (!$check_is_coord_query) {
+                                                                        ?>
+                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                        <?php
+                                                                        } else {
+                                                                        ?>
+                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                        <?php } ?>
                                                                     </form>
                                                                 </td>
                                                                 <td>
@@ -926,6 +1011,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="nivel" value="2">
                                                                                         <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                         <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
                                                                                         <center>
                                                                                             <label for="opc">Opção 1:</label><br>
                                                                                             <input type="submit" class="btn btn-success" value="Ativar">
@@ -942,6 +1037,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
                                                                                         <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                                         <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
                                                                                         <center>
                                                                                             <label for="opc">Opção 2:</label><br>
                                                                                             <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
@@ -1062,6 +1167,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="idLider" value="<?= $linha['lider']; ?>">
                                                                                         <input type="hidden" name="nivel" value="2">
                                                                                         <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
 
                                                                                         <div class="col-lg-12">
                                                                                             <div class="form-group">
@@ -1239,6 +1354,16 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <input type="hidden" name="nomeCrianca" value="<?= $linha['nome_crianca']; ?>">
                                                                                         <input type="hidden" name="nivel" value="2">
                                                                                         <input type="hidden" name="red" value="lideres/detalhes">
+                                                                                        <?php
+                                                                                        if (!$check_is_coord_query) {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="lider">
+                                                                                        <?php
+                                                                                        } else {
+                                                                                        ?>
+                                                                                            <input type="hidden" name="nivel_routa" value="coordenador">
+                                                                                            <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                                                        <?php } ?>
 
                                                                                         <div class="form-group">
                                                                                             <label for="exampleInputEmail1">Deseja realmente desativar essa Criança?</label>
@@ -1353,7 +1478,19 @@ if (!isset($_SESSION['usuario'])) {
                                     <input type="hidden" name="idColider" value="<?= $dados['id_colider']; ?>">
                                     <input type="hidden" name="nomeColider" value="<?= $dados['nome_colider']; ?>">
                                     <input type="hidden" name="idResponsavel" value="<?= $id_usuario; ?>">
-                                    <input type="hidden" name="red" value="slocal/detalhes">
+
+                                    <?php
+                                    if (!$check_is_coord_query) {
+                                    ?>
+                                        <input type="hidden" name="nivel" value="lider">
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <input type="hidden" name="nivel" value="coordenador">
+                                        <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                    <?php } ?>
+
+                                    <input type="hidden" name="red" value="lideres/detalhes">
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Deseja realmente desativar o colíder do projeto CAMP?</label>
@@ -1421,7 +1558,17 @@ if (!isset($_SESSION['usuario'])) {
                                                 <input type="hidden" name="opc" id="id_colider_escolhido_1" value="<?= $colideres_desativados['dados'][0]['id_colider']; ?>">
                                                 <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                 <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
-                                                <input type="hidden" name="red" value="slocal/detalhes">
+                                                <input type="hidden" name="red" value="lideres/detalhes">
+                                                <?php
+                                                if (!$check_is_coord_query) {
+                                                ?>
+                                                    <input type="hidden" name="nivel" value="lider">
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <input type="hidden" name="nivel" value="coordenador">
+                                                    <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                <?php } ?>
                                                 <center>
                                                     <label for="opc">Opção 1:</label><br>
                                                     <input type="submit" class="btn btn-success" value="Ativar">
@@ -1436,7 +1583,17 @@ if (!isset($_SESSION['usuario'])) {
                                                 <input type="hidden" name="opc" id="id_colider_escolhido_2" value="<?= $colideres_desativados['dados'][0]['id_colider']; ?>">
                                                 <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                 <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
-                                                <input type="hidden" name="red" value="slocal/detalhes">
+                                                <input type="hidden" name="red" value="lideres/detalhes">
+                                                <?php
+                                                if (!$check_is_coord_query) {
+                                                ?>
+                                                    <input type="hidden" name="nivel" value="lider">
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <input type="hidden" name="nivel" value="coordenador">
+                                                    <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                                <?php } ?>
                                                 <center>
                                                     <label for="opc">Opção 2:</label><br>
                                                     <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
@@ -1467,7 +1624,7 @@ if (!isset($_SESSION['usuario'])) {
                             </div>
                             <div class="box-body">
                                 <input type="hidden" name="idLider" value="<?= $dados_lider['id_lider']; ?>">
-                                <input type="hidden" name="red" value="slocal/detalhes">
+                                <input type="hidden" name="red" value="lideres/detalhes">
 
                                 <div class="col-lg-12">
                                     <div class="form-group has-feedback">
@@ -1503,6 +1660,17 @@ if (!isset($_SESSION['usuario'])) {
                                         <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
                                     </div>
                                 </div>
+
+                                <?php
+                                if (!$check_is_coord_query) {
+                                ?>
+                                    <input type="text" name="nivel" value="lider">
+                                <?php
+                                } else {
+                                ?>
+                                    <input type="text" name="nivel" value="coordenador">
+                                    <input type="text" name="id_coord" value="<?= $id_coord; ?>">
+                                <?php } ?>
 
                             </div>
                             <div class="modal-footer">
@@ -1584,6 +1752,17 @@ if (!isset($_SESSION['usuario'])) {
                                 <input type="hidden" name="nivel" value="2">
                                 <input type="hidden" name="red" value="lideres/detalhes">
 
+                                <?php
+                                if (!$check_is_coord_query) {
+                                ?>
+                                    <input type="hidden" name="nivel_routa" value="lider">
+                                <?php
+                                } else {
+                                ?>
+                                    <input type="hidden" name="nivel_routa" value="coordenador">
+                                    <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                <?php } ?>
+
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Nome para o PG</label>
@@ -1630,6 +1809,16 @@ if (!isset($_SESSION['usuario'])) {
                                 <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
                                 <input type="hidden" name="nivel" value="2">
                                 <input type="hidden" name="red" value="lideres/detalhes">
+                                <?php
+                                if (!$check_is_coord_query) {
+                                ?>
+                                    <input type="hidden" name="nivel" value="lider">
+                                <?php
+                                } else {
+                                ?>
+                                    <input type="hidden" name="nivel" value="coordenador">
+                                    <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+                                <?php } ?>
 
                                 <div class="col-lg-12">
                                     <div class="form-group">

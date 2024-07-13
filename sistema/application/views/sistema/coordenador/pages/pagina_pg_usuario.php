@@ -71,7 +71,7 @@ if (!isset($_SESSION['usuario'])) {
                 $pg = $this->FConsultas_model->mostrarPG($id_usuario, 2);
                 $pg_desativados = $this->FConsultas_model->mostrarPGDesativados($id_usuario, 2);
 
-                if ($pg['row'] == 0) {
+                if ($pg['row'] == 0 && $pg_desativados['row'] == 0) {
                 ?>
                     <div class="box-body chat"><br>
                         <div class="callout callout-danger">
@@ -83,6 +83,98 @@ if (!isset($_SESSION['usuario'])) {
                         <center>
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_pg">Cadastrar +</button>
                         </center>
+                    </div>
+                <?php
+                } else if ($pg['row'] == 0 && $pg_desativados['row'] != 0) {
+                ?> <div class="box-body chat"><br>
+                        <div class="callout callout-danger">
+                            <h4>
+                                Você não tem nenhum PG Ativo! Mas tem PG Desativado!
+                            </h4>
+                            <p>Cadastre</p>
+                        </div>
+                        <center>
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_pg">Cadastrar +</button>
+                            <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#pg_desativados">PG Desativados</button>
+                        </center>
+
+
+                        <div class="modal fade" id="pg_desativados">
+                            <div class="modal-dialog modal-success">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">Ativar | Desativar | PG</h4>
+                                    </div>
+                                    <div class="box-body">
+
+                                        <script>
+                                            function trocar_id_pg() {
+                                                var id_pg = document.getElementById('opc_id_pg').value;
+
+                                                document.getElementById('id_pg_escolhido_1').value = id_pg;
+                                                document.getElementById('id_pg_escolhido_2').value = id_pg;
+                                            }
+                                        </script>
+
+                                        <div class="col-lg-12">
+
+                                            <div class="col-lg-5">
+                                                <div class="form-group">
+                                                    <label for="opc">PG:</label>
+                                                    <select name="opc" id="opc_id_pg" onchange="trocar_id_pg()" class="form-control">
+                                                        <?php
+                                                        foreach ($pg_desativados['dados'] as $key => $dadosPGDesativados) {
+                                                        ?>
+                                                            <option value="<?= $dadosPGDesativados['id_pg']; ?>"><?= $dadosPGDesativados['nome_pg']; ?> </option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <form action="pg/exclusao/ativar" method="POST">
+                                                        <input type="hidden" name="id_pg" id="id_pg_escolhido_1" value="<?= $pg_desativados['dados'][0]['id_pg']; ?>">
+                                                        <input type="hidden" name="nivel" value="2">
+                                                        <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                                                        <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                                                        <input type="hidden" name="red" value="">
+                                                        <center>
+                                                            <label for="opc">Opção 1:</label><br>
+                                                            <input type="submit" class="btn btn-success" value="Ativar">
+                                                        </center>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    <form action="pg/exclusao/permanente" method="POST">
+                                                        <input type="hidden" name="id_pg" id="id_pg_escolhido_2" value="<?= $pg_desativados['dados'][0]['id_pg']; ?>">
+                                                        <input type="hidden" name="nivel" value="2">
+                                                        <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                                                        <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                                                        <input type="hidden" name="red" value="">
+                                                        <center>
+                                                            <label for="opc">Opção 2:</label><br>
+                                                            <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
+                                                        </center>
+                                                    </form>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
                     </div>
                 <?php
                 } else {

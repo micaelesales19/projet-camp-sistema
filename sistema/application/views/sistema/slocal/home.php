@@ -82,12 +82,11 @@ if (!isset($_SESSION['usuario'])) {
                     <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="small-box-footer">
                       <p>Copiar Link de Cadastro <i class="fa fa-link"></i></p>
                     </a>
-                    <p id="text_sucess"></p>
                   </div>
                   <div class="icon">
                     <i class="fa fa-users"></i>
                   </div>
-                  <a href="page/lideres" class="small-box-footer">Ver Mais <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="page/coordenadores" class="small-box-footer">Ver Mais <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
               <!-- ./col -->
@@ -103,9 +102,56 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="inner">
                     <h4><?= $total; ?></h4>
                     <p>Líderes</p>
-                    <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="small-box-footer">
+
+                    <a href="#" data-toggle="modal" data-target="#cadastro_lider_link" style="color:white;" class="small-box-footer">
                       <p>Copiar Link de Cadastro <i class="fa fa-link"></i></p>
                     </a>
+
+                    <div class="modal fade" id="cadastro_lider_link">
+                      <div class="modal-dialog modal-success">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Gerar Link | Líder</h4>
+                          </div>
+                          <div class="box-body">
+                            <input type="hidden" id="link_user" value="<?= $link; ?>">
+                            <div class="col-lg-12">
+                              <div class="form-group has-feedback">
+                                <label for="">Selecione o Coordenador</label>
+                                <select class="form-control" onclick="criar_link();" name="id_coord" id="id_coord">
+                                  <?php
+                                  $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
+
+                                  if ($coordenadores['row'] == 0) {
+                                  ?>
+                                    <option value="3000">Você não tem coordenadores cadastrados</option>
+                                  <?php
+                                  } else {
+                                  ?>
+                                    <option value="3000" selected>Selecione um coordenador</option>
+                                    <option value="3000">Ainda não tem coordenador</option>
+                                    <?php
+                                    foreach ($coordenadores['dados'] as $key => $coord) {
+                                    ?>
+                                      <option value="<?= $coord['id_coordenador']; ?>"><?= $coord['nome_coordenador']; ?></option>
+                                  <?php }
+                                  } ?>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                            <input type="submit" class="btn btn-default pull-right" onclick="copiarTexto()" data-dismiss="modal" value="Gerar">
+                          </div>
+                        </div>
+                        <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                    </div>
+
                     <p id="text_sucess"></p>
                   </div>
                   <div class="icon">
@@ -374,7 +420,22 @@ if (!isset($_SESSION['usuario'])) {
       ?>
 
       <script>
-        let copiarTexto = (texto) => {
+        function criar_link() {
+          var id_pastor = "2000";
+          var id_coord = document.getElementById('id_coord').value;
+          var id_sr = '<?= $id_usuario; ?>';
+          var id_se = '<?= $dados_slocal['dados']['id_supervisorE']; ?>';
+
+          var link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=" + id_pastor + "&dois=" + id_coord + "&tres=" + id_sr + "&quatro=" +
+            id_se;
+
+          document.getElementById('link_user').value = link;
+        }
+
+        let copiarTexto = () => {
+
+          var texto = document.getElementById('link_user').value;
+
           //O texto que será copiado
           //const texto = "00020126470014br.gov.bcb.pix0125campbrasilemail@gmail.com27600016BR.COM.PAGSEGURO013659BAD104-74E5-4E29-8EE8-9738E5D5784A5204000053039865802BR5925CAMP - CENTRO DE APOIO MI6007Caucaia62290525PAGS0000000002404131224896304431F";
           //Cria um elemento input (pode ser um textarea)
