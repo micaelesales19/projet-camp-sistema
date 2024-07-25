@@ -153,4 +153,7 @@ $route['adm/devocionais/salvar'] = 'adm/salvar_cadastro_devocionais';
 
 // alertas
 $route['alerta/solicitar/troca_de_css'] = 'welcome/enviando_alerta_troca_de_css';
+$route['alerta/solicitar/tornar_coordenador'] = 'welcome/tornar_lider_coordenador';
+$route['alerta/solicitar/tornar_slocal'] = 'welcome/tornar_coord_slocal';
+$route['alerta/solicitar/tornar_coord_lider'] = 'welcome/tornar_coord_lider';
 $route['alerta/solicitar/troca_de_lider_pg'] = 'welcome/enviando_alerta_troca_de_lider_pg';

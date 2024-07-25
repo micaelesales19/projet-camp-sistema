@@ -16,10 +16,19 @@ $route['slocal/page/lideres/exclusao/permanente'] = 'welcome/excluir_lider_perma
 
 // coordenadores
 $route['slocal/page/coordenadores'] = 'SLocal/pagina_ver_coordenadores';
+$route['slocal/page/coordenadores/salvar'] = 'welcome/cadastrar_coordenador';
+$route['slocal/page/coordenadores/desativar'] = 'welcome/desativar_coordenador';
+$route['slocal/page/coordenadores/exclusao/ativar'] = 'welcome/ativar_coordenador';
+$route['slocal/page/coordenadores/exclusao/permanente'] = 'welcome/excluir_coordenador_permanentemente';
+
+$route['slocal/page/coordenadores/detalhes/:any'] = 'SLocal/pagina_ver_detalhes_coordenadores';
 $route['slocal/page/coordenadores/mostrar1'] = 'welcome/mostrar_table_parte_1';
+
+$route['slocal/page/coordenadores/gerar_excel'] = 'welcome/gerar_excel';
 
 // red
 $route['slocal/page/lideres_do_coordenador/:any'] = 'welcome/red_lideres_coord';
+$route['slocal/page/info_lider_pessoal/:any/:any'] = 'welcome/red_lideres_info_licao';
 
 // pg
 $route['slocal/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';

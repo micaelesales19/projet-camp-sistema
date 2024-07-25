@@ -173,6 +173,9 @@ if (!isset($_SESSION['usuario'])) {
                   <input type="hidden" name="data_aula" value="<?= $data; ?>">
                   <input type="hidden" name="nivel" value="2">
                   <input type="hidden" name="red" value="<?= $routa; ?>">
+                  <input type="hidden" name="nivel_routa" value="<?= $nivel_routa; ?>">
+                  <input type="hidden" name="id_coord" value="<?= $id_coord; ?>">
+
                   <div id=" conteudo">
                     <center>
                       <div class="card-body">

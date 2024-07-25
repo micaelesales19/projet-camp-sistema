@@ -74,7 +74,7 @@
             } else {
             ?>
                 <td>
-                    <form action="coordenador/detalhes/<?= $dados_user['dados']['id_coordenador']; ?>" method="post">
+                    <form action="coordenadores/detalhes/<?= $dados_user['dados']['id_coordenador']; ?>" method="post">
                         <input type="hidden" name="id_coordenador" value="<?= $dados_user['dados']['id_coordenador']; ?>">
                         <input type="submit" class="btn btn-info" value="Detalhes" />
                     </form>

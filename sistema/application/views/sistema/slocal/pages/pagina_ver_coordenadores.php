@@ -151,7 +151,9 @@ if (!isset($_SESSION['usuario'])) {
 
                 var column4 = $('input[name="columns_pg[]"]:checked');
 
-                if (column1.length == 0 || column2.length == 0 || column3.length == 0 || column4.length == 0) {
+                var column5 = $('input[name="columns_coordenador[]"]:checked');
+
+                if (column1.length == 0 || column2.length == 0 || column3.length == 0 || column4.length == 0 || column5.length == 0) {
                     document.getElementById('mensagem_n_pode').innerHTML = "Você deve manter pelo menos uma coluna selecionada!";
                     document.getElementById('btn_gerar').disabled = true;
                 } else {
@@ -384,7 +386,11 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- Content Header (Page header) -->
                     <section class="content-header">
                         <h1>
-                            Líderes
+                            Equipe:
+                            <?php
+                            $dados_user = $this->FConsultas_model->getNomeUserId($id_usuario);
+                            echo $dados_user['nome'];
+                            ?>
                             <small>Painel de Controle</small>
                         </h1>
                         <ol class="breadcrumb">
@@ -407,49 +413,48 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="modal fade" id="cadastro_coord">
                                         <div class="modal-dialog modal-success">
                                             <div class="modal-content">
-                                                <form action="../../lider/salvar" method="POST">
-                                                    <input type="hidden" name="id_pastor" value="<?= $id_pastor; ?>">
+                                                <form action="coordenadores/salvar" method="POST">
                                                     <input type="hidden" name="id_slocal" value="<?= $id_usuario; ?>">
                                                     <input type="hidden" name="id_sregional" value="<?= $id_se; ?>">
-                                                    <input type="hidden" name="red" value="slocal/lideres">
+                                                    <input type="hidden" name="red" value="slocal">
                                                     <div class="modal-header">
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span></button>
-                                                        <h4 class="modal-title">Cadastro | Líder</h4>
+                                                        <h4 class="modal-title">Cadastro | Coordenador</h4>
                                                     </div>
                                                     <div class="box-body">
 
                                                         <div class="col-lg-12">
                                                             <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome">
+                                                                <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome" required>
                                                                 <span class="glyphicon glyphicon-user form-control-feedback"></span>
                                                             </div>
                                                         </div>
 
                                                         <div class="col-lg-6">
                                                             <div class="form-group has-feedback">
-                                                                <input type="email" class="form-control" placeholder="Email" name="email">
+                                                                <input type="email" class="form-control" placeholder="Email" name="email" required>
                                                                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                                                             </div>
                                                         </div>
 
                                                         <div class="col-lg-6">
                                                             <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11">
+                                                                <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11" required>
                                                                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                                                             </div>
                                                         </div>
 
                                                         <div class="col-lg-6">
                                                             <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone">
+                                                                <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone" required>
                                                                 <span class="glyphicon glyphicon-phone form-control-feedback"></span>
                                                             </div>
                                                         </div>
 
                                                         <div class="col-lg-6">
                                                             <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento">
+                                                                <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
                                                                 <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
                                                             </div>
                                                         </div>
@@ -498,38 +503,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                 </div>
                                                             </div>
                                                         </div>
-
-                                                        <div class="col-lg-12">
-                                                            <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" placeholder="Igreja" minlength="5" name="igreja">
-                                                                <span class="glyphicon glyphicon-home form-control-feedback"></span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-lg-12">
-                                                            <div class="form-group has-feedback">
-                                                                <label for="">Selecione o Coordenador</label>
-                                                                <select class="form-control" name="id_coordenador">
-                                                                    <?php
-                                                                    $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
-
-                                                                    if ($coordenadores['row'] == 0) {
-                                                                    ?>
-                                                                        <option value="3000">Você não tem coordenadores cadastrados</option>
-                                                                    <?php
-                                                                    } else {
-                                                                    ?>
-                                                                        <option value="3000" selected>Selecione um coordenador</option>
-                                                                        <?php
-                                                                        foreach ($coordenadores['dados'] as $key => $coord) {
-                                                                        ?>
-                                                                            <option value="<?= $coord['id_coordenador']; ?>"><?= $coord['nome_coordenador']; ?></option>
-                                                                    <?php }
-                                                                    } ?>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
@@ -544,8 +517,8 @@ if (!isset($_SESSION['usuario'])) {
 
                                     <div class="box-tools pull-right">
                                         <?php
-                                        $lideres_desativados = $this->FConsultas_model->getLideresDesativados($id_usuario);
-                                        if ($lideres_desativados['row'] == 0) {
+                                        $coordenadores_desativados = $this->FConsultas_model->getCoordenadoresDesativados($id_usuario);
+                                        if ($coordenadores_desativados['row'] == 0) {
                                         } else {
                                         ?>
                                             <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#coord_desativados">Coordenadores Desativados</button>
@@ -562,11 +535,11 @@ if (!isset($_SESSION['usuario'])) {
                                                         <div class="box-body">
 
                                                             <script>
-                                                                function trocar_id_lider() {
-                                                                    var id_cri = document.getElementById('opc_id_lider_d').value;
+                                                                function trocar_id_coordenador() {
+                                                                    var id_coord = document.getElementById('opc_id_coordenador_d').value;
 
-                                                                    document.getElementById('id_lider_d_escolhido_1').value = id_cri;
-                                                                    document.getElementById('id_lider_d_escolhido_2').value = id_cri;
+                                                                    document.getElementById('id_coordenador_d_escolhido_1').value = id_coord;
+                                                                    document.getElementById('id_coordenador_d_escolhido_2').value = id_coord;
                                                                 }
                                                             </script>
 
@@ -574,12 +547,12 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                 <div class="col-lg-5">
                                                                     <div class="form-group">
-                                                                        <label for="opc">Líderes:</label>
-                                                                        <select name="opc" id="opc_id_lider_d" onchange="trocar_id_lider()" class="form-control">
+                                                                        <label for="opc">Coordenadores:</label>
+                                                                        <select name="opc" id="opc_id_coordenador_d" onchange="trocar_id_coordenador()" class="form-control">
                                                                             <?php
-                                                                            foreach ($lideres_desativados['dados'] as $key => $dadosLiderD) {
+                                                                            foreach ($coordenadores_desativados['dados'] as $key => $dadosCoordD) {
                                                                             ?>
-                                                                                <option value="<?= $dadosLiderD['id_lider']; ?>"><?= $dadosLiderD['nome_lider']; ?> </option>
+                                                                                <option value="<?= $dadosCoordD['id_coordenador']; ?>"><?= $dadosCoordD['nome_coordenador']; ?> </option>
                                                                             <?php } ?>
                                                                         </select>
                                                                     </div>
@@ -587,11 +560,10 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                 <div class="col-lg-3">
                                                                     <div class="form-group">
-                                                                        <form action="lideres/exclusao/ativar" method="POST">
-                                                                            <input type="hidden" name="opc" id="id_lider_d_escolhido_1" value="<?= $lideres_desativados['dados'][0]['id_lider']; ?>">
-                                                                            <input type="hidden" name="nivel" value="2">
+                                                                        <form action="coordenadores/exclusao/ativar" method="POST">
+                                                                            <input type="hidden" name="opc" id="id_coordenador_d_escolhido_1" value="<?= $coordenadores_desativados['dados'][0]['id_coordenador']; ?>">
                                                                             <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                            <input type="hidden" name="red" value="lideres">
+                                                                            <input type="hidden" name="red" value="coordenador">
                                                                             <center>
                                                                                 <label for="opc">Opção 1:</label><br>
                                                                                 <input type="submit" class="btn btn-success" value="Ativar">
@@ -602,11 +574,10 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group">
-                                                                        <form action="lideres/exclusao/permanente" method="POST">
-                                                                            <input type="hidden" name="opc" id="id_lider_d_escolhido_2" value="<?= $lideres_desativados['dados'][0]['id_lider']; ?>">
-                                                                            <input type="hidden" name="nivel" value="2">
+                                                                        <form action="coordenadores/exclusao/permanente" method="POST">
+                                                                            <input type="hidden" name="opc" id="id_coordenador_d_escolhido_2" value="<?= $coordenadores_desativados['dados'][0]['id_coordenador']; ?>">
                                                                             <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                            <input type="hidden" name="red" value="lideres">
+                                                                            <input type="hidden" name="red" value="coordenador">
                                                                             <center>
                                                                                 <label for="opc">Opção 2:</label><br>
                                                                                 <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
@@ -778,15 +749,32 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="tab-content">
                         <!-- Settings tab content -->
                         <div class="tab-pane active" id="control-sidebar-settings-tab">
-                            <form action="lideres/gerar_excel" method="post">
+                            <form action="coordenadores/gerar_excel" method="post">
 
                                 <input type="hidden" name="id_coordenador" value="<?= $id_usuario; ?>">
                                 <input type="hidden" name="opc1" id="opc1_" value="">
                                 <input type="hidden" name="opc2" id="opc2_" value="">
                                 <input type="hidden" name="dataInicio" id="dataInicio_" value="">
                                 <input type="hidden" name="dataAte" id="dataAte_" value="">
+                                <input type="hidden" name="nivel" value="coordenadores">
 
                                 <h3 class="control-sidebar-heading">Informações Gerais</h3>
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Total de Coordenadores
+                                        <input type="checkbox" class="pull-right" name="columns[]" value="total_coordenadores_1" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Total de Coordenadores Ativos
+                                        <input type="checkbox" class="pull-right" name="columns[]" value="total_coordenadores_2" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
 
                                 <div class="form-group">
                                     <label class="control-sidebar-subheading">
@@ -820,7 +808,7 @@ if (!isset($_SESSION['usuario'])) {
                                 </div>
                                 <!-- /.form-group -->
 
-                                <h3 class="control-sidebar-heading">Informações do PG</h3>
+                                <h3 class="control-sidebar-heading">Informações de PG's</h3>
 
                                 <div class="form-group">
                                     <label class="control-sidebar-subheading">
@@ -850,6 +838,120 @@ if (!isset($_SESSION['usuario'])) {
                                     <label class="control-sidebar-subheading">
                                         Lição
                                         <input type="checkbox" class="pull-right" name="columns_pg[]" value="column4" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Ativos
+                                        <input type="checkbox" class="pull-right" name="columns_pg_2[]" value="pg_ativos" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Inativos
+                                        <input type="checkbox" class="pull-right" name="columns_pg_2[]" value="pg_inativos" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <h3 class="control-sidebar-heading">Informações dos Coordenadores</h3>
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Nome
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column1" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        E-mail
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column2" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Telefone
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column3" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Pais
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column4" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Estado
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column5" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Cidade
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column6" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Total Líderes
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column7" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Total Líderes Ativos
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column8" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Total Crianças
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column9" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Total Crianças Ativas
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador[]" value="column10" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Ativos
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador_2[]" value="column11" onclick="controler()" checked>
+                                    </label>
+                                </div>
+                                <!-- /.form-group -->
+
+                                <div class="form-group">
+                                    <label class="control-sidebar-subheading">
+                                        Inativos
+                                        <input type="checkbox" class="pull-right" name="columns_coordenador_2[]" value="column12" onclick="controler()" checked>
                                     </label>
                                 </div>
                                 <!-- /.form-group -->

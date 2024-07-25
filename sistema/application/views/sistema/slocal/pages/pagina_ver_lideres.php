@@ -664,11 +664,12 @@ if (!isset($_SESSION['usuario'])) {
                                                                     </b>
                                                                 </center>
                                                                 <input type="hidden" name="id_coordenador" value="<?= $id_user; ?>">
+                                                                <input type="hidden" name="nivel_routa" value="coordenador">
                                                             </div>
                                                         <?php
                                                         } else {
                                                         ?>
-
+                                                            <input type="hidden" name="nivel_routa" value="lider">
                                                             <div class="col-lg-12">
                                                                 <div class="form-group has-feedback">
                                                                     <label for="">Selecione o Coordenador</label>
@@ -943,7 +944,7 @@ if (!isset($_SESSION['usuario'])) {
                         <div class="tab-pane active" id="control-sidebar-settings-tab">
                             <form action="lideres/gerar_excel" method="post">
 
-                                <input type="hidden" name="id_coordenador" value="<?= $id_usuario; ?>">
+                                <input type="hidden" name="id_coordenador" value="<?= $id_opc; ?>">
                                 <input type="hidden" name="opc1" id="opc1_" value="">
                                 <input type="hidden" name="opc2" id="opc2_" value="">
                                 <input type="hidden" name="dataInicio" id="dataInicio_" value="">

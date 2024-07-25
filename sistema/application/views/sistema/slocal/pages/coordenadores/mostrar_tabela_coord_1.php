@@ -1,7 +1,6 @@
 <table class="table table-hover" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>Usuário</th>
             <th id="clicar" onclick="list_lideres(this);">Coordenadores <i class="fa fa-hand-pointer-o"></i></th>
             <th id="clicar" onclick="list_lideres_ativos(this);">Coordenadores Ativos <i class="fa fa-hand-pointer-o"></i></th>
             <th>% C.A.</th>
@@ -15,9 +14,6 @@
     </thead>
     <tbody>
         <?php
-
-        $dados_user = $this->FConsultas_model->getNomeUserId($id_user);
-
         $total_coordenadores = $dados_coordenadores_gerais['row'];
         $total_coordenadores_ativos = $dados_coordenadores_ativos['row'];
 
@@ -72,7 +68,6 @@
         }
         ?>
         <tr>
-            <td><?= $dados_user['nome']; ?></td>
             <td><?= $total_coordenadores; ?><?= $comparacao_coordenadores; ?></td>
             <td><?= $total_coordenadores_ativos; ?><?= $comparacao_coordenadores_ativos; ?></td>
             <td><span class="label label-<?= $class3; ?>"><?= $porcentagem_coordenadores; ?>%</span></td>

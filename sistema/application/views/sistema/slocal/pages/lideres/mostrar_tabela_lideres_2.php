@@ -130,7 +130,7 @@
                     <td>
                         <form action="lideres/detalhes/<?= $lider['id_lider']; ?>" method="post">
                             <input type="hidden" name="id_lider" value="<?= $lider['id_lider']; ?>">
-                            <input type="hidden" name="nivel" value="lider">
+                            <input type="hidden" name="nivel_routa" value="lider">
 
                             <input type="submit" class="btn btn-info" value="Visualizar" />
                         </form>
@@ -142,7 +142,7 @@
                     <td>
                         <form action="lideres/detalhes/<?= $lider['id_lider']; ?>" method="post">
                             <input type="hidden" name="id_coord" value="<?= $id_user; ?>">
-                            <input type="hidden" name="nivel" value="coordenador">
+                            <input type="hidden" name="nivel_routa" value="coordenador">
 
                             <input type="submit" class="btn btn-info" value="Visualizar" />
                         </form>

@@ -237,7 +237,7 @@ class SLocal extends CI_Controller
 			);
 
 			$page2 = array(
-				"red" => "../coordenadores",
+				"red" => "coordenadores",
 				"name" => "Coordenadores",
 				"icon" => "fa fa-group",
 			);
@@ -261,7 +261,7 @@ class SLocal extends CI_Controller
 		$dados_lider = $this->FConsultas_model->getInfoLiderId($id_lider);
 
 		$id_coord = $this->input->post('id_coord') ?? '';
-		$nivel = $this->input->post('nivel') ?? 'lider';
+		$nivel = $this->input->post('nivel_routa') ?? 'lider';
 
 		$pages = [];
 
@@ -497,13 +497,16 @@ class SLocal extends CI_Controller
 			</script>
 		';*/
 
-		$data = [];
-
-
 		$red = $this->input->post('red') ?? 'lideres/detalhes';
 
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
 		$routa = "";
-		$data = [];
+		$data = [
+			"<input type='hidden' name='id_coord' value='$id_coord'>",
+			"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
+		];
 
 		if ($red == 'lideres/detalhes') {
 			$routa = "lideres/detalhes/$idLider";
@@ -701,6 +704,49 @@ class SLocal extends CI_Controller
 		$this->load->view('sistema/slocal/pages/pagina_ver_coordenadores');
 	}
 
+	public function pagina_ver_detalhes_coordenadores()
+	{
+
+		$id_coord = $this->uri->segment(5);
+		$dados_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_coord);
+
+		/*$id_coord = $this->input->post('id_coord') ?? '';
+		$nivel = $this->input->post('nivel_routa') ?? 'lider';*/
+
+		$pages = [];
+
+		$page1 = array(
+			"red" => "../../../home",
+			"name" => "Home",
+			"icon" => "fa fa-home",
+		);
+
+		$page2 = array(
+			"red" => "../../coordenadores",
+			"name" => "Coordenador",
+			"icon" => "fa fa-group",
+		);
+
+		$page3 = array(
+			"red" => "../../lideres_do_coordenador/$id_coord",
+			"name" => "Líderes",
+			"icon" => "fa fa-group",
+		);
+
+		array_push($pages, $page1);
+		array_push($pages, $page2);
+		array_push($pages, $page3);
+
+
+		$dados = array(
+			'dados_do_coordenador' => $dados_coordenador,
+			'pages' => $pages,
+			'id_coord' => $id_coord,
+		);
+
+		$this->load->view('sistema/slocal/pages/coordenadores/pagina_ver_info_coordenador', $dados);
+	}
+
 	// PG
 	public function pagina_visualizacao_pg()
 	{
@@ -747,7 +793,6 @@ class SLocal extends CI_Controller
 				array_push($pages, $page1);
 				array_push($pages, $page2);
 			} else {
-
 				$page1 = array(
 					"red" => "../coordenadores",
 					"name" => "Coordenador",
@@ -755,13 +800,13 @@ class SLocal extends CI_Controller
 				);
 
 				$page2 = array(
-					"red" => "../../lideres_do_coordenador/$id_coord",
+					"red" => "../lideres_do_coordenador/$id_coord",
 					"name" => "Líderes",
 					"icon" => "fa fa-group",
 				);
 
 				$page3 = array(
-					"red" => "../lideres/detalhes/$id_lider",
+					"red" => "../info_lider_pessoal/$id_coord/$id_lider",
 					"name" => "Informações",
 					"icon" => "fa fa-user",
 				);
@@ -831,13 +876,13 @@ class SLocal extends CI_Controller
 				);
 
 				$page2 = array(
-					"red" => "../../lideres_do_coordenador/$id_coord",
+					"red" => "../lideres_do_coordenador/$id_coord",
 					"name" => "Líderes",
 					"icon" => "fa fa-group",
 				);
 
 				$page3 = array(
-					"red" => "../lideres/detalhes/$id_lider",
+					"red" => "../info_lider_pessoal/$id_coord/$id_lider",
 					"name" => "Informações",
 					"icon" => "fa fa-user",
 				);

@@ -656,7 +656,7 @@ class FSistema_model extends CI_Model
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
 
-		$dadosPG = $this->FConsultas_model->getNomeUserId($id_colider);
+		$dadosColider = $this->FConsultas_model->getNomeUserId($id_colider);
 
 		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_colider WHERE id_colider = '$id_colider'");
 		$row = $consultar_pg_desativado->num_rows();
@@ -664,7 +664,7 @@ class FSistema_model extends CI_Model
 		if ($row == 0) {
 			$inserir['id_exclusao'] = NULL;
 			$inserir['id_colider'] = $id_colider;
-			$inserir['nome_colider'] = $dadosPG['nome'];
+			$inserir['nome_colider'] = $dadosColider['nome'];
 			$inserir['id_lider'] = $id_lider;
 			$inserir['id_responsavel'] = $id_responsavel;
 			$inserir['motivo'] = $motivo;
@@ -1317,4 +1317,111 @@ class FSistema_model extends CI_Model
 		}
 	}
 	// Fim EDIÇÃO DE DADOS PESSOAIS LÍDER
+
+	/*COORDENADOR*/
+	public function cadastro_coordenador($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_slocal, $id_sregional)
+	{
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y'); // tirar
+		$data_2 = date('Y-m-d');
+
+		$foto = "fotoU/geral.jpg";
+
+		$inserir['nome_coordenador'] = $nome;
+		$inserir['cpf'] = $cpf;
+		$inserir['email'] = $email;
+		$inserir['telefone_whatsapp'] = $telefone;
+		$inserir['nascimento'] = $nascimento;
+		$inserir['pais'] = $pais;
+		$inserir['estado'] = $estado;
+		$inserir['cidade'] = $cidade;
+		$inserir['id_supervisorR'] = $id_slocal;
+		$inserir['id_supervisorE'] = $id_sregional;
+		$inserir['foto'] = $foto;
+		$inserir['ativo'] = 1;
+		$inserir['data_cadastro'] = $data_2;
+
+		if ($this->db->insert("coordenador", $inserir)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function desativar_coordenador($id_coordenador)
+	{
+		$ativo = "0";
+
+		$this->db->set('ativo', $ativo);
+		$this->db->where('id_coordenador ', $id_coordenador);
+
+		if ($this->db->update('coordenador')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function ativar_coordenador($id_coordenador)
+	{
+		$ativo = "1";
+
+		$this->db->set('ativo', $ativo);
+		$this->db->where('id_coordenador ', $id_coordenador);
+
+		if ($this->db->update('coordenador')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function excluirCoordenadorPermanentemente($id_coordenador, $id_responsavel)
+	{
+		$motivo = "Excluiu seu Coordenador Permanentemente";
+		$acao = "EX_COORD_1";
+
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y');
+
+		$dados_lider = $this->FConsultas_model->getInfoCoordenadorId($id_coordenador);
+
+		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_coordenador WHERE id_pastor LIKE '$id_coordenador'");
+		$row = $consultar_pg_desativado->num_rows();
+
+		if ($row == 0) {
+			//$inserir['id_exclusao'] = NULL;
+			$inserir['id_pastor'] = $id_coordenador;
+			$inserir['nome_coordenador'] = $dados_lider['dados']['nome_coordenador'];
+			$inserir['id_responsavel'] = $id_responsavel;
+			$inserir['motivo'] = $motivo;
+			$inserir['data_saida'] = $data;
+
+			if ($this->db->insert('alcancado_coordenador', $inserir)) {
+			}
+		} else {
+		}
+
+		$this->db->where('id_coordenador', $id_coordenador);
+		if ($this->db->delete('coordenador')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_coordenador, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function editar_lider_exclusao_coord($id_lider, $id_coordenador, $id_responsavel)
+	{
+		$acao = "EX_CL_1";
+		$motivo = "Excluiu seu coordenador ($id_coordenador) permanentemente, e seu líder ($id_lider) foi atualizado para o coordenador padrão";
+
+		$this->db->set('id_coordenador', 3000);
+		$this->db->where('id_lider', $id_lider);
+
+		if ($this->db->update('lider')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_lider, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
