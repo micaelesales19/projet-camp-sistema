@@ -869,6 +869,10 @@ class Welcome extends CI_Controller
 				$dados_slocal = $consultar_slocal->row_array();
 				$total_slocal = $consultar_slocal->num_rows();
 
+				$consultar_sregional = $this->db->query("SELECT * FROM supervisore WHERE (email = '$email' OR cpf = '$cpf_completo') AND  (nome_supervisorE LIKE '$nome' OR nome_supervisorE LIKE '$nome_base')");
+				$dados_sregional = $consultar_sregional->row_array();
+				$total_sregional = $consultar_sregional->num_rows();
+
 				$consultar_adm = $this->db->query("SELECT * FROM direcao WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_direcao LIKE '$nome' OR nome_direcao LIKE '$nome_base')");
 				$dados_adm = $consultar_adm->row_array();
 				$total_adm = $consultar_adm->num_rows();
@@ -1010,7 +1014,7 @@ class Welcome extends CI_Controller
 							}
 						}
 					}
-				} else if ($nivel == 4) { // coordenador
+				} else if ($nivel == 4) { // slocal
 					if ($total_slocal == 0) {
 						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
 						$data = [
@@ -1039,6 +1043,39 @@ class Welcome extends CI_Controller
 							if ($x == 1) {
 								$data = [];
 								$funcao = $this->FConsultas_model->red('slocal/home', 2000, $data);
+								echo $funcao;
+							}
+						}
+					}
+				} else if ($nivel == 5) { // sregional
+					if ($total_sregional == 0) {
+						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$data = [
+							"<input type='hidden' name='x' value='$x'>"
+						];
+						$funcao = $this->FConsultas_model->red('index', 2000, $data);
+						echo $funcao;
+					} else {
+						echo "Bem Vindo - " . $dados['nome'];
+						$_SESSION['id_usuario'] .= $dados_sregional['id_supervisorEs'];
+						$_SESSION['id_usuario_2'] .= $id_usuario;
+
+						$consultar_termos = $this->db->select("*")
+							->from("termos")
+							->where("id_usuario", $id_usuario)
+							->get();
+						$termos = $consultar_termos->num_rows();
+
+						if ($termos == 0) {
+							$data = [
+								"<input type='hidden' name='nivel' value='5'>"
+							];
+							$funcao = $this->FConsultas_model->red('termos', 2000, $data);
+							echo $funcao;
+						} else {
+							if ($x == 1) {
+								$data = [];
+								$funcao = $this->FConsultas_model->red('sregional/home', 2000, $data);
 								echo $funcao;
 							}
 						}
