@@ -2346,7 +2346,7 @@ class Welcome extends CI_Controller
 			}
 			$editar = $this->FSistema_model->editarPG($idPg, $nome_pg, $nomeImagem, $autorizacao, $nivel);
 			if ($editar) {
-				$this->FConsultas_model->mensagem('success', 'Sucesso', ['Cadastro Realizado com Sucesso!']);
+				$this->FConsultas_model->mensagem('success', 'Sucesso', ['Edição Realizada com Sucesso!']);
 				$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 				echo $funcao;
 			} else {
@@ -2611,6 +2611,12 @@ class Welcome extends CI_Controller
 				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
 			];
 			$routa = "slocal/page/coordenadores/detalhes/$id_lider";
+		} else if ($red == 'sregional') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
+			];
+			$routa = "sregional/page/lideres/detalhes/$id_lider";
 		} else {
 			$data = [
 				"<input type='hidden' name='id_lider' value='$id_lider'>",

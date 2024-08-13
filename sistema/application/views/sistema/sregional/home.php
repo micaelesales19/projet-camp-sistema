@@ -228,7 +228,7 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="icon">
                     <i class="fa fa-users"></i>
                   </div>
-                  <a href="page/coordenadores" class="small-box-footer">Ver Mais <i class="fa fa-arrow-circle-right"></i></a>
+                  <a href="page/slocal" class="small-box-footer">Ver Mais <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
               </div>
               <!-- ./col -->

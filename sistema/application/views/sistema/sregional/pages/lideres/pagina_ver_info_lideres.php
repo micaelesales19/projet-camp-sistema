@@ -118,7 +118,7 @@ if (!isset($_SESSION['usuario'])) {
         <div class="wrapper">
             <!-- Menu -->
             <?php
-            $this->load->view('sistema/slocal/partes/menu_lateral', $array);
+            $this->load->view('sistema/sregional/partes/menu_lateral', $array);
             ?>
 
             <!-- Content Wrapper. Contains page content -->
@@ -383,15 +383,10 @@ if (!isset($_SESSION['usuario'])) {
                                                     <label for="exampleInputPassword1">Coordenador</label>
                                                     <?php
                                                     $id_coordenador = $dados_lider['id_coordenador'];
-                                                    $info_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_coordenador);
-
-                                                    $consultarCoordenador = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
-
                                                     ?>
-
                                                     <select class="form-control" name="id_coordenador" <?= $check_desativado; ?>>
                                                         <?php
-                                                        $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
+                                                        $coordenadores = $this->FConsultas_model->getSRegional([$id_usuario], 2, 1, []);
 
                                                         if ($coordenadores['row'] == 0) {
                                                         ?>
@@ -418,7 +413,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     ?>
                                                     <input type="hidden" name="id_sr" value="<?= $id_se; ?>">
                                                     <select name="id_sRegional" class="form-control" <?= $check_desativado; ?>>
-                                                        <option value="<?= $id_se; ?>" selected><?= $info_sRegional['dados']['nome_supervisorE']; ?></option>
+                                                        <option value="<?= $id_se; ?>" selected><?= $info_sRegional['dados']['nome_supervisorE']; ?> (você)</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -431,8 +426,25 @@ if (!isset($_SESSION['usuario'])) {
                                                     $info_sLocal = $this->FConsultas_model->getInfoSLocalId($id_sr);
                                                     ?>
                                                     <input type="hidden" name="id_sl" value="<?= $id_sr; ?>">
-                                                    <select name="id_sLocal" class="form-control" <?= $check_desativado; ?>>
-                                                        <option value="<?= $id_sr; ?>" selected><?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
+                                                    <select class="form-control" name="id_sLocal" <?= $check_desativado; ?>>
+                                                        <?php
+                                                        $id_sr = $dados_lider['id_supervisorR'];
+                                                        $slocal_lider = $this->FConsultas_model->getSRegional([$id_usuario], 1, 1, []);
+
+                                                        if ($slocal_lider['row'] == 0) {
+                                                        ?>
+                                                            <option value="3000">Você não tem supervisor regional cadastrados</option>
+                                                            <?php
+                                                        } else {
+                                                            foreach ($slocal_lider['dados'] as $key => $slocal) {
+                                                                if ($slocal['id_supervisorR'] == $id_sr) {
+                                                            ?>
+                                                                    <option value="<?= $slocal['id_supervisorR']; ?>" selected><?= $slocal['nome_supervisorR']; ?></option>
+                                                                <?php } else { ?>
+                                                                    <option value="<?= $slocal['id_supervisorR']; ?>"><?= $slocal['nome_supervisorR']; ?></option>
+                                                        <?php }
+                                                            }
+                                                        } ?>
                                                     </select>
                                                 </div>
                                             </div>

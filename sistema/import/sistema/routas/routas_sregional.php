@@ -26,6 +26,9 @@ $route['sregional/page/coordenadores/mostrar1'] = 'welcome/mostrar_table_parte_1
 
 $route['sregional/page/coordenadores/gerar_excel'] = 'welcome/gerar_excel';
 
+// slocal
+$route['sregional/page/slocal'] = 'SRegional/pagina_ver_slocal';
+
 // red
 $route['sregional/page/lideres_do_coordenador/:any'] = 'welcome/red_lideres_coord';
 $route['sregional/page/info_lider_pessoal/:any/:any'] = 'welcome/red_lideres_info_licao';

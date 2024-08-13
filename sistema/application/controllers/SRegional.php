@@ -218,6 +218,7 @@ class SRegional extends CI_Controller
 	public function pagina_ver_lideres()
 	{
 		$id_user = $this->input->post("id_user");
+		$id_user_2 = $this->input->post("id_user_2");
 
 		$pages = [];
 
@@ -229,7 +230,6 @@ class SRegional extends CI_Controller
 			);
 			array_push($pages, $page1);
 		} else {
-
 			$page1 = array(
 				"red" => "../home",
 				"name" => "Home",
@@ -248,10 +248,11 @@ class SRegional extends CI_Controller
 
 		$dados = array(
 			'id_user' => $id_user,
+			'id_user_2' => $id_user_2,
 			'pages' => $pages,
 		);
 
-		$this->load->view('sistema/slocal/pages/pagina_ver_lideres', $dados);
+		$this->load->view('sistema/sregional/pages/pagina_ver_lideres', $dados);
 	}
 
 	public function pagina_ver_detalhes_lideres()
@@ -310,7 +311,7 @@ class SRegional extends CI_Controller
 			'id_coord' => $id_coord,
 		);
 
-		$this->load->view('sistema/slocal/pages/lideres/pagina_ver_info_lideres', $dados);
+		$this->load->view('sistema/sregional/pages/lideres/pagina_ver_info_lideres', $dados);
 	}
 
 	public function editar_lideres()
@@ -701,7 +702,7 @@ class SRegional extends CI_Controller
 
 	public function pagina_ver_coordenadores()
 	{
-		$this->load->view('sistema/slocal/pages/pagina_ver_coordenadores');
+		$this->load->view('sistema/sregional/pages/pagina_ver_coordenadores');
 	}
 
 	public function pagina_ver_detalhes_coordenadores()
@@ -744,13 +745,19 @@ class SRegional extends CI_Controller
 			'id_coord' => $id_coord,
 		);
 
-		$this->load->view('sistema/slocal/pages/coordenadores/pagina_ver_info_coordenador', $dados);
+		$this->load->view('sistema/sregional/pages/coordenadores/pagina_ver_info_coordenador', $dados);
 	}
+
+	public function pagina_ver_slocal()
+	{
+		$this->load->view('sistema/sregional/pages/pagina_ver_slocal');
+	}
+
 
 	// PG
 	public function pagina_visualizacao_pg()
 	{
-		$this->load->view('sistema/slocal/pages/pagina_pg_usuario');
+		$this->load->view('sistema/sregional/pages/pagina_pg_usuario');
 	}
 
 	public function pagina_licoes()
@@ -828,7 +835,7 @@ class SRegional extends CI_Controller
 			'id_coord' => $id_coord,
 		);
 
-		$this->load->view('sistema/slocal/pages/pg/licaos', $dados);
+		$this->load->view('sistema/sregional/pages/pg/licaos', $dados);
 	}
 
 	public function pagina_preenchimento_relatorio_pg()
@@ -905,29 +912,29 @@ class SRegional extends CI_Controller
 			'id_coord' => $id_coord,
 		);
 
-		$this->load->view('sistema/slocal/pages/preenchimento_relatorio', $dados);
+		$this->load->view('sistema/sregional/pages/preenchimento_relatorio', $dados);
 	}
 
 	public function consulta_criancas_relatorios()
 	{
-		$this->load->view('sistema/slocal/pages/consultas/retornar_infomacoes');
+		$this->load->view('sistema/sregional/pages/consultas/retornar_infomacoes');
 	}
 	// Fim PG
 
 	// Download de Material
 	public function pagina_download_material()
 	{
-		$this->load->view('sistema/slocal/pages/download_material');
+		$this->load->view('sistema/sregional/pages/download_material');
 	}
 
 	public function pagina_download_material_modulo()
 	{
-		$this->load->view('sistema/slocal/pages/download_material_modulo');
+		$this->load->view('sistema/sregional/pages/download_material_modulo');
 	}
 
 	public function pagina_material_apoio_treinamento()
 	{
-		$this->load->view('sistema/slocal/pages/material_apoio_treinamento');
+		$this->load->view('sistema/sregional/pages/material_apoio_treinamento');
 	}
 	/* FIM COORDENADOR */
 }

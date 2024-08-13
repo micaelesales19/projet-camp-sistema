@@ -1132,8 +1132,18 @@ class FConsultas_model extends CI_Model
 			$row_2 = $consultar_lideres_2->num_rows();
 			$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
 
-			$row = $row_2;
-			$dados_consulta_lideres = $dados_consulta_lideres_2;
+			if ($row_2 == 0) {
+				// supervisor regional
+				$consultar_lideres_3 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
+				$row_3 = $consultar_lideres_3->num_rows();
+				$dados_consulta_lideres_3 = $consultar_lideres_3->result_array();
+
+				$row = $row_3;
+				$dados_consulta_lideres = $dados_consulta_lideres_3;
+			} else {
+				$row = $row_2;
+				$dados_consulta_lideres = $dados_consulta_lideres_2;
+			}
 		} else {
 			$row = $row_1;
 			$dados_consulta_lideres = $dados_consulta_lideres_1;
@@ -1239,8 +1249,18 @@ class FConsultas_model extends CI_Model
 				$row_2 = $consultar_lideres_2->num_rows();
 				$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
 
-				$row = $row_2;
-				$dados_consulta_lideres = $dados_consulta_lideres_2;
+				if ($row_2 == 0) {
+					// supervisor reginal
+					$consultar_lideres_3 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
+					$row_3 = $consultar_lideres_3->num_rows();
+					$dados_consulta_lideres_3 = $consultar_lideres_3->result_array();
+
+					$row = $row_3;
+					$dados_consulta_lideres = $dados_consulta_lideres_3;
+				} else {
+					$row = $row_2;
+					$dados_consulta_lideres = $dados_consulta_lideres_2;
+				}
 			} else {
 				$row = $row_1;
 				$dados_consulta_lideres = $dados_consulta_lideres_1;
@@ -1284,8 +1304,18 @@ class FConsultas_model extends CI_Model
 				$consultar_lideres_2 = $this->db->query("SELECT * FROM lider WHERE id_supervisorR LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
 				$row_2 = $consultar_lideres_2->num_rows();
 				$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
-				$row = $row_2;
-				$dados_consulta_lideres = $dados_consulta_lideres_2;
+
+				if ($row_2 == 0) {
+					// supervisor regional
+					$consultar_lideres_3 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
+					$row_3 = $consultar_lideres_3->num_rows();
+					$dados_consulta_lideres_3 = $consultar_lideres_3->result_array();
+					$row = $row_3;
+					$dados_consulta_lideres = $dados_consulta_lideres_3;
+				} else {
+					$row = $row_2;
+					$dados_consulta_lideres = $dados_consulta_lideres_2;
+				}
 			} else {
 				$row = $row_1;
 				$dados_consulta_lideres = $dados_consulta_lideres_1;

@@ -18,18 +18,18 @@ if (!isset($_SESSION['usuario'])) {
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
 
-    $dados_slocal = $this->FConsultas_model->getInfoSLocalId($id_usuario);
+    $dados_sregional = $this->FConsultas_model->getInfoSRegionalId($id_usuario);
 
-    if ($dados_slocal['row'] == 0) {
+    if ($dados_sregional['row'] == 0) {
         $data = [];
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-        $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
+        $funcao = $this->FConsultas_model->red("../../index", 2000, $data);
         echo $funcao;
     } else {
         $id_pastor = "2000";
         $id_coord = $id_user == '' ? "3000" : $id_user;
-        $id_sr = $id_usuario;
-        $id_se = $dados_slocal['dados']['id_supervisorE'];
+        $id_sr = $id_user_2 == '' ? "4000" : $id_user;
+        $id_se = $id_usuario;
 
         $link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_coord&tres=$id_sr&quatro=$id_se";
 ?>
@@ -84,8 +84,8 @@ if (!isset($_SESSION['usuario'])) {
             function criar_link() {
                 var id_pastor = "2000";
                 var id_coord = document.getElementById('id_coord').value;
-                var id_sr = '<?= $id_usuario; ?>';
-                var id_se = '<?= $dados_slocal['dados']['id_supervisorE']; ?>';
+                var id_sr = document.getElementById('id_slocal').value;
+                var id_se = '<?= $id_usuario; ?>';
 
                 var link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=" + id_pastor + "&dois=" + id_coord + "&tres=" + id_sr + "&quatro=" +
                     id_se;
@@ -444,7 +444,7 @@ if (!isset($_SESSION['usuario'])) {
             <div class="wrapper">
                 <!-- Menu -->
                 <?php
-                $this->load->view('sistema/slocal/partes/menu_lateral', $array);
+                $this->load->view('sistema/sregional/partes/menu_lateral', $array);
                 ?>
 
                 <input type="hidden" id="_controller" value="0">
@@ -455,7 +455,7 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- Content Header (Page header) -->
                     <section class="content-header">
                         <h1>
-                            Líderes
+                            Equipe: <?= $dados_sregional['dados']['nome_supervisorE']; ?>
                             <small>Painel de Controle</small>
                         </h1>
                         <ol class="breadcrumb">
@@ -516,7 +516,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                 <label for="">Selecione o Coordenador</label>
                                                                 <select class="form-control" onclick="criar_link();" name="id_coord" id="id_coord">
                                                                     <?php
-                                                                    $coordenadores = $this->FConsultas_model->getCoordenador([$id_usuario], 1, 1, []);
+                                                                    $coordenadores = $this->FConsultas_model->getSRegional([$id_usuario], 2, 1, []);
 
                                                                     if ($coordenadores['row'] == 0) {
                                                                     ?>
@@ -530,6 +530,30 @@ if (!isset($_SESSION['usuario'])) {
                                                                         foreach ($coordenadores['dados'] as $key => $coord) {
                                                                         ?>
                                                                             <option value="<?= $coord['id_coordenador']; ?>"><?= $coord['nome_coordenador']; ?></option>
+                                                                    <?php }
+                                                                    } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group has-feedback">
+                                                                <label for="">Selecione o Supervisor Local</label>
+                                                                <select class="form-control" onclick="criar_link();" name="id_slocal" id="id_slocal">
+                                                                    <?php
+                                                                    $slocal = $this->FConsultas_model->getSRegional([$id_usuario], 1, 1, []);
+
+                                                                    if ($slocal['row'] == 0) {
+                                                                    ?>
+                                                                        <option value="3000">Você não tem Supervisor Local cadastrados</option>
+                                                                    <?php
+                                                                    } else {
+                                                                    ?>
+                                                                        <option value="3000" selected>Selecione um supervisor local</option>
+                                                                        <option value="3000">Ainda não tem supervisor local</option>
+                                                                        <?php
+                                                                        foreach ($slocal['dados'] as $key => $slocal) {
+                                                                        ?>
+                                                                            <option value="<?= $slocal['id_supervisorR']; ?>"><?= $slocal['nome_supervisorR']; ?></option>
                                                                     <?php }
                                                                     } ?>
                                                                 </select>
