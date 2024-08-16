@@ -1424,4 +1424,92 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
+
+
+	public function retornando_so_id($chave, $lista)
+	{
+		$lista_de_id = [];
+		foreach ($lista as $key => $dados) {
+			$id = $dados[$chave];
+			array_push($lista_de_id, $id);
+		}
+
+		return $lista_de_id;
+	}
+
+	public function format_dates($opc1, $opc2, $dataInicio, $dataFim)
+	{
+		$data = date('Y-m-d');
+		$data_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($data)));
+
+		$data_formatada_1 = "";
+		$data_formatada_2 = "";
+
+		if ($opc2 == 'nao') {
+			if ($opc1 == 'opc1') {
+				// consulta baseada no ultimo mês
+				$menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
+				$data_formatada_1 = $menos_um_mes;
+				$data_formatada_2 = $data;
+			} else if ($opc1 == 'opc2') {
+				// consulta baseada nos últimos 6 meses
+				$data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
+				$data_formatada_1 = $data_menos_seis_meses;
+				$data_formatada_2 = $data;
+			} else if ($opc1 == 'opc3') {
+				// desde o inicio
+				$data_formatada_1 = "01-02-2017";
+				$data_formatada_2 = $data;
+			} else if ($opc1 == 'opc4') {
+				if ($dataInicio == '' || $dataFim == '') {
+				} else {
+					$data_formatada_1 = $dataInicio;
+					$data_formatada_2 = $dataFim;
+				}
+			}
+
+			$datas = array(
+				'dataInicio' => $data_formatada_1,
+				'dataFim' => $data_formatada_2,
+			);
+		} else {
+			if ($opc1 == 'opc1') {
+				// consulta baseada no ultimo mês
+				$menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
+				$menos_um_mes_ano = date('Y-m-d', strtotime('-1 year', strtotime($menos_um_mes)));
+				$data_formatada_1 = $menos_um_mes;
+				$data_formatada_2 = $data;
+				$data_formatada_3 = $menos_um_mes_ano;
+				$data_formatada_4 = $data_menos_um_ano;
+			} else if ($opc1 == 'opc2') {
+				// consulta baseada nos últimos 6 meses
+				$data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
+				$menos_seis_meses_ano = date('Y-m-d', strtotime('-1 year', strtotime($data_menos_seis_meses)));
+				$data_formatada_1 = $data_menos_seis_meses;
+				$data_formatada_2 = $data;
+				$data_formatada_3 = $menos_seis_meses_ano;
+				$data_formatada_4 = $data_menos_um_ano;
+			} else if ($opc1 == 'opc4') {
+				if ($dataInicio == '' || $dataFim == '') {
+				} else {
+					$data_inicio_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataInicio)));
+					$data_fim_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataFim)));
+
+					$data_formatada_1 = $dataInicio;
+					$data_formatada_2 = $dataFim;
+					$data_formatada_3 = $data_inicio_menos_um_ano;
+					$data_formatada_4 = $data_fim_menos_um_ano;
+				}
+			}
+
+			$datas = array(
+				'dataInicio' => $data_formatada_1,
+				'dataFim' => $data_formatada_2,
+				'dataInicioAnoPassado' => $data_formatada_3,
+				'dataFimAnoPassado' => $data_formatada_4,
+			);
+		}
+
+		return $datas;
+	}
 }

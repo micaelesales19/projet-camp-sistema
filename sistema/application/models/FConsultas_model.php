@@ -3,6 +3,7 @@
 /**
  * @property $db
  * @property $load
+ * @property $FSistema_model
  */
 
 class FConsultas_model extends CI_Model
@@ -1116,42 +1117,487 @@ class FConsultas_model extends CI_Model
 
 		return $dados;
 	}
-
-	public function getLideresDesativados($id_usuario)
+	public function getInfoDirecaoId($id)
 	{
-		$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
-		$row_1 = $consultar_lideres_1->num_rows();
-		$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
+		$consultar_direcao = $this->db->query("SELECT * FROM direcao WHERE id_direcao LIKE '$id'");
+		$row = $consultar_direcao->num_rows();
+		$dados_consulta_direcao = $consultar_direcao->row_array();
+
+		$dados = array(
+			'row' => $row,
+			'dados' => $dados_consulta_direcao,
+		);
+
+		return $dados;
+	}
+
+	public function getSRegional($id_usuario, $opc, $opc2, $datas)
+	{
+		if ($opc == 1 && $opc2 == 1) {
+			// info de todos os supervisores regionais
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore ORDER BY nome_supervisorE ASC LIMIT 10");
+			$row_1 = $consultar_sregional->num_rows();
+			$dados_consulta_sregional = $consultar_sregional->result_array();
+
+			$dados1 = array(
+				'row' => $row_1,
+				'dados' => $dados_consulta_sregional,
+			);
+			$sregionalAtivos = $this->sRegionaisAtivos($dados1);
+
+			$dados = array(
+				'sregional' => $dados1,
+				'sregional_ativos' => $sregionalAtivos,
+			);
+
+			return $dados;
+		} else if ($opc == 1 && $opc2 == 2) {
+			// info de todos os supervisores regionais
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore LIMIT 10");
+			$row_1 = $consultar_sregional->num_rows();
+			$dados_consulta_sregional = $consultar_sregional->result_array();
+
+			$dados1 = array(
+				'row' => $row_1,
+				'dados' => $dados_consulta_sregional,
+			);
+			$sregionalAtivos = $this->sRegionaisAtivos($dados1);
+
+			$dados = array(
+				'sregional' => $dados1,
+				'sregional_ativos' => $sregionalAtivos,
+			);
+
+			return $dados;
+		} else if ($opc == 1 && $opc2 == 3) {
+			// retornar um supervisor regional específico
+			$id_user = $id_usuario[0];
+			$consultar_sregionais = $this->db->query("SELECT * FROM supervisore WHERE id_supervisorE = '$id_user'");
+			$row = $consultar_sregionais->num_rows();
+			$dados_consulta_sregionais = $consultar_sregionais->row_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_sregionais,
+			);
+
+			return $dados;
+		} else if ($opc2 == 'nao' && $id_usuario[0] == 'direcao') {
+			// Consulta na tabela de líderes entre datas geral
+			$id_usuario = $id_usuario[0];
+
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			// info de todos os supervisores regionais
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorE ASC LIMIT 10");
+			$row = $consultar_sregional->num_rows();
+			$dados_consulta_sregional = $consultar_sregional->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_sregional,
+			);
+			$sregionalAtivos = $this->sRegionaisAtivos($dados);
+			array_push($dados, $sregionalAtivos);
+
+			return $dados;
+		} else if ($opc2 == 'sim' && $id_usuario[0] == 'direcao') {
+			// Consulta na tabela de líderes entre datas geral
+			$id_usuario = $id_usuario[0];
+
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
+			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
+
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorE ASC LIMIT 10");
+			$row_1 = $consultar_sregional->num_rows();
+			$dados_consulta_sregional = $consultar_sregional->result_array();
+
+			$dados = array(
+				'row' => $row_1,
+				'dados' => $dados_consulta_sregional,
+			);
+			$sregionalAtivos = $this->sRegionaisAtivos($dados);
+
+			array_push($dados, $sregionalAtivos);
+
+			$consultar_sregional_mesmo_ano = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_supervisorE ASC LIMIT 10");
+			$row_1_mesmo_ano = $consultar_sregional_mesmo_ano->num_rows();
+			$dados_consulta_sregional_mesmo_ano = $consultar_sregional_mesmo_ano->result_array();
+
+			$dados1_mesmo_ano = array(
+				'row' => $row_1_mesmo_ano,
+				'dados' => $dados_consulta_sregional_mesmo_ano,
+			);
+			$sregionalAtivos_mesmo_ano = $this->sRegionaisAtivos($dados1_mesmo_ano);
+
+			array_push($dados, $dados1_mesmo_ano);
+			array_push($dados, $sregionalAtivos_mesmo_ano);
+
+			return $dados;
+		}
+	}
+
+	public function sRegionaisAtivos($list)
+	{
+		$lista = $list['dados'];
+		$total_ativos = 0;
+		$dados_sregionais = [];
+
+		if ($list['row'] == 0) {
+		} else {
+			foreach ($lista as $key => $sregional) {
+				$ativo = $sregional['ativo'];
+
+				if ($ativo == 0) {
+				} else {
+					// ativo
+					array_push($dados_sregionais, $sregional);
+					$total_ativos = $total_ativos + 1;
+				}
+			}
+		}
+
+		$dados = array(
+			'row' => $total_ativos,
+			'dados' => $dados_sregionais,
+		);
+		return $dados;
+	}
+
+	public function getSRegionalDesativados()
+	{
+		$consultar_sregional_1 = $this->db->query("SELECT * FROM supervisore WHERE ativo = 0 ORDER BY id_supervisorEs ASC");
+		$row_1 = $consultar_sregional_1->num_rows();
+		$dados_consulta_sregional_1 = $consultar_sregional_1->result_array();
+
+		$dados = array(
+			'row' => $row_1,
+			'dados' => $dados_consulta_sregional_1,
+		);
+
+		return $dados;
+	}
+
+	public function getSLocal($id_usuario, $opc, $opc2, $datas)
+	{
+		if ($opc == 1 && $opc2 == 1) {
+			// retornar todos os supervisores locais ordenardo pelo nome
+			$consultar_slocal = $this->db->query("SELECT * FROM supervisorr ORDER BY nome_supervisorR ASC LIMIT 10");
+			$row = $consultar_slocal->num_rows();
+			$dados_consulta_slocal = $consultar_slocal->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_slocal,
+			);
+
+			return $dados;
+		} else if ($opc == 1 && $opc2 == 2) {
+			// retornar todos os supervisores locais sem ordem
+			$consultar_slocal = $this->db->query("SELECT * FROM supervisorr");
+			$row = $consultar_slocal->num_rows();
+			$dados_consulta_slocal = $consultar_slocal->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_slocal,
+			);
+
+			return $dados;
+		} else if ($opc == 1 && $opc2 == 3) {
+			// retornar um supervisor local específico
+			$id_user = $id_usuario[0];
+			$consultar_sregionais = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorR = '$id_user'");
+			$row = $consultar_sregionais->num_rows();
+			$dados_consulta_sregionais = $consultar_sregionais->row_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_sregionais,
+			);
+
+			return $dados;
+		} else if ($opc2 == 'nao' && $id_usuario[0] == 'direcao') {
+			// retornando todos os supervisores locais de acordo com uma data específica
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$consultar_slocais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC LIMIT 10");
+			$row = $consultar_slocais->num_rows();
+			$dados_consulta_slocais = $consultar_slocais->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_slocais,
+			);
+
+			$sLocaisAtivos = $this->sLocaisAtivos($dados);
+			array_push($dados, $sLocaisAtivos);
+
+			return $dados;
+		} else if ($opc2 == 'sim' && $id_usuario[0] == 'direcao') {
+			// retornando todos os supervisores locais de acordo com uma data específica
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
+			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
+
+			$consultar_slocais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC LIMIT 10");
+			$row = $consultar_slocais->num_rows();
+			$dados_consulta_slocais = $consultar_slocais->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_slocais,
+			);
+
+			$sLocaisAtivos = $this->sLocaisAtivos($dados);
+			array_push($dados, $sLocaisAtivos);
+
+			$consultar_slocais_mesmo_ano = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_supervisorR ASC LIMIT 10");
+			$row_1_mesmo_ano = $consultar_slocais_mesmo_ano->num_rows();
+			$dados_consulta_slocais_mesmo_ano = $consultar_slocais_mesmo_ano->result_array();
+
+			$dados1_mesmo_ano = array(
+				'row' => $row_1_mesmo_ano,
+				'dados' => $dados_consulta_slocais_mesmo_ano,
+			);
+			$slocaisAtivos_mesmo_ano = $this->sRegionaisAtivos($dados1_mesmo_ano);
+
+			array_push($dados, $dados1_mesmo_ano);
+			array_push($dados, $slocaisAtivos_mesmo_ano);
+
+			return $dados;
+		} else if (($opc2 == 'nao' || $opc2 == 'sim') && $id_usuario[0] != 'direcao') {
+			$id_user = $id_usuario[0];
+
+			// retornando a comparação entre anos de todos os supervisores de acordo com uma data específica
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$consultar_sregionais = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorE = '$id_user' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC LIMIT 10");
+			$row = $consultar_sregionais->num_rows();
+			$dados_consulta_sregionais = $consultar_sregionais->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_sregionais,
+			);
+
+			$slocalAtivos = $this->sLocaisAtivos($dados);
+			array_push($dados, $slocalAtivos);
+
+			return $dados;
+		}
+	}
+
+	public function sLocaisAtivos($list)
+	{
+		$lista = $list['dados'];
+		$total_ativos = 0;
+		$dados_slocais = [];
+
+		if ($list['row'] == 0) {
+		} else {
+			foreach ($lista as $key => $slocal) {
+				$ativo = $slocal['ativo'];
+
+				if ($ativo == 0) {
+				} else {
+					// ativo
+					array_push($dados_slocais, $slocal);
+					$total_ativos = $total_ativos + 1;
+				}
+			}
+		}
+
+		$dados = array(
+			'row' => $total_ativos,
+			'dados' => $dados_slocais,
+		);
+		return $dados;
+	}
+	public function getCoordenador($id_usuario, $opc, $opc2, $datas)
+	{
+		if ($opc == 1 && $opc2 == 1) {
+			// retornar todos os coordenadores ordenardo pelo nome
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador ORDER BY nome_coordenador ASC LIMIT 10");
+			$row = $consultar_coordenador->num_rows();
+			$dados_consulta_coordenador = $consultar_coordenador->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenador,
+			);
+
+			return $dados;
+		} else if ($opc == 1 && $opc2 == 2) {
+			// retornar todos os coordenadores sem ordem
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador LIMIT 10");
+			$row = $consultar_coordenador->num_rows();
+			$dados_consulta_coordenador = $consultar_coordenador->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenador,
+			);
+
+			return $dados;
+		} else if ($opc == 1 && $opc2 == 3) {
+			// retornar um supervisor local específico
+			$id_user = $id_usuario[0];
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = '$id_user' LIMIT 10");
+			$row = $consultar_coordenador->num_rows();
+			$dados_consulta_coordenador = $consultar_coordenador->row_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenador,
+			);
+
+			return $dados;
+		} else if ($opc2 == 'nao' && $id_usuario[0] == 'direcao') {
+			// retornando todos os coordenadores de acordo com uma data específica
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+			$row = $consultar_coordenador->num_rows();
+			$dados_consulta_coordenador = $consultar_coordenador->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenador,
+			);
+
+			$coordenadoresAtivos = $this->coordenadoresAtivos($dados);
+			array_push($dados, $coordenadoresAtivos);
+
+			return $dados;
+		} else if ($opc2 == 'sim' && $id_usuario[0] == 'direcao') {
+			// retornando todos os coordenadores de acordo com uma data específica
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
+			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
+
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+			$row = $consultar_coordenador->num_rows();
+			$dados_consulta_coordenador = $consultar_coordenador->result_array();
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenador,
+			);
+
+			$coordenadoresAtivos = $this->coordenadoresAtivos($dados);
+			array_push($dados, $coordenadoresAtivos);
+
+			$consultar_coordenador_mesmo_ano = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_coordenador ASC LIMIT 10");
+			$row_1_mesmo_ano = $consultar_coordenador_mesmo_ano->num_rows();
+			$dados_consulta_coordenador_mesmo_ano = $consultar_coordenador_mesmo_ano->result_array();
+
+			$dados1_mesmo_ano = array(
+				'row' => $row_1_mesmo_ano,
+				'dados' => $dados_consulta_coordenador_mesmo_ano,
+			);
+			$coordenadoresAtivos_mesmo_ano = $this->coordenadoresAtivos($dados1_mesmo_ano);
+
+			array_push($dados, $dados1_mesmo_ano);
+			array_push($dados, $coordenadoresAtivos_mesmo_ano);
+
+			return $dados;
+		} else if (($opc2 == 'nao' || $opc2 == 'sim') && $id_usuario[0] != 'direcao') {
+			$nivel = $id_usuario[0];
+
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
+
+			$row = 0;
+			$dados_consulta_coordenadores = [];
+
+			if ($nivel == 'sregional') {
+				$comparadores = $id_usuario[1];
+				if ($comparadores == '') {
+					$id_sregional = $id_usuario[2];
+					$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE = '$id_sregional' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+					$row_1 = $consultar_coordenadores->num_rows();
+					$dados_consulta_coordenadores_1 = $consultar_coordenadores->result_array();
+
+					$row = $row_1;
+					$dados_consulta_coordenadores = $dados_consulta_coordenadores_1;
+				}
+			}
+
+			$dados = array(
+				'row' => $row,
+				'dados' => $dados_consulta_coordenadores,
+			);
+
+			$coordenadoresAtivos = $this->coordenadoresAtivos($dados);
+			array_push($dados, $coordenadoresAtivos);
+
+			return $dados;
+		}
+	}
+
+	public function coordenadoresAtivos($list)
+	{
+		$lista = $list['dados'];
+		$total_ativos = 0;
+		$dados_coordenador = [];
+
+		if ($list['row'] == 0) {
+		} else {
+			foreach ($lista as $key => $lideres) {
+				$ativo = $lideres['ativo'];
+
+				if ($ativo == 0) {
+				} else {
+					// líder novo
+					array_push($dados_coordenador, $lideres);
+					$total_ativos = $total_ativos + 1;
+				}
+			}
+		}
+
+		$dados = array(
+			'row' => $total_ativos,
+			'dados' => $dados_coordenador,
+		);
+		return $dados;
+	}
+	public function getCoordenadoresDesativados($id_usuario)
+	{
+		$consultar_coordenadores_1 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR LIKE $id_usuario AND ativo = 0 ORDER BY nome_coordenador ASC");
+		$row_1 = $consultar_coordenadores_1->num_rows();
+		$dados_consulta_coordenadores_1 = $consultar_coordenadores_1->result_array();
 
 		$row = 0;
-		$dados_consulta_lideres = [];
+		$dados_consulta_coordenadores = [];
 
 		if ($row_1 == 0) {
 			// supervisor local
-			$consultar_lideres_2 = $this->db->query("SELECT * FROM lider WHERE id_supervisorR LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
-			$row_2 = $consultar_lideres_2->num_rows();
-			$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
+			$consultar_coordenadores_2 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario AND ativo = 0 ORDER BY nome_coordenador ASC");
+			$row_2 = $consultar_coordenadores_2->num_rows();
+			$dados_consulta_coordenadores_2 = $consultar_coordenadores_2->result_array();
 
-			if ($row_2 == 0) {
-				// supervisor regional
-				$consultar_lideres_3 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
-				$row_3 = $consultar_lideres_3->num_rows();
-				$dados_consulta_lideres_3 = $consultar_lideres_3->result_array();
-
-				$row = $row_3;
-				$dados_consulta_lideres = $dados_consulta_lideres_3;
-			} else {
-				$row = $row_2;
-				$dados_consulta_lideres = $dados_consulta_lideres_2;
-			}
+			$row = $row_2;
+			$dados_consulta_coordenadores = $dados_consulta_coordenadores_2;
 		} else {
 			$row = $row_1;
-			$dados_consulta_lideres = $dados_consulta_lideres_1;
+			$dados_consulta_coordenadores = $dados_consulta_coordenadores_1;
 		}
 
 		$dados = array(
 			'row' => $row,
-			'dados' => $dados_consulta_lideres,
+			'dados' => $dados_consulta_coordenadores,
 		);
 
 		return $dados;
@@ -1160,10 +1606,8 @@ class FConsultas_model extends CI_Model
 	public function getLideres($id_usuario, $opc, $opc2, $datas)
 	{
 		if ($opc == 1 && $opc2 == 1) {
-			// Consulta na tabela de líderes: líderes ativos pelo id coordenador
-			$id_user = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_user ORDER BY nome_lider ASC");
+			// Consulta na tabela de líderes ordenando pelo nome
+			$consultar_lideres = $this->db->query("SELECT * FROM lider ORDER BY nome_lider ASC LIMIT 10");
 			$row = $consultar_lideres->num_rows();
 			$dados_consulta_lideres = $consultar_lideres->result_array();
 
@@ -1174,10 +1618,8 @@ class FConsultas_model extends CI_Model
 
 			return $dados;
 		} else if ($opc == 1 && $opc2 == 2) {
-			// Consulta na tabela de líderes: líderes ativos pelo id supervisor
-			$id_user = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_user");
+			// Consulta na tabela de líderes
+			$consultar_lideres = $this->db->query("SELECT * FROM lider LIMIT 10");
 			$row = $consultar_lideres->num_rows();
 			$dados_consulta_lideres = $consultar_lideres->result_array();
 
@@ -1187,11 +1629,11 @@ class FConsultas_model extends CI_Model
 			);
 
 			return $dados;
-		} else if ($opc == 2 && $opc2 == 1) {
-			// Consulta na tabela de líderes: líderes ativos pelo id supervisor local ordernando pelo nome
+		} else if ($opc == 1 && $opc2 == 3) {
+			// Consulta na tabela de líderes específico
 			$id_user = $id_usuario[0];
 
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorR LIKE $id_user ORDER BY nome_lider ASC");
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_lider = '$id_user'");
 			$row = $consultar_lideres->num_rows();
 			$dados_consulta_lideres = $consultar_lideres->result_array();
 
@@ -1201,234 +1643,123 @@ class FConsultas_model extends CI_Model
 			);
 
 			return $dados;
-		} else if ($opc == 2 && $opc2 == 2) {
-			// Consulta na tabela de líderes: líderes ativos pelo id supervisor local
-			$id_user = $id_usuario[0];
+		} else if ($opc2 == 'nao' && $id_usuario[0] == 'direcao') {
+			// Consulta na tabela de líderes entre datas
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
 
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorR LIKE $id_user");
-			$row = $consultar_lideres->num_rows();
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC LIMIT 10");
+			$row_4 = $consultar_lideres->num_rows();
 			$dados_consulta_lideres = $consultar_lideres->result_array();
 
 			$dados = array(
-				'row' => $row,
+				'row' => $row_4,
 				'dados' => $dados_consulta_lideres,
 			);
+			$lideresAtivos = $this->lideresAtivos($dados);
+			array_push($dados, $lideresAtivos);
+
+			$lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_lider', $dados['dados']);
+			$total_criancas_lider = $this->getNumerosCriancas($id_usuario, $lista_de_id_1, 'direcao');
+			array_push($dados, $total_criancas_lider);
+
+			$lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_lider', $lideresAtivos['dados']);
+			$total_criancas_lider_ativos = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_ativos, 'direcao');
+			array_push($dados, $total_criancas_lider_ativos);
 
 			return $dados;
-		} else if ($opc == 3 && $opc2 == 1) {
-			// Consulta na tabela de líderes: líderes ativos pelo id supervisor regional ordenando pelo nome
-			$id_user = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_user ORDER BY nome_lider ASC");
-			$row = $consultar_lideres->num_rows();
-			$dados_consulta_lideres = $consultar_lideres->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc2 == 'nao') {
+		} else if ($opc2 == 'sim' && $id_usuario[0] == 'direcao') {
 			// Consulta na tabela de líderes entre datas geral
 			$id_user = $id_usuario[0];
 
 			$data_inicio = $datas['dataInicio']; // antiga
 			$data_final = $datas['dataFim']; // atual
-
-			$row = 0;
-			$dados_consulta_lideres = [];
-
-			$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-			$row_1 = $consultar_lideres_1->num_rows();
-			$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
-
-			if ($row_1 == 0) {
-				// supervisor local
-				$consultar_lideres_2 = $this->db->query("SELECT * FROM lider WHERE id_supervisorR LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-				$row_2 = $consultar_lideres_2->num_rows();
-				$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
-
-				if ($row_2 == 0) {
-					// supervisor reginal
-					$consultar_lideres_3 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-					$row_3 = $consultar_lideres_3->num_rows();
-					$dados_consulta_lideres_3 = $consultar_lideres_3->result_array();
-
-					$row = $row_3;
-					$dados_consulta_lideres = $dados_consulta_lideres_3;
-				} else {
-					$row = $row_2;
-					$dados_consulta_lideres = $dados_consulta_lideres_2;
-				}
-			} else {
-				$row = $row_1;
-				$dados_consulta_lideres = $dados_consulta_lideres_1;
-			}
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc2 == 'sim') {
-			// Consulta na tabela de líderes entre datas geral
-			$id_user = $id_usuario[0];
-
-			$data_inicio = $datas['dataInicio']; // antiga
-			$data_final = $datas['dataFim']; // atual
-
-			//echo "Datas 1 - " . $data_inicio . " - " . $data_final . "<br>";
 
 			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
 			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
 
-			//echo "Datas 2 - " . $data_inicio_menos_um_ano . " - " . $data_final_menos_um_ano;
-
-			/* original
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' AND (id_coordenador LIKE $id_coordenador OR id_supervisorR LIKE $id_coordenador) ORDER BY nome_lider ASC");
-			$row = $consultar_lideres->num_rows();
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC LIMIT 10");
+			$row_4 = $consultar_lideres->num_rows();
 			$dados_consulta_lideres = $consultar_lideres->result_array();
-			*/
+
+			$dados = array(
+				'row' => $row_4,
+				'dados' => $dados_consulta_lideres,
+			);
+			$lideresAtivos = $this->lideresAtivos($dados);
+			array_push($dados, $lideresAtivos);
+
+			$lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_lider', $dados['dados']);
+			$total_criancas_lider = $this->getNumerosCriancas($id_usuario, $lista_de_id_1, 'direcao');
+			array_push($dados, $total_criancas_lider);
+
+			$lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_lider', $lideresAtivos['dados']);
+			$total_criancas_lider_ativos = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_ativos, 'direcao');
+			array_push($dados, $total_criancas_lider_ativos);
+
+			// comparação do ano passado
+			$consultar_lider_mesmo_ano = $this->db->query("SELECT * FROM lider WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_lider ASC LIMIT 10");
+			$row_1_mesmo_ano = $consultar_lider_mesmo_ano->num_rows();
+			$dados_consulta_lider_mesmo_ano = $consultar_lider_mesmo_ano->result_array();
+
+			$dados1_mesmo_ano = array(
+				'row' => $row_1_mesmo_ano,
+				'dados' => $dados_consulta_lider_mesmo_ano,
+			);
+			$lideresAtivos_mesmo_ano = $this->lideresAtivos($dados1_mesmo_ano);
+			array_push($dados, $dados1_mesmo_ano); // lideres comparados ao ao passado
+			array_push($dados, $lideresAtivos_mesmo_ano); // lideres ativos comparado ao ano passado
+
+			$lista_de_id_1_mesmo_ano = $this->FSistema_model->retornando_so_id('id_lider', $dados1_mesmo_ano['dados']);
+			$total_criancas_lider_mesmo_ano = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_mesmo_ano, 'direcao');
+			array_push($dados, $total_criancas_lider_mesmo_ano);
+
+			$lista_de_id_1_ativos_mesmo_ano = $this->FSistema_model->retornando_so_id('id_lider', $lideresAtivos_mesmo_ano['dados']);
+			$total_criancas_lider_ativos_mesmo_ano = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_ativos_mesmo_ano, 'direcao');
+			array_push($dados, $total_criancas_lider_ativos_mesmo_ano);
+
+			return $dados;
+		} else if (($opc2 == 'nao' || $opc2 == 'sim') && $id_usuario[0] != 'direcao') {
+			$nivel = $id_usuario[0];
 
 			$row = 0;
 			$dados_consulta_lideres = [];
 
-			$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-			$row_1 = $consultar_lideres_1->num_rows();
-			$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
+			// Consulta na tabela de líderes entre datas
+			$data_inicio = $datas['dataInicio']; // antiga
+			$data_final = $datas['dataFim']; // atual
 
-			if ($row_1 == 0) {
-				// supervisor local
-				$consultar_lideres_2 = $this->db->query("SELECT * FROM lider WHERE id_supervisorR LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-				$row_2 = $consultar_lideres_2->num_rows();
-				$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
+			if ($nivel == 'sregional') {
+				$comparadores = $id_usuario[1];
+				if ($comparadores == '') {
+					$id_sregional = $id_usuario[2];
+					$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE = '$id_sregional' AND  data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC LIMIT 10");
+					$row_1 = $consultar_lideres_1->num_rows();
+					$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
 
-				if ($row_2 == 0) {
-					// supervisor regional
-					$consultar_lideres_3 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_user AND confirmado != 3 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-					$row_3 = $consultar_lideres_3->num_rows();
-					$dados_consulta_lideres_3 = $consultar_lideres_3->result_array();
-					$row = $row_3;
-					$dados_consulta_lideres = $dados_consulta_lideres_3;
-				} else {
-					$row = $row_2;
-					$dados_consulta_lideres = $dados_consulta_lideres_2;
+					$row = $row_1;
+					$dados_consulta_lideres = $dados_consulta_lideres_1;
 				}
-			} else {
-				$row = $row_1;
-				$dados_consulta_lideres = $dados_consulta_lideres_1;
 			}
-
-			/* original
-			$consultar_lideres_menos_um_ano = $this->db->query("SELECT * FROM lider WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' AND (id_coordenador LIKE $id_coordenador OR id_supervisorR LIKE $id_coordenador) ORDER BY nome_lider ASC");
-			$row_menos_um_ano = $consultar_lideres_menos_um_ano->num_rows();
-			$dados_consulta_lideres_menos_um_ano = $consultar_lideres_menos_um_ano->result_array();
-			*/
-
-			$row_menos_um_ano = 0;
-			$dados_consulta_lideres_menos_um_ano = [];
-
-			$consultar_lideres_menos_um_ano_1 = $this->db->query("SELECT * FROM lider WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' AND id_coordenador LIKE $id_user AND confirmado != 3 ORDER BY nome_lider ASC");
-			$row_menos_um_ano_1 = $consultar_lideres_menos_um_ano_1->num_rows();
-			$dados_consulta_lideres_menos_um_ano_1 = $consultar_lideres_menos_um_ano_1->result_array();
-
-			if ($row_menos_um_ano_1 == 0) {
-				// supervisor local
-				$consultar_lideres_menos_um_ano_2 = $this->db->query("SELECT * FROM lider WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' AND id_supervisorR LIKE $id_user AND confirmado != 3 ORDER BY nome_lider ASC");
-				$row_menos_um_ano_2 = $consultar_lideres_menos_um_ano_2->num_rows();
-				$dados_consulta_lideres_menos_um_ano_2 = $consultar_lideres_menos_um_ano_2->result_array();
-				$row_menos_um_ano = $row_menos_um_ano_2;
-				$dados_consulta_lideres_menos_um_ano = $dados_consulta_lideres_menos_um_ano_2;
-			} else {
-				$row_menos_um_ano = $row_menos_um_ano_1;
-				$dados_consulta_lideres_menos_um_ano = $dados_consulta_lideres_menos_um_ano_1;
-			}
-
-			$newconsulta = array(
-				'row' => $row_menos_um_ano,
-				'dados' => $dados_consulta_lideres_menos_um_ano,
-			);
-
-			$lideres_ativos_comparacao = $this->lideresAtivos($newconsulta);
-
-			$total_criancas_geral = $this->getNumerosCriancas([$id_user], $newconsulta, 'criancas_coord_1');
-			$total_criancas_ativos = $this->getNumerosCriancas([$id_user], $lideres_ativos_comparacao, 'criancas_coord_1');
-
-			$ativos_comparacao = $lideres_ativos_comparacao['row'];
-
-			$comparacao = array(
-				'lideres' => $row_menos_um_ano,
-				'lideres_ativos' => $ativos_comparacao,
-				'criancas' => $total_criancas_geral,
-				'criancas_ativas' => $total_criancas_ativos,
-			);
 
 			$dados = array(
 				'row' => $row,
 				'dados' => $dados_consulta_lideres,
-				'row_menos_um_ano' => $row_menos_um_ano,
-				'comparacao' => $comparacao,
 			);
+
+			$lideresAtivos = $this->lideresAtivos($dados);
+			array_push($dados, $lideresAtivos);
+
+			$lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_lider', $dados['dados']);
+			$total_criancas_lider = $this->getNumerosCriancas($id_usuario, $lista_de_id_1, 'direcao');
+			array_push($dados, $total_criancas_lider);
+
+			$lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_lider', $lideresAtivos['dados']);
+			$total_criancas_lider_ativos = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_ativos, 'direcao');
+			array_push($dados, $total_criancas_lider_ativos);
 
 			return $dados;
 		}
-	}
-
-	public function getUsuario($nome, $email, $cpf)
-	{
-		$consultar_usuario = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf' AND nome LIKE '$nome'");
-		$dados_usuario = $consultar_usuario->row_array();
-		$total_usuario = $consultar_usuario->num_rows();
-
-		$dados = array(
-			'row' => $total_usuario,
-			'dados' => $dados_usuario,
-		);
-
-		return $dados;
-	}
-	public function getNumerosCriancas($id_usuario, $users, $opc)
-	{
-
-		$total_criancas = 0;
-
-		if ($opc == 'criancas_coord_1') {
-			$id_coordenador = $id_usuario[0];
-
-			$consultar_criancas = $this->db->query("SELECT * FROM crianca WHERE lider = $id_coordenador");
-			$row = $consultar_criancas->num_rows();
-
-			$total_criancas = $total_criancas + $row;
-
-			if ($users['row'] == 0) {
-			} else {
-				foreach ($users['dados'] as $key => $dados) {
-					$id = $dados['id_lider'];
-
-					$consultar_criancas_lider = $this->db->query("SELECT * FROM crianca WHERE lider = $id");
-					$row_lider = $consultar_criancas_lider->num_rows();
-
-					$total_criancas = $total_criancas + $row_lider;
-				}
-			}
-		}
-
-		return $total_criancas;
-	}
-
-	public function converterData($data)
-	{
-		$dia = $data[0] . $data[1];
-
-		$mes = $data[3] . $data[4];
-
-		$ano = $data[6] . $data[7] . $data[8] . $data[9];
-
-		$data_nova = $ano . "-" . $mes . "-" . $dia;
-
-		return $data_nova;
 	}
 
 	public function lideresAtivos($list)
@@ -1515,6 +1846,99 @@ class FConsultas_model extends CI_Model
 				}
 			}
 		}
+	}
+
+	public function getLideresDesativados($id_usuario)
+	{
+		$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
+		$row_1 = $consultar_lideres_1->num_rows();
+		$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
+
+		$row = 0;
+		$dados_consulta_lideres = [];
+
+		if ($row_1 == 0) {
+			// supervisor local
+			$consultar_lideres_2 = $this->db->query("SELECT * FROM lider WHERE id_supervisorR LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
+			$row_2 = $consultar_lideres_2->num_rows();
+			$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
+
+			if ($row_2 == 0) {
+				// supervisor regional
+				$consultar_lideres_3 = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
+				$row_3 = $consultar_lideres_3->num_rows();
+				$dados_consulta_lideres_3 = $consultar_lideres_3->result_array();
+
+				$row = $row_3;
+				$dados_consulta_lideres = $dados_consulta_lideres_3;
+			} else {
+				$row = $row_2;
+				$dados_consulta_lideres = $dados_consulta_lideres_2;
+			}
+		} else {
+			$row = $row_1;
+			$dados_consulta_lideres = $dados_consulta_lideres_1;
+		}
+
+		$dados = array(
+			'row' => $row,
+			'dados' => $dados_consulta_lideres,
+		);
+
+		return $dados;
+	}
+
+	public function getUsuario($nome, $email, $cpf)
+	{
+		$consultar_usuario = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf' AND nome LIKE '$nome'");
+		$dados_usuario = $consultar_usuario->row_array();
+		$total_usuario = $consultar_usuario->num_rows();
+
+		$dados = array(
+			'row' => $total_usuario,
+			'dados' => $dados_usuario,
+		);
+
+		return $dados;
+	}
+	public function getNumerosCriancas($id_usuario, $users, $opc)
+	{
+
+		$total_criancas = 0;
+
+		if ($opc == 'direcao') {
+		} else {
+			$consultar_criancas = $this->db->query("SELECT * FROM crianca WHERE lider = $id_usuario");
+			$row = $consultar_criancas->num_rows();
+
+			$total_criancas = $total_criancas + $row;
+		}
+
+		$total = count($users);
+
+		if ($total == 0) {
+		} else {
+			foreach ($users as $key => $dados) {
+				$consultar_criancas_lider = $this->db->query("SELECT * FROM crianca WHERE lider = $dados");
+				$row_lider = $consultar_criancas_lider->num_rows();
+
+				$total_criancas = $total_criancas + $row_lider;
+			}
+		}
+
+		return $total_criancas;
+	}
+	public function converterData($data)
+	{
+		$dia = $data[0] . $data[1];
+
+		$mes = $data[3] . $data[4];
+
+		$ano = $data[6] . $data[7] . $data[8] . $data[9];
+
+		$data_nova = $ano . "-" . $mes . "-" . $dia;
+
+		return $data_nova;
 	}
 	public function getInfoUserId($id)
 	{
@@ -1745,472 +2169,5 @@ class FConsultas_model extends CI_Model
 			return $a[$campo] > $b[$campo];
 		});
 		return $array;
-	}
-
-	public function getCoordenador($id_usuario, $opc, $opc2, $datas)
-	{
-		if ($opc == 1 && $opc2 == 1) {
-			// Consulta na tabela de coordenador: coordenadores pelo id supervisor local
-			$id_usuario = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR LIKE $id_usuario ORDER BY nome_coordenador ASC");
-			$row = $consultar_lideres->num_rows();
-			$dados_consulta_lideres = $consultar_lideres->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc == 1 && $opc2 == 2) {
-			// Consulta na tabela de coordenador: coordenadores pelo id supervisor local
-			$id_usuario = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR LIKE $id_usuario");
-			$row = $consultar_lideres->num_rows();
-			$dados_consulta_lideres = $consultar_lideres->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc == 2 && $opc2 == 1) {
-			// Consulta na tabela de coordenador: coordenadores pelo id supervisor estadual
-			$id_usuario = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario ORDER BY nome_coordenador ASC");
-			$row = $consultar_lideres->num_rows();
-			$dados_consulta_lideres = $consultar_lideres->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc == 2 && $opc2 == 2) {
-			// Consulta na tabela de coordenador: coordenadores pelo id supervisor estadual
-			$id_usuario = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario");
-			$row = $consultar_lideres->num_rows();
-			$dados_consulta_lideres = $consultar_lideres->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc2 == 'nao') {
-			// Consulta na tabela de líderes entre datas geral
-			$id_usuario = $id_usuario[0];
-
-			$data_inicio = $datas['dataInicio']; // antiga
-			$data_final = $datas['dataFim']; // atual
-
-			$row = 0;
-			$dados_consulta_coord = [];
-
-			$consultar_coord_1 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR LIKE $id_usuario AND ativo = 1 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
-			$row_1 = $consultar_coord_1->num_rows();
-			$dados_consulta_coord_1 = $consultar_coord_1->result_array();
-
-			if ($row_1 == 0) {
-				// supervisor local
-				$consultar_coord_2 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario AND ativo = 1 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
-				$row_2 = $consultar_coord_2->num_rows();
-				$dados_consulta_coord_2 = $consultar_coord_2->result_array();
-
-				$row = $row_2;
-				$dados_consulta_coord = $dados_consulta_coord_2;
-			} else {
-				$row = $row_1;
-				$dados_consulta_coord = $dados_consulta_coord_1;
-			}
-
-			$dados_lideres_gerais = [];
-			foreach ($dados_consulta_coord as $key => $coordenadores) {
-				$dados = $this->getLideres([$coordenadores['id_coordenador']], $opc, $opc2, $datas);
-				array_push($dados_lideres_gerais, $dados);
-			}
-
-			$lista_lideres_gerais = [];
-			$total_lideres_gerais = [];
-
-			foreach ($dados_lideres_gerais as $key => $value) {
-				array_push($total_lideres_gerais, $value['row']);
-				foreach ($value['dados'] as $key => $v) {
-					array_push($lista_lideres_gerais, $v);
-				}
-			}
-
-			$array_ordenado = $this->Ordena_Array($lista_lideres_gerais, "nome_lider");
-			$total_1 = array_sum($total_lideres_gerais);
-
-			$array_1 = array(
-				'row' => $total_1,
-				'dados' => $array_ordenado,
-			);
-
-			$consultarLideresAtivos = $this->lideresAtivos($array_1);
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_coord,
-				'lideres' => $array_1,
-				'lideres_ativos' => $consultarLideresAtivos,
-			);
-
-			return $dados;
-		} else if ($opc2 == 'sim') {
-			// Consulta na tabela de líderes entre datas geral
-			$id_usuario = $id_usuario[0];
-
-			$data_inicio = $datas['dataInicio']; // antiga
-			$data_final = $datas['dataFim']; // atual
-
-			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
-			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
-
-			$row = 0;
-			$dados_consulta_lideres = [];
-
-			$consultar_lideres_1 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' AND id_supervisorR LIKE $id_usuario ORDER BY nome_coordenador ASC");
-			$row_1 = $consultar_lideres_1->num_rows();
-			$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
-
-			if ($row_1 == 0) {
-				// supervisor regional
-				$consultar_lideres_2 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' AND id_supervisorE LIKE $id_usuario ORDER BY nome_coordenador ASC");
-				$row_2 = $consultar_lideres_2->num_rows();
-				$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
-				$row = $row_2;
-				$dados_consulta_lideres = $dados_consulta_lideres_2;
-			} else {
-				$row = $row_1;
-				$dados_consulta_lideres = $dados_consulta_lideres_1;
-			}
-
-			$row_menos_um_ano = 0;
-			$dados_consulta_lideres_menos_um_ano = [];
-
-			$consultar_lideres_menos_um_ano_1 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' AND id_supervisorR LIKE $id_usuario ORDER BY nome_coordenador ASC");
-			$row_menos_um_ano_1 = $consultar_lideres_menos_um_ano_1->num_rows();
-			$dados_consulta_lideres_menos_um_ano_1 = $consultar_lideres_menos_um_ano_1->result_array();
-
-			if ($row_menos_um_ano_1 == 0) {
-				// supervisor local
-				$consultar_lideres_menos_um_ano_2 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' AND id_supervisorE LIKE $id_usuario ORDER BY nome_coordenador ASC");
-				$row_menos_um_ano_2 = $consultar_lideres_menos_um_ano_2->num_rows();
-				$dados_consulta_lideres_menos_um_ano_2 = $consultar_lideres_menos_um_ano_2->result_array();
-				$row_menos_um_ano = $row_menos_um_ano_2;
-				$dados_consulta_lideres_menos_um_ano = $dados_consulta_lideres_menos_um_ano_2;
-			} else {
-				$row_menos_um_ano = $row_menos_um_ano_1;
-				$dados_consulta_lideres_menos_um_ano = $dados_consulta_lideres_menos_um_ano_1;
-			}
-
-			$newconsulta = array(
-				'row' => $row_menos_um_ano,
-				'dados' => $dados_consulta_lideres_menos_um_ano,
-			);
-
-			$lideres_ativos_comparacao = $this->coordenadoresAtivos($newconsulta);
-			$ativos_comparacao = $lideres_ativos_comparacao['row'];
-
-			$comparacao = array(
-				'coordenadores' => $row_menos_um_ano,
-				'coordenadores_ativos' => $ativos_comparacao,
-			);
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-				'row_menos_um_ano' => $row_menos_um_ano,
-				'comparacao' => $comparacao,
-			);
-
-			return $dados;
-		}
-	}
-
-	public function coordenadoresAtivos($list)
-	{
-		$lista = $list['dados'];
-		$total_ativos = 0;
-		$dados_coordenador = [];
-
-		if ($list['row'] == 0) {
-		} else {
-			foreach ($lista as $key => $lideres) {
-				$ativo = $lideres['ativo'];
-
-				if ($ativo == 0) {
-				} else {
-					// líder novo
-					array_push($dados_coordenador, $lideres);
-					$total_ativos = $total_ativos + 1;
-				}
-			}
-		}
-
-		$dados = array(
-			'row' => $total_ativos,
-			'dados' => $dados_coordenador,
-		);
-		return $dados;
-	}
-
-	public function getCoordenadoresDesativados($id_usuario)
-	{
-		$consultar_coordenadores_1 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR LIKE $id_usuario AND ativo = 0 ORDER BY nome_coordenador ASC");
-		$row_1 = $consultar_coordenadores_1->num_rows();
-		$dados_consulta_coordenadores_1 = $consultar_coordenadores_1->result_array();
-
-		$row = 0;
-		$dados_consulta_coordenadores = [];
-
-		if ($row_1 == 0) {
-			// supervisor local
-			$consultar_coordenadores_2 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario AND ativo = 0 ORDER BY nome_coordenador ASC");
-			$row_2 = $consultar_coordenadores_2->num_rows();
-			$dados_consulta_coordenadores_2 = $consultar_coordenadores_2->result_array();
-
-			$row = $row_2;
-			$dados_consulta_coordenadores = $dados_consulta_coordenadores_2;
-		} else {
-			$row = $row_1;
-			$dados_consulta_coordenadores = $dados_consulta_coordenadores_1;
-		}
-
-		$dados = array(
-			'row' => $row,
-			'dados' => $dados_consulta_coordenadores,
-		);
-
-		return $dados;
-	}
-
-	public function getSRegional($id_usuario, $opc, $opc2, $datas)
-	{
-		if ($opc == 1 && $opc2 == 1) {
-			// Consulta na tabela de slocal: slocal pelo id supervisor regional ordernando pelo nome
-			$id_usuario = $id_usuario[0];
-
-			$consultar_slocal = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorE LIKE $id_usuario ORDER BY nome_supervisorR ASC");
-			$row = $consultar_slocal->num_rows();
-			$dados_consulta_slocal = $consultar_slocal->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_slocal,
-			);
-
-			return $dados;
-		} else if ($opc == 1 && $opc2 == 2) {
-			// Consulta na tabela de slocal: slocal pelo id supervisor regional
-			$id_usuario = $id_usuario[0];
-
-			$consultar_slocal = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorE LIKE $id_usuario");
-			$row = $consultar_slocal->num_rows();
-			$dados_consulta_slocal = $consultar_slocal->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_slocal,
-			);
-
-			return $dados;
-		} else if ($opc == 2 && $opc2 == 1) {
-			// Consulta na tabela de coordenador: coordenadores pelo id supervisor estadual ordenando pelo nome
-			$id_usuario = $id_usuario[0];
-
-			$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario ORDER BY nome_coordenador ASC");
-			$row = $consultar_coordenadores->num_rows();
-			$dados_consulta_coordenadores = $consultar_coordenadores->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_coordenadores,
-			);
-
-			return $dados;
-		} else if ($opc == 2 && $opc2 == 2) {
-			// Consulta na tabela de coordenador: coordenadores pelo id supervisor estadual
-			$id_usuario = $id_usuario[0];
-
-			$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario");
-			$row = $consultar_coordenadores->num_rows();
-			$dados_consulta_coordenadores = $consultar_coordenadores->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_coordenadores,
-			);
-
-			return $dados;
-		} else if ($opc == 3 && $opc2 == 1) {
-			// Consulta na tabela de lideres: lideres pelo id supervisor estadual ordenando pelo nome
-			$id_usuario = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_usuario ORDER BY nome_lider ASC");
-			$row = $consultar_lideres->num_rows();
-			$dados_consulta_lideres = $consultar_lideres->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc == 3 && $opc2 == 2) {
-			// Consulta na tabela de lideres: lideres pelo id supervisor estadual
-			$id_usuario = $id_usuario[0];
-
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorE LIKE $id_usuario");
-			$row = $consultar_lideres->num_rows();
-			$dados_consulta_lideres = $consultar_lideres->result_array();
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-			);
-
-			return $dados;
-		} else if ($opc2 == 'nao') {
-			// Consulta na tabela de líderes entre datas geral
-			$id_usuario = $id_usuario[0];
-
-			$data_inicio = $datas['dataInicio']; // antiga
-			$data_final = $datas['dataFim']; // atual
-
-			$row = 0;
-			$dados_consulta_coord = [];
-
-			$consultar_coord_1 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR LIKE $id_usuario AND ativo = 1 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
-			$row_1 = $consultar_coord_1->num_rows();
-			$dados_consulta_coord_1 = $consultar_coord_1->result_array();
-
-			if ($row_1 == 0) {
-				// supervisor local
-				$consultar_coord_2 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE LIKE $id_usuario AND ativo = 1 AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
-				$row_2 = $consultar_coord_2->num_rows();
-				$dados_consulta_coord_2 = $consultar_coord_2->result_array();
-
-				$row = $row_2;
-				$dados_consulta_coord = $dados_consulta_coord_2;
-			} else {
-				$row = $row_1;
-				$dados_consulta_coord = $dados_consulta_coord_1;
-			}
-
-			$dados_lideres_gerais = [];
-			foreach ($dados_consulta_coord as $key => $coordenadores) {
-				$dados = $this->getLideres([$coordenadores['id_coordenador']], $opc, $opc2, $datas);
-				array_push($dados_lideres_gerais, $dados);
-			}
-
-			$lista_lideres_gerais = [];
-			$total_lideres_gerais = [];
-
-			foreach ($dados_lideres_gerais as $key => $value) {
-				array_push($total_lideres_gerais, $value['row']);
-				foreach ($value['dados'] as $key => $v) {
-					array_push($lista_lideres_gerais, $v);
-				}
-			}
-
-			$array_ordenado = $this->Ordena_Array($lista_lideres_gerais, "nome_lider");
-			$total_1 = array_sum($total_lideres_gerais);
-
-			$array_1 = array(
-				'row' => $total_1,
-				'dados' => $array_ordenado,
-			);
-
-			$consultarLideresAtivos = $this->lideresAtivos($array_1);
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_coord,
-				'lideres' => $array_1,
-				'lideres_ativos' => $consultarLideresAtivos,
-			);
-
-			return $dados;
-		} else if ($opc2 == 'sim') {
-			// Consulta na tabela de líderes entre datas geral
-			$id_usuario = $id_usuario[0];
-
-			$data_inicio = $datas['dataInicio']; // antiga
-			$data_final = $datas['dataFim']; // atual
-
-			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
-			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
-
-			$row = 0;
-			$dados_consulta_lideres = [];
-
-			$consultar_lideres_1 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' AND id_supervisorR LIKE $id_usuario ORDER BY nome_coordenador ASC");
-			$row_1 = $consultar_lideres_1->num_rows();
-			$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
-
-			if ($row_1 == 0) {
-				// supervisor regional
-				$consultar_lideres_2 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' AND id_supervisorE LIKE $id_usuario ORDER BY nome_coordenador ASC");
-				$row_2 = $consultar_lideres_2->num_rows();
-				$dados_consulta_lideres_2 = $consultar_lideres_2->result_array();
-				$row = $row_2;
-				$dados_consulta_lideres = $dados_consulta_lideres_2;
-			} else {
-				$row = $row_1;
-				$dados_consulta_lideres = $dados_consulta_lideres_1;
-			}
-
-			$row_menos_um_ano = 0;
-			$dados_consulta_lideres_menos_um_ano = [];
-
-			$consultar_lideres_menos_um_ano_1 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' AND id_supervisorR LIKE $id_usuario ORDER BY nome_coordenador ASC");
-			$row_menos_um_ano_1 = $consultar_lideres_menos_um_ano_1->num_rows();
-			$dados_consulta_lideres_menos_um_ano_1 = $consultar_lideres_menos_um_ano_1->result_array();
-
-			if ($row_menos_um_ano_1 == 0) {
-				// supervisor local
-				$consultar_lideres_menos_um_ano_2 = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' AND id_supervisorE LIKE $id_usuario ORDER BY nome_coordenador ASC");
-				$row_menos_um_ano_2 = $consultar_lideres_menos_um_ano_2->num_rows();
-				$dados_consulta_lideres_menos_um_ano_2 = $consultar_lideres_menos_um_ano_2->result_array();
-				$row_menos_um_ano = $row_menos_um_ano_2;
-				$dados_consulta_lideres_menos_um_ano = $dados_consulta_lideres_menos_um_ano_2;
-			} else {
-				$row_menos_um_ano = $row_menos_um_ano_1;
-				$dados_consulta_lideres_menos_um_ano = $dados_consulta_lideres_menos_um_ano_1;
-			}
-
-			$newconsulta = array(
-				'row' => $row_menos_um_ano,
-				'dados' => $dados_consulta_lideres_menos_um_ano,
-			);
-
-			$lideres_ativos_comparacao = $this->coordenadoresAtivos($newconsulta);
-			$ativos_comparacao = $lideres_ativos_comparacao['row'];
-
-			$comparacao = array(
-				'coordenadores' => $row_menos_um_ano,
-				'coordenadores_ativos' => $ativos_comparacao,
-			);
-
-			$dados = array(
-				'row' => $row,
-				'dados' => $dados_consulta_lideres,
-				'row_menos_um_ano' => $row_menos_um_ano,
-				'comparacao' => $comparacao,
-			);
-
-			return $dados;
-		}
 	}
 }

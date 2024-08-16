@@ -448,6 +448,7 @@ class Welcome extends CI_Controller
 	}
 
 	public function enviarEmailDevocionalDiario()
+
 	{
 		$todosPais = $this->FConsultas_model->mostrarTodosPais();
 
@@ -873,7 +874,7 @@ class Welcome extends CI_Controller
 				$dados_sregional = $consultar_sregional->row_array();
 				$total_sregional = $consultar_sregional->num_rows();
 
-				$consultar_adm = $this->db->query("SELECT * FROM direcao WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_direcao LIKE '$nome' OR nome_direcao LIKE '$nome_base')");
+				$consultar_adm = $this->db->query("SELECT * FROM direcao WHERE (email = '$email' OR cpf = '$cpf_completo') AND (nome_direcao LIKE '$nome' OR nome_direcao LIKE '$nome_base')");
 				$dados_adm = $consultar_adm->row_array();
 				$total_adm = $consultar_adm->num_rows();
 
@@ -939,7 +940,7 @@ class Welcome extends CI_Controller
 
 						echo '
 						<script>
-							setTimeout(function(){ window.location="adm/home"}, 2000);
+							setTimeout(function(){ window.location="direcao/home"}, 2000);
 						</script>
 					';
 					}
@@ -3309,11 +3310,29 @@ class Welcome extends CI_Controller
 		$check_is_coord_query = $this->input->get("check_is_coord_query") ?? false;
 
 		$dados = $this->consultasBD($id_user, $opc1, $opc2, '', $dataInicio, $dataFim, $nivel, $check_is_coord_query);
+		$dados_new = [];
 
-		if ($nivel == 'lideres') {
-			$this->load->view('sistema/slocal/pages/lideres/mostrar_tabela_lideres_1', $dados);
-		} else if ($nivel == 'coordenadores') {
-			$this->load->view('sistema/slocal/pages/coordenadores/mostrar_tabela_coord_1', $dados);
+		$array = array(
+			'id_user' => $id_user,
+			'dados_sregional' => $dados['dados_sregional']['row'],
+			'dados_sregional_ativos' => $dados['dados_sregional_ativos']['row'],
+			'dados_slocal_gerais' => $dados['dados_slocal_gerais']['row'],
+			'dados_slocal_ativos' => $dados['dados_slocal_ativos']['row'],
+			'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
+			'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
+			'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
+			'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
+			'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
+			'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
+			'mostrar_comparacao' => $opc2,
+			'check_is_coord_query' => $check_is_coord_query,
+			'comparacao' => $dados['comparacao'],
+			'comparacao_ativos' => $dados['comparacao_ativos'],
+		);
+		$dados_new = $array;
+
+		if ($nivel == 'direcao') {
+			$this->load->view('sistema/direcao/pages/sregional/mostrar_tabela_sregional_1', $dados_new);
 		}
 	}
 
@@ -3333,94 +3352,38 @@ class Welcome extends CI_Controller
 		$check_is_coord_query = $this->input->get("check_is_coord_query") ?? false;
 
 		$dados = $this->consultasBD($id_user, $opc1, $opc2, $opc3, $dataInicio, $dataFim, $nivel, $check_is_coord_query);
+		$dados_new = [];
 
-		if ($nivel == 'lideres') {
-			$this->load->view('sistema/slocal/pages/lideres/mostrar_tabela_lideres_2', $dados);
-		} else if ($nivel == 'coordenadores') {
-			$this->load->view('sistema/slocal/pages/coordenadores/mostrar_tabela_coordenador_2', $dados);
+		$array = array(
+			'id_user' => $id_user,
+			'lista' => $dados['lista'],
+			'opc1' => $opc1,
+			'opc2' => $opc2,
+			'dataInicio' => $dataInicio,
+			'dataFim' => $dataFim,
+			/*'dados_sregional' => $dados['dados_sregional'],
+			'dados_slocal_gerais' => $dados['dados_slocal_gerais']['row'],
+			'dados_slocal_ativos' => $dados['dados_slocal_ativos']['row'],
+			'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
+			'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
+			'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
+			'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
+			'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
+			'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
+			'mostrar_comparacao' => $opc2,
+			'check_is_coord_query' => $check_is_coord_query,
+			'comparacao' => $dados['comparacao'],*/
+		);
+		$dados_new = $array;
+
+		if ($nivel == 'direcao') {
+			$this->load->view('sistema/direcao/pages/sregional/mostrar_tabela_sregional_2', $dados_new);
 		}
 	}
-
-	public function format_dates($opc1, $opc2, $dataInicio, $dataFim)
-	{
-		$data = date('Y-m-d');
-		$data_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($data)));
-
-		$data_formatada_1 = "";
-		$data_formatada_2 = "";
-
-		if ($opc2 == 'nao') {
-			if ($opc1 == 'opc1') {
-				// consulta baseada no ultimo mês
-				$menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
-				$data_formatada_1 = $menos_um_mes;
-				$data_formatada_2 = $data;
-			} else if ($opc1 == 'opc2') {
-				// consulta baseada nos últimos 6 meses
-				$data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
-				$data_formatada_1 = $data_menos_seis_meses;
-				$data_formatada_2 = $data;
-			} else if ($opc1 == 'opc3') {
-				// desde o inicio
-				$data_formatada_1 = "01-02-2017";
-				$data_formatada_2 = $data;
-			} else if ($opc1 == 'opc4') {
-				if ($dataInicio == '' || $dataFim == '') {
-				} else {
-					$data_formatada_1 = $dataInicio;
-					$data_formatada_2 = $dataFim;
-				}
-			}
-
-			$datas = array(
-				'dataInicio' => $data_formatada_1,
-				'dataFim' => $data_formatada_2,
-			);
-		} else {
-			if ($opc1 == 'opc1') {
-				// consulta baseada no ultimo mês
-				$menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
-				$menos_um_mes_ano = date('Y-m-d', strtotime('-1 year', strtotime($menos_um_mes)));
-				$data_formatada_1 = $menos_um_mes;
-				$data_formatada_2 = $data;
-				$data_formatada_3 = $menos_um_mes_ano;
-				$data_formatada_4 = $data_menos_um_ano;
-			} else if ($opc1 == 'opc2') {
-				// consulta baseada nos últimos 6 meses
-				$data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
-				$menos_seis_meses_ano = date('Y-m-d', strtotime('-1 year', strtotime($data_menos_seis_meses)));
-				$data_formatada_1 = $data_menos_seis_meses;
-				$data_formatada_2 = $data;
-				$data_formatada_3 = $menos_seis_meses_ano;
-				$data_formatada_4 = $data_menos_um_ano;
-			} else if ($opc1 == 'opc4') {
-				if ($dataInicio == '' || $dataFim == '') {
-				} else {
-					$data_inicio_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataInicio)));
-					$data_fim_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataFim)));
-
-					$data_formatada_1 = $dataInicio;
-					$data_formatada_2 = $dataFim;
-					$data_formatada_3 = $data_inicio_menos_um_ano;
-					$data_formatada_4 = $data_fim_menos_um_ano;
-				}
-			}
-
-			$datas = array(
-				'dataInicio' => $data_formatada_1,
-				'dataFim' => $data_formatada_2,
-				'dataInicioAnoPassado' => $data_formatada_3,
-				'dataFimAnoPassado' => $data_formatada_4,
-			);
-		}
-
-		return $datas;
-	}
-
 	public function consultasBD($id_user, $opc1, $opc2, $opc3, $dataInicio, $dataFim, $nivel, $check_is_coord_query)
 	{
 
-		$datas = $this->format_dates($opc1, $opc2, $dataInicio, $dataFim);
+		$datas = $this->FSistema_model->format_dates($opc1, $opc2, $dataInicio, $dataFim);
 
 		if ($nivel == 'lideres') {
 
@@ -3495,6 +3458,105 @@ class Welcome extends CI_Controller
 
 				return $dados;
 			}
+		} else if ($nivel == 'direcao') {
+			$dados_sregional = $this->FConsultas_model->getSRegional(['direcao'], $opc1, $opc2, $datas);
+			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao'], $opc1, $opc2, $datas);
+			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao'], $opc1, $opc2, $datas);
+			$dados_lideres = $this->FConsultas_model->getLideres(['direcao'], $opc1, $opc2, $datas);
+			$total_criancas_lider = $dados_lideres[1];
+			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$comparacao = [];
+			$comparacao_ativos = [];
+
+			// criando a comparação
+			if ($opc2 == 'sim') {
+				$comparacao_sregional = $dados_sregional[1];
+				$comparacao_sregional_ativos = $dados_sregional[2];
+
+				array_push($comparacao, $comparacao_sregional);
+				array_push($comparacao_ativos, $comparacao_sregional_ativos);
+
+				$comparacao_slocal = $dados_slocal[1];
+				$comparacao_slocal_ativos = $dados_slocal[2];
+
+				array_push($comparacao, $comparacao_slocal);
+				array_push($comparacao_ativos, $comparacao_slocal_ativos);
+
+				$comparacao_coordenadores = $dados_coordenadores[1];
+				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
+
+				array_push($comparacao, $comparacao_coordenadores);
+				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
+
+				$comparacao_lideres = $dados_lideres[3];
+				$comparacao_lideres_ativos = $dados_lideres[4];
+
+				array_push($comparacao, $comparacao_lideres);
+				array_push($comparacao_ativos, $comparacao_lideres_ativos);
+
+				$total_criancas_lider_comparacao = $dados_lideres[5];
+				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
+
+				$lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_supervisorEs', $comparacao_sregional['dados']);
+				$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal['dados']);
+				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
+
+				$id_gerais_comparacao = array_merge($lista_de_id_1, $lista_de_id_2, $lista_de_id_3);
+
+				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
+
+				array_push($comparacao, $total_criancas_geral_comparacao);
+
+				$lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_supervisorEs', $comparacao_sregional_ativos['dados']);
+				$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal_ativos['dados']);
+				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
+
+				$id_ativos_comparacao = array_merge($lista_de_id_1_ativos, $lista_de_id_2_ativos, $lista_de_id_3_ativos);
+
+				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
+
+				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
+			}
+
+			$lista = $opc3 == 'sregionais_ativos' ? $dados_sregional[0]['dados'] : $dados_sregional['dados'];
+			$dados_mostrar = $opc3 == 'sregionais_ativos' ? $dados_sregional[0] : $dados_sregional;
+
+			$lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_supervisorEs', $dados_sregional['dados']);
+			$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal['dados']);
+			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
+
+			$id_gerais = array_merge($lista_de_id_1, $lista_de_id_2, $lista_de_id_3);
+
+			$total_criancas_geral = $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+
+			$lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_supervisorEs', $dados_sregional[0]['dados']);
+			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
+			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
+
+			$id_ativos = array_merge($lista_de_id_1_ativos, $lista_de_id_2_ativos, $lista_de_id_3_ativos);
+
+			$total_criancas_geral_ativos = $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+
+			$dados = array(
+				'id_user' => $id_user,
+				'lista' => $lista,
+				'dados_sregional' => $dados_mostrar,
+				'dados_sregional_ativos' => $dados_sregional[0],
+				'dados_slocal_gerais' => $dados_slocal,
+				'dados_slocal_ativos' => $dados_slocal[0],
+				'dados_coordenadores_gerais' => $dados_coordenadores,
+				'dados_coordenadores_ativos' => $dados_coordenadores[0],
+				'dados_lideres_gerais' => $dados_lideres,
+				'dados_lideres_ativos' => $dados_lideres[0],
+				'dados_criancas_gerais' => $total_criancas_geral,
+				'dados_criancas_ativos' => $total_criancas_geral_ativos,
+				'mostrar_comparacao' => $opc2,
+				'check_is_coord_query' => $check_is_coord_query,
+				'comparacao' => $comparacao,
+				'comparacao_ativos' => $comparacao_ativos,
+			);
+			return $dados;
 		}
 	}
 
@@ -3777,7 +3839,8 @@ class Welcome extends CI_Controller
 						'allborders' => array(
 							'style' => PHPExcel_Style_Border::BORDER_THIN
 						)
-					), 'fill' => array(
+					),
+					'fill' => array(
 						'type' => PHPExcel_Style_Fill::FILL_SOLID,
 						'rotation' => 90,
 						'startcolor' => array(

@@ -67,14 +67,14 @@ $this->load->view('partes/head');
                         <form action="acesso" method="POST">
                           <input type="hidden" name="opc" value="1">
                           <div class="col-lg-12">
-                            <input class="form-control" name="email" type="email" placeholder="E-mail">
+                            <input class="form-control" name="email" type="email" placeholder="E-mail" value="micaelesr318@gmail.com">
                             <!-- <span class="glyphicon glyphicon-envelope form-control-feedback"></span> -->
                           </div>
 
                           <br><br>
 
                           <div class="col-lg-12">
-                            <input class="form-control" id="id_cpfs" name="cpf" maxlength="14" type="text" placeholder="CPF (000.000.000-00)">
+                            <input class="form-control" id="id_cpfs" name="cpf" maxlength="14" type="text" placeholder="CPF (000.000.000-00)" value="076.955.583-70">
                             <!-- <span class="glyphicon glyphicon-lock form-control-feedback"></span> -->
                           </div>
 

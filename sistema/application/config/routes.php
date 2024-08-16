@@ -149,6 +149,9 @@ require_once(APPPATH . '../import/sistema/routas/routas_slocal.php');
 require_once(APPPATH . '../import/sistema/routas/routas_sregional.php');
 // FIM SUPERVISOR REGIONAL
 
+/* NÍVEL DIREÇÃO */
+require_once(APPPATH . '../import/sistema/routas/routas_direcao.php');
+// FIM DIREÇÃO
 
 // adm
 $route['adm/home'] = 'adm/index';
