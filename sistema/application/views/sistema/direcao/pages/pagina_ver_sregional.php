@@ -8,20 +8,23 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-    $voltar = "../";
+    $voltar = "../../";
     $array = array('voltar' => $voltar);
 
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
 
-    $dados_slocal = $this->FConsultas_model->getInfoDirecaoId($id_usuario);
+    $dados_direcao = $this->FConsultas_model->getInfoDirecaoId($id_usuario);
 
-    if ($dados_slocal['row'] == 0) {
+    if ($dados_direcao['row'] == 0) {
         $data = [];
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
         $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
         echo $funcao;
     } else {
+
+        $dados_sregional = $this->FConsultas_model->getInfoSRegionalId($id_sregional);
+
 ?>
         <!DOCTYPE html>
         <html>
@@ -158,7 +161,7 @@ if (!isset($_SESSION['usuario'])) {
 
                 document.getElementById('_controller').value = 0;
 
-                var id_usuario = '<?= $id_usuario; ?>';
+                var id_usuario = '<?= $id_sregional; ?>';
 
                 var opc2 = '';
 
@@ -185,23 +188,21 @@ if (!isset($_SESSION['usuario'])) {
                     }
                 }
 
-                ajax.open("GET", "sregional/mostrar1?id_user=" + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao", false);
+                ajax.open("GET", "../sregional/mostrar1?id_user=" + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao/sregional", false);
 
                 ajax.setRequestHeader("Content-Type", "text/html");
                 ajax.send();
 
                 var control = document.getElementById('_controller').value;
                 if (control == 0) {
-                    list_sregionais();
+                    list_sregionais(id_usuario);
                 } else {}
             }
 
 
-            function list_sregionais() {
+            function list_sregionais(id_usuario) {
 
                 setTimeout(function() {
-                    var id_usuario = '<?= $id_usuario; ?>';
-
                     document.getElementById('_controller').value = 0;
 
                     var opc2 = '';
@@ -220,7 +221,7 @@ if (!isset($_SESSION['usuario'])) {
                     $('#conteudos_table_info_coord').empty();
 
                     var url;
-                    url = 'sregional/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao";
+                    url = '../sregional/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao/sregional";
                     jQuery.get(url, function(data) {
                         $('#conteudos_table_info_coord').empty().append(data);
                     });
@@ -228,12 +229,8 @@ if (!isset($_SESSION['usuario'])) {
                 loader_2();
             }
 
-            function list_sregionais_ativos() {
-
-
+            function list_slocais_ativos(id_usuario) {
                 setTimeout(function() {
-                    var id_usuario = '<?= $id_usuario; ?>';
-
                     document.getElementById('_controller').value = 1;
 
                     var opc1 = document.getElementById('opc1_').value;
@@ -244,7 +241,7 @@ if (!isset($_SESSION['usuario'])) {
                     $('#conteudos_table_info_coord').empty();
 
                     var url;
-                    url = 'lideres/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao";
+                    url = '../sregional/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao/sregional";
                     jQuery.get(url, function(data) {
                         $('#conteudos_table_info_coord').empty().append(data);
                     });
@@ -371,12 +368,18 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- Content Header (Page header) -->
                     <section class="content-header">
                         <h1>
-                            Equipe: Supervisores Regionais
+                            Equipe: <?= $dados_sregional['dados']['nome_supervisorE']; ?>
                             <small>Painel de Controle</small>
                         </h1>
                         <ol class="breadcrumb">
-                            <li><a href="../home"><i class="fa fa-home"></i> Home</a></li>
-                            <li class="active">Supervisores Regionais</li>
+                            <?php
+                            foreach ($pages as $key => $value) {
+                            ?>
+                                <li><a href="<?= $value['red']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
+                            <?php
+                            }
+                            ?>
+                            <li class="active">Supervisor Regional</li>
                         </ol>
                     </section>
                     <!-- Main content -->
@@ -387,7 +390,7 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box box-info">
 
                                 <div class="box-header with-border">
-                                    <h3 class="box-title"><i class="fa fa-table"></i> Supervisores Regionais</h3>
+                                    <h3 class="box-title"><i class="fa fa-table"></i> Supervisor Regional</h3>
 
                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_sregional">Cadastrar +</button>
 
@@ -663,7 +666,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
 
                                                 <div style="display: flex;">
-                                                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-table"></i> Gerar Excel</a>
+                                                    <!-- <a href="#" data-toggle="control-sidebar"><i class="fa fa-table"></i> Gerar Excel</a> -->
                                                 </div>
 
                                             </div>

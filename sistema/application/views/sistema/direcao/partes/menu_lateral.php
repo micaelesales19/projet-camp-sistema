@@ -112,7 +112,7 @@ $color = "#46734C";
       </li>
 
       <li>
-        <a href="<?= $voltar; ?>page/sregional">
+        <a href="<?= $voltar; ?>page/equipe">
           <i class="fa fa-users"></i>
           <span>S. Regional</span>
         </a>

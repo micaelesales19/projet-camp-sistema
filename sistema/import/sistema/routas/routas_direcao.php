@@ -26,15 +26,29 @@ $route['sregional/page/coordenadores/mostrar1'] = 'welcome/mostrar_table_parte_1
 
 $route['sregional/page/coordenadores/gerar_excel'] = 'welcome/gerar_excel';
 
-// slocal
-$route['direcao/page/slocal'] = 'Direcao/pagina_ver_slocal';
+// equipe - tudo
+$route['direcao/page/equipe'] = 'Direcao/pagina_ver_equipe';
+$route['direcao/page/equipe/mostrar1'] = 'welcome/mostrar_table_parte_1';
+$route['direcao/page/equipe/mostrar2'] = 'welcome/mostrar_table_parte_2';
 
 // sregional
-$route['direcao/page/sregional'] = 'Direcao/pagina_ver_sregional';
-$route['direcao/page/sregional/salvar'] = 'Direcao/pagina_ver_sregional';
+$route['direcao/page/sregional/cadastro/salvar'] = 'welcome/cadastro_sregional';
 
 $route['direcao/page/sregional/mostrar1'] = 'welcome/mostrar_table_parte_1';
 $route['direcao/page/sregional/mostrar2'] = 'welcome/mostrar_table_parte_2';
+$route['direcao/page/sregional/salvar'] = 'welcome/editar_info_sregional';
+
+$route['direcao/page/sregional/desativar'] = 'welcome/desativar_sregional';
+$route['direcao/page/sregional/exclusao/ativar'] = 'welcome/ativar_sregional';
+$route['direcao/page/sregional/exclusao/permanente'] = 'welcome/excluir_sregional_permanentemente';
+
+
+$route['direcao/page/sregional/:any'] = 'Direcao/pagina_ver_sregional';
+$route['direcao/page/sregional/detalhes/:any'] = 'Direcao/pagina_ver_detalhes_sregional';
+
+
+// slocal
+$route['direcao/page/slocal'] = 'Direcao/pagina_ver_slocal';
 
 // red
 $route['sregional/page/lideres_do_coordenador/:any'] = 'welcome/red_lideres_coord';

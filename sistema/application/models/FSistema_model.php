@@ -130,7 +130,6 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
-
 	public function excluirLiderPermanentemente($id_lider, $id_responsavel)
 	{
 		$acao = "EX_CL_4";
@@ -1269,7 +1268,6 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-
 	public function cadastroDevocionais($id_ano, $id_modulo, $n_licao, $dia, $titulo, $titulo_ingles, $texto, $texto_ingles, $imagem_url, $imagem_url_ingles, $file, $file_ingles)
 	{
 		$inserir['id '] = NULL;
@@ -1318,6 +1316,24 @@ class FSistema_model extends CI_Model
 	}
 	// Fim EDIÇÃO DE DADOS PESSOAIS LÍDER
 
+	public function editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $estado, $foto)
+	{
+		$this->db->set('nome_supervisorE', $nome);
+		$this->db->set('cpf', $cpf);
+		$this->db->set('email', $email);
+		$this->db->set('telefone_whatsapp', $telefone);
+		$this->db->set('nascimento', $nascimento);
+		$this->db->set('estado', $estado);
+		$this->db->set('foto', $foto);
+		$this->db->where('id_supervisorEs', $id);
+
+		if ($this->db->update('supervisore')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/*COORDENADOR*/
 	public function cadastro_coordenador($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_slocal, $id_sregional)
 	{
@@ -1360,7 +1376,6 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
-
 	public function ativar_coordenador($id_coordenador)
 	{
 		$ativo = "1";
@@ -1374,7 +1389,6 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
-
 	public function excluirCoordenadorPermanentemente($id_coordenador, $id_responsavel)
 	{
 		$motivo = "Excluiu seu Coordenador Permanentemente";
@@ -1409,6 +1423,7 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
+
 	public function editar_lider_exclusao_coord($id_lider, $id_coordenador, $id_responsavel)
 	{
 		$acao = "EX_CL_1";
@@ -1425,6 +1440,138 @@ class FSistema_model extends CI_Model
 		}
 	}
 
+	// SREGIONAL
+	public function cadastro_sregional($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado)
+	{
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('Y-m-d');
+
+		$foto = "fotoU/geral.jpg";
+
+		$inserir['nome_supervisorE'] = $nome;
+		$inserir['cpf'] = $cpf;
+		$inserir['email'] = $email;
+		$inserir['telefone_whatsapp'] = $telefone;
+		$inserir['nascimento'] = $nascimento;
+		$inserir['estado'] = $estado;
+		$inserir['pais'] = $pais;
+		$inserir['foto'] = $foto;
+		$inserir['ativo'] = 1;
+		$inserir['data_cadastro'] = $data;
+
+		if ($this->db->insert("supervisore", $inserir)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function desativar_sregional($id_sregional)
+	{
+		$ativo = "0";
+
+		$this->db->set('ativo', $ativo);
+		$this->db->where('id_supervisorEs ', $id_sregional);
+
+		if ($this->db->update('supervisore')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function ativar_sregional($id_sregional)
+	{
+		$ativo = "1";
+
+		$this->db->set('ativo', $ativo);
+		$this->db->where('id_supervisorEs ', $id_sregional);
+
+		if ($this->db->update('supervisore')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function excluirSLocalPermanentemente($id_sregional, $id_responsavel)
+	{
+		$motivo = "Excluiu seu Supervisor Regional Permanentemente";
+		$acao = "EX_SREGIONAL_DIRECAO";
+
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y');
+
+		$dados_lider = $this->FConsultas_model->getInfoSRegionalId($id_sregional);
+
+		$consultar_sregional_desativado = $this->db->query("SELECT * FROM alcancado_surpe WHERE id_supervisorE LIKE '$id_sregional'");
+		$row = $consultar_sregional_desativado->num_rows();
+
+		if ($row == 0) {
+			//$inserir['id_exclusao'] = NULL;
+			$inserir['id_supervisorE'] = $id_sregional;
+			$inserir['nome_supervisorE'] = $dados_lider['dados']['nome_supervisorE'];
+			$inserir['id_responsavel'] = $id_responsavel;
+			$inserir['motivo'] = $motivo;
+			$inserir['data_saida'] = $data;
+
+			if ($this->db->insert('alcancado_surpe', $inserir)) {
+			}
+		} else {
+		}
+
+		$this->db->where('id_supervisorEs', $id_sregional);
+		if ($this->db->delete('supervisore')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_sregional, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function editar_lider_exclusao_sregional($id_lider, $id_sregional, $id_responsavel)
+	{
+		$acao = "EX_SREGIONAL_DIRECAO";
+		$motivo = "Excluiu o supervisor regional ($id_sregional) permanentemente, e seus líderes ($id_lider) foram atualizados para o supervisor padrão";
+
+		$this->db->set('id_supervisorE', 0);
+		$this->db->where('id_lider', $id_lider);
+
+		if ($this->db->update('lider')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_lider, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function editar_coordenador_exclusao_sregional($id_coordenador, $id_sregional, $id_responsavel)
+	{
+		$acao = "EX_SREGIONAL_DIRECAO";
+		$motivo = "Excluiu o supervisor regional ($id_sregional) permanentemente, e seus coordenadores ($id_coordenador) foram atualizados para o supervisor padrão";
+
+		$this->db->set('id_supervisorE', 0);
+		$this->db->where('id_coordenador', $id_coordenador);
+
+		if ($this->db->update('coordenador')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_coordenador, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public function editar_slocal_exclusao_sregional($id_slocal, $id_sregional, $id_responsavel)
+	{
+		$acao = "EX_SREGIONAL_DIRECAO";
+		$motivo = "Excluiu o supervisor regional ($id_sregional) permanentemente, e seus supervisores locais ($id_slocal) foram atualizados para o supervisor padrão";
+
+		$this->db->set('id_supervisorE', 0);
+		$this->db->where('id_supervisorR', $id_slocal);
+
+		if ($this->db->update('supervisorr')) {
+			$this->FAlerta_model->alerta_controle($id_responsavel, $id_slocal, $motivo, $acao);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public function retornando_so_id($chave, $lista)
 	{

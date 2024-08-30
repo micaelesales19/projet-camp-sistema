@@ -37,6 +37,8 @@ class FAlerta_model extends CI_Model
 			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
 		} else if ($acao == "SOLICITACAO_TROCA_CSS") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
+		} else if ($acao == 'EX_SREGIONAL_DIRECAO') {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
 		} else {
 			$texto_motivo .= $motivo;
 		}

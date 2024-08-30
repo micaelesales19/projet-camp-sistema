@@ -17,9 +17,7 @@
 <table class="table table-bordered table-hover" id="table" width="100%">
     <thead>
         <tr>
-            <th width="200px;">S. Regional</th>
-            <th width="10px;">S. Locais</th>
-            <th width="10px;">S. Locais Ativos</th>
+            <th width="200px;">S. Local</th>
             <th width="10px;">Coordenadores</th>
             <th width="10px;">Coordenadores Ativos</th>
             <th width="10px;">Líderes</th>
@@ -34,9 +32,10 @@
     <tbody>
         <?php
         $data = date('Y-m-d');
+        $id_sregional = $id_user;
 
         foreach ($lista as $key => $dados) {
-            $id_sregional = $dados['id_supervisorEs'];
+            $id_slocal = $dados['id_supervisorR'];
             $ativo = $dados['ativo'];
             $data_cadastro = $dados['data_cadastro'];
             $data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
@@ -48,17 +47,12 @@
             $foto = base_url('import/sistema/' . $foto_original);
             $telefone = $dados['telefone_whatsapp'];
 
-            $slocal_do_sregional = $this->FConsultas_model->getSLocal([$id_sregional], $opc1, $opc2, $datas);
-
-            $total_slocal_do_sregional = $slocal_do_sregional['row'];
-            $total_slocal_do_sregional_ativos = $slocal_do_sregional[0]['row'];
-
-            $coordenadores_do_sregional = $this->FConsultas_model->getCoordenador(['sregional', '', $id_sregional], $opc1, $opc2, $datas);
+            $coordenadores_do_sregional = $this->FConsultas_model->getCoordenador(['sregional', 'slocal', $id_sregional, $id_slocal], $opc1, $opc2, $datas);
 
             $total_coordenadores_do_sregional = $coordenadores_do_sregional['row'];
             $total_coordenadores_do_sregional_ativos = $coordenadores_do_sregional[0]['row'];
 
-            $lideres_do_sregional = $this->FConsultas_model->getLideres(['sregional', '', $id_sregional], $opc1, $opc2, $datas);
+            $lideres_do_sregional = $this->FConsultas_model->getLideres(['sregional', 'slocal', $id_sregional, $id_slocal], $opc1, $opc2, $datas);
 
             $total_lider_sregional = $lideres_do_sregional['row'];
             $total_lider_ativos_sregional = $lideres_do_sregional[0]['row'];
@@ -72,10 +66,10 @@
             if ($ativo == 0) {
                 $progresso = "Inativo";
                 $class1 = "danger";
-            } else if ($total_slocal_do_sregional < 1 || $total_coordenadores_do_sregional < 3 || $total_lider_sregional < 1 || $total_criancas_geral_sregional < 2) {
+            } else if ($total_coordenadores_do_sregional < 3 || $total_lider_sregional < 1 || $total_criancas_geral_sregional < 2) {
                 $progresso = "Ativo";
                 $class1 = "danger";
-            } else if ($total_slocal_do_sregional_ativos < 1 || $total_coordenadores_do_sregional_ativos < 3 || $total_lider_ativos_sregional < 1 || $total_criancas_ativos_sregional < 2) {
+            } else if ($total_coordenadores_do_sregional_ativos < 3 || $total_lider_ativos_sregional < 1 || $total_criancas_ativos_sregional < 2) {
                 $progresso = "Ativo";
                 $class1 = "warning";
             } /*else if ($total_slocal_do_sregional_ativos == 0) {
@@ -94,10 +88,8 @@
         ?>
             <tr>
                 <td>
-                    <img src="<?= $foto; ?>" alt="" id="imgPhoto_usuario"> <?= $dados['nome_supervisorE']; ?>
+                    <img src="<?= $foto; ?>" alt="" id="imgPhoto_usuario"> <?= $dados['nome_supervisorR']; ?>
                 </td>
-                <td><?= $total_slocal_do_sregional; ?></td>
-                <td><?= $total_slocal_do_sregional_ativos; ?></td>
                 <td><?= $total_coordenadores_do_sregional; ?></td>
                 <td><?= $total_coordenadores_do_sregional_ativos; ?></td>
                 <td><?= $total_lider_sregional; ?></td>
@@ -106,8 +98,8 @@
                 <td><?= $total_criancas_ativos_sregional; ?></td>
                 <td><span class="label label-<?= $class1; ?>"><?= $progresso; ?></span></td>
                 <td>
-                    <form action="slocais" method="post">
-                        <input type="hidden" name="id_user" value="<?= $dados['id_supervisorEs']; ?>">
+                    <form action="../sregional/detalhes/<?= $dados['id_supervisorR']; ?>" method="post">
+                        <input type="hidden" name="id_user" value="<?= $dados['id_supervisorR']; ?>">
                         <input type="submit" class="btn btn-info" value="Visualizar" />
                     </form>
                 </td>

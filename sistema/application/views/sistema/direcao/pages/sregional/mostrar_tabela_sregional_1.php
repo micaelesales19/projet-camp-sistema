@@ -1,9 +1,6 @@
 <table class="table table-hover" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th id="clicar" onclick="list_lideres(this);">S. Regionais <i class="fa fa-hand-pointer-o"></i></th>
-            <th id="clicar" onclick="list_lideres_ativos(this);">S. Regionais Ativos <i class="fa fa-hand-pointer-o"></i></th>
-            <th>%</th>
             <th id="clicar" onclick="list_lideres(this);">S. Locais <i class="fa fa-hand-pointer-o"></i></th>
             <th id="clicar" onclick="list_lideres_ativos(this);">S. Locais Ativos <i class="fa fa-hand-pointer-o"></i></th>
             <th>%</th>
@@ -16,12 +13,18 @@
             <th id="clicar" onclick="list_lideres(this);">Crianças <i class="fa fa-hand-pointer-o"></i></th>
             <th id="clicar" onclick="list_lideres_ativos(this);">Crianças Ativas <i class="fa fa-hand-pointer-o"></i></th>
             <th>%</th>
+            <?php
+            $dados_sregional = $this->FConsultas_model->getInfoSRegionalId($id_user);
+            if ($dados_sregional['row'] == 0) {
+            } else {
+            ?>
+                <th width="10px;">Ação</th>
+                <th width="10px;">Ação</th>
+            <?php } ?>
         </tr>
     </thead>
     <tbody>
         <?php
-        $total_sregionais = $dados_sregional;
-        $total_sregionais_ativos = $dados_sregional_ativos;
 
         $total_slocais = $dados_slocal_gerais;
         $total_slocais_ativos = $dados_slocal_ativos;
@@ -69,17 +72,6 @@
             $class4 = $this->FConsultas_model->checkPorcentagem($x);
         }
 
-        if ($total_sregionais == 0 || $total_sregionais_ativos == 0) {
-            $porcentagem_sregionais = 0;
-            $class5 = 'danger';
-        } else {
-            $x = ($total_sregionais_ativos * 100) / $total_sregionais;
-            $porcentagem_sregionais = round($x, 2, PHP_ROUND_HALF_UP);
-            $class5 = $this->FConsultas_model->checkPorcentagem($x);
-        }
-
-        $comparacao_sregionais = "";
-        $comparacao_sregionais_ativos = "";
         $comparacao_slocais = "";
         $comparacao_slocais_ativos = "";
         $comparacao_coordenadores = "";
@@ -90,8 +82,6 @@
         $comparacao_criancas_ativas = "";
 
         if ($mostrar_comparacao == 'sim') {
-            $comparacao_sregionais = "/" . $comparacao[0]['row'];
-            $comparacao_sregionais_ativos = "/" . $comparacao_ativos[0]['row'];
             $comparacao_slocais = "/" . $comparacao[1]['row'];
             $comparacao_slocais_ativos = "/" . $comparacao_ativos[1]['row'];
             $comparacao_coordenadores = "/" . $comparacao[2]['row'];
@@ -104,10 +94,6 @@
         }
         ?>
         <tr>
-            <td><?= $total_sregionais; ?><?= $comparacao_sregionais; ?></td>
-            <td><?= $total_sregionais_ativos; ?><?= $comparacao_sregionais_ativos; ?></td>
-            <td><span class="label label-<?= $class5; ?>"><?= $porcentagem_sregionais; ?>%</span></td>
-
             <td><?= $total_slocais; ?><?= $comparacao_slocais; ?></td>
             <td><?= $total_slocais_ativos; ?><?= $comparacao_slocais_ativos; ?></td>
             <td><span class="label label-<?= $class4; ?>"><?= $porcentagem_slocais; ?>%</span></td>
@@ -123,6 +109,17 @@
             <td><?= $dados_criancas_gerais; ?><?= $comparacao_criancas; ?></td>
             <td><?= $dados_criancas_ativos; ?><?= $comparacao_criancas_ativas; ?></td>
             <td><span class="label label-<?= $class2; ?>"><?= $porcentagem_criancas; ?>%</span></td>
+            <?php
+            if ($dados_sregional['row'] == 0) {
+            } else {
+            ?>
+                <td>
+                    <form action="detalhes/<?= $dados_sregional['dados']['id_supervisorEs']; ?>" method="post">
+                        <input type="submit" class="btn btn-info" value="Detalhes" />
+                    </form>
+                </td>
+                <td id="clicar" onclick="enviar_whatsapp('<?= $dados_sregional['dados']['telefone_whatsapp']; ?>');"><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
+            <?php } ?>
         </tr>
     </tbody>
 </table>
