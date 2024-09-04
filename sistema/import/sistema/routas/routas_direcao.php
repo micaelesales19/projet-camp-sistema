@@ -42,15 +42,25 @@ $route['direcao/page/sregional/desativar'] = 'welcome/desativar_sregional';
 $route['direcao/page/sregional/exclusao/ativar'] = 'welcome/ativar_sregional';
 $route['direcao/page/sregional/exclusao/permanente'] = 'welcome/excluir_sregional_permanentemente';
 
-
 $route['direcao/page/sregional/:any'] = 'Direcao/pagina_ver_sregional';
 $route['direcao/page/sregional/detalhes/:any'] = 'Direcao/pagina_ver_detalhes_sregional';
 
-
 // slocal
 $route['direcao/page/slocal'] = 'Direcao/pagina_ver_slocal';
+$route['direcao/page/slocal/mostrar1'] = 'welcome/mostrar_table_parte_1';
+$route['direcao/page/slocal/mostrar2'] = 'welcome/mostrar_table_parte_2';
 
-// red
+$route['direcao/page/slocal/desativar'] = 'welcome/desativar_slocal';
+$route['direcao/page/slocal/exclusao/ativar'] = 'welcome/ativar_slocal';
+$route['direcao/page/slocal/exclusao/permanente'] = 'welcome/excluir_slocal_permanentemente';
+
+$route['direcao/page/slocal/:any'] = 'Direcao/pagina_ver_slocal';
+$route['direcao/page/slocal/detalhes/:any'] = 'Direcao/pagina_ver_detalhes_slocal';
+
+// coordenador
+$route['direcao/page/coordenador/mostrar1'] = 'welcome/mostrar_table_parte_1';
+$route['direcao/page/coordenador/mostrar2'] = 'welcome/mostrar_table_parte_2';
+
 $route['sregional/page/lideres_do_coordenador/:any'] = 'welcome/red_lideres_coord';
 $route['sregional/page/info_lider_pessoal/:any/:any'] = 'welcome/red_lideres_info_licao';
 

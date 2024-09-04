@@ -57,8 +57,8 @@
             $total_lider_sregional = $lideres_do_sregional['row'];
             $total_lider_ativos_sregional = $lideres_do_sregional[0]['row'];
 
-            $total_criancas_geral_sregional = $lideres_do_sregional[1];
-            $total_criancas_ativos_sregional = $lideres_do_sregional[2];
+            $total_criancas_geral_sregional = $coordenadores_do_sregional[1] + $lideres_do_sregional[1];
+            $total_criancas_ativos_sregional =  $coordenadores_do_sregional[2] + $lideres_do_sregional[2];
 
             $progresso = "";
             $class1 = "danger";

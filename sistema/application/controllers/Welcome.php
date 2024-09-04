@@ -3278,6 +3278,41 @@ class Welcome extends CI_Controller
 			);
 			$dados_new = $array;
 			$this->load->view('sistema/direcao/pages/sregional/mostrar_tabela_sregional_1', $dados_new);
+		} else if ($nivel == 'direcao/slocal-tudo') {
+			$array = array(
+				'id_user' => $id_user,
+				'dados_slocal_gerais' => $dados['dados_slocal_gerais']['row'],
+				'dados_slocal_ativos' => $dados['dados_slocal_ativos']['row'],
+				'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
+				'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
+				'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
+				'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
+				'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
+				'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
+				'mostrar_comparacao' => $opc2,
+				'check_is_coord_query' => $check_is_coord_query,
+				'comparacao' => $dados['comparacao'],
+				'comparacao_ativos' => $dados['comparacao_ativos'],
+			);
+			$dados_new = $array;
+			$this->load->view('sistema/direcao/pages/slocal/mostrar_tabela_slocal_1', $dados_new);
+		} else if ($nivel == 'slocal/coordenador') {
+			$array = array(
+				'id_user' => $id_user,
+				'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
+				'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
+				'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
+				'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
+				'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
+				'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
+				'mostrar_comparacao' => $opc2,
+				'check_is_coord_query' => $check_is_coord_query,
+				'comparacao' => $dados['comparacao'],
+				'comparacao_ativos' => $dados['comparacao_ativos'],
+				'nivel' => 'slocal',
+			);
+			$dados_new = $array;
+			$this->load->view('sistema/direcao/pages/coordenadores/mostrar_tabela_coord_1', $dados_new);
 		}
 	}
 
@@ -3311,6 +3346,10 @@ class Welcome extends CI_Controller
 			$this->load->view('sistema/direcao/pages/equipe/mostrar_tabela_equipe_2', $dados_new);
 		} else if ($nivel == 'direcao/sregional') {
 			$this->load->view('sistema/direcao/pages/sregional/mostrar_tabela_sregional_2', $dados_new);
+		} else if ($nivel == 'direcao/slocal-tudo') {
+			$this->load->view('sistema/direcao/pages/slocal/mostrar_tabela_slocal_2', $dados_new);
+		} else if ($nivel == 'slocal/coordenador') {
+			$this->load->view('sistema/direcao/pages/coordenadores/mostrar_tabela_coordenador_2', $dados_new);
 		}
 	}
 	public function consultasBD($id_user, $opc1, $opc2, $opc3, $dataInicio, $dataFim, $nivel, $check_is_coord_query)
@@ -3564,6 +3603,166 @@ class Welcome extends CI_Controller
 				'lista' => $lista,
 				'dados_slocal_gerais' => $dados_mostrar,
 				'dados_slocal_ativos' => $dados_slocal[0],
+				'dados_coordenadores_gerais' => $dados_coordenadores,
+				'dados_coordenadores_ativos' => $dados_coordenadores[0],
+				'dados_lideres_gerais' => $dados_lideres,
+				'dados_lideres_ativos' => $dados_lideres[0],
+				'dados_criancas_gerais' => $total_criancas_geral,
+				'dados_criancas_ativos' => $total_criancas_geral_ativos,
+				'mostrar_comparacao' => $opc2,
+				'check_is_coord_query' => $check_is_coord_query,
+				'comparacao' => $comparacao,
+				'comparacao_ativos' => $comparacao_ativos,
+			);
+			return $dados;
+		} else if ($nivel == 'direcao/slocal-tudo') {
+
+			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$dados_lideres = $this->FConsultas_model->getLideres(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$total_criancas_lider = $dados_lideres[1];
+			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$comparacao = [];
+			$comparacao_ativos = [];
+
+			// criando a comparação
+			if ($opc2 == 'sim') {
+				$comparacao_slocal = $dados_slocal[1];
+				$comparacao_slocal_ativos = $dados_slocal[2];
+
+				array_push($comparacao, $comparacao_slocal);
+				array_push($comparacao_ativos, $comparacao_slocal_ativos);
+
+				$comparacao_coordenadores = $dados_coordenadores[1];
+				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
+
+				array_push($comparacao, $comparacao_coordenadores);
+				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
+
+				$comparacao_lideres = $dados_lideres[3];
+				$comparacao_lideres_ativos = $dados_lideres[4];
+
+				array_push($comparacao, $comparacao_lideres);
+				array_push($comparacao_ativos, $comparacao_lideres_ativos);
+
+				$total_criancas_lider_comparacao = $dados_lideres[5];
+				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
+
+				$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal['dados']);
+				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
+
+				$id_gerais_comparacao = array_merge($lista_de_id_2, $lista_de_id_3);
+
+				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
+
+				array_push($comparacao, $total_criancas_geral_comparacao);
+
+				$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal_ativos['dados']);
+				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
+
+				$id_ativos_comparacao = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
+
+				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
+
+				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
+			}
+
+			$lista = $opc3 == 'sregionais_ativos' ? $dados_slocal[0]['dados'] : $dados_slocal['dados'];
+			$dados_mostrar = $opc3 == 'sregionais_ativos' ? $dados_slocal[0] : $dados_slocal;
+
+			$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal['dados']);
+			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
+
+			$id_gerais = array_merge($lista_de_id_2, $lista_de_id_3);
+
+			$total_criancas_geral = $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+
+			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
+			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
+
+			$id_ativos = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
+
+			$total_criancas_geral_ativos = $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+
+			$dados = array(
+				'id_user' => $id_user,
+				'lista' => $lista,
+				'dados_slocal_gerais' => $dados_mostrar,
+				'dados_slocal_ativos' => $dados_slocal[0],
+				'dados_coordenadores_gerais' => $dados_coordenadores,
+				'dados_coordenadores_ativos' => $dados_coordenadores[0],
+				'dados_lideres_gerais' => $dados_lideres,
+				'dados_lideres_ativos' => $dados_lideres[0],
+				'dados_criancas_gerais' => $total_criancas_geral,
+				'dados_criancas_ativos' => $total_criancas_geral_ativos,
+				'mostrar_comparacao' => $opc2,
+				'check_is_coord_query' => $check_is_coord_query,
+				'comparacao' => $comparacao,
+				'comparacao_ativos' => $comparacao_ativos,
+			);
+			return $dados;
+		} else if ($nivel == 'slocal/coordenador') {
+			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['slocal', '', $id_user], $opc1, $opc2, $datas);
+			$dados_lideres = $this->FConsultas_model->getLideres(['slocal', '', $id_user], $opc1, $opc2, $datas);
+			$total_criancas_lider = $dados_lideres[1];
+			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$comparacao = [];
+			$comparacao_ativos = [];
+
+			// criando a comparação
+			if ($opc2 == 'sim') {
+				$comparacao_coordenadores = $dados_coordenadores[1];
+				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
+
+				array_push($comparacao, $comparacao_coordenadores);
+				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
+
+				$comparacao_lideres = $dados_lideres[3];
+				$comparacao_lideres_ativos = $dados_lideres[4];
+
+				array_push($comparacao, $comparacao_lideres);
+				array_push($comparacao_ativos, $comparacao_lideres_ativos);
+
+				$total_criancas_lider_comparacao = $dados_lideres[5];
+				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
+
+				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
+
+				$id_gerais_comparacao = $lista_de_id_3;
+
+				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
+
+				array_push($comparacao, $total_criancas_geral_comparacao);
+
+				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
+
+				$id_ativos_comparacao =  $lista_de_id_3_ativos;
+
+				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
+
+				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
+			}
+
+			$lista = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0]['dados'] : $dados_coordenadores['dados'];
+			$dados_mostrar = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0] : $dados_coordenadores;
+
+			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
+
+			$id_gerais =  $lista_de_id_3;
+
+			$total_criancas_geral = $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+
+			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
+
+			$id_ativos = $lista_de_id_3_ativos;
+
+			$total_criancas_geral_ativos = $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+
+			$dados = array(
+				'id_user' => $id_user,
+				'lista' => $lista,
 				'dados_coordenadores_gerais' => $dados_coordenadores,
 				'dados_coordenadores_ativos' => $dados_coordenadores[0],
 				'dados_lideres_gerais' => $dados_lideres,
@@ -4648,7 +4847,6 @@ class Welcome extends CI_Controller
 		echo $funcao;
 	}
 
-	// ok
 	public function editar_info_sregional()
 	{
 		$id = $this->input->post("id");
@@ -4657,7 +4855,23 @@ class Welcome extends CI_Controller
 		$email = $this->input->post("email");
 		$telefone = $this->input->post("telefone");
 		$nascimento = $this->input->post("nascimento");
-		$estado = $this->input->post("estados");
+		$pais = $this->input->post("pais");
+
+		$estados = $this->input->post("estados");
+		$estados2 = $this->input->post("estados2");
+
+		$nome_pais_digitado = $this->input->post("nome_pais");
+
+		$nome_pais = "";
+		$estado = "";
+
+		if ($pais == 'br') {
+			$nome_pais = $pais;
+			$estado = $estados;
+		} else {
+			$nome_pais = $nome_pais_digitado;
+			$estado = $estados2;
+		}
 
 		$foto_antiga = $this->input->post("foto_antiga");
 
@@ -4677,7 +4891,7 @@ class Welcome extends CI_Controller
 			$foto = 'fotoU/se/' . $_FILES['files']['name'][$i];
 
 			if ($_FILES['files']['name'][$i] == '') {
-				$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $estado, $foto_antiga);
+				$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto_antiga);
 				if ($cadastro) {
 					array_push($mensagem, "Sucesso!");
 				} else {
@@ -4685,7 +4899,7 @@ class Welcome extends CI_Controller
 				}
 			} else {
 				if ($foto_antiga == $foto) {
-					$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $estado, $foto_antiga);
+					$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto_antiga);
 					if ($cadastro) {
 						array_push($mensagem, "Sucesso!");
 					} else {
@@ -4693,7 +4907,7 @@ class Welcome extends CI_Controller
 					}
 				} else {
 					if (file_exists($foto)) {
-						$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $estado, $foto_antiga);
+						$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto_antiga);
 						if ($cadastro) {
 							array_push($mensagem, "A foto já existe em nosso servidor, tente com outra foto com nome diferente!");
 						} else {
@@ -4710,7 +4924,7 @@ class Welcome extends CI_Controller
 
 						// Upload file to server
 						if ($this->upload->do_upload('file')) {
-							$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $estado, $foto);
+							$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto);
 							if ($cadastro) {
 								array_push($mensagem, "Sucesso!");
 							} else {
@@ -4791,7 +5005,7 @@ class Welcome extends CI_Controller
 		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 		$this->FSistema_model->desativar_sregional($id_sregional);
 
-		$this->FAlerta_model->alerta_controle($id_usuario, $id_sregional, $motivo, "EX_CL_4");
+		$this->FAlerta_model->alerta_controle($id_usuario, $id_sregional, $motivo, "DESATIVACAO_SREGIONAL");
 
 		$nivel = $this->input->post('nivel') ?? 'direcao';
 		$url = $this->input->post('url') ?? "$nivel/home";
@@ -4908,12 +5122,352 @@ class Welcome extends CI_Controller
 
 		// mudar o ativo do líder
 		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->excluirSLocalPermanentemente($id_sregional, $id_usuario);
+		$this->FSistema_model->excluirSRegionalPermanentemente($id_sregional, $id_usuario);
 
 		$nivel = $this->input->post('nivel') ?? 'direcao';
 		$url = $this->input->post('url') ?? "$nivel/page/equipe";
 
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Ativado!"]);
+		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
+		echo $funcao;
+	}
+
+	// slocal
+	public function cadastro_slocal()
+	{
+		$nome = $this->input->post('nome');
+		$cpf = $this->input->post('cpf');
+		$email = $this->input->post('email');
+		$telefone = $this->input->post('telefone');
+		$pais = $this->input->post('pais');
+		$nascimento = $this->input->post('nascimento');
+		$id_sregional = $this->input->post('id_sregional');
+
+		$estado1 = $this->input->post('estados');
+		$cidade1 = $this->input->post('cidades');
+		$estado2 = $this->input->post('estados2');
+		$cidade2 = $this->input->post('cidades2');
+
+		$estado = "";
+		$cidade = "";
+
+		if ($estado1 == "" and $cidade1 == "") {
+			$estado .= $estado2;
+			$cidade .= $cidade2;
+		} else {
+			$estado .= $estado1;
+			$cidade .= $cidade1;
+		}
+
+		$ponto1 = $cpf[3];
+
+		$cpf_completo = "";
+
+		if ($ponto1 == ".") {
+			$cpf_completo .= $cpf;
+		} else {
+			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
+		}
+
+		$nivel = $this->input->post('nivel') ?? 'direcao';
+		$url = $this->input->post('url') ?? "$nivel/home";
+
+		if ($this->FAlerta_model->ValidaData($nascimento)) {
+			$jatacadastrado = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
+			$jatacadastrado2 = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
+
+			if ($jatacadastrado || $jatacadastrado2) {
+				$nivel = 1;
+				$cadastro = $this->FSistema_model->cadastro_slocal($nome, $cpf_completo, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional);
+				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
+				if ($cadastro && $cadastroUsuario) {
+					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Cadastrado com Sucesso!"]);
+				} else {
+					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+				}
+			} else {
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Supervisor Local já Cadastrado!"]);
+			}
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
+		}
+
+		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
+		echo $funcao;
+	}
+
+	public function editar_info_slocal()
+	{
+		$id = $this->input->post("id");
+		$nome = $this->input->post("nome");
+		$cpf = $this->input->post("cpf");
+		$email = $this->input->post("email");
+		$telefone = $this->input->post("telefone");
+		$nascimento = $this->input->post("nascimento");
+		$pais = $this->input->post("pais");
+		$id_sregional = $this->input->post("id_sregional");
+
+		$estado1 = $this->input->post('estados');
+		$cidade1 = $this->input->post('cidades');
+		$estado2 = $this->input->post('estados2');
+		$cidade2 = $this->input->post('cidades2');
+
+		$estado = "";
+		$cidade = "";
+
+		if ($estado1 == "" and $cidade1 == "") {
+			$estado .= $estado2;
+			$cidade .= $cidade2;
+		} else {
+			$estado .= $estado1;
+			$cidade .= $cidade1;
+		}
+
+		$foto_antiga = $this->input->post("foto_antiga");
+
+		$filesCount1 = count($_FILES['files']['name']);
+
+		$mensagem = [];
+
+		// Pais
+		for ($i = 0; $i < $filesCount1; $i++) {
+			$_FILES['file']['name']     = $_FILES['files']['name'][$i];
+			$_FILES['file']['type']     = $_FILES['files']['type'][$i];
+			$_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+			$_FILES['file']['error']     = $_FILES['files']['error'][$i];
+			$_FILES['file']['size']     = $_FILES['files']['size'][$i];
+
+			$uploadPath = 'import/sistema/fotoU/sr/';
+			$foto = 'fotoU/se/' . $_FILES['files']['name'][$i];
+
+			if ($_FILES['files']['name'][$i] == '') {
+				$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $pais, $estado, $cidade, $id_sregional, $estado, $foto_antiga);
+				if ($cadastro) {
+					array_push($mensagem, "Sucesso!");
+				} else {
+					array_push($mensagem, "Erro! Dados inválidos!");
+				}
+			} else {
+				if ($foto_antiga == $foto) {
+					$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional, $foto_antiga);
+					if ($cadastro) {
+						array_push($mensagem, "Sucesso!");
+					} else {
+						array_push($mensagem, "Erro! Dados inválidos!");
+					}
+				} else {
+					if (file_exists($foto)) {
+						$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional, $foto_antiga);
+						if ($cadastro) {
+							array_push($mensagem, "A foto já existe em nosso servidor, tente com outra foto com nome diferente!");
+						} else {
+							array_push($mensagem, "Erro! Dados inválidos!");
+						}
+					} else {
+						// File upload configuration
+						$config['upload_path'] = $uploadPath;
+						$config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+						// Load and initialize upload library
+						$this->load->library('upload', $config);
+						$this->upload->initialize($config);
+
+						// Upload file to server
+						if ($this->upload->do_upload('file')) {
+							$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional, $foto);
+							if ($cadastro) {
+								array_push($mensagem, "Sucesso!");
+							} else {
+								array_push($mensagem, "Erro! Dados inválidos!");
+							}
+						} else {
+							$erros = $this->upload->display_errors() + " - meus dados pessoais";
+							array_push($mensagem, $erros);
+						}
+					}
+				}
+			}
+		}
+
+		// atualizarCriancas
+		$nome_antigo = $this->input->post("nome_antigo");
+
+		$nivel = $this->input->post('nivel') ?? 'direcao';
+		$url = $this->input->post('url') ?? "$nivel/home";
+
+		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id, 2);
+
+		if ($consultarCriancas['row'] == 0) {
+		} else {
+			foreach ($consultarCriancas['dados'] as $key => $dadosCriancas) {
+				$id = $dadosCriancas['id_crianca'];
+				$nome_responsavel = $dadosCriancas['nome_responsavel'];
+
+				if ($nome_responsavel == $nome_antigo) {
+					$this->FSistema_model->editaCriancaResponsavel($id, $nome, $email, $telefone, 2);
+				}
+			}
+		}
+
+		echo '
+			<script>
+				if(window.confirm("' . implode("\\n", $mensagem) . '")) {
+					window.location="../../../' . $url . '";
+				}else{
+					window.location="../../../' . $url . '";
+				}
+			</script>
+		';
+	}
+	public function desativar_slocal()
+	{
+		$id_slocal = $this->input->post("id_slocal");
+		$id_usuario = $this->input->post("id_usuario");
+		$motivo = "O usuário (ID: " . $id_usuario . ") desativou seu supervisor local (ID: " . $id_slocal . ")";
+
+		$infos = $this->FConsultas_model->getInfoUserId($id_slocal);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_slocal);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_slocal, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->excluirPG($pg['id_pg'], $pg['nome_pg'], $id_slocal, $id_usuario, $motivo, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_slocal, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->excluirCrianca($criancas['id_crianca'], $criancas['nome_crianca'], $id_slocal, $id_usuario, $motivo, 2);
+			}
+		}
+
+		// mudar o ativo do slocal
+		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->desativar_slocal($id_slocal);
+
+		$this->FAlerta_model->alerta_controle($id_usuario, $id_slocal, $motivo, "DESATIVACAO_SLOCAL");
+
+		$nivel = $this->input->post('nivel') ?? 'direcao';
+		$url = $this->input->post('url') ?? "$nivel/home";
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local desativado!"]);
+		$funcao = $this->FConsultas_model->red("../../../$url", 2000, []);
+		echo $funcao;
+	}
+
+	public function ativar_slocal()
+	{
+		$id_slocal = $this->input->post("opc");
+		$id_usuario = $this->input->post("idUsuario");
+		$infos = $this->FConsultas_model->getInfoUserId($id_slocal);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_slocal);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_slocal, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->reativarPg($pg['id_pg'], $id_usuario, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_slocal, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->reativarCrianca($criancas['id_crianca'], 2);
+			}
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->ativar_slocal($id_slocal);
+
+		$nivel = $this->input->post('nivel') ?? 'direcao';
+		$url = $this->input->post('url') ?? "$nivel/home";
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Lolca Ativado!"]);
+		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
+		echo $funcao;
+	}
+
+	public function excluir_slocal_permanentemente()
+	{
+		$id_slocal = $this->input->post("opc");
+		$id_usuario = $this->input->post("idUsuario");
+
+		$infos = $this->FConsultas_model->getInfoUserId($id_slocal);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_slocal);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_slocal, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->excluirPgPermanentemente($pg['id_pg'], $id_slocal, $id_usuario, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_slocal, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->excluirCriancaPermanentemente($criancas['id_crianca'], $id_slocal, $id_usuario, 2);
+			}
+		}
+
+		$dados_colider = $this->FConsultas_model->mostrarColiderDoLider($id_slocal);
+
+		if ($dados_colider) {
+			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_slocal, $id_usuario);
+		} else {
+		}
+
+		$dados_lider = $this->FConsultas_model->getLideres([$id_slocal], 2, 1, []);
+
+		if ($dados_lider['row'] == 0) {
+		} else {
+			foreach ($dados_lider['dados'] as $key => $lider) {
+				$this->FSistema_model->editar_lider_exclusao_slocal($lider['id_lider'], $id_slocal, $id_usuario);
+			}
+		}
+
+		$dados_coordenadores = $this->FConsultas_model->getCoordenador([$id_slocal], 2, 1, []);
+
+		if ($dados_coordenadores['row'] == 0) {
+		} else {
+			foreach ($dados_coordenadores['dados'] as $key => $lider) {
+				$this->FSistema_model->editar_lider_exclusao_slocal($lider['id_coordenador'], $id_slocal, $id_usuario);
+			}
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->excluirSLocalPermanentemente($id_slocal, $id_usuario);
+
+		$nivel = $this->input->post('nivel') ?? 'direcao';
+		$url = $this->input->post('url') ?? "$nivel/page/equipe";
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Ativado!"]);
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
 		echo $funcao;
 	}

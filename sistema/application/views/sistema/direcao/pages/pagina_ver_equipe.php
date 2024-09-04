@@ -19,7 +19,7 @@ if (!isset($_SESSION['usuario'])) {
     if ($dados_direcao['row'] == 0) {
         $data = [];
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-        $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
+        $funcao = $this->FConsultas_model->red("../../index", 2000, $data);
         echo $funcao;
     } else {
 
@@ -534,7 +534,7 @@ if (!isset($_SESSION['usuario'])) {
                                         if ($sregional_desativados['row'] == 0) {
                                         } else {
                                         ?>
-                                            <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#sregioanl_desativados">Coordenadores Desativados</button>
+                                            <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#sregioanl_desativados">S. Regionais Desativados</button>
 
                                             <div class="modal fade" id="sregioanl_desativados">
                                                 <div class="modal-dialog modal-warning">
@@ -563,7 +563,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <label for="opc">S. Regionais:</label>
                                                                         <select name="opc" id="opc_id_sregional_d" onchange="trocar_id_sregional()" class="form-control">
                                                                             <?php
-                                                                            foreach ($sregionales_desativados['dados'] as $key => $dadosSRegionalD) {
+                                                                            foreach ($sregional_desativados['dados'] as $key => $dadosSRegionalD) {
                                                                             ?>
                                                                                 <option value="<?= $dadosSRegionalD['id_supervisorEs']; ?>"><?= $dadosSRegionalD['nome_supervisorE']; ?> </option>
                                                                             <?php } ?>
@@ -574,9 +574,11 @@ if (!isset($_SESSION['usuario'])) {
                                                                 <div class="col-lg-3">
                                                                     <div class="form-group">
                                                                         <form action="sregional/exclusao/ativar" method="POST">
-                                                                            <input type="hidden" name="opc" id="id_sregional_d_escolhido_1" value="<?= $sregionales_desativados['dados'][0]['id_supervisorEs']; ?>">
+                                                                            <input type="hidden" name="opc" id="id_sregional_d_escolhido_1" value="<?= $sregional_desativados['dados'][0]['id_supervisorEs']; ?>">
                                                                             <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                            <input type="hidden" name="red" value="direcao/sregional">
+
+                                                                            <input type="hidden" name="url" value="<?= $url; ?>">
+                                                                            <input type="hidden" name="nivel" value="<?= $url_1; ?>">
                                                                             <center>
                                                                                 <label for="opc">Opção 1:</label><br>
                                                                                 <input type="submit" class="btn btn-success" value="Ativar">
@@ -588,9 +590,11 @@ if (!isset($_SESSION['usuario'])) {
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group">
                                                                         <form action="sregional/exclusao/permanente" method="POST">
-                                                                            <input type="hidden" name="opc" id="id_sregional_d_escolhido_2" value="<?= $sregionales_desativados['dados'][0]['id_supervisorEs']; ?>">
+                                                                            <input type="hidden" name="opc" id="id_sregional_d_escolhido_2" value="<?= $sregional_desativados['dados'][0]['id_supervisorEs']; ?>">
                                                                             <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                            <input type="hidden" name="red" value="direcao/sregional">
+
+                                                                            <input type="hidden" name="url" value="<?= $url; ?>">
+                                                                            <input type="hidden" name="nivel" value="<?= $url_1; ?>">
                                                                             <center>
                                                                                 <label for="opc">Opção 2:</label><br>
                                                                                 <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">

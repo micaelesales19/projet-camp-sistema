@@ -10,11 +10,11 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#table_lider').DataTable();
+        $('#table').DataTable();
     });
 </script>
 
-<table class="table table-bordered table-hover" id="table_lider" width="100%">
+<table class="table table-bordered table-hover" id="table" width="100%">
     <thead>
         <tr>
             <th width="200px;">Coordenador</th>
@@ -29,26 +29,29 @@
     </thead>
     <tbody>
         <?php
-        $dados_coordenadores = $dados_coordenadores_gerais['dados'];
-
         $data = date('Y-m-d');
+        $id_sregional = $id_user;
 
-        foreach ($dados_coordenadores as $key => $lider) {
-            $id_coordenador = $lider['id_coordenador'];
-            $ativo = $lider['ativo'];
-            $data_cadastro = $lider['data_cadastro'];
+        foreach ($lista as $key => $dados) {
+            $id_slocal = $dados['id_supervisorR'];
+            $ativo = $dados['ativo'];
+            $data_cadastro = $dados['data_cadastro'];
             $data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
 
-            $foto_original = $lider['foto'];
+            $foto_original = $dados['foto'];
+
+            $datas = $this->FSistema_model->format_dates($opc1, $opc2, $dataInicio, $dataFim);
 
             $foto = base_url('import/sistema/' . $foto_original);
-            $telefone = $lider['telefone_whatsapp'];
+            $telefone = $dados['telefone_whatsapp'];
 
-            $total_lider_coordenador = $this->FConsultas_model->getLideres([$id_coordenador], 1, 1, []);
-            $total_lider_ativos_coordenador =  $this->FConsultas_model->lideresAtivos($total_lider_coordenador);
+            $lideres_do_sregional = $this->FConsultas_model->getLideres(['sregional', 'slocal', $id_sregional, $id_slocal], $opc1, $opc2, $datas);
 
-            $total_criancas_geral_coordenador = $this->FConsultas_model->getNumerosCriancas([$id_coordenador], $total_lider_coordenador, 'criancas_coord_1');
-            $total_criancas_ativos_coordenador = $this->FConsultas_model->getNumerosCriancas([$id_coordenador], $total_lider_ativos_coordenador, 'criancas_coord_1');
+            $total_lider_sregional = $lideres_do_sregional['row'];
+            $total_lider_ativos_sregional = $lideres_do_sregional[0]['row'];
+
+            $total_criancas_geral_sregional =  $lideres_do_sregional[1];
+            $total_criancas_ativos_sregional =   $lideres_do_sregional[2];
 
             $progresso = "";
             $class1 = "danger";
@@ -56,10 +59,13 @@
             if ($ativo == 0) {
                 $progresso = "Inativo";
                 $class1 = "danger";
-            } else if ($total_lider_coordenador['row'] == 0) {
-                $progresso = "Inativo";
+            } else if ($total_lider_sregional < 1 || $total_criancas_geral_sregional < 2) {
+                $progresso = "Ativo";
                 $class1 = "danger";
-            } else if ($total_lider_ativos_coordenador['row'] == 0) {
+            } else if ($total_lider_ativos_sregional < 1 || $total_criancas_ativos_sregional < 2) {
+                $progresso = "Ativo";
+                $class1 = "warning";
+            } /*else if ($total_slocal_do_sregional_ativos == 0) {
                 $progresso = "Inativo";
                 $class1 = "warning";
             } else if ($total_criancas_geral_coordenador == 0) {
@@ -68,23 +74,23 @@
             } else if ($total_criancas_ativos_coordenador == 0) {
                 $progresso = "Inativo";
                 $class1 = "warning";
-            } else {
+            }*/ else {
                 $progresso = "Ativo";
                 $class1 = "success";
             }
         ?>
             <tr>
                 <td>
-                    <img src="<?= $foto; ?>" alt="" id="imgPhoto_usuario"> <?= $lider['nome_coordenador']; ?>
+                    <img src="<?= $foto; ?>" alt="" id="imgPhoto_usuario"> <?= $dados['nome_coordenador']; ?>
                 </td>
-                <td><?= $total_lider_coordenador['row']; ?></td>
-                <td><?= $total_lider_ativos_coordenador['row']; ?></td>
-                <td><?= $total_criancas_geral_coordenador; ?></td>
-                <td><?= $total_criancas_ativos_coordenador; ?></td>
+                <td><?= $total_lider_sregional; ?></td>
+                <td><?= $total_lider_ativos_sregional; ?></td>
+                <td><?= $total_criancas_geral_sregional; ?></td>
+                <td><?= $total_criancas_ativos_sregional; ?></td>
                 <td><span class="label label-<?= $class1; ?>"><?= $progresso; ?></span></td>
                 <td>
-                    <form action="lideres" method="post">
-                        <input type="hidden" name="id_user" value="<?= $lider['id_coordenador']; ?>">
+                    <form action="../sregional/detalhes/<?= $dados['id_coordenador']; ?>" method="post">
+                        <input type="hidden" name="id_user" value="<?= $dados['id_coordenador']; ?>">
                         <input type="submit" class="btn btn-info" value="Visualizar" />
                     </form>
                 </td>

@@ -1,31 +1,36 @@
 <?php
 
+$voltar_index = $id_slocal == '' ? "../.." : "../../..";
+$voltar = $id_slocal == '' ? "../" : "../../";
+$array = array('voltar' => $voltar);
+
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../index");
+    header("location: $voltar_index/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-    $voltar = "../";
-    $array = array('voltar' => $voltar);
-
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
 
-    $dados_slocal = $this->FConsultas_model->getInfoSRegionalId($id_usuario);
+    $dados_slocal = $this->FConsultas_model->getInfoDirecaoId($id_usuario);
 
     if ($dados_slocal['row'] == 0) {
         $data = [];
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-        $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
+        $funcao = $this->FConsultas_model->red("$voltar_index/index", 2000, $data);
         echo $funcao;
     } else {
+
+        $url_1 = $this->uri->segment(1);
+        $url = $this->FConsultas_model->get_url();
+
         $id_pastor = "2000";
         $id_coord = "3000";
         $id_sr = "4000";
-        $id_se = $id_usuario;
+        $id_se = "5000";
 
         $link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_coord&tres=$id_sr&quatro=$id_se";
 ?>
@@ -75,7 +80,7 @@ if (!isset($_SESSION['usuario'])) {
                     botao.disabled = false;
                 };
 
-                setTimeout(dismissLoadingScreen, 30000);
+                setTimeout(dismissLoadingScreen, 8000);
             }
 
             function aparecer_select() {
@@ -94,10 +99,7 @@ if (!isset($_SESSION['usuario'])) {
                     document.getElementById('consultar_endereco').style.display = "none";
                 }
             }
-        </script>
-        <!-- Head -->
 
-        <script>
             function AjaxF() {
                 var ajax;
 
@@ -167,7 +169,8 @@ if (!isset($_SESSION['usuario'])) {
 
                 document.getElementById('_controller').value = 0;
 
-                var id_usuario = '<?= $id_usuario; ?>';
+                var id_usuario = '<?= $id_slocal == '' ? $id_usuario : $id_slocal; ?>';
+                var routa = '<?= $id_slocal == '' ? '' : 'is_slocal'; ?>';
 
                 var opc2 = '';
 
@@ -194,30 +197,28 @@ if (!isset($_SESSION['usuario'])) {
                     }
                 }
 
-                ajax.open("GET", "coordenadores/mostrar1?id_user=" + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=coordenadores", false);
+                if (routa == 'is_slocal') {
+                    ajax.open("GET", "../coordenador/mostrar1?id_user=" + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=slocal/coordenador", false);
+                } else {
+                    ajax.open("GET", "slocal/mostrar1?id_user=" + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao/slocal-tudo", false);
+                }
 
                 ajax.setRequestHeader("Content-Type", "text/html");
                 ajax.send();
 
-                /*var url;
-                 url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
-                 jQuery.get(url, function(data) {
-                     $('#conteudos_table_info_coord').empty().append(data);
-                 });*/
-
                 var control = document.getElementById('_controller').value;
                 if (control == 0) {
-                    list_lideres();
+                    list_slocal();
                 } else {}
             }
 
 
-            function list_lideres() {
-
-                loader_2();
+            function list_slocal() {
 
                 setTimeout(function() {
-                    var id_usuario = '<?= $id_usuario; ?>';
+
+                    var id_usuario = '<?= $id_slocal == '' ? $id_usuario : $id_slocal; ?>';
+                    var routa = '<?= $id_slocal == '' ? '' : 'is_slocal'; ?>';
 
                     document.getElementById('_controller').value = 0;
 
@@ -234,22 +235,30 @@ if (!isset($_SESSION['usuario'])) {
                     var dataIn = document.getElementById('datepicker_de').value;
                     var dataFim = document.getElementById('datepicker_ate').value;
 
-                    $('#conteudos_table_info_coord').empty();
+                    $('#conteudos_table_info_slocal').empty();
 
                     var url;
-                    url = 'lideres/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=coordenadores";
+                    if (routa == 'is_slocal') {
+                        url = '../coordenador/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=slocal/coordenador";
+                    } else {
+                        url = 'slocal/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao/slocal-tudo";
+                    }
+
                     jQuery.get(url, function(data) {
-                        $('#conteudos_table_info_coord').empty().append(data);
+                        $('#conteudos_table_info_slocal').empty().append(data);
                     });
-                }, 3000);
+                }, 0);
+                loader_2();
             }
 
-            function list_lideres_ativos() {
+            function list_slocal_ativos() {
 
                 loader_2();
 
                 setTimeout(function() {
-                    var id_usuario = '<?= $id_usuario; ?>';
+
+                    var id_usuario = '<?= $id_slocal == '' ? $id_usuario : $id_slocal; ?>';
+                    var red = '<?= $id_slocal == '' ? '' : '../'; ?>';
 
                     document.getElementById('_controller').value = 1;
 
@@ -258,14 +267,16 @@ if (!isset($_SESSION['usuario'])) {
                     var dataIn = document.getElementById('dataInicio_').value;
                     var dataFim = document.getElementById('dataAte_').value;
 
-                    $('#conteudos_table_info_coord').empty();
+                    $('#conteudos_table_info_slocal').empty();
 
                     var url;
-                    url = 'lideres/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=coordenadores";
+                    url = red + 'slocal/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao";
                     jQuery.get(url, function(data) {
-                        $('#conteudos_table_info_coord').empty().append(data);
+                        $('#conteudos_table_info_slocal').empty().append(data);
                     });
-                }, 3000);
+                }, 0);
+
+                loader_2();
             }
 
             function enviar_whatsapp(telefones) {
@@ -375,7 +386,7 @@ if (!isset($_SESSION['usuario'])) {
             <div class="wrapper">
                 <!-- Menu -->
                 <?php
-                $this->load->view('sistema/sregional/partes/menu_lateral', $array);
+                $this->load->view('sistema/direcao/partes/menu_lateral', $array);
                 ?>
 
                 <input type="hidden" id="_controller" value="0">
@@ -388,14 +399,23 @@ if (!isset($_SESSION['usuario'])) {
                         <h1>
                             Equipe:
                             <?php
-                            $dados_user = $this->FConsultas_model->getNomeUserId($id_usuario);
-                            echo $dados_user['nome'];
+                            if ($id_slocal == '') {
+                            } else {
+                                $dados_user = $this->FConsultas_model->getNomeUserId($id_slocal);
+                                echo $dados_user['nome'];
+                            }
                             ?>
                             <small>Painel de Controle</small>
                         </h1>
                         <ol class="breadcrumb">
-                            <li><a href="../home"><i class="fa fa-home"></i> Home</a></li>
-                            <li class="active">Coordenadores</li>
+                            <?php
+                            foreach ($pages as $key => $value) {
+                            ?>
+                                <li><a href="<?= $value['red']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
+                            <?php
+                            }
+                            ?>
+                            <li class="active">Supervisor Local</li>
                         </ol>
                     </section>
                     <!-- Main content -->
@@ -406,11 +426,11 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box box-info">
 
                                 <div class="box-header with-border">
-                                    <h3 class="box-title"><i class="fa fa-table"></i> Seus Coordenadores</h3>
+                                    <h3 class="box-title"><i class="fa fa-table"></i> Supervisor Local</h3>
 
-                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_coord">Cadastrar +</button>
+                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_slocal">Cadastrar +</button>
 
-                                    <div class="modal fade" id="cadastro_coord">
+                                    <div class="modal fade" id="cadastro_slocal">
                                         <div class="modal-dialog modal-success">
                                             <div class="modal-content">
                                                 <form action="coordenadores/salvar" method="POST">
@@ -517,29 +537,29 @@ if (!isset($_SESSION['usuario'])) {
 
                                     <div class="box-tools pull-right">
                                         <?php
-                                        $coordenadores_desativados = $this->FConsultas_model->getCoordenadoresDesativados($id_usuario);
-                                        if ($coordenadores_desativados['row'] == 0) {
+                                        $slocal_desativados = $this->FConsultas_model->getSLocalDesativados();
+                                        if ($slocal_desativados['row'] == 0) {
                                         } else {
                                         ?>
-                                            <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#coord_desativados">Coordenadores Desativados</button>
+                                            <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#slocais_desativados">S. Locais Desativados</button>
 
-                                            <div class="modal fade" id="coord_desativados">
+                                            <div class="modal fade" id="slocais_desativados">
                                                 <div class="modal-dialog modal-warning">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span></button>
-                                                            <h4 class="modal-title">Ativar | Desativar | Coordenadores</h4>
+                                                            <h4 class="modal-title">Ativar | Desativar | S. Locais</h4>
                                                         </div>
 
                                                         <div class="box-body">
 
                                                             <script>
-                                                                function trocar_id_coordenador() {
-                                                                    var id_coord = document.getElementById('opc_id_coordenador_d').value;
+                                                                function trocar_id_slocal() {
+                                                                    var id_slocal = document.getElementById('opc_id_slocal_d').value;
 
-                                                                    document.getElementById('id_coordenador_d_escolhido_1').value = id_coord;
-                                                                    document.getElementById('id_coordenador_d_escolhido_2').value = id_coord;
+                                                                    document.getElementById('id_slocal_d_escolhido_1').value = id_slocal;
+                                                                    document.getElementById('id_slocal_d_escolhido_2').value = id_slocal;
                                                                 }
                                                             </script>
 
@@ -547,12 +567,12 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                 <div class="col-lg-5">
                                                                     <div class="form-group">
-                                                                        <label for="opc">Coordenadores:</label>
-                                                                        <select name="opc" id="opc_id_coordenador_d" onchange="trocar_id_coordenador()" class="form-control">
+                                                                        <label for="opc">S. Local:</label>
+                                                                        <select name="opc" id="opc_id_slocal_d" onchange="trocar_id_slocal()" class="form-control">
                                                                             <?php
-                                                                            foreach ($coordenadores_desativados['dados'] as $key => $dadosCoordD) {
+                                                                            foreach ($slocal_desativados['dados'] as $key => $dadosSLocalD) {
                                                                             ?>
-                                                                                <option value="<?= $dadosCoordD['id_coordenador']; ?>"><?= $dadosCoordD['nome_coordenador']; ?> </option>
+                                                                                <option value="<?= $dadosSLocalD['id_supervisorR']; ?>"><?= $dadosSLocalD['nome_supervisorR']; ?> </option>
                                                                             <?php } ?>
                                                                         </select>
                                                                     </div>
@@ -560,10 +580,13 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                 <div class="col-lg-3">
                                                                     <div class="form-group">
-                                                                        <form action="coordenadores/exclusao/ativar" method="POST">
-                                                                            <input type="hidden" name="opc" id="id_coordenador_d_escolhido_1" value="<?= $coordenadores_desativados['dados'][0]['id_coordenador']; ?>">
+                                                                        <form action="slocal/exclusao/ativar" method="POST">
+                                                                            <input type="hidden" name="opc" id="id_slocal_d_escolhido_1" value="<?= $slocal_desativados['dados'][0]['id_supervisorR']; ?>">
                                                                             <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                            <input type="hidden" name="red" value="coordenador">
+
+                                                                            <input type="hidden" name="url" value="<?= $url; ?>">
+                                                                            <input type="hidden" name="nivel" value="<?= $url_1; ?>">
+
                                                                             <center>
                                                                                 <label for="opc">Opção 1:</label><br>
                                                                                 <input type="submit" class="btn btn-success" value="Ativar">
@@ -574,10 +597,12 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group">
-                                                                        <form action="coordenadores/exclusao/permanente" method="POST">
-                                                                            <input type="hidden" name="opc" id="id_coordenador_d_escolhido_2" value="<?= $coordenadores_desativados['dados'][0]['id_coordenador']; ?>">
+                                                                        <form action="slocal/exclusao/permanente" method="POST">
+                                                                            <input type="hidden" name="opc" id="id_slocal_d_escolhido_2" value="<?= $slocal_desativados['dados'][0]['id_supervisorR']; ?>">
                                                                             <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                            <input type="hidden" name="red" value="coordenador">
+
+                                                                            <input type="hidden" name="url" value="">
+                                                                            <input type="hidden" name="nivel" value="<?= $url_1; ?>">
                                                                             <center>
                                                                                 <label for="opc">Opção 2:</label><br>
                                                                                 <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
@@ -634,16 +659,16 @@ if (!isset($_SESSION['usuario'])) {
                                                 <!-- /input-group -->
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
-                                                        <input type="radio" id="opc" name="opc" value="opc2" class="radio2" onclick="mostrarResultado();" checked>
+                                                        <input type="radio" id="opc" name="opc" value="opc2" class="radio2" onclick="mostrarResultado();">
                                                     </span>
                                                     <h5 id="label">Últimos 6 meses</h5>
                                                 </div>
                                                 <!-- /input-group -->
                                                 <div class="input-group">
                                                     <span class="input-group-addon">
-                                                        <input type="radio" id="opc" name="opc" value="opc3" class="radio3" onclick="mostrarResultado();">
+                                                        <input type="radio" id="opc" name="opc" value="opc3" class="radio3" onclick="mostrarResultado();" checked>
                                                     </span>
-                                                    <h5 id="label">Desde 2017</h5>
+                                                    <h5 id="label">Desde o Início</h5>
                                                 </div>
                                                 <!-- /input-group -->
 
@@ -698,7 +723,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
 
                                                 <div style="display: flex;">
-                                                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-table"></i> Gerar Excel</a>
+                                                    <!-- <a href="#" data-toggle="control-sidebar"><i class="fa fa-table"></i> Gerar Excel</a> -->
                                                 </div>
 
                                             </div>
@@ -710,7 +735,7 @@ if (!isset($_SESSION['usuario'])) {
                                         </div>
 
                                         <div class="table-responsive" id="preloader2" style="display: none;">
-                                            <div id="conteudos_table_info_coord"></div>
+                                            <div id="conteudos_table_info_slocal"></div>
                                         </div>
 
                                         <div class="box-body" id="message">

@@ -3,22 +3,31 @@
         <tr>
             <th id="clicar" onclick="list_lideres(this);">Coordenadores <i class="fa fa-hand-pointer-o"></i></th>
             <th id="clicar" onclick="list_lideres_ativos(this);">Coordenadores Ativos <i class="fa fa-hand-pointer-o"></i></th>
-            <th>% C.A.</th>
+            <th>%</th>
             <th id="clicar" onclick="list_lideres(this);">Líderes <i class="fa fa-hand-pointer-o"></i></th>
             <th id="clicar" onclick="list_lideres_ativos(this);">Líderes Ativos <i class="fa fa-hand-pointer-o"></i></th>
-            <th>% L.A.</th>
+            <th>%</th>
             <th id="clicar" onclick="list_lideres(this);">Crianças <i class="fa fa-hand-pointer-o"></i></th>
             <th id="clicar" onclick="list_lideres_ativos(this);">Crianças Ativas <i class="fa fa-hand-pointer-o"></i></th>
-            <th>% C.A.</th>
+            <th>%</th>
+            <?php
+            $dados_slocal = $this->FConsultas_model->getInfoSLocalId($id_user);
+            if ($dados_slocal['row'] == 0) {
+            } else {
+            ?>
+                <th width="10px;">Ação</th>
+                <th width="10px;">Ação</th>
+            <?php } ?>
         </tr>
     </thead>
     <tbody>
         <?php
-        $total_coordenadores = $dados_coordenadores_gerais['row'];
-        $total_coordenadores_ativos = $dados_coordenadores_ativos['row'];
 
-        $total_lideres = $dados_lideres_gerais['row'];
-        $total_lideres_ativos = $dados_lideres_ativos['row'];
+        $total_coordenadores = $dados_coordenadores_gerais;
+        $total_coordenadores_ativos = $dados_coordenadores_ativos;
+
+        $total_lideres = $dados_lideres_gerais;
+        $total_lideres_ativos = $dados_lideres_ativos;
 
         if ($total_lideres_ativos == 0 || $total_lideres == 0) {
             $porcentagem_lideres = 0;
@@ -56,14 +65,12 @@
         $comparacao_criancas_ativas = "";
 
         if ($mostrar_comparacao == 'sim') {
-            $comparacao_1 = $dados_coordenadores_gerais['comparacao'];
-            $comparacao_coordenadores = "/" . $comparacao_1['coordenadores'];
-            $comparacao_coordenadores_ativos = "/" . $comparacao_1['coordenadores_ativos'];
-            $comparacao_2 = $dados_lideres_gerais['comparacao'];
-            $comparacao_lider = "/" . $comparacao_2['lideres'];
-            $comparacao_lider_ativos = "/" . $comparacao_2['lideres_ativos'];
-            $comparacao_criancas = "/" . $comparacao_2['criancas'];
-            $comparacao_criancas_ativas = "/" . $comparacao_2['criancas_ativas'];
+            $comparacao_coordenadores = "/" . $comparacao[2]['row'];
+            $comparacao_coordenadores_ativos = "/" . $comparacao_ativos[2]['row'];
+            $comparacao_lider = "/" . $comparacao[3]['row'];
+            $comparacao_lider_ativos = "/" . $comparacao_ativos[3]['row'];
+            $comparacao_criancas = "/" . $comparacao[4];
+            $comparacao_criancas_ativas = "/" . $comparacao_ativos[4];
         } else {
         }
         ?>
@@ -71,12 +78,25 @@
             <td><?= $total_coordenadores; ?><?= $comparacao_coordenadores; ?></td>
             <td><?= $total_coordenadores_ativos; ?><?= $comparacao_coordenadores_ativos; ?></td>
             <td><span class="label label-<?= $class3; ?>"><?= $porcentagem_coordenadores; ?>%</span></td>
+
             <td><?= $total_lideres; ?><?= $comparacao_lider; ?></td>
             <td><?= $total_lideres_ativos; ?><?= $comparacao_lider_ativos; ?></td>
             <td><span class="label label-<?= $class1; ?>"><?= $porcentagem_lideres; ?>%</span></td>
+
             <td><?= $dados_criancas_gerais; ?><?= $comparacao_criancas; ?></td>
             <td><?= $dados_criancas_ativos; ?><?= $comparacao_criancas_ativas; ?></td>
             <td><span class="label label-<?= $class2; ?>"><?= $porcentagem_criancas; ?>%</span></td>
+            <?php
+            if ($dados_slocal['row'] == 0) {
+            } else {
+            ?>
+                <td>
+                    <form action="detalhes/<?= $dados_slocal['dados']['id_supervisorR']; ?>" method="post">
+                        <input type="submit" class="btn btn-info" value="Detalhes" />
+                    </form>
+                </td>
+                <td id="clicar" onclick="enviar_whatsapp('<?= $dados_slocal['dados']['telefone_whatsapp']; ?>');"><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
+            <?php } ?>
         </tr>
     </tbody>
 </table>

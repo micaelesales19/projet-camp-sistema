@@ -2,11 +2,10 @@
 
 /** @var \$this */
 
-$voltar = "";
-$array = array('voltar' => $voltar);
+$array = array('voltar' => "");
 
 if (!isset($_SESSION['usuario'])) {
-  header("location: ../$voltar/index");
+  header("location: ../index");
 } else {
 
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
@@ -17,7 +16,7 @@ if (!isset($_SESSION['usuario'])) {
   if ($dados_sregioanl['row'] == 0) {
     $data = [];
     $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-    $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
+    $funcao = $this->FConsultas_model->red("../index", 2000, $data);
     echo $funcao;
   } else {
 

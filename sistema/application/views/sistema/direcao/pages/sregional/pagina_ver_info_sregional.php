@@ -1,25 +1,29 @@
 <?php
+
+$voltar_index = $id_sregional == '' ? "../../.." : "../../../..";
+$voltar = $id_sregional == '' ? "../../" : "../../../";
+$array = array('voltar' => $voltar);
+
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../../../index");
+    header("location: $voltar_index/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
-
-    $voltar = "../../../";
-    $array = array('voltar' => $voltar);
 
     $dados_direcao = $this->FConsultas_model->getInfoDirecaoId($id_usuario);
 
     if ($dados_direcao['row'] == 0) {
         $data = [];
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-        $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
+        $funcao = $this->FConsultas_model->red("$voltar_index/index", 2000, $data);
         echo $funcao;
     } else {
 
         $url_1 = $this->uri->segment(1);
         $url = $this->FConsultas_model->get_url();
+
+        $dados = $dados['dados'];
 ?>
         <!DOCTYPE html>
         <html>
@@ -29,6 +33,20 @@ if (!isset($_SESSION['usuario'])) {
         ?>
 
         <script>
+            $(document).ready(function() {
+                var opc = '<?= $dados['pais']; ?>';
+
+                if (opc == "br") {
+                    document.getElementById('linha_selecionar').style.display = "inline";
+                    document.getElementById('linha_digitar').style.display = "none";
+                    document.getElementById('linha_digitar_nome_pais').style.display = "none";
+                } else {
+                    document.getElementById('linha_selecionar').style.display = "none";
+                    document.getElementById('linha_digitar').style.display = "inline";
+                    document.getElementById('linha_digitar_nome_pais').style.display = "inline";
+                }
+            });
+
             function validar_edicao() {
 
                 var dados = document.form_editar_foto.opc.value;
@@ -36,6 +54,23 @@ if (!isset($_SESSION['usuario'])) {
                 if (dados == "Sim" || dados == "Não") {} else {
                     alert("Você não escolheu a opção");
                     return false;
+                }
+            }
+
+            function aparecer_select() {
+                var opc = document.getElementById('pais').value;
+
+                if (opc == "br") {
+                    document.getElementById('linha_selecionar').style.display = "inline";
+                    document.getElementById('linha_digitar').style.display = "none";
+                    document.getElementById('linha_digitar_nome_pais').style.display = "none";
+                    document.getElementById('nome_pais').value = "br";
+                } else {
+                    document.getElementById('linha_selecionar').style.display = "none";
+                    document.getElementById('linha_digitar').style.display = "inline";
+                    document.getElementById('linha_digitar_nome_pais').style.display = "inline";
+                    document.getElementById('nome_pais').value = "";
+
                 }
             }
         </script>
@@ -73,7 +108,7 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- Content Header (Page header) -->
                     <section class="content-header">
                         <h1>
-                            <?= $dados['dados']['nome_supervisorE']; ?>
+                            <?= $dados['nome_supervisorE']; ?>
                             <small>Painel de Controle</small>
                         </h1>
 
@@ -95,7 +130,6 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box box-info">
                                 <?php
 
-                                $dados = $dados['dados'];
                                 $check_desativado = "";
 
                                 if ($dados['ativo'] == 0) {
@@ -109,9 +143,9 @@ if (!isset($_SESSION['usuario'])) {
                                         </h4>
                                     </div>
                                     <center>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 15px;" data-target="#lideres_desativados">Ativar</button>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 15px;" data-target="#sregional_desativados">Ativar</button>
                                     </center>
-                                    <div class="modal fade" id="lideres_desativados">
+                                    <div class="modal fade" id="sregional_desativados">
                                         <div class="modal-dialog modal-warning">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -241,50 +275,76 @@ if (!isset($_SESSION['usuario'])) {
                                                     </center>
                                                 </div>
 
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-12">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">Nome</label>
                                                         <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados['nome_supervisorE']; ?>" placeholder="Nome" <?= $check_desativado; ?> required>
                                                         <input type="hidden" name="nome_antigo" value="<?= $dados['nome_supervisorE']; ?>">
                                                     </div>
+                                                </div>
 
+                                                <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">CPF</label>
                                                         <input type="text" class="form-control" id="exampleInputEmail1" name="cpf" value="<?= $dados['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" <?= $check_desativado; ?> required>
                                                     </div>
-                                                </div>
 
-                                                <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">E-mail</label>
                                                         <input type="email" class="form-control" id="exampleInputEmail1" name="email" value="<?= $dados['email']; ?>" placeholder="E-mail" <?= $check_desativado; ?> required>
                                                     </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">Telefone</label>
                                                         <input type="text" class="form-control" id="exampleInputEmail1" name="telefone" value="<?= $dados['telefone_whatsapp']; ?>" placeholder="Telefone" minlength="11" <?= $check_desativado; ?> required>
                                                     </div>
-                                                </div>
-
-                                                <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">Data de Nascimento</label>
                                                         <input type="text" class="form-control" id="exampleInputEmail1" name="nascimento" value="<?= $dados['nascimento']; ?>" maxlength="10" minlength="10" placeholder="Data de Nascimento" <?= $check_desativado; ?> required>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="exampleInputPassword1">Estado</label>
-                                                        <?php
-                                                        if ($dados['pais'] == 'br' || $dados['nome_supervisorE'] == '') {
-                                                        ?>
+
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="exampleInputPassword1">Pais</label>
+                                                            <select name="pais" id="pais" class="form-control" onchange="aparecer_select(this);" <?= $check_desativado; ?>>
+                                                                <?php
+                                                                if ($dados['pais'] == 'br') {
+                                                                ?>
+                                                                    <option value="br" selected>Brasil</option>
+                                                                    <option value="outro">Outro</option>
+                                                                <?php
+                                                                } else {
+                                                                ?>
+                                                                    <option value="br">Brasil</option>
+                                                                    <option value="outro" selected>Outro</option>
+                                                                <?php
+                                                                }
+                                                                ?>
+                                                            </select>
+
+                                                            <div class="form-group" id="linha_digitar_nome_pais">
+                                                                <label for="exampleInputPassword1">Digite o nome do Pais</label>
+                                                                <input type="text" class="form-control" id="nome_pais" name="nome_pais" value="<?= $dados['pais']; ?>" minlength="2" placeholder="Pais" <?= $check_desativado; ?>>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group" id="linha_selecionar">
+                                                            <label for="exampleInputPassword1">Estado</label>
                                                             <select id="estados" name="estados" class="form-control" <?= $check_desativado; ?>>
                                                                 <option value=""></option>
                                                             </select>
-                                                        <?php
-                                                        } else {
-                                                        ?>
-                                                            <input type="text" class="form-control" id="exampleInputEmail1" name="estados" value="<?= $dados['estado']; ?>" minlength="2" placeholder="Estado" <?= $check_desativado; ?>>
-                                                        <?php } ?>
+                                                        </div>
+
+                                                        <div class="form-group" id="linha_digitar">
+                                                            <label for="exampleInputPassword1">Estado</label>
+                                                            <input type="text" class="form-control" id="estados2" name="estados2" value="<?= $dados['estado']; ?>" minlength="2" placeholder="Estado" <?= $check_desativado; ?>>
+                                                        </div>
                                                     </div>
                                                 </div>
 

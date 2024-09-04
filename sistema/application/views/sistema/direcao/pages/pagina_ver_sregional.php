@@ -1,15 +1,17 @@
 <?php
 
 /** @var \$this */
+
+$voltar_index = $id_sregional == '' ? "../.." : "../../..";
+$voltar = $id_sregional == '' ? "../" : "../../";
+$array = array('voltar' => $voltar);
+
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../index");
+    header("location: $voltar_index/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
-
-    $voltar = "../../";
-    $array = array('voltar' => $voltar);
 
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
@@ -19,7 +21,7 @@ if (!isset($_SESSION['usuario'])) {
     if ($dados_direcao['row'] == 0) {
         $data = [];
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-        $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
+        $funcao = $this->FConsultas_model->red("$voltar_index/index", 2000, $data);
         echo $funcao;
     } else {
 
@@ -218,12 +220,12 @@ if (!isset($_SESSION['usuario'])) {
                     var dataIn = document.getElementById('datepicker_de').value;
                     var dataFim = document.getElementById('datepicker_ate').value;
 
-                    $('#conteudos_table_info_coord').empty();
+                    $('#conteudos_table_info_sregional').empty();
 
                     var url;
                     url = '../sregional/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao/sregional";
                     jQuery.get(url, function(data) {
-                        $('#conteudos_table_info_coord').empty().append(data);
+                        $('#conteudos_table_info_sregional').empty().append(data);
                     });
                 }, 0);
                 loader_2();
@@ -238,12 +240,12 @@ if (!isset($_SESSION['usuario'])) {
                     var dataIn = document.getElementById('dataInicio_').value;
                     var dataFim = document.getElementById('dataAte_').value;
 
-                    $('#conteudos_table_info_coord').empty();
+                    $('#conteudos_table_info_sregional').empty();
 
                     var url;
                     url = '../sregional/mostrar2?id_user=' + id_usuario + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim + "&nivel=direcao/sregional";
                     jQuery.get(url, function(data) {
-                        $('#conteudos_table_info_coord').empty().append(data);
+                        $('#conteudos_table_info_sregional').empty().append(data);
                     });
                 }, 0);
 
@@ -489,7 +491,7 @@ if (!isset($_SESSION['usuario'])) {
                                         if ($sregional_desativados['row'] == 0) {
                                         } else {
                                         ?>
-                                            <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#sregioanl_desativados">Coordenadores Desativados</button>
+                                            <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#sregioanl_desativados">S. Regionais Desativados</button>
 
                                             <div class="modal fade" id="sregioanl_desativados">
                                                 <div class="modal-dialog modal-warning">
@@ -678,7 +680,7 @@ if (!isset($_SESSION['usuario'])) {
                                         </div>
 
                                         <div class="table-responsive" id="preloader2" style="display: none;">
-                                            <div id="conteudos_table_info_coord"></div>
+                                            <div id="conteudos_table_info_sregional"></div>
                                         </div>
 
                                         <div class="box-body" id="message">

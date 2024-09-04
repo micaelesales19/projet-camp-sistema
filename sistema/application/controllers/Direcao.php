@@ -232,7 +232,7 @@ class Direcao extends CI_Controller
 
 		$this->load->view('sistema/direcao/pages/pagina_ver_equipe', $dados);
 	}
-	// Líderes
+	// S Regional
 	public function pagina_ver_sregional()
 	{
 		$id_sregional = $this->uri->segment(4);
@@ -275,9 +275,6 @@ class Direcao extends CI_Controller
 		$segmento = $this->uri->segment(4);
 		$id_sregional = $this->uri->segment(5);
 		$dados_sregional = $this->FConsultas_model->getInfoSRegionalId($id_sregional);
-
-		$id_coord = $this->input->post('id_coord') ?? '';
-		$nivel = $this->input->post('nivel_routa') ?? 'lider';
 
 		$pages = [];
 
@@ -327,10 +324,109 @@ class Direcao extends CI_Controller
 		$dados = array(
 			'dados' => $dados_sregional,
 			'pages' => $pages,
-			'id_coord' => $id_coord,
+			'id_sregional' => $id_sregional,
 		);
 
 		$this->load->view('sistema/direcao/pages/sregional/pagina_ver_info_sregional', $dados);
+	}
+
+	// S Local
+	public function pagina_ver_slocal()
+	{
+		$id_slocal = $this->uri->segment(4);
+
+		$pages = [];
+
+		if ($id_slocal == '') {
+			$page1 = array(
+				"red" => "../home",
+				"name" => "Home",
+				"icon" => "fa fa-home",
+			);
+			array_push($pages, $page1);
+		} else {
+			$page1 = array(
+				"red" => "../../home",
+				"name" => "Home",
+				"icon" => "fa fa-home",
+			);
+			array_push($pages, $page1);
+
+			$page2 = array(
+				"red" => "../slocal",
+				"name" => "Equipe",
+				"icon" => "fa fa-users",
+			);
+			array_push($pages, $page2);
+		}
+
+		$dados = array(
+			'id_slocal' => $id_slocal,
+			'pages' => $pages,
+		);
+
+		$this->load->view('sistema/direcao/pages/pagina_ver_slocal', $dados);
+	}
+
+	public function pagina_ver_detalhes_slocal()
+	{
+
+		$segmento = $this->uri->segment(4);
+		$id_slocal = $this->uri->segment(5);
+		$dados_slocal = $this->FConsultas_model->getInfoSLocalId($id_slocal);
+
+		$pages = [];
+
+		if ($id_slocal == '') {
+			$page1 = array(
+				"red" => "../home",
+				"name" => "Home",
+				"icon" => "fa fa-home",
+			);
+			array_push($pages, $page1);
+		} else {
+			if ($segmento == 'sregional') {
+				$page1 = array(
+					"red" => "../../home",
+					"name" => "Home",
+					"icon" => "fa fa-home",
+				);
+				array_push($pages, $page1);
+				$page2 = array(
+					"red" => "../equipe",
+					"name" => "Equipe",
+					"icon" => "fa fa-users",
+				);
+				array_push($pages, $page2);
+			} else {
+				$page1 = array(
+					"red" => "../../../home",
+					"name" => "Home",
+					"icon" => "fa fa-home",
+				);
+				array_push($pages, $page1);
+				$page2 = array(
+					"red" => "../../equipe",
+					"name" => "Equipe",
+					"icon" => "fa fa-users",
+				);
+				array_push($pages, $page2);
+				$page2 = array(
+					"red" => "../$id_slocal",
+					"name" => "Lista",
+					"icon" => "fa fa-user",
+				);
+				array_push($pages, $page2);
+			}
+		}
+
+		$dados = array(
+			'dados' => $dados_slocal,
+			'pages' => $pages,
+			'id_slocal' => $id_slocal,
+		);
+
+		$this->load->view('sistema/direcao/pages/slocal/pagina_ver_info_slocal', $dados);
 	}
 
 	// Líderes
@@ -865,11 +961,6 @@ class Direcao extends CI_Controller
 		);
 
 		$this->load->view('sistema/sregional/pages/coordenadores/pagina_ver_info_coordenador', $dados);
-	}
-
-	public function pagina_ver_slocal()
-	{
-		$this->load->view('sistema/sregional/pages/pagina_ver_slocal');
 	}
 
 	// PG

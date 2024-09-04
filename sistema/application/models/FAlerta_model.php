@@ -33,11 +33,7 @@ class FAlerta_model extends CI_Model
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seu Coordenador ID - ($id) permanentemente. Por esse motivo - " . $motivo;
 		} else if ($acao == "RE_PG_1") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " reativou um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
-		} else if ($acao == "MUDANCA_DE_MODULO") {
-			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
-		} else if ($acao == "SOLICITACAO_TROCA_CSS") {
-			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
-		} else if ($acao == 'EX_SREGIONAL_DIRECAO') {
+		} else if ($acao == "MUDANCA_DE_MODULO" || $acao == 'SOLICITACAO_TROCA_CSS' || $acao == 'EX_SREGIONAL_DIRECAO' || $acao == 'EX_SLOCAL_DIRECAO') {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
 		} else {
 			$texto_motivo .= $motivo;
