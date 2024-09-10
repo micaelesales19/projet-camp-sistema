@@ -70,7 +70,6 @@ if (!isset($_SESSION['usuario'])) {
                     document.getElementById('linha_digitar').style.display = "inline";
                     document.getElementById('linha_digitar_nome_pais').style.display = "inline";
                     document.getElementById('nome_pais').value = "";
-
                 }
             }
         </script>
@@ -108,7 +107,7 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- Content Header (Page header) -->
                     <section class="content-header">
                         <h1>
-                            <?= $dados['nome_supervisorE']; ?>
+                            <?= $dados['nome_supervisorR']; ?>
                             <small>Painel de Controle</small>
                         </h1>
 
@@ -158,14 +157,14 @@ if (!isset($_SESSION['usuario'])) {
                                                         <div class="col-lg-5">
                                                             <div class="form-group">
                                                                 <label for="opc">S. Regional:</label>
-                                                                <input type="text" class="form-control" value="<?= $dados['nome_supervisorE']; ?>" disabled>
+                                                                <input type="text" class="form-control" value="<?= $dados['nome_supervisorR']; ?>" disabled>
                                                             </div>
                                                         </div>
 
                                                         <div class="col-lg-3">
                                                             <div class="form-group">
                                                                 <form action="../exclusao/ativar" method="POST">
-                                                                    <input type="hidden" name="opc" value="<?= $dados['id_supervisorEs']; ?>">
+                                                                    <input type="hidden" name="opc" value="<?= $dados['id_supervisorR']; ?>">
                                                                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
 
                                                                     <input type="hidden" name="url" value="<?= $url; ?>">
@@ -182,7 +181,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <div class="col-lg-4">
                                                             <div class="form-group">
                                                                 <form action="../exclusao/permanente" method="POST">
-                                                                    <input type="hidden" name="opc" value="<?= $dados['id_supervisorEs']; ?>">
+                                                                    <input type="hidden" name="opc" value="<?= $dados['id_supervisorR']; ?>">
                                                                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
 
                                                                     <input type="hidden" name="url" value="">
@@ -225,7 +224,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 $foto = base_url('import/sistema/' . $foto_original);
                                                 ?>
 
-                                                <input type="hidden" name="id" aria-describedby="emailHelp" value="<?= $dados['id_supervisorEs']; ?>">
+                                                <input type="hidden" name="id" aria-describedby="emailHelp" value="<?= $dados['id_supervisorR']; ?>">
 
                                                 <input type="hidden" name="url" value="<?= $url; ?>">
                                                 <input type="hidden" name="nivel" value="<?= $url_1; ?>">
@@ -252,6 +251,15 @@ if (!isset($_SESSION['usuario'])) {
                                                                     str += $(this).text();
                                                                 });
 
+                                                                $.each(data, function(key, val) {
+                                                                    if (val.nome == str) {
+                                                                        options_cidades += '<optgroup label="Sua cidade escolhida"><option value="<?php echo $dados['cidade'] ?>"><?php echo $dados['cidade'] ?></option></optgroup>';
+                                                                        $.each(val.cidades, function(key_city, val_city) {
+                                                                            options_cidades += '<option value="' + val_city + '" class="form-control">' + val_city + '</option>';
+                                                                        });
+                                                                    }
+                                                                });
+                                                                $("#cidades").html(options_cidades);
                                                             }).change();
 
                                                         });
@@ -277,8 +285,8 @@ if (!isset($_SESSION['usuario'])) {
                                                 <div class="col-lg-12">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">Nome</label>
-                                                        <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados['nome_supervisorE']; ?>" placeholder="Nome" <?= $check_desativado; ?> required>
-                                                        <input type="hidden" name="nome_antigo" value="<?= $dados['nome_supervisorE']; ?>">
+                                                        <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados['nome_supervisorR']; ?>" placeholder="Nome" <?= $check_desativado; ?> required>
+                                                        <input type="hidden" name="nome_antigo" value="<?= $dados['nome_supervisorR']; ?>">
                                                     </div>
                                                 </div>
 
@@ -330,35 +338,36 @@ if (!isset($_SESSION['usuario'])) {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label for="exampleInputPassword1">Estado</label>
-                                                            <?php
-                                                            if ($dados['pais'] == 'br') {
-                                                            ?>
+
+                                                    <div id="linha_selecionar">
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputPassword1">Estado</label>
                                                                 <select id="estados" name="estados" class="form-control" <?= $check_desativado; ?>>
                                                                     <option value=""></option>
                                                                 </select>
-                                                            <?php
-                                                            } else {
-                                                            ?>
-                                                                <input type="text" class="form-control" id="exampleInputEmail1" name="estados" value="<?= $dados['estado']; ?>" minlength="2" placeholder="Estado" <?= $check_desativado; ?>>
-                                                            <?php } ?>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputPassword1">Cidade</label>
+                                                                <select id="cidades" name="cidades" class="form-control" <?= $check_desativado; ?>></select>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-lg-4">
-                                                        <div class="form-group">
-                                                            <label for="exampleInputPassword1">Cidade</label>
-                                                            <?php
-                                                            if ($dados['pais'] == 'br') {
-                                                            ?>
-                                                                <select id="cidades" name="cidades" class="form-control" <?= $check_desativado; ?>></select>
-                                                            <?php
-                                                            } else {
-                                                            ?>
-                                                                <input type="text" class="form-control" id="exampleInputEmail1" name="estados" value="<?= $dados['estado']; ?>" minlength="2" placeholder="Estado" <?= $check_desativado; ?>>
-                                                            <?php } ?>
+                                                    <div id="linha_digitar">
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputPassword1">Estado</label>
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" name="estados2" value="<?= $dados['estado']; ?>" minlength="2" placeholder="Estado" <?= $check_desativado; ?>>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputPassword1">Cidade</label>
+                                                                <input type="text" class="form-control" id="exampleInputEmail1" name="cidades2" value="<?= $dados['cidade']; ?>" minlength="2" placeholder="Cidade" <?= $check_desativado; ?>>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -372,7 +381,7 @@ if (!isset($_SESSION['usuario'])) {
                                                             <button type="button" class="btn btn-success pull-left dropdown-toggle" data-toggle="dropdown">Mudar Função
                                                                 <span class="fa fa-caret-down"></span></button>
                                                             <ul class="dropdown-menu">
-                                                                <li><button type="button" class="btn btn-default" data-toggle="modal" data-target="#tornar_slocal" <?= $check_desativado; ?>>Tornar Supervisor Local</button></li>
+                                                                <li><button type="button" class="btn btn-default" data-toggle="modal" data-target="#tornar_sregional" <?= $check_desativado; ?>>Tornar Supervisor Regional</button></li>
                                                                 <li><button type="button" class="btn btn-default" data-toggle="modal" data-target="#tornar_coordenador" <?= $check_desativado; ?>>Tornar Coordenador</button></li>
                                                                 <li><button type="button" class="btn btn-default" data-toggle="modal" data-target="#tornar_lider" <?= $check_desativado; ?>>Tornar Líder</button></li>
                                                             </ul>
@@ -389,28 +398,28 @@ if (!isset($_SESSION['usuario'])) {
                         <!-- /.box -->
                     </section>
 
-                    <div class="modal fade" id="tornar_slocal">
+                    <div class="modal fade" id="tornar_sregional">
                         <div class="modal-dialog modal-default">
                             <div class="modal-content">
                                 <form action="../../../../alerta/solicitar/tornar_de_funcao" method="POST">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">Solicitar Mudança | S. Regional para S. Local</h4>
+                                        <h4 class="modal-title">Solicitar Mudança | S. Local para S. Regional</h4>
                                     </div>
                                     <div class="box-body">
                                         <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
-                                        <input type="hidden" name="id_change" value="<?= $dados['id_supervisorEs']; ?>">
-                                        <input type="hidden" name="funcao_atiga" value="sregional">
-                                        <input type="hidden" name="funcao_nova" value="slocal">
+                                        <input type="hidden" name="id_change" value="<?= $dados['id_supervisorR']; ?>">
+                                        <input type="hidden" name="funcao_atiga" value="slocal">
+                                        <input type="hidden" name="funcao_nova" value="sregional">
                                         <input type="hidden" name="url" value="<?= $url; ?>">
                                         <input type="hidden" name="nivel" value="<?= $url_1; ?>">
 
                                         <div class="col-lg-12">
                                             <div class="form-group">
                                                 <center>
-                                                    <label for="id_troca_1">Deseja tornar <?= $dados['nome_supervisorE']; ?> supervisor local?</label>
-                                                    <br><i>* observação: para essa nova função, o supervisor terá que ter 3 coordenações.</i>
+                                                    <label for="id_troca_1">Deseja tornar <?= $dados['nome_supervisorR']; ?> supervisor regional?</label>
+                                                    <br><i>* observação: para essa nova função, o supervisor terá que ter 3 supervisões.</i>
                                                 </center>
                                             </div>
                                         </div>
@@ -433,12 +442,12 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">Solicitar Mudança | S. Regional para Coordenador</h4>
+                                        <h4 class="modal-title">Solicitar Mudança | S. Local para Coordenador</h4>
                                     </div>
                                     <div class="box-body">
                                         <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
-                                        <input type="hidden" name="id_change" value="<?= $dados['id_supervisorEs']; ?>">
-                                        <input type="hidden" name="funcao_atiga" value="sregional">
+                                        <input type="hidden" name="id_change" value="<?= $dados['id_supervisorR']; ?>">
+                                        <input type="hidden" name="funcao_atiga" value="slocal">
                                         <input type="hidden" name="funcao_nova" value="coordenador">
                                         <input type="hidden" name="url" value="<?= $url; ?>">
                                         <input type="hidden" name="nivel" value="<?= $url_1; ?>">
@@ -446,8 +455,8 @@ if (!isset($_SESSION['usuario'])) {
                                         <div class="col-lg-12">
                                             <div class="form-group">
                                                 <center>
-                                                    <label for="id_troca_1">Deseja tornar <?= $dados['nome_supervisorE']; ?> coordenador?</label>
-                                                    <br><i>* observação: para essa nova função, o supervisor regional terá que ter 3 líderes.</i>
+                                                    <label for="id_troca_1">Deseja tornar <?= $dados['nome_supervisorR']; ?> coordenador?</label>
+                                                    <br><i>* observação: para essa nova função, o supervisor local terá que ter 3 líderes.</i>
                                                 </center>
                                             </div>
                                         </div>
@@ -470,12 +479,12 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">Solicitar Mudança | S. Regional para Líder</h4>
+                                        <h4 class="modal-title">Solicitar Mudança | S. Local para Líder</h4>
                                     </div>
                                     <div class="box-body">
                                         <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
-                                        <input type="hidden" name="id_change" value="<?= $dados['id_supervisorEs']; ?>">
-                                        <input type="hidden" name="funcao_atiga" value="sregional">
+                                        <input type="hidden" name="id_change" value="<?= $dados['id_supervisorR']; ?>">
+                                        <input type="hidden" name="funcao_atiga" value="slocal">
                                         <input type="hidden" name="funcao_nova" value="lider">
                                         <input type="hidden" name="url" value="<?= $url; ?>">
                                         <input type="hidden" name="nivel" value="<?= $url_1; ?>">
@@ -484,7 +493,7 @@ if (!isset($_SESSION['usuario'])) {
                                         <div class="col-lg-12">
                                             <div class="form-group">
                                                 <center>
-                                                    <label for="id_troca_1">Deseja tornar <?= $dados['nome_supervisorE']; ?> líder?</label>
+                                                    <label for="id_troca_1">Deseja tornar <?= $dados['nome_supervisorR']; ?> líder?</label>
                                                 </center>
                                             </div>
                                         </div>
@@ -503,7 +512,7 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="modal fade" id="desativar_sregional">
                         <div class="modal-dialog modal-danger">
                             <div class="modal-content">
-                                <form action="../../sregional/desativar" method="post">
+                                <form action="../../slocal/desativar" method="post">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span></button>
@@ -511,13 +520,13 @@ if (!isset($_SESSION['usuario'])) {
                                     </div>
                                     <div class="box-body">
                                         <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
-                                        <input type="hidden" name="id_sregional" value="<?= $dados['id_supervisorEs']; ?>">
+                                        <input type="hidden" name="id_slocal" value="<?= $dados['id_supervisorR']; ?>">
                                         <input type="hidden" name="nivel" value="<?= $url_1; ?>">
                                         <input type="hidden" name="url" value="<?= $url; ?>">
 
                                         <div class="form-group">
                                             <center>
-                                                <label for="exampleInputEmail1">Deseja realmente desativar esse Líder?</label>
+                                                <label for="exampleInputEmail1">Deseja realmente desativar esse S. Local?</label>
                                             </center>
                                         </div>
                                     </div>

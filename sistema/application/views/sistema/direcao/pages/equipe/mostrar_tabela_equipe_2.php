@@ -37,6 +37,8 @@
 
         foreach ($lista as $key => $dados) {
             $id_sregional = $dados['id_supervisorEs'];
+            $crianca_sregional = $this->FConsultas_model->mostrarCriancasPais($id_sregional, 3);
+
             $ativo = $dados['ativo'];
             $data_cadastro = $dados['data_cadastro'];
             $data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
@@ -63,8 +65,16 @@
             $total_lider_sregional = $lideres_do_sregional['row'];
             $total_lider_ativos_sregional = $lideres_do_sregional[0]['row'];
 
-            $total_criancas_geral_sregional = $lideres_do_sregional[1];
-            $total_criancas_ativos_sregional = $lideres_do_sregional[2];
+            $lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_supervisorR', $slocal_do_sregional['dados']);
+            $lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_coordenador', $coordenadores_do_sregional['dados']);
+            $id_gerais = array_merge($lista_de_id_1, $lista_de_id_2);
+
+            $lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $slocal_do_sregional[0]['dados']);
+            $lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $coordenadores_do_sregional[0]['dados']);
+            $id_gerais_ativos = array_merge($lista_de_id_1_ativos, $lista_de_id_2_ativos);
+
+            $total_criancas_geral_sregional = $crianca_sregional['row'] + $lideres_do_sregional[1] + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+            $total_criancas_ativos_sregional = $crianca_sregional['row'] + $lideres_do_sregional[2] + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_ativos, 'direcao');
 
             $progresso = "";
             $class1 = "danger";

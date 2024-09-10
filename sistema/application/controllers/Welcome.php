@@ -46,735 +46,6 @@ class Welcome extends CI_Controller
 		);
 	}
 
-	public function atualizar_data()
-	{
-		// coordenadores
-		$coordenadores = $this->FConsultas_model->mostrar_all_coordenador();
-
-		foreach ($coordenadores['dados'] as $key => $coord) {
-			echo $coord['id_coordenador'] . ": " . $coord['nome_coordenador'] . "<br>";
-			$lideres = $this->FConsultas_model->getLideres([$coord['id_coordenador']], 1, 2, []);
-
-			$data = "";
-
-			if ($lideres['row'] == 0) {
-				//echo "<b><i>O coordenador não tem líder cadastrado</i></b><br>";
-				// consultando de o coordenador tem pg
-				$pg = $this->FConsultas_model->mostrarPG($coord['id_coordenador'], 4);
-
-				if ($pg['row'] == 0) {
-					// o coordenador não tem pg
-
-					// 1ª consulta - SUPERVISOR LOCAL
-					$id_local = $coord['id_supervisorR'];
-					$lideres_sr = $this->FConsultas_model->getLideres([$id_local], 2, 2, []);
-					if ($lideres_sr['row'] == 0) {
-
-						// o supervisor local não tem lideres vê se ele tem pg
-						$pg_sr = $this->FConsultas_model->mostrarPG($id_local, 4);
-
-						if ($pg_sr['row'] == 0) {
-							// 2ª consulta - SUPERVISOR REGIONAL
-						} else {
-							$data_pg_sr = $pg_sr['dados'][0]['data_inicio'];
-
-							if ($data_pg_sr == '') {
-								echo "<b><i>Data Vazia</i></b><br>";
-							} else {
-								$dia = $data_pg_sr[0] . $data_pg_sr[1];
-								$mes = $data_pg_sr[3] . $data_pg_sr[4];
-								$ano = $data_pg_sr[6] . $data_pg_sr[7] . $data_pg_sr[8] . $data_pg_sr[9];
-
-								$data = $ano . "-" . $mes . "-" . $dia;
-							}
-						}
-					} else {
-						$data = $lideres_sr['dados'][0]['data_cadastro'];
-					}
-				} else {
-					// o coordenador tem pg - add a data de inicio do pg
-					$data_pg = $pg['dados'][0]['data_inicio'];
-					if ($data_pg == '') {
-						echo "<b><i>Data Vazia</i></b><br>";
-					} else {
-						$dia = $data_pg[0] . $data_pg[1];
-						$mes = $data_pg[3] . $data_pg[4];
-						$ano = $data_pg[6] . $data_pg[7] . $data_pg[8] . $data_pg[9];
-						$data = $ano . "-" . $mes . "-" . $dia;
-					}
-				}
-			} else {
-				if ($coord['id_coordenador'] == '3000' || $coord['id_coordenador'] == '3003' || $coord['id_coordenador'] == '3004' || $coord['id_coordenador'] == '3006' || $coord['id_coordenador'] == '3015' || $coord['id_coordenador'] == '3017'  || $coord['id_coordenador'] == '3033') {
-					$data = "2017-02-18";
-				} else {
-					$data = $lideres['dados'][0]['data_cadastro'];
-				}
-			}
-
-			echo $data . "<br><br>";
-			$this->db->set('data_cadastro', $data);
-			$this->db->where('id_coordenador  ', $coord['id_coordenador']);
-			$this->db->update('coordenador');
-		}
-	}
-
-	public function offline()
-	{
-		$dados = array(
-			'heading' => 'Você está Offline',
-			'message' => 'Conect a internet e tente novamente',
-		);
-
-		$this->load->view('errors/html/error_404', $dados);
-	}
-
-	public function red_lideres_coord()
-	{
-
-		$id_coord = $this->uri->segment(4);
-
-		$data = [
-			"<input type='hidden' name='id_user' value='$id_coord'>"
-		];
-
-		$funcao = $this->FConsultas_model->red('../lideres', 0, $data);
-		echo $funcao;
-	}
-
-	public function red_lideres_info_licao()
-	{
-
-		$id_coord = $this->uri->segment(4);
-		$id_lider = $this->uri->segment(5);
-
-		$data = [
-			"<input type='hidden' name='id_coord' value='$id_coord'>"
-		];
-
-		$funcao = $this->FConsultas_model->red("../../lideres/detalhes/$id_lider", 0, $data);
-		echo $funcao;
-	}
-
-	public function atualizar_session()
-	{
-		$dados = json_decode(file_get_contents('php://input'), true);
-
-		$_SESSION[$dados['session']] = $dados['valor'];
-
-		echo json_encode($_SESSION[$dados['session']]);
-	}
-
-	public function gerar_certificado()
-	{
-
-		$nome = $this->input->post('nome');
-
-		$opc = $this->input->post('opc');
-
-		$img = $this->input->post('img');
-		$nome_user = $this->input->post('nome_user');
-		$nome_curso = "";
-
-		$pdf = new FPDF("L", "mm", "A4");
-		$pdf->SetCreator('CAMP Brasil');
-
-		//$name = text to be added, $x= x cordinate, $y = y coordinate, $a = alignment , $f= Font Name, $t = Bold / Italic, $s = Font Size, $r = Red, $g = Green Font color, $b = Blue Font Color
-		function AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b)
-		{
-			$pdf->SetFont($f, $t, $s);
-			$pdf->SetXY($x, $y);
-			$pdf->SetTextColor($r, $g, $b);
-			$pdf->Cell(0, 10, $pdf->textoUTF8($text), 0, 0, $a);
-		}
-
-		function AddText($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b)
-		{
-			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
-			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
-			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
-		}
-
-		if ($opc == 1) {
-			$nome_curso = "Certificado Treinamento Presencial";
-			$carga_horaria = $this->input->post('carga_horaria');
-			$data_treinamento = $this->input->post('data_treinamento');
-
-			$nome_carga_horaria = "";
-
-			if ($carga_horaria <= 1) {
-				$nome_carga_horaria = $carga_horaria . " hora";
-			} else {
-				$nome_carga_horaria = $carga_horaria . " horas";
-			}
-
-			$dia = $data_treinamento[0] . $data_treinamento[1];
-			$mes = $data_treinamento[3] . $data_treinamento[4];
-			$ano = $data_treinamento[6] . $data_treinamento[7] . $data_treinamento[8] . $data_treinamento[9];
-
-			$pdf->AddPage();
-			$pdf->SetTitle($nome_curso, true);
-			$pdf->Image($img, 0, 0, 297, 210);
-			$x_letra = strlen($nome);
-			$font1 = $x_letra < 40 ? 16 : 14;
-			AddText($pdf, $nome, 71, 95, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
-			AddText($pdf, $nome_user, 60, 125, 'L', 'Helvetica', 'B', 16, 0, 0, 0);
-			AddText($pdf, $dia, 30, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-			AddText($pdf, $mes, 70, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-			AddText($pdf, $ano, 110, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-			AddText($pdf, $nome_carga_horaria, 60, 148, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-		} else if ($opc == 2) {
-
-			$nome_curso = "Certificado LOL 1";
-
-			$de = $this->input->post('de_1');
-			$ate = $this->input->post('ate_1');
-			$mes = $this->input->post('mes_1');
-			$ano = $this->input->post('ano_1');
-			$estado = $this->input->post('estado');
-			$cidade = $this->input->post('cidade');
-
-			$nome_estado = $estado . ", " . $cidade;
-
-			$pdf->AddPage();
-			$pdf->SetTitle($nome_curso, true);
-			$pdf->Image($img, 0, 0, 297, 210);
-			$x_letra = strlen($nome);
-			$font1 = $x_letra < 40 ? 16 : 14;
-			AddText($pdf, $nome, 71, 93, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
-			AddText($pdf, $nome_user, 132, 126, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-			AddText($pdf, $de, 110, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-			AddText($pdf, $ate, 126, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-			AddText($pdf, $mes, 145, 136, 'L', 'Helvetica', 'B', 18, 0, 0, 0);
-			AddText($pdf, $ano, 189, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-			AddText($pdf, $nome_estado, 120, 146, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-		} else if ($opc == 3) {
-
-			$nome_curso = "Certificado LOL 2";
-
-			$img2 = $this->input->post('img2');
-			$mes = $this->input->post('mes_2');
-			$ano = $this->input->post('ano_2');
-
-			$pdf->AddPage();
-			$pdf->SetTitle($nome_curso, true);
-			$pdf->Image($img, 0, 0, 297, 210);
-			$x_letra = strlen($nome);
-			$font1 = $x_letra < 40 ? 16 : 14;
-			AddText($pdf, $nome, 91, 99, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
-			AddText($pdf, $mes, 195, 139, 'L', 'Helvetica', 'B', 18, 0, 0, 0);
-			AddText($pdf, $ano, 255, 139, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
-
-			$pdf->AddPage();
-			$pdf->Image($img2, 0, 0, 297, 210);
-		}
-
-		$nome_arquivo = $nome_curso . " - " . $nome . ".pdf";
-		$pdf->Output('D', $nome_arquivo);
-	}
-
-	public function cadastro()
-	{
-		$this->load->view('sistema/cadastro');
-	}
-
-	// Colíderes
-	public function cadastro_colider()
-	{
-		$idLider = $this->input->post('idLider');
-		$nomeColider = $this->input->post('nomeColider');
-		$emailColider = $this->input->post('emailColider');
-		$cpfColider = $this->input->post('cpfColider');
-		$telefoneColider = $this->input->post('telefoneColider');
-		$nascimentoColider = $this->input->post('nascimentoColider');
-
-		$consultarColider = $this->FConsultas_model->checkColider($nomeColider, $cpfColider, $emailColider, $telefoneColider);
-
-		$nivel = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
-
-		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
-		$routa = "";
-
-		if ($red == 'pagina_editar_pessoal') {
-			$data = [];
-			$routa = "../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel'>"
-			];
-			$routa = "../../page/lideres/detalhes/$idLider";
-		} else {
-			$data = [];
-			$routa = "../pagina_editar_pessoal";
-		}
-
-		if ($consultarColider) {
-			$cadastroColider = $this->FSistema_model->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
-
-			if ($cadastroColider) {
-				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Cadastro Relizado com Sucesso!']);
-				$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-				echo $funcao;
-			} else {
-				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
-				$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-				echo $funcao;
-			}
-		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Colíder já cadastrado']);
-			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-			echo $funcao;
-		}
-	}
-
-	public function desativar_colider()
-	{
-		$idLider = $this->input->post("idLider");
-		$idColider = $this->input->post("idColider");
-		$nomeColider = $this->input->post("nomeColider");
-
-		$idResponsavel = $this->input->post("idResponsavel");
-		$motivo = $this->input->post("motivo");
-
-		$nivel = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
-
-		$reativar = $this->FSistema_model->excluirColider($idColider, $nomeColider, $idLider, $idResponsavel, $motivo);
-
-		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
-		$routa = "";
-
-		if ($red == 'pagina_editar_pessoal') {
-			$data = [];
-			$routa = "../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel'>"
-			];
-			$routa = "../page/lideres/detalhes/$idLider";
-		} else {
-			$data = [];
-			$routa = "../pagina_editar_pessoal";
-		}
-
-		if ($reativar) {
-			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Colíder Desativado com Sucesso!']);
-			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-			echo $funcao;
-		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
-			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-			echo $funcao;
-		}
-	}
-
-	public function ativar_colider()
-	{
-		$idLider = $this->input->post("idLider");
-		$idColider = $this->input->post("opc");
-
-		$nivel = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
-
-		$reativar = $this->FSistema_model->reativarColider($idColider, $idLider);
-
-		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
-		$routa = "";
-
-		if ($red == 'pagina_editar_pessoal') {
-			$data = [];
-			$routa = "../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel'>"
-			];
-			$routa = "../page/lideres/detalhes/$idLider";
-		} else {
-			$data = [];
-			$routa = "../pagina_editar_pessoal";
-		}
-
-		if ($reativar) {
-			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Colíder Ativado com Sucesso!']);
-			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-			echo $funcao;
-		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
-			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-			echo $funcao;
-		}
-	}
-
-	public function excluir_colider_permanentemente()
-	{
-		$idLider = $this->input->post("idLider");
-		$idUsuario = $this->input->post("idUsuario");
-		$id_colider = $this->input->post("opc");
-
-		$excluir = $this->FSistema_model->excluirColiderPermanentemente($id_colider, $idLider, $idUsuario);
-
-		$nivel = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
-
-		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
-
-		$routa = "";
-		if ($red == 'pagina_editar_pessoal') {
-			$data = [];
-			$routa = "../../pagina_editar_pessoal";
-		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel'>"
-			];
-			$routa = "../../page/lideres/detalhes/$idLider";
-		} else {
-			$data = [];
-			$routa = "../../pagina_editar_pessoal";
-		}
-
-		if ($excluir) {
-			$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Atenção! Colíder Excluido Permanentemente!"]);
-			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-			echo $funcao;
-		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
-			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
-			echo $funcao;
-		}
-	}
-
-	public function enviarEmailDevocionalDiario()
-
-	{
-		$todosPais = $this->FConsultas_model->mostrarTodosPais();
-
-		$dataHj = date('m/d/Y');
-
-		$hora = date('H');
-
-		if ($hora >= 7 && $hora <= 21) {
-			$controller = 0;
-			foreach ($todosPais as $key => $pais) {
-
-				$id = $pais['id'];
-				$email = $pais['email'];
-				$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
-
-				if ($controller < 10) {
-					foreach ($todosPG['dados'] as $key => $pg) {
-
-						$idPg = $pg['id_pg'];
-
-						$checks = $pg['autorizacao'];
-						$ativoPG = $pg['ativo'];
-						$nivelPg = $pg['nivel'];
-
-						$anoPg = $pg['ano'];
-						$modulo = $pg['modulo_devocional'];
-						$licao = $pg['licao_devocional'];
-						$diaComecou = $pg['data_semana'];
-
-						if ($checks == 0 || $ativoPG == 0 || $diaComecou == '' || $nivelPg == 2) {
-						} else {
-
-							$dia = $diaComecou[0] . $diaComecou[1];
-							$mes = $diaComecou[3] . $diaComecou[4];
-							$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
-							$data_trocada = $mes . "/" . $dia . "/" . $ano;
-
-							$dia1 = date('m/d/Y', strtotime('+1 day', strtotime($data_trocada)));
-							$dia2 = date('m/d/Y', strtotime('+2 day', strtotime($data_trocada)));
-							$dia3 = date('m/d/Y', strtotime('+3 day', strtotime($data_trocada)));
-							$dia4 = date('m/d/Y', strtotime('+4 day', strtotime($data_trocada)));
-							$dia5 = date('m/d/Y', strtotime('+5 day', strtotime($data_trocada)));
-							$dia6 = date('m/d/Y', strtotime('+6 day', strtotime($data_trocada)));
-
-							$check_day_1 = strtotime($dia1) == strtotime($dataHj) ? true : false;
-							$check_day_2 = strtotime($dia2) == strtotime($dataHj) ? true : false;
-							$check_day_3 = strtotime($dia3) == strtotime($dataHj) ? true : false;
-							$check_day_4 = strtotime($dia4) == strtotime($dataHj) ? true : false;
-							$check_day_5 = strtotime($dia5) == strtotime($dataHj) ? true : false;
-							$check_day_6 = strtotime($dia6) == strtotime($dataHj) ? true : false;
-
-							if ($check_day_1) {
-								$diaDevocional = 1;
-							} else if ($check_day_2) {
-								$diaDevocional = 2;
-							} else if ($check_day_3) {
-								$diaDevocional = 3;
-							} else if ($check_day_4) {
-								$diaDevocional = 4;
-							} else if ($check_day_5) {
-								$diaDevocional = 5;
-							} else if ($check_day_6) {
-								$diaDevocional = 6;
-							}
-
-							if (strtotime($data_trocada) == strtotime($dataHj)) {
-							} else {
-								$check = $this->FConsultas_model->checkControler($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional);
-
-								if ($check == 0) {
-									$dadosDevocionais = $this->FConsultas_model->consultarDevocionalModuloLicaoDia($anoPg, $modulo, $licao, $diaDevocional);
-									if ($dadosDevocionais) {
-
-										// Suucesso
-										$assunto = "Devocional Dia " . $dadosDevocionais['dia'] . " - " . $dadosDevocionais['titulo'];
-
-										$dados = array(
-											'devocionais' => $dadosDevocionais,
-											'nome' => $pais['nome'],
-										);
-
-										$page = $this->load->view('sistema/pais/partes/corpo-mensagem-devocional', $dados, TRUE);
-										$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-										$this->email->subject($assunto);
-										$this->email->to($email);
-										$this->email->message($page);
-										$this->email->attach($dadosDevocionais['file'] ?? "");
-										if ($this->email->send()) {
-											$controller = $controller + 1;
-											$this->FSistema_model->controlerDevocionais($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional, 1);
-										} else {
-										}
-									} else {
-									}
-								} else {
-									// enviar um email de erro p administração, com os dados p reenviar
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	public function atualizarProgressoDevocional()
-	{
-		$todosPais = $this->FConsultas_model->mostrarTodosPais();
-
-		$dataHj = date('m/d/Y');
-
-		foreach ($todosPais as $key => $pais) {
-			$id = $pais['id'];
-
-			$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
-
-			if ($todosPG['row'] == 0) {
-			} else {
-				foreach ($todosPG['dados'] as $key => $pg) {
-
-					$id_pg = $pg['id_pg'];
-					$data_inicio = $pg['data_inicio'];
-					$diaComecou = $pg['data_semana'];
-					$modulo = $pg['modulo_devocional'];
-					$licao = $pg['licao_devocional'];
-
-					$n_modulo = $modulo + 1;
-
-					$consultaMO = $this->FConsultas_model->consultarModuloId($modulo);
-
-					if ($data_inicio == '' or $diaComecou == '') {
-					} else {
-						$dia = $diaComecou[0] . $diaComecou[1];
-						$mes = $diaComecou[3] . $diaComecou[4];
-						$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
-						$data_trocada = $mes . "/" . $dia . "/" . $ano;
-
-						$data_troca = date('m/d/Y', strtotime('+7 day', strtotime($data_trocada)));
-						$data_envio = date('d/m/Y', strtotime('+7 day', strtotime($data_trocada)));
-
-						if (strtotime($dataHj) == strtotime($data_troca)) {
-
-							$licao_nova = $licao + 1;
-
-							$moduloNovo = $licao == $consultaMO['n_licao'] ? $n_modulo : $modulo;
-
-							$licaoNova = $licao == $consultaMO['n_licao'] ? 1 : $licao_nova;
-
-							$anoNovo = ($moduloNovo == 11 ? 3 : ($moduloNovo == 6 ? 2 : 1));
-
-							$this->FSistema_model->editarPGProgressoData($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio, 1);
-						} else {
-						}
-					}
-				}
-			}
-		}
-	}
-	public function atualizarModuloMensal()
-	{
-		$todosPais = $this->FConsultas_model->mostrarTodosPais();
-
-		$dataHj = date('m/d/Y');
-
-		foreach ($todosPais as $key => $pais) {
-			$id = $pais['id'];
-
-			$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
-
-			if ($todosPG['row'] == 0) {
-			} else {
-				foreach ($todosPG['dados'] as $key => $pg) {
-
-					$id_pg = $pg['id_pg'];
-
-					$id_modulo_1 = $pg['id_modulo'];
-					$id_modulo_2 = $pg['modulo_devocional'];
-
-					$data_fim = $pg['data_previsao_termino'];
-
-					if ($data_fim == '') {
-					} else {
-						if ($id_modulo_1 != $id_modulo_2) {
-							if (strtotime($data_fim) >= strtotime($dataHj)) {
-								$this->FSistema_model->editarAtivo($id_pg, $id, 1);
-							} else {
-							}
-						} else {
-						}
-					}
-				}
-			}
-		}
-	}
-	public function salvar_cadastro()
-	{
-		$nome = $this->input->post('nome');
-		$cpf = $this->input->post('cpf');
-		$email = $this->input->post('email');
-		$telefone = $this->input->post('telefone');
-		$igreja = $this->input->post('igreja');
-		$pais = $this->input->post('pais');
-		$estado1 = $this->input->post('estados');
-		$cidade1 = $this->input->post('cidades');
-		$estado2 = $this->input->post('estados2');
-		$cidade2 = $this->input->post('cidades2');
-		$nascimento = $this->input->post('nascimento');
-
-		$estado = "";
-		$cidade = "";
-
-		// Colider
-		$isColider = $this->input->post('isColider');
-		$nomeColider = $this->input->post('nomeColider');
-		$cpfColider = $this->input->post('cpfColider');
-		$emailColider = $this->input->post('emailColider');
-		$telefoneColider = $this->input->post('telefoneColider');
-		$nascimentoColider = $this->input->post('nascimentoColider');
-
-		if ($estado1 == "" and $cidade1 == "") {
-			$estado .= $estado2;
-			$cidade .= $cidade2;
-		} else {
-			$estado .= $estado1;
-			$cidade .= $cidade1;
-		}
-
-		$ponto1 = $cpf[3];
-
-		$cpf_completo = "";
-
-		if ($ponto1 == ".") {
-			$cpf_completo .= $cpf;
-		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
-		}
-
-		//if ($this->FAlerta_model->valida_cpf($cpf) or $this->FAlerta_model->validaNIF($cpf)) {
-		if ($this->FAlerta_model->ValidaData($nascimento)) {
-			$consultarPais = $this->FConsultas_model->consultaraisJaCadastrado($nome, $cpf, $cpf_completo, $email);
-			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
-
-			if ($consultarPais || $consultarUsuario) {
-
-				$consultarTreinamento = $this->FConsultas_model->consultaraisJaTerminouOTreinamento($nome, $email, $nascimento);
-
-				if (!$consultarTreinamento) {
-					$supervisor = $this->FConsultas_model->selecionarSupervisorEstado($estado);
-					$id_supervisor = $supervisor['id_supervisor'];
-					$nome_supervisor = $supervisor['nome_supervisor'];
-					$emailSupervisor = $supervisor['email'];
-					$nivel = 8;
-					$cadastro = $this->FSistema_model->cadastro_pais($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $pais, $estado, $cidade, $id_supervisor);
-					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
-					if ($cadastro && $cadastroUsuario) {
-						if ($isColider == '') {
-						} else {
-							$consultarDados = $this->FConsultas_model->consultaDadosPaisNomeCPFEMail($nome, $cpf, $cpf_completo, $email);
-							$id_lider = $consultarDados['id'];
-							$this->FSistema_model->cadastrarColider($id_lider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
-						}
-						$this->FSistema_model->enviarEmailSupervisor($emailSupervisor, $nome_supervisor, $nome, $email, $telefone, $estado, $cidade);
-						echo '
-								<script>
-									if(window.confirm("Sucesso!")) {
-										window.location="https://sistema.campbrasil.com/";
-									}else{
-										window.location="https://sistema.campbrasil.com/";
-									}
-								</script>
-							';
-					} else {
-						echo '
-								<script>
-									if(window.confirm("Erro, tente novamente!")) {
-										window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-									}else{
-										window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-									}
-								</script>
-							';
-					}
-				} else {
-					echo '
-							<script>
-								if(window.confirm("Você não terminou o treinamento para pais!")) {
-									window.location="https://treinamento.campbrasil.com/";
-								}else{
-									window.location="https://treinamento.campbrasil.com/";
-								}
-							</script>
-						';
-				}
-			} else {
-				echo '
-						<script>
-							if(window.confirm("Você já está cadastrado!")) {
-								window.location="https://sistema.campbrasil.com/";
-							}else{
-								window.location="https://sistema.campbrasil.com/";
-							}
-						</script>
-					';
-			}
-		} else {
-			echo '
-					<script>
-						if(window.confirm("Erro, data de nascimento inválida!")) {
-							window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-						}else{
-							window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-						}
-					</script>
-				';
-		}
-		/*} else {
-			echo '
-				<script>
-					if(window.confirm("Erro, CPF inválido!")) {
-						window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-					}else{
-						window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-					}
-				</script>
-			';
-		}*/
-	}
 	public function index()
 	{
 		$x = $this->input->get('x');
@@ -1093,7 +364,6 @@ class Welcome extends CI_Controller
 
 		$this->load->view('sistema/termos', $dados);
 	}
-
 	public function PrimeiroAcesso()
 	{
 		$id_usuario = $this->input->post('id_usuario');
@@ -1161,7 +431,6 @@ class Welcome extends CI_Controller
 			//$this->load->view('sistema/slocal/home');
 		}
 	}
-
 	public function sair()
 	{
 		$id_usuario = $this->input->post("id_usuario");
@@ -1180,54 +449,341 @@ class Welcome extends CI_Controller
 		';
 	}
 
-	public function downloadMaterial()
+	public function cadastro()
 	{
-		$id = $this->input->post("id");
-		$idLider = $this->input->post("id_lider");
-		$idPg = $this->input->post("id_pg");
-		$title = $this->input->post("title");
-		$download = $this->input->post("download");
+		$this->load->view('sistema/cadastro');
+	}
 
-		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
-		if ($nivel == '2') {
+	public function salvar_cadastro()
+	{
+		$nome = $this->input->post('nome');
+		$cpf = $this->input->post('cpf');
+		$email = $this->input->post('email');
+		$telefone = $this->input->post('telefone');
+		$igreja = $this->input->post('igreja');
+		$pais = $this->input->post('pais');
+		$estado1 = $this->input->post('estados');
+		$cidade1 = $this->input->post('cidades');
+		$estado2 = $this->input->post('estados2');
+		$cidade2 = $this->input->post('cidades2');
+		$nascimento = $this->input->post('nascimento');
+
+		$estado = "";
+		$cidade = "";
+
+		// Colider
+		$isColider = $this->input->post('isColider');
+		$nomeColider = $this->input->post('nomeColider');
+		$cpfColider = $this->input->post('cpfColider');
+		$emailColider = $this->input->post('emailColider');
+		$telefoneColider = $this->input->post('telefoneColider');
+		$nascimentoColider = $this->input->post('nascimentoColider');
+
+		if ($estado1 == "" and $cidade1 == "") {
+			$estado .= $estado2;
+			$cidade .= $cidade2;
 		} else {
-			$dataEscolhida = $this->input->post("data");
-			$dadosPg = $this->FConsultas_model->mostrarPGId($idLider, $idPg, $nivel);
+			$estado .= $estado1;
+			$cidade .= $cidade1;
+		}
 
-			$data = $dadosPg['dados']['data_inicio'];
-			$dataHj = date('d/m/Y');
+		$ponto1 = $cpf[3];
 
-			//echo "A data de hj é " . $dataEscolhida . "<br>";
-			if ($id == 2 && $data == '') {
-				$dataE = $dataEscolhida == '' ? $dataHj : $dataEscolhida;
-				//echo "A data de E é " . $dataE;
+		$cpf_completo = "";
 
-				$dia = $dataE[0] . $dataE[1];
-				$mes = $dataE[3] . $dataE[4];
-				$ano = $dataE[6] . $dataE[7] . $dataE[8] . $dataE[9];
-				$data_trocada = $mes . "/" . $dia . "/" . $ano;
-				$data_fim = date('d/m/Y', strtotime('+2 months', strtotime($data_trocada)));
+		if ($ponto1 == ".") {
+			$cpf_completo .= $cpf;
+		} else {
+			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
+		}
 
-				$this->FSistema_model->editarData($idPg, $dataEscolhida, $data_fim, $dataEscolhida, $nivel);
+		//if ($this->FAlerta_model->valida_cpf($cpf) or $this->FAlerta_model->validaNIF($cpf)) {
+		if ($this->FAlerta_model->ValidaData($nascimento)) {
+			$consultarPais = $this->FConsultas_model->consultaraisJaCadastrado($nome, $cpf, $cpf_completo, $email);
+			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
+
+			if ($consultarPais || $consultarUsuario) {
+
+				$consultarTreinamento = $this->FConsultas_model->consultaraisJaTerminouOTreinamento($nome, $email, $nascimento);
+
+				if (!$consultarTreinamento) {
+					$supervisor = $this->FConsultas_model->selecionarSupervisorEstado($estado);
+					$id_supervisor = $supervisor['id_supervisor'];
+					$nome_supervisor = $supervisor['nome_supervisor'];
+					$emailSupervisor = $supervisor['email'];
+					$nivel = 8;
+					$cadastro = $this->FSistema_model->cadastro_pais($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $pais, $estado, $cidade, $id_supervisor);
+					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
+					if ($cadastro && $cadastroUsuario) {
+						if ($isColider == '') {
+						} else {
+							$consultarDados = $this->FConsultas_model->consultaDadosPaisNomeCPFEMail($nome, $cpf, $cpf_completo, $email);
+							$id_lider = $consultarDados['id'];
+							$this->FSistema_model->cadastrarColider($id_lider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
+						}
+						$this->FSistema_model->enviarEmailSupervisor($emailSupervisor, $nome_supervisor, $nome, $email, $telefone, $estado, $cidade);
+						echo '
+								<script>
+									if(window.confirm("Sucesso!")) {
+										window.location="https://sistema.campbrasil.com/";
+									}else{
+										window.location="https://sistema.campbrasil.com/";
+									}
+								</script>
+							';
+					} else {
+						echo '
+								<script>
+									if(window.confirm("Erro, tente novamente!")) {
+										window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
+									}else{
+										window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
+									}
+								</script>
+							';
+					}
+				} else {
+					echo '
+							<script>
+								if(window.confirm("Você não terminou o treinamento para pais!")) {
+									window.location="https://treinamento.campbrasil.com/";
+								}else{
+									window.location="https://treinamento.campbrasil.com/";
+								}
+							</script>
+						';
+				}
+			} else {
+				echo '
+						<script>
+							if(window.confirm("Você já está cadastrado!")) {
+								window.location="https://sistema.campbrasil.com/";
+							}else{
+								window.location="https://sistema.campbrasil.com/";
+							}
+						</script>
+					';
+			}
+		} else {
+			echo '
+					<script>
+						if(window.confirm("Erro, data de nascimento inválida!")) {
+							window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
+						}else{
+							window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
+						}
+					</script>
+				';
+		}
+		/*} else {
+			echo '
+				<script>
+					if(window.confirm("Erro, CPF inválido!")) {
+						window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
+					}else{
+						window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
+					}
+				</script>
+			';
+		}*/
+	}
+
+	public function enviarEmailDevocionalDiario()
+
+	{
+		$todosPais = $this->FConsultas_model->mostrarTodosPais();
+
+		$dataHj = date('m/d/Y');
+
+		$hora = date('H');
+
+		if ($hora >= 7 && $hora <= 21) {
+			$controller = 0;
+			foreach ($todosPais as $key => $pais) {
+
+				$id = $pais['id'];
+				$email = $pais['email'];
+				$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
+
+				if ($controller < 10) {
+					foreach ($todosPG['dados'] as $key => $pg) {
+
+						$idPg = $pg['id_pg'];
+
+						$checks = $pg['autorizacao'];
+						$ativoPG = $pg['ativo'];
+						$nivelPg = $pg['nivel'];
+
+						$anoPg = $pg['ano'];
+						$modulo = $pg['modulo_devocional'];
+						$licao = $pg['licao_devocional'];
+						$diaComecou = $pg['data_semana'];
+
+						if ($checks == 0 || $ativoPG == 0 || $diaComecou == '' || $nivelPg == 2) {
+						} else {
+
+							$dia = $diaComecou[0] . $diaComecou[1];
+							$mes = $diaComecou[3] . $diaComecou[4];
+							$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
+							$data_trocada = $mes . "/" . $dia . "/" . $ano;
+
+							$dia1 = date('m/d/Y', strtotime('+1 day', strtotime($data_trocada)));
+							$dia2 = date('m/d/Y', strtotime('+2 day', strtotime($data_trocada)));
+							$dia3 = date('m/d/Y', strtotime('+3 day', strtotime($data_trocada)));
+							$dia4 = date('m/d/Y', strtotime('+4 day', strtotime($data_trocada)));
+							$dia5 = date('m/d/Y', strtotime('+5 day', strtotime($data_trocada)));
+							$dia6 = date('m/d/Y', strtotime('+6 day', strtotime($data_trocada)));
+
+							$check_day_1 = strtotime($dia1) == strtotime($dataHj) ? true : false;
+							$check_day_2 = strtotime($dia2) == strtotime($dataHj) ? true : false;
+							$check_day_3 = strtotime($dia3) == strtotime($dataHj) ? true : false;
+							$check_day_4 = strtotime($dia4) == strtotime($dataHj) ? true : false;
+							$check_day_5 = strtotime($dia5) == strtotime($dataHj) ? true : false;
+							$check_day_6 = strtotime($dia6) == strtotime($dataHj) ? true : false;
+
+							if ($check_day_1) {
+								$diaDevocional = 1;
+							} else if ($check_day_2) {
+								$diaDevocional = 2;
+							} else if ($check_day_3) {
+								$diaDevocional = 3;
+							} else if ($check_day_4) {
+								$diaDevocional = 4;
+							} else if ($check_day_5) {
+								$diaDevocional = 5;
+							} else if ($check_day_6) {
+								$diaDevocional = 6;
+							}
+
+							if (strtotime($data_trocada) == strtotime($dataHj)) {
+							} else {
+								$check = $this->FConsultas_model->checkControler($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional);
+
+								if ($check == 0) {
+									$dadosDevocionais = $this->FConsultas_model->consultarDevocionalModuloLicaoDia($anoPg, $modulo, $licao, $diaDevocional);
+									if ($dadosDevocionais) {
+
+										// Suucesso
+										$assunto = "Devocional Dia " . $dadosDevocionais['dia'] . " - " . $dadosDevocionais['titulo'];
+
+										$dados = array(
+											'devocionais' => $dadosDevocionais,
+											'nome' => $pais['nome'],
+										);
+
+										$page = $this->load->view('sistema/pais/partes/corpo-mensagem-devocional', $dados, TRUE);
+										$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+										$this->email->subject($assunto);
+										$this->email->to($email);
+										$this->email->message($page);
+										$this->email->attach($dadosDevocionais['file'] ?? "");
+										if ($this->email->send()) {
+											$controller = $controller + 1;
+											$this->FSistema_model->controlerDevocionais($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional, 1);
+										} else {
+										}
+									} else {
+									}
+								} else {
+									// enviar um email de erro p administração, com os dados p reenviar
+								}
+							}
+						}
+					}
+				}
 			}
 		}
-
-		if ($id == 4) {
-			$nme = "$title.ppsx";
-		} else {
-			$nme = "$title.pdf";
-		}
-
-		$pth = file_get_contents(base_url() . $download);
-		force_download($nme, $pth);
 	}
-	public function download_material()
+	public function atualizarProgressoDevocional()
 	{
-		$nome = $this->input->post("nome");
-		$download = $this->input->post("download");
-		$pth = file_get_contents($download);
-		force_download($nome, $pth);
+		$todosPais = $this->FConsultas_model->mostrarTodosPais();
+
+		$dataHj = date('m/d/Y');
+
+		foreach ($todosPais as $key => $pais) {
+			$id = $pais['id'];
+
+			$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
+
+			if ($todosPG['row'] == 0) {
+			} else {
+				foreach ($todosPG['dados'] as $key => $pg) {
+
+					$id_pg = $pg['id_pg'];
+					$data_inicio = $pg['data_inicio'];
+					$diaComecou = $pg['data_semana'];
+					$modulo = $pg['modulo_devocional'];
+					$licao = $pg['licao_devocional'];
+
+					$n_modulo = $modulo + 1;
+
+					$consultaMO = $this->FConsultas_model->consultarModuloId($modulo);
+
+					if ($data_inicio == '' or $diaComecou == '') {
+					} else {
+						$dia = $diaComecou[0] . $diaComecou[1];
+						$mes = $diaComecou[3] . $diaComecou[4];
+						$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
+						$data_trocada = $mes . "/" . $dia . "/" . $ano;
+
+						$data_troca = date('m/d/Y', strtotime('+7 day', strtotime($data_trocada)));
+						$data_envio = date('d/m/Y', strtotime('+7 day', strtotime($data_trocada)));
+
+						if (strtotime($dataHj) == strtotime($data_troca)) {
+
+							$licao_nova = $licao + 1;
+
+							$moduloNovo = $licao == $consultaMO['n_licao'] ? $n_modulo : $modulo;
+
+							$licaoNova = $licao == $consultaMO['n_licao'] ? 1 : $licao_nova;
+
+							$anoNovo = ($moduloNovo == 11 ? 3 : ($moduloNovo == 6 ? 2 : 1));
+
+							$this->FSistema_model->editarPGProgressoData($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio, 1);
+						} else {
+						}
+					}
+				}
+			}
+		}
 	}
+	public function atualizarModuloMensal()
+	{
+		$todosPais = $this->FConsultas_model->mostrarTodosPais();
+
+		$dataHj = date('m/d/Y');
+
+		foreach ($todosPais as $key => $pais) {
+			$id = $pais['id'];
+
+			$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
+
+			if ($todosPG['row'] == 0) {
+			} else {
+				foreach ($todosPG['dados'] as $key => $pg) {
+
+					$id_pg = $pg['id_pg'];
+
+					$id_modulo_1 = $pg['id_modulo'];
+					$id_modulo_2 = $pg['modulo_devocional'];
+
+					$data_fim = $pg['data_previsao_termino'];
+
+					if ($data_fim == '') {
+					} else {
+						if ($id_modulo_1 != $id_modulo_2) {
+							if (strtotime($data_fim) >= strtotime($dataHj)) {
+								$this->FSistema_model->editarAtivo($id_pg, $id, 1);
+							} else {
+							}
+						} else {
+						}
+					}
+				}
+			}
+		}
+	}
+
 	public function cadastro_crianca()
 	{
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
@@ -2702,6 +2258,15 @@ class Welcome extends CI_Controller
 		} else if ($funcao_atiga == 'sregional' && $funcao_nova == 'lider') {
 			$motivo = "O $nome pediu a solicitação de troca de função do supervisor regional $nomelider (id: $id_change) para lider.";
 			$acao = "SOLICITACAO_TROCA_SREGIONAL_TO_LIDER";
+		} else if ($funcao_atiga == 'slocal' && $funcao_nova == 'sregional') {
+			$motivo = "O $nome pediu a solicitação de troca de função do supervisor local $nomelider (id: $id_change) para supervisor regional.";
+			$acao = "SOLICITACAO_TROCA_SLOCAL_TO_SREGIONAL";
+		} else if ($funcao_atiga == 'slocal' && $funcao_nova == 'coordenador') {
+			$motivo = "O $nome pediu a solicitação de troca de função do supervisor local $nomelider (id: $id_change) para coordenador.";
+			$acao = "SOLICITACAO_TROCA_SLOCAL_TO_COORDENADOR";
+		} else if ($funcao_atiga == 'slocal' && $funcao_nova == 'lider') {
+			$motivo = "O $nome pediu a solicitação de troca de função do supervisor local $nomelider (id: $id_change) para lider.";
+			$acao = "SOLICITACAO_TROCA_SLOCAL_TO_LIDER";
 		} else {
 		}
 
@@ -2713,289 +2278,6 @@ class Welcome extends CI_Controller
 		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
 
 		$funcao = $this->FConsultas_model->red("../../$url", 3000, []);
-		echo $funcao;
-	}
-
-	// líder
-	public function cadastro_lider()
-	{
-		$nome = $this->input->post('nome');
-		$cpf = $this->input->post('cpf');
-		$email = $this->input->post('email');
-		$telefone = $this->input->post('telefone');
-		$igreja = $this->input->post('igreja');
-		$pais = $this->input->post('pais');
-		$estado1 = $this->input->post('estados');
-		$cidade1 = $this->input->post('cidades');
-		$estado2 = $this->input->post('estados2');
-		$cidade2 = $this->input->post('cidades2');
-		$nascimento = $this->input->post('nascimento');
-
-		$id_pastor = $this->input->post('id_pastor');
-		$id_coordenador = $this->input->post('id_coordenador');
-		$id_slocal = $this->input->post('id_slocal');
-		$id_sregional = $this->input->post('id_sregional');
-
-		$estado = "";
-		$cidade = "";
-
-		if ($estado1 == "" and $cidade1 == "") {
-			$estado .= $estado2;
-			$cidade .= $cidade2;
-		} else {
-			$estado .= $estado1;
-			$cidade .= $cidade1;
-		}
-
-		$ponto1 = $cpf[3];
-
-		$cpf_completo = "";
-
-		if ($ponto1 == ".") {
-			$cpf_completo .= $cpf;
-		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
-		}
-
-		$red = $this->input->post('red') ?? 'coordenador/lideres';
-		$routa = "";
-
-		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
-
-		if ($red == 'coordenador/lideres') {
-			$data = [];
-			$routa = "coordenador/page/lideres";
-		} else if ($red == 'slocal/lideres') {
-			if ($nivel_routa == 'lider') {
-				$data = [];
-			} else {
-				$data = [
-					"<input type='hidden' name='id_user' value='$id_coordenador'>"
-				];
-			}
-			$routa = "slocal/page/lideres";
-		} else {
-			$data = [];
-			$routa = "coordenador/page/lideres";
-		}
-
-		if ($this->FAlerta_model->ValidaData($nascimento)) {
-			$consultarLider = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
-			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
-
-			if ($consultarLider || $consultarUsuario) {
-				$nivel = 1;
-				$cadastro = $this->FSistema_model->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional);
-				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
-				if ($cadastro && $cadastroUsuario) {
-					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
-					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-					echo $funcao;
-				} else {
-					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
-					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-					echo $funcao;
-				}
-			} else {
-				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Líder já Cadastrado!"]);
-				$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-				echo $funcao;
-			}
-		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
-			$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-			echo $funcao;
-		}
-	}
-
-	public function desativar_lider()
-	{
-		$id_lider = $this->input->post("id_lider");
-		$id_usuario = $this->input->post("id_usuario");
-		$motivo = "O usuário de ID (" . $id_usuario . ") desativou esse líder";
-
-		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->excluirPG($pg['id_pg'], $pg['nome_pg'], $id_lider, $id_usuario, $motivo, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->excluirCrianca($criancas['id_crianca'], $criancas['nome_crianca'], $id_lider, $id_usuario, $motivo, 2);
-			}
-		}
-
-		// mudar o ativo do líder
-		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->desativarLider($id_lider);
-
-		$this->FAlerta_model->alerta_controle($id_usuario, $id_lider, $motivo, "EX_CL_4");
-
-		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
-		$id_coord = $this->input->post('id_coord');
-
-		$red = $this->input->post('red') ?? 'lideres/detalhes';
-		$routa = "";
-		$data = [];
-
-		if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "page/lideres/detalhes/$id_lider";
-		} else {
-			$data = [
-				"<input type='hidden' name='id_user' value='$id_coord'>",
-			];
-			$routa = "coordenador/page/lideres";
-		}
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder desativado!"]);
-		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
-		echo $funcao;
-	}
-
-	public function ativar_lider()
-	{
-		$id_lider = $this->input->post("opc");
-		$id_usuario = $this->input->post("idUsuario");
-		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->reativarPg($pg['id_pg'], $id_usuario, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->reativarCrianca($criancas['id_crianca'], 2);
-			}
-		}
-
-		// mudar o ativo do líder
-		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->ativarLider($id_lider);
-
-		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
-		$id_coord = $this->input->post('id_coord');
-
-		$red = $this->input->post('red') ?? 'lideres';
-		$routa = "";
-
-		if ($red == 'lideres') {
-			$data = [
-				"<input type='hidden' name='id_user' value='$id_coord'>",
-			];
-			$routa = "lideres";
-		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "lideres/detalhes/$id_lider";
-		} else {
-			$data = [
-				"<input type='hidden' name='id_user' value='$id_coord'>",
-			];
-			$routa = "lideres";
-		}
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Ativado!"]);
-		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
-		echo $funcao;
-	}
-
-	public function excluir_lider_permanentemente()
-	{
-		$id_lider = $this->input->post("opc");
-		$id_usuario = $this->input->post("idUsuario");
-
-		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->excluirPgPermanentemente($pg['id_pg'], $id_lider, $id_usuario, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->excluirCriancaPermanentemente($criancas['id_crianca'], $id_lider, $id_usuario, 2);
-			}
-		}
-
-		$dados_colider = $this->FConsultas_model->mostrarColiderDoLider($id_lider);
-
-		if ($dados_colider) {
-			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_lider, $id_usuario);
-		} else {
-		}
-
-		// mudar o ativo do líder
-		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->excluirLiderPermanentemente($id_lider, $id_usuario);
-
-		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
-		$id_coord = $this->input->post('id_coord');
-
-		$red = $this->input->post('red') ?? 'lideres';
-		$routa = "";
-		$data = [];
-
-		if ($red == 'lideres') {
-			$routa = "lideres";
-		} else if ($red == 'lideres/detalhes') {
-			if ($nivel_routa == 'lider') {
-			} else {
-				$data = [
-					"<input type='hidden' name='id_user' value='$id_coord'>",
-				];
-			}
-			$routa = "lideres";
-		} else {
-			$routa = "lideres";
-		}
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Excluido Permanentemente!"]);
-		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 		echo $funcao;
 	}
 
@@ -3309,7 +2591,6 @@ class Welcome extends CI_Controller
 				'check_is_coord_query' => $check_is_coord_query,
 				'comparacao' => $dados['comparacao'],
 				'comparacao_ativos' => $dados['comparacao_ativos'],
-				'nivel' => 'slocal',
 			);
 			$dados_new = $array;
 			$this->load->view('sistema/direcao/pages/coordenadores/mostrar_tabela_coord_1', $dados_new);
@@ -3357,7 +2638,7 @@ class Welcome extends CI_Controller
 
 		$datas = $this->FSistema_model->format_dates($opc1, $opc2, $dataInicio, $dataFim);
 
-		if ($nivel == 'lideres') {
+		/*if ($nivel == 'lideres') {
 
 			$consultarLideres = $this->FConsultas_model->getLideres([$id_user], $opc1, $opc2, $datas);
 			$consultarLideresAtivos = $this->FConsultas_model->lideresAtivos($consultarLideres);
@@ -3430,8 +2711,10 @@ class Welcome extends CI_Controller
 
 				return $dados;
 			}
-		} else if ($nivel == 'direcao') {
+		} else */
+		if ($nivel == 'direcao') {
 			$dados_sregional = $this->FConsultas_model->getSRegional(['direcao'], $opc1, $opc2, $datas);
+
 			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao'], $opc1, $opc2, $datas);
 			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao'], $opc1, $opc2, $datas);
 			$dados_lideres = $this->FConsultas_model->getLideres(['direcao'], $opc1, $opc2, $datas);
@@ -3530,11 +2813,14 @@ class Welcome extends CI_Controller
 			);
 			return $dados;
 		} else if ($nivel == 'direcao/sregional') {
+
 			$dados_slocal = $this->FConsultas_model->getSLocal(['', '', $id_user], $opc1, $opc2, $datas);
 			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['sregional', '', $id_user], $opc1, $opc2, $datas);
 			$dados_lideres = $this->FConsultas_model->getLideres(['sregional', '', $id_user], $opc1, $opc2, $datas);
 			$total_criancas_lider = $dados_lideres[1];
 			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user, 3);
 
 			$comparacao = [];
 			$comparacao_ativos = [];
@@ -3589,14 +2875,14 @@ class Welcome extends CI_Controller
 
 			$id_gerais = array_merge($lista_de_id_2, $lista_de_id_3);
 
-			$total_criancas_geral = $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
 
 			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
 			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
 
 			$id_ativos = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
 
-			$total_criancas_geral_ativos = $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
 
 			$dados = array(
 				'id_user' => $id_user,
@@ -3616,12 +2902,13 @@ class Welcome extends CI_Controller
 			);
 			return $dados;
 		} else if ($nivel == 'direcao/slocal-tudo') {
-
 			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao', '', $id_user], $opc1, $opc2, $datas);
 			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao', '', $id_user], $opc1, $opc2, $datas);
 			$dados_lideres = $this->FConsultas_model->getLideres(['direcao', '', $id_user], $opc1, $opc2, $datas);
 			$total_criancas_lider = $dados_lideres[1];
 			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user, 3);
 
 			$comparacao = [];
 			$comparacao_ativos = [];
@@ -3676,14 +2963,14 @@ class Welcome extends CI_Controller
 
 			$id_gerais = array_merge($lista_de_id_2, $lista_de_id_3);
 
-			$total_criancas_geral = $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
 
 			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
 			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
 
 			$id_ativos = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
 
-			$total_criancas_geral_ativos = $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
 
 			$dados = array(
 				'id_user' => $id_user,
@@ -3707,6 +2994,8 @@ class Welcome extends CI_Controller
 			$dados_lideres = $this->FConsultas_model->getLideres(['slocal', '', $id_user], $opc1, $opc2, $datas);
 			$total_criancas_lider = $dados_lideres[1];
 			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user, 3);
 
 			$comparacao = [];
 			$comparacao_ativos = [];
@@ -3752,13 +3041,13 @@ class Welcome extends CI_Controller
 
 			$id_gerais =  $lista_de_id_3;
 
-			$total_criancas_geral = $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
 
 			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
 
 			$id_ativos = $lista_de_id_3_ativos;
 
-			$total_criancas_geral_ativos = $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
 
 			$dados = array(
 				'id_user' => $id_user,
@@ -4802,7 +4091,16 @@ class Welcome extends CI_Controller
 		$estado2 = $this->input->post('estados2');
 		$nascimento = $this->input->post('nascimento');
 
+		$nome_digitado_pais = $this->input->post('nome_pais');
+
+		$nome_pais = "";
 		$estado = "";
+
+		if ($pais == "br") {
+			$nome_pais = "br";
+		} else {
+			$nome_pais = $nome_digitado_pais;
+		}
 
 		if ($estado1 == "") {
 			$estado .= $estado2;
@@ -4820,8 +4118,8 @@ class Welcome extends CI_Controller
 			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
 		}
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
 		if ($this->FAlerta_model->ValidaData($nascimento)) {
 			$jatacadastrado = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
@@ -4829,7 +4127,7 @@ class Welcome extends CI_Controller
 
 			if ($jatacadastrado || $jatacadastrado2) {
 				$nivel = 1;
-				$cadastro = $this->FSistema_model->cadastro_sregional($nome, $cpf_completo, $email, $telefone, $nascimento, $pais, $estado);
+				$cadastro = $this->FSistema_model->cadastro_sregional($nome, $cpf_completo, $email, $telefone, $nascimento, $nome_pais, $estado);
 				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
 				if ($cadastro && $cadastroUsuario) {
 					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Cadastrado com Sucesso!"]);
@@ -4942,8 +4240,8 @@ class Welcome extends CI_Controller
 		// atualizarCriancas
 		$nome_antigo = $this->input->post("nome_antigo");
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
 		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id, 2);
 
@@ -5007,8 +4305,8 @@ class Welcome extends CI_Controller
 
 		$this->FAlerta_model->alerta_controle($id_usuario, $id_sregional, $motivo, "DESATIVACAO_SREGIONAL");
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional desativado!"]);
 		$funcao = $this->FConsultas_model->red("../../../$url", 2000, []);
@@ -5044,12 +4342,12 @@ class Welcome extends CI_Controller
 			}
 		}
 
-		// mudar o ativo do líder
+		// mudar o ativo do sregional
 		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 		$this->FSistema_model->ativar_sregional($id_sregional);
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Ativado!"]);
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
@@ -5120,14 +4418,14 @@ class Welcome extends CI_Controller
 			}
 		}
 
-		// mudar o ativo do líder
+		// excluir sregional
 		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 		$this->FSistema_model->excluirSRegionalPermanentemente($id_sregional, $id_usuario);
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/page/equipe";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/page/equipe" : $this->input->post('url');
 
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Ativado!"]);
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Desativado Permanentemente!"]);
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
 		echo $funcao;
 	}
@@ -5143,13 +4441,22 @@ class Welcome extends CI_Controller
 		$nascimento = $this->input->post('nascimento');
 		$id_sregional = $this->input->post('id_sregional');
 
+		$nome_digitado_pais = $this->input->post('nome_pais');
+
 		$estado1 = $this->input->post('estados');
 		$cidade1 = $this->input->post('cidades');
 		$estado2 = $this->input->post('estados2');
 		$cidade2 = $this->input->post('cidades2');
 
+		$nome_pais = "";
 		$estado = "";
 		$cidade = "";
+
+		if ($pais == "br") {
+			$nome_pais = "br";
+		} else {
+			$nome_pais = $nome_digitado_pais;
+		}
 
 		if ($estado1 == "" and $cidade1 == "") {
 			$estado .= $estado2;
@@ -5169,8 +4476,8 @@ class Welcome extends CI_Controller
 			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
 		}
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
 		if ($this->FAlerta_model->ValidaData($nascimento)) {
 			$jatacadastrado = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
@@ -5178,7 +4485,7 @@ class Welcome extends CI_Controller
 
 			if ($jatacadastrado || $jatacadastrado2) {
 				$nivel = 1;
-				$cadastro = $this->FSistema_model->cadastro_slocal($nome, $cpf_completo, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional);
+				$cadastro = $this->FSistema_model->cadastro_slocal($nome, $cpf_completo, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional);
 				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
 				if ($cadastro && $cadastroUsuario) {
 					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Cadastrado com Sucesso!"]);
@@ -5195,7 +4502,6 @@ class Welcome extends CI_Controller
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
 		echo $funcao;
 	}
-
 	public function editar_info_slocal()
 	{
 		$id = $this->input->post("id");
@@ -5204,8 +4510,10 @@ class Welcome extends CI_Controller
 		$email = $this->input->post("email");
 		$telefone = $this->input->post("telefone");
 		$nascimento = $this->input->post("nascimento");
-		$pais = $this->input->post("pais");
 		$id_sregional = $this->input->post("id_sregional");
+
+		$pais = $this->input->post("pais");
+		$nome_pais_digitado = $this->input->post("nome_pais");
 
 		$estado1 = $this->input->post('estados');
 		$cidade1 = $this->input->post('cidades');
@@ -5215,12 +4523,20 @@ class Welcome extends CI_Controller
 		$estado = "";
 		$cidade = "";
 
-		if ($estado1 == "" and $cidade1 == "") {
-			$estado .= $estado2;
-			$cidade .= $cidade2;
-		} else {
+		$nome_pais = "";
+
+		if ($pais == 'br') {
+			$nome_pais = $pais;
 			$estado .= $estado1;
 			$cidade .= $cidade1;
+		} else {
+			$nome_pais = $nome_pais_digitado;
+			$estado .= $estado2;
+			$cidade .= $cidade2;
+		}
+
+		if ($estado1 == "" and $cidade1 == "") {
+		} else {
 		}
 
 		$foto_antiga = $this->input->post("foto_antiga");
@@ -5241,7 +4557,7 @@ class Welcome extends CI_Controller
 			$foto = 'fotoU/se/' . $_FILES['files']['name'][$i];
 
 			if ($_FILES['files']['name'][$i] == '') {
-				$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $pais, $estado, $cidade, $id_sregional, $estado, $foto_antiga);
+				$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto_antiga);
 				if ($cadastro) {
 					array_push($mensagem, "Sucesso!");
 				} else {
@@ -5249,7 +4565,7 @@ class Welcome extends CI_Controller
 				}
 			} else {
 				if ($foto_antiga == $foto) {
-					$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional, $foto_antiga);
+					$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto_antiga);
 					if ($cadastro) {
 						array_push($mensagem, "Sucesso!");
 					} else {
@@ -5257,7 +4573,7 @@ class Welcome extends CI_Controller
 					}
 				} else {
 					if (file_exists($foto)) {
-						$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional, $foto_antiga);
+						$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto_antiga);
 						if ($cadastro) {
 							array_push($mensagem, "A foto já existe em nosso servidor, tente com outra foto com nome diferente!");
 						} else {
@@ -5274,7 +4590,7 @@ class Welcome extends CI_Controller
 
 						// Upload file to server
 						if ($this->upload->do_upload('file')) {
-							$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_sregional, $foto);
+							$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto);
 							if ($cadastro) {
 								array_push($mensagem, "Sucesso!");
 							} else {
@@ -5292,8 +4608,8 @@ class Welcome extends CI_Controller
 		// atualizarCriancas
 		$nome_antigo = $this->input->post("nome_antigo");
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
 		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id, 2);
 
@@ -5356,8 +4672,8 @@ class Welcome extends CI_Controller
 
 		$this->FAlerta_model->alerta_controle($id_usuario, $id_slocal, $motivo, "DESATIVACAO_SLOCAL");
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local desativado!"]);
 		$funcao = $this->FConsultas_model->red("../../../$url", 2000, []);
@@ -5393,14 +4709,14 @@ class Welcome extends CI_Controller
 			}
 		}
 
-		// mudar o ativo do líder
+		// mudar o ativo do slocal
 		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 		$this->FSistema_model->ativar_slocal($id_slocal);
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/home";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
 
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Lolca Ativado!"]);
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Ativado!"]);
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
 		echo $funcao;
 	}
@@ -5460,20 +4776,21 @@ class Welcome extends CI_Controller
 			}
 		}
 
-		// mudar o ativo do líder
-		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->excluirSLocalPermanentemente($id_slocal, $id_usuario);
+		// excluindo o slocal
+		//$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		//$this->FSistema_model->excluirSLocalPermanentemente($id_slocal, $id_usuario);
 
-		$nivel = $this->input->post('nivel') ?? 'direcao';
-		$url = $this->input->post('url') ?? "$nivel/page/equipe";
+		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
+		$url = $this->input->post('url') == '' ? "$nivel/page/slocal" : $this->input->post('url');
 
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Ativado!"]);
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Excluido Permanentemente!"]);
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
+
 		echo $funcao;
 	}
 
 	// coordenador
-	public function cadastrar_coordenador()
+	public function cadastro_coordenador()
 	{
 		$nome = $this->input->post('nome');
 		$cpf = $this->input->post('cpf');
@@ -5486,11 +4803,20 @@ class Welcome extends CI_Controller
 		$cidade2 = $this->input->post('cidades2');
 		$nascimento = $this->input->post('nascimento');
 
+		$nome_digitado_pais = $this->input->post('nome_pais');
+
 		$id_slocal = $this->input->post('id_slocal');
 		$id_sregional = $this->input->post('id_sregional');
 
+		$nome_pais = "";
 		$estado = "";
 		$cidade = "";
+
+		if ($pais == "br") {
+			$nome_pais = "br";
+		} else {
+			$nome_pais = $nome_digitado_pais;
+		}
 
 		if ($estado1 == "" and $cidade1 == "") {
 			$estado .= $estado2;
@@ -5510,38 +4836,30 @@ class Welcome extends CI_Controller
 			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
 		}
 
-		$red = $this->input->post('red') ?? 'slocal';
-		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
-		$routa = "coordenadores";
-		$data = [];
-
 		if ($this->FAlerta_model->ValidaData($nascimento)) {
 			$consultarCoord = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
 			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
 
 			if ($consultarCoord || $consultarUsuario) {
 				$nivel = 1;
-				$cadastro = $this->FSistema_model->cadastro_coordenador($nome, $cpf_completo, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_slocal, $id_sregional);
+				$cadastro = $this->FSistema_model->cadastro_coordenador($nome, $cpf_completo, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_slocal, $id_sregional);
 				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
 				if ($cadastro && $cadastroUsuario) {
 					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Coordenador cadastrado com Sucesso!"]);
-					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-					echo $funcao;
 				} else {
 					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
-					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-					echo $funcao;
 				}
 			} else {
 				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Coordenador já Cadastrado!"]);
-				$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-				echo $funcao;
 			}
 		} else {
 			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
-			$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-			echo $funcao;
 		}
+
+		$nivel = $this->input->post('nivel') ?? 'direcao';
+		$url = $this->input->post('url') ?? "$nivel/home";
+		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
+		echo $funcao;
 	}
 
 	public function desativar_coordenador()
@@ -5715,5 +5033,734 @@ class Welcome extends CI_Controller
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Excluido Permanentemente!"]);
 		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
 		echo $funcao;
+	}
+
+	// líder
+	public function cadastro_lider()
+	{
+		$nome = $this->input->post('nome');
+		$cpf = $this->input->post('cpf');
+		$email = $this->input->post('email');
+		$telefone = $this->input->post('telefone');
+		$igreja = $this->input->post('igreja');
+		$pais = $this->input->post('pais');
+		$estado1 = $this->input->post('estados');
+		$cidade1 = $this->input->post('cidades');
+		$estado2 = $this->input->post('estados2');
+		$cidade2 = $this->input->post('cidades2');
+		$nascimento = $this->input->post('nascimento');
+
+		$id_pastor = $this->input->post('id_pastor');
+		$id_coordenador = $this->input->post('id_coordenador');
+		$id_slocal = $this->input->post('id_slocal');
+		$id_sregional = $this->input->post('id_sregional');
+
+		$estado = "";
+		$cidade = "";
+
+		if ($estado1 == "" and $cidade1 == "") {
+			$estado .= $estado2;
+			$cidade .= $cidade2;
+		} else {
+			$estado .= $estado1;
+			$cidade .= $cidade1;
+		}
+
+		$ponto1 = $cpf[3];
+
+		$cpf_completo = "";
+
+		if ($ponto1 == ".") {
+			$cpf_completo .= $cpf;
+		} else {
+			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
+		}
+
+		$red = $this->input->post('red') ?? 'coordenador/lideres';
+		$routa = "";
+
+		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
+
+		if ($red == 'coordenador/lideres') {
+			$data = [];
+			$routa = "coordenador/page/lideres";
+		} else if ($red == 'slocal/lideres') {
+			if ($nivel_routa == 'lider') {
+				$data = [];
+			} else {
+				$data = [
+					"<input type='hidden' name='id_user' value='$id_coordenador'>"
+				];
+			}
+			$routa = "slocal/page/lideres";
+		} else {
+			$data = [];
+			$routa = "coordenador/page/lideres";
+		}
+
+		if ($this->FAlerta_model->ValidaData($nascimento)) {
+			$consultarLider = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
+			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
+
+			if ($consultarLider || $consultarUsuario) {
+				$nivel = 1;
+				$cadastro = $this->FSistema_model->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional);
+				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
+				if ($cadastro && $cadastroUsuario) {
+					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
+					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+					echo $funcao;
+				} else {
+					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+					echo $funcao;
+				}
+			} else {
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Líder já Cadastrado!"]);
+				$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+				echo $funcao;
+			}
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
+			$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function desativar_lider()
+	{
+		$id_lider = $this->input->post("id_lider");
+		$id_usuario = $this->input->post("id_usuario");
+		$motivo = "O usuário de ID (" . $id_usuario . ") desativou esse líder";
+
+		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->excluirPG($pg['id_pg'], $pg['nome_pg'], $id_lider, $id_usuario, $motivo, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->excluirCrianca($criancas['id_crianca'], $criancas['nome_crianca'], $id_lider, $id_usuario, $motivo, 2);
+			}
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->desativarLider($id_lider);
+
+		$this->FAlerta_model->alerta_controle($id_usuario, $id_lider, $motivo, "EX_CL_4");
+
+		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
+		$id_coord = $this->input->post('id_coord');
+
+		$red = $this->input->post('red') ?? 'lideres/detalhes';
+		$routa = "";
+		$data = [];
+
+		if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
+			];
+			$routa = "page/lideres/detalhes/$id_lider";
+		} else {
+			$data = [
+				"<input type='hidden' name='id_user' value='$id_coord'>",
+			];
+			$routa = "coordenador/page/lideres";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder desativado!"]);
+		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+		echo $funcao;
+	}
+
+	public function ativar_lider()
+	{
+		$id_lider = $this->input->post("opc");
+		$id_usuario = $this->input->post("idUsuario");
+		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->reativarPg($pg['id_pg'], $id_usuario, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->reativarCrianca($criancas['id_crianca'], 2);
+			}
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->ativarLider($id_lider);
+
+		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
+		$id_coord = $this->input->post('id_coord');
+
+		$red = $this->input->post('red') ?? 'lideres';
+		$routa = "";
+
+		if ($red == 'lideres') {
+			$data = [
+				"<input type='hidden' name='id_user' value='$id_coord'>",
+			];
+			$routa = "lideres";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
+			];
+			$routa = "lideres/detalhes/$id_lider";
+		} else {
+			$data = [
+				"<input type='hidden' name='id_user' value='$id_coord'>",
+			];
+			$routa = "lideres";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Ativado!"]);
+		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+		echo $funcao;
+	}
+
+	public function excluir_lider_permanentemente()
+	{
+		$id_lider = $this->input->post("opc");
+		$id_usuario = $this->input->post("idUsuario");
+
+		$infos = $this->FConsultas_model->getInfoUserId($id_lider);
+		$infonome = $this->FConsultas_model->getNomeUserId($id_lider);
+
+		// desativar pg
+		$consultaPG = $this->FConsultas_model->mostrarPG($id_lider, 5);
+		$dadosPG = $consultaPG['dados'];
+
+		if ($consultaPG['row'] == 0) {
+		} else {
+			foreach ($dadosPG as $key => $pg) {
+				$this->FSistema_model->excluirPgPermanentemente($pg['id_pg'], $id_lider, $id_usuario, 2);
+			}
+		}
+
+		// desativar crianças
+		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 2);
+		$dadosCriancas = $consultaCriancas['dados'];
+
+		if ($consultaCriancas['row'] == 0) {
+		} else {
+			foreach ($dadosCriancas as $key => $criancas) {
+				$this->FSistema_model->excluirCriancaPermanentemente($criancas['id_crianca'], $id_lider, $id_usuario, 2);
+			}
+		}
+
+		$dados_colider = $this->FConsultas_model->mostrarColiderDoLider($id_lider);
+
+		if ($dados_colider) {
+			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_lider, $id_usuario);
+		} else {
+		}
+
+		// mudar o ativo do líder
+		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->FSistema_model->excluirLiderPermanentemente($id_lider, $id_usuario);
+
+		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
+		$id_coord = $this->input->post('id_coord');
+
+		$red = $this->input->post('red') ?? 'lideres';
+		$routa = "";
+		$data = [];
+
+		if ($red == 'lideres') {
+			$routa = "lideres";
+		} else if ($red == 'lideres/detalhes') {
+			if ($nivel_routa == 'lider') {
+			} else {
+				$data = [
+					"<input type='hidden' name='id_user' value='$id_coord'>",
+				];
+			}
+			$routa = "lideres";
+		} else {
+			$routa = "lideres";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Excluido Permanentemente!"]);
+		$funcao = $this->FConsultas_model->red("../../$routa", 2000, $data);
+		echo $funcao;
+	}
+
+	// Colíderes
+	public function cadastro_colider()
+	{
+		$idLider = $this->input->post('idLider');
+		$nomeColider = $this->input->post('nomeColider');
+		$emailColider = $this->input->post('emailColider');
+		$cpfColider = $this->input->post('cpfColider');
+		$telefoneColider = $this->input->post('telefoneColider');
+		$nascimentoColider = $this->input->post('nascimentoColider');
+
+		$consultarColider = $this->FConsultas_model->checkColider($nomeColider, $cpfColider, $emailColider, $telefoneColider);
+
+		$nivel = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+		$routa = "";
+
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel'>"
+			];
+			$routa = "../../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		}
+
+		if ($consultarColider) {
+			$cadastroColider = $this->FSistema_model->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
+
+			if ($cadastroColider) {
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Cadastro Relizado com Sucesso!']);
+				$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+				echo $funcao;
+			} else {
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
+				$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+				echo $funcao;
+			}
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Colíder já cadastrado']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function desativar_colider()
+	{
+		$idLider = $this->input->post("idLider");
+		$idColider = $this->input->post("idColider");
+		$nomeColider = $this->input->post("nomeColider");
+
+		$idResponsavel = $this->input->post("idResponsavel");
+		$motivo = $this->input->post("motivo");
+
+		$nivel = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
+		$reativar = $this->FSistema_model->excluirColider($idColider, $nomeColider, $idLider, $idResponsavel, $motivo);
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+		$routa = "";
+
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel'>"
+			];
+			$routa = "../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		}
+
+		if ($reativar) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Colíder Desativado com Sucesso!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function ativar_colider()
+	{
+		$idLider = $this->input->post("idLider");
+		$idColider = $this->input->post("opc");
+
+		$nivel = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
+		$reativar = $this->FSistema_model->reativarColider($idColider, $idLider);
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+		$routa = "";
+
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel'>"
+			];
+			$routa = "../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../pagina_editar_pessoal";
+		}
+
+		if ($reativar) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Colíder Ativado com Sucesso!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Tente Novamente!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function excluir_colider_permanentemente()
+	{
+		$idLider = $this->input->post("idLider");
+		$idUsuario = $this->input->post("idUsuario");
+		$id_colider = $this->input->post("opc");
+
+		$excluir = $this->FSistema_model->excluirColiderPermanentemente($id_colider, $idLider, $idUsuario);
+
+		$nivel = $this->input->post("nivel_routa") ?? 'lider';
+		$id_coord = $this->input->post("id_coord");
+
+		$red = $this->input->post('red') ?? 'pagina_editar_pessoal';
+
+		$routa = "";
+		if ($red == 'pagina_editar_pessoal') {
+			$data = [];
+			$routa = "../../pagina_editar_pessoal";
+		} else if ($red == 'lideres/detalhes' || $red == 'slocal/detalhes') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel'>"
+			];
+			$routa = "../../page/lideres/detalhes/$idLider";
+		} else {
+			$data = [];
+			$routa = "../../pagina_editar_pessoal";
+		}
+
+		if ($excluir) {
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Atenção! Colíder Excluido Permanentemente!"]);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		} else {
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, $data);
+			echo $funcao;
+		}
+	}
+
+	public function downloadMaterial()
+	{
+		$id = $this->input->post("id");
+		$idLider = $this->input->post("id_lider");
+		$idPg = $this->input->post("id_pg");
+		$title = $this->input->post("title");
+		$download = $this->input->post("download");
+
+		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
+		if ($nivel == '2') {
+		} else {
+			$dataEscolhida = $this->input->post("data");
+			$dadosPg = $this->FConsultas_model->mostrarPGId($idLider, $idPg, $nivel);
+
+			$data = $dadosPg['dados']['data_inicio'];
+			$dataHj = date('d/m/Y');
+
+			//echo "A data de hj é " . $dataEscolhida . "<br>";
+			if ($id == 2 && $data == '') {
+				$dataE = $dataEscolhida == '' ? $dataHj : $dataEscolhida;
+				//echo "A data de E é " . $dataE;
+
+				$dia = $dataE[0] . $dataE[1];
+				$mes = $dataE[3] . $dataE[4];
+				$ano = $dataE[6] . $dataE[7] . $dataE[8] . $dataE[9];
+				$data_trocada = $mes . "/" . $dia . "/" . $ano;
+				$data_fim = date('d/m/Y', strtotime('+2 months', strtotime($data_trocada)));
+
+				$this->FSistema_model->editarData($idPg, $dataEscolhida, $data_fim, $dataEscolhida, $nivel);
+			}
+		}
+
+		if ($id == 4) {
+			$nme = "$title.ppsx";
+		} else {
+			$nme = "$title.pdf";
+		}
+
+		$pth = file_get_contents(base_url() . $download);
+		force_download($nme, $pth);
+	}
+	public function download_material()
+	{
+		$nome = $this->input->post("nome");
+		$download = $this->input->post("download");
+		$pth = file_get_contents($download);
+		force_download($nome, $pth);
+	}
+
+	public function gerar_certificado()
+	{
+
+		$nome = $this->input->post('nome');
+
+		$opc = $this->input->post('opc');
+
+		$img = $this->input->post('img');
+		$nome_user = $this->input->post('nome_user');
+		$nome_curso = "";
+
+		$pdf = new FPDF("L", "mm", "A4");
+		$pdf->SetCreator('CAMP Brasil');
+
+		//$name = text to be added, $x= x cordinate, $y = y coordinate, $a = alignment , $f= Font Name, $t = Bold / Italic, $s = Font Size, $r = Red, $g = Green Font color, $b = Blue Font Color
+		function AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b)
+		{
+			$pdf->SetFont($f, $t, $s);
+			$pdf->SetXY($x, $y);
+			$pdf->SetTextColor($r, $g, $b);
+			$pdf->Cell(0, 10, $pdf->textoUTF8($text), 0, 0, $a);
+		}
+
+		function AddText($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b)
+		{
+			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
+			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
+			AddText2($pdf, $text, $x, $y, $a, $f, $t, $s, $r, $g, $b);
+		}
+
+		if ($opc == 1) {
+			$nome_curso = "Certificado Treinamento Presencial";
+			$carga_horaria = $this->input->post('carga_horaria');
+			$data_treinamento = $this->input->post('data_treinamento');
+
+			$nome_carga_horaria = "";
+
+			if ($carga_horaria <= 1) {
+				$nome_carga_horaria = $carga_horaria . " hora";
+			} else {
+				$nome_carga_horaria = $carga_horaria . " horas";
+			}
+
+			$dia = $data_treinamento[0] . $data_treinamento[1];
+			$mes = $data_treinamento[3] . $data_treinamento[4];
+			$ano = $data_treinamento[6] . $data_treinamento[7] . $data_treinamento[8] . $data_treinamento[9];
+
+			$pdf->AddPage();
+			$pdf->SetTitle($nome_curso, true);
+			$pdf->Image($img, 0, 0, 297, 210);
+			$x_letra = strlen($nome);
+			$font1 = $x_letra < 40 ? 16 : 14;
+			AddText($pdf, $nome, 71, 95, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
+			AddText($pdf, $nome_user, 60, 125, 'L', 'Helvetica', 'B', 16, 0, 0, 0);
+			AddText($pdf, $dia, 30, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $mes, 70, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $ano, 110, 137, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $nome_carga_horaria, 60, 148, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+		} else if ($opc == 2) {
+
+			$nome_curso = "Certificado LOL 1";
+
+			$de = $this->input->post('de_1');
+			$ate = $this->input->post('ate_1');
+			$mes = $this->input->post('mes_1');
+			$ano = $this->input->post('ano_1');
+			$estado = $this->input->post('estado');
+			$cidade = $this->input->post('cidade');
+
+			$nome_estado = $estado . ", " . $cidade;
+
+			$pdf->AddPage();
+			$pdf->SetTitle($nome_curso, true);
+			$pdf->Image($img, 0, 0, 297, 210);
+			$x_letra = strlen($nome);
+			$font1 = $x_letra < 40 ? 16 : 14;
+			AddText($pdf, $nome, 71, 93, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
+			AddText($pdf, $nome_user, 132, 126, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $de, 110, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $ate, 126, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $mes, 145, 136, 'L', 'Helvetica', 'B', 18, 0, 0, 0);
+			AddText($pdf, $ano, 189, 136, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+			AddText($pdf, $nome_estado, 120, 146, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+		} else if ($opc == 3) {
+
+			$nome_curso = "Certificado LOL 2";
+
+			$img2 = $this->input->post('img2');
+			$mes = $this->input->post('mes_2');
+			$ano = $this->input->post('ano_2');
+
+			$pdf->AddPage();
+			$pdf->SetTitle($nome_curso, true);
+			$pdf->Image($img, 0, 0, 297, 210);
+			$x_letra = strlen($nome);
+			$font1 = $x_letra < 40 ? 16 : 14;
+			AddText($pdf, $nome, 91, 99, 'L', 'Helvetica', 'B', $font1, 0, 0, 0);
+			AddText($pdf, $mes, 195, 139, 'L', 'Helvetica', 'B', 18, 0, 0, 0);
+			AddText($pdf, $ano, 255, 139, 'L', 'Helvetica', 'B', 20, 0, 0, 0);
+
+			$pdf->AddPage();
+			$pdf->Image($img2, 0, 0, 297, 210);
+		}
+
+		$nome_arquivo = $nome_curso . " - " . $nome . ".pdf";
+		$pdf->Output('D', $nome_arquivo);
+	}
+
+	// funções
+	public function atualizar_data()
+	{
+		// coordenadores
+		$coordenadores = $this->FConsultas_model->mostrar_all_coordenador();
+
+		foreach ($coordenadores['dados'] as $key => $coord) {
+			echo $coord['id_coordenador'] . ": " . $coord['nome_coordenador'] . "<br>";
+			$lideres = $this->FConsultas_model->getLideres([$coord['id_coordenador']], 1, 2, []);
+
+			$data = "";
+
+			if ($lideres['row'] == 0) {
+				//echo "<b><i>O coordenador não tem líder cadastrado</i></b><br>";
+				// consultando de o coordenador tem pg
+				$pg = $this->FConsultas_model->mostrarPG($coord['id_coordenador'], 4);
+
+				if ($pg['row'] == 0) {
+					// o coordenador não tem pg
+
+					// 1ª consulta - SUPERVISOR LOCAL
+					$id_local = $coord['id_supervisorR'];
+					$lideres_sr = $this->FConsultas_model->getLideres([$id_local], 2, 2, []);
+					if ($lideres_sr['row'] == 0) {
+
+						// o supervisor local não tem lideres vê se ele tem pg
+						$pg_sr = $this->FConsultas_model->mostrarPG($id_local, 4);
+
+						if ($pg_sr['row'] == 0) {
+							// 2ª consulta - SUPERVISOR REGIONAL
+						} else {
+							$data_pg_sr = $pg_sr['dados'][0]['data_inicio'];
+
+							if ($data_pg_sr == '') {
+								echo "<b><i>Data Vazia</i></b><br>";
+							} else {
+								$dia = $data_pg_sr[0] . $data_pg_sr[1];
+								$mes = $data_pg_sr[3] . $data_pg_sr[4];
+								$ano = $data_pg_sr[6] . $data_pg_sr[7] . $data_pg_sr[8] . $data_pg_sr[9];
+
+								$data = $ano . "-" . $mes . "-" . $dia;
+							}
+						}
+					} else {
+						$data = $lideres_sr['dados'][0]['data_cadastro'];
+					}
+				} else {
+					// o coordenador tem pg - add a data de inicio do pg
+					$data_pg = $pg['dados'][0]['data_inicio'];
+					if ($data_pg == '') {
+						echo "<b><i>Data Vazia</i></b><br>";
+					} else {
+						$dia = $data_pg[0] . $data_pg[1];
+						$mes = $data_pg[3] . $data_pg[4];
+						$ano = $data_pg[6] . $data_pg[7] . $data_pg[8] . $data_pg[9];
+						$data = $ano . "-" . $mes . "-" . $dia;
+					}
+				}
+			} else {
+				if ($coord['id_coordenador'] == '3000' || $coord['id_coordenador'] == '3003' || $coord['id_coordenador'] == '3004' || $coord['id_coordenador'] == '3006' || $coord['id_coordenador'] == '3015' || $coord['id_coordenador'] == '3017'  || $coord['id_coordenador'] == '3033') {
+					$data = "2017-02-18";
+				} else {
+					$data = $lideres['dados'][0]['data_cadastro'];
+				}
+			}
+
+			echo $data . "<br><br>";
+			$this->db->set('data_cadastro', $data);
+			$this->db->where('id_coordenador  ', $coord['id_coordenador']);
+			$this->db->update('coordenador');
+		}
+	}
+
+	public function offline()
+	{
+		$dados = array(
+			'heading' => 'Você está Offline',
+			'message' => 'Conect a internet e tente novamente',
+		);
+
+		$this->load->view('errors/html/error_404', $dados);
+	}
+
+	public function red_lideres_coord()
+	{
+
+		$id_coord = $this->uri->segment(4);
+
+		$data = [
+			"<input type='hidden' name='id_user' value='$id_coord'>"
+		];
+
+		$funcao = $this->FConsultas_model->red('../lideres', 0, $data);
+		echo $funcao;
+	}
+
+	public function red_lideres_info_licao()
+	{
+
+		$id_coord = $this->uri->segment(4);
+		$id_lider = $this->uri->segment(5);
+
+		$data = [
+			"<input type='hidden' name='id_coord' value='$id_coord'>"
+		];
+
+		$funcao = $this->FConsultas_model->red("../../lideres/detalhes/$id_lider", 0, $data);
+		echo $funcao;
+	}
+
+	public function atualizar_session()
+	{
+		$dados = json_decode(file_get_contents('php://input'), true);
+
+		$_SESSION[$dados['session']] = $dados['valor'];
+
+		echo json_encode($_SESSION[$dados['session']]);
 	}
 }

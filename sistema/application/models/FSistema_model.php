@@ -1659,7 +1659,7 @@ class FSistema_model extends CI_Model
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
 
-		$dados_lider = $this->FConsultas_model->getInfoSRegionalId($id_slocal);
+		$dados_slocal = $this->FConsultas_model->getInfoSLocalId($id_slocal);
 
 		$consultar_sregional_desativado = $this->db->query("SELECT * FROM alcancado_surpe WHERE id_supervisorE LIKE '$id_slocal'");
 		$row = $consultar_sregional_desativado->num_rows();
@@ -1667,7 +1667,7 @@ class FSistema_model extends CI_Model
 		if ($row == 0) {
 			//$inserir['id_exclusao'] = NULL;
 			$inserir['id_supervisorR'] = $id_slocal;
-			$inserir['nome_supervisorR'] = $dados_lider['dados']['nome_supervisorR'];
+			$inserir['nome_supervisorR'] = $dados_slocal['dados']['nome_supervisorR'];
 			$inserir['id_responsavel'] = $id_responsavel;
 			$inserir['motivo'] = $motivo;
 			$inserir['data_saida'] = $data;

@@ -15,24 +15,18 @@ if (!isset($_SESSION['usuario'])) {
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
 
-    $dados_slocal = $this->FConsultas_model->getInfoDirecaoId($id_usuario);
+    $dados_direcao = $this->FConsultas_model->getInfoDirecaoId($id_usuario);
 
-    if ($dados_slocal['row'] == 0) {
+    if ($dados_direcao['row'] == 0) {
         $data = [];
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
         $funcao = $this->FConsultas_model->red("$voltar_index/index", 2000, $data);
         echo $funcao;
     } else {
+        $dados_slocal = $this->FConsultas_model->getInfoSLocalId($id_slocal);
 
         $url_1 = $this->uri->segment(1);
         $url = $this->FConsultas_model->get_url();
-
-        $id_pastor = "2000";
-        $id_coord = "3000";
-        $id_sr = "4000";
-        $id_se = "5000";
-
-        $link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_coord&tres=$id_sr&quatro=$id_se";
 ?>
         <!DOCTYPE html>
         <html>
@@ -86,7 +80,7 @@ if (!isset($_SESSION['usuario'])) {
             function aparecer_select() {
                 var opc = document.getElementById('pais').value;
                 if (opc == "br") {
-                    document.getElementById('estaods2').value = '';
+                    document.getElementById('estados2').value = '';
                     document.getElementById('cidades2').value = '';
                     document.getElementById('consultar_endereco').style.display = "inline";
                     document.getElementById('escrever_endereco').style.display = "none";
@@ -401,8 +395,7 @@ if (!isset($_SESSION['usuario'])) {
                             <?php
                             if ($id_slocal == '') {
                             } else {
-                                $dados_user = $this->FConsultas_model->getNomeUserId($id_slocal);
-                                echo $dados_user['nome'];
+                                echo $dados_slocal['dados']['nome_supervisorR'];
                             }
                             ?>
                             <small>Painel de Controle</small>
@@ -428,112 +421,280 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-header with-border">
                                     <h3 class="box-title"><i class="fa fa-table"></i> Supervisor Local</h3>
 
-                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_slocal">Cadastrar +</button>
+                                    <?php
+                                    if ($id_slocal == '') {
+                                    ?>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_slocal">Cadastrar +</button>
 
-                                    <div class="modal fade" id="cadastro_slocal">
-                                        <div class="modal-dialog modal-success">
-                                            <div class="modal-content">
-                                                <form action="coordenadores/salvar" method="POST">
-                                                    <input type="hidden" name="id_slocal" value="<?= $id_usuario; ?>">
-                                                    <input type="hidden" name="id_sregional" value="<?= $id_se; ?>">
-                                                    <input type="hidden" name="red" value="slocal">
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span></button>
-                                                        <h4 class="modal-title">Cadastro | Coordenador</h4>
-                                                    </div>
-                                                    <div class="box-body">
+                                        <div class="modal fade" id="cadastro_slocal">
+                                            <div class="modal-dialog modal-success">
+                                                <div class="modal-content">
+                                                    <form action="slocal/cadastro/salvar" method="POST">
 
-                                                        <div class="col-lg-12">
-                                                            <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome" required>
-                                                                <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                                                            </div>
+                                                        <input type="hidden" name="url" value="<?= $url; ?>">
+                                                        <input type="hidden" name="nivel" value="<?= $url_1; ?>">
+
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span></button>
+                                                            <h4 class="modal-title">Cadastro | S. Local</h4>
                                                         </div>
+                                                        <div class="box-body">
 
-                                                        <div class="col-lg-6">
-                                                            <div class="form-group has-feedback">
-                                                                <input type="email" class="form-control" placeholder="Email" name="email" required>
-                                                                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-lg-6">
-                                                            <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11" required>
-                                                                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-lg-6">
-                                                            <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone" required>
-                                                                <span class="glyphicon glyphicon-phone form-control-feedback"></span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-lg-6">
-                                                            <div class="form-group has-feedback">
-                                                                <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
-                                                                <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-lg-12">
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-12">
                                                                 <div class="form-group has-feedback">
-                                                                    <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
-                                                                        <option value="" selected>País</option>
-                                                                        <option value="br">Brasil</option>
-                                                                        <option value="outro">Outros</option>
-                                                                    </select>
-                                                                    <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                    <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome" required>
+                                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div id="escrever_endereco">
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="email" class="form-control" placeholder="Email" name="email" required>
+                                                                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11" required>
+                                                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone" required>
+                                                                    <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
+                                                                    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-12">
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group has-feedback">
-                                                                        <input type="text" id="estaods2" class="form-control" placeholder="Estado" name="estados2">
-                                                                        <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
+                                                                            <option value="" selected>País</option>
+                                                                            <option value="br">Brasil</option>
+                                                                            <option value="outro">Outros</option>
+                                                                        </select>
+                                                                        <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group has-feedback">
-                                                                        <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2">
-                                                                        <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                <div id="escrever_endereco">
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" class="form-control" placeholder="Pais" name="nome_pais">
+                                                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" id="estados2" class="form-control" placeholder="Estado" name="estados2">
+                                                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2">
+                                                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="consultar_endereco">
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <select id="estados" name="estados" class="form-control">
+                                                                                <option value=""></option>
+                                                                            </select>
+                                                                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <select id="cidades" name="cidades" class="form-control">
+                                                                            </select>
+                                                                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
 
-                                                            <div id="consultar_endereco">
+                                                            <div class="col-lg-12">
+
+                                                                <div class="form-group has-feedback">
+                                                                    <center>
+                                                                        <label for="id_sregional">Escolha um Supervisor Regional</label>
+                                                                    </center>
+                                                                    <select name="id_sregional" class="form-control">
+                                                                        <?php
+                                                                        $sregional = $this->FConsultas_model->getSRegional([], 1, 1, []);
+
+                                                                        foreach ($sregional['sregional_ativos']['dados'] as $key => $dSregional) {
+
+                                                                        ?>
+                                                                            <option value="<?= $dSregional['id_supervisorEs']; ?>"><?= $dSregional['nome_supervisorE']; ?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                            <input type="submit" class="btn btn-default pull-right" value="Salvar">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                            <!-- /.modal-dialog -->
+                                        </div>
+                                    <?php } else { ?>
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_coord">Cadastrar +</button>
+                                        <div class="modal fade" id="cadastro_coord">
+                                            <div class="modal-dialog modal-success">
+                                                <div class="modal-content">
+                                                    <form action="../coordenador/cadastro/salvar" method="POST">
+
+                                                        <input type="hidden" name="url" value="<?= $url; ?>">
+                                                        <input type="hidden" name="nivel" value="<?= $url_1; ?>">
+
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span></button>
+                                                            <h4 class="modal-title">Cadastro | Coordenador</h4>
+                                                        </div>
+                                                        <div class="box-body">
+
+                                                            <div class="col-lg-12">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome" required>
+                                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="email" class="form-control" placeholder="Email" name="email" required>
+                                                                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11" required>
+                                                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone" required>
+                                                                    <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
+                                                                    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-lg-12">
                                                                 <div class="col-lg-4">
                                                                     <div class="form-group has-feedback">
-                                                                        <select id="estados" name="estados" class="form-control">
-                                                                            <option value=""></option>
+                                                                        <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
+                                                                            <option value="" selected>País</option>
+                                                                            <option value="br">Brasil</option>
+                                                                            <option value="outro">Outros</option>
                                                                         </select>
                                                                         <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-lg-4">
-                                                                    <div class="form-group has-feedback">
-                                                                        <select id="cidades" name="cidades" class="form-control">
-                                                                        </select>
-                                                                        <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                <div id="escrever_endereco">
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" class="form-control" placeholder="Pais" name="nome_pais">
+                                                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" id="estados2" class="form-control" placeholder="Estado" name="estados2">
+                                                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2">
+                                                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="consultar_endereco">
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <select id="estados" name="estados" class="form-control">
+                                                                                <option value=""></option>
+                                                                            </select>
+                                                                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-lg-4">
+                                                                        <div class="form-group has-feedback">
+                                                                            <select id="cidades" name="cidades" class="form-control">
+                                                                            </select>
+                                                                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+
+                                                            <center>
+                                                                <label for="id_sregional">Você está cadastrando um coordenador para o supervisor local <?= $dados_slocal['dados']['nome_supervisorR']; ?></label>
+                                                                <input type="hidden" name="id_slocal" value="<?= $dados_slocal['dados']['id_supervisorR']; ?>">
+                                                            </center>
+                                                            <div class="col-lg-12">
+
+                                                                <div class="form-group has-feedback">
+                                                                    <center>
+                                                                        <label for="id_sregional">Escolha um Supervisor Regional</label>
+                                                                    </center>
+                                                                    <select name="id_sregional" class="form-control">
+                                                                        <?php
+                                                                        $sregional = $this->FConsultas_model->getSRegional([], 1, 1, []);
+
+                                                                        foreach ($sregional['sregional_ativos']['dados'] as $key => $dSregional) {
+
+                                                                        ?>
+                                                                            <option value="<?= $dSregional['id_supervisorEs']; ?>"><?= $dSregional['nome_supervisorE']; ?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                                        <input type="submit" class="btn btn-default pull-right" value="Salvar">
-                                                    </div>
-                                                </form>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                            <input type="submit" class="btn btn-default pull-right" value="Salvar">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <!-- /.modal-content -->
                                             </div>
-                                            <!-- /.modal-content -->
+                                            <!-- /.modal-dialog -->
                                         </div>
-                                        <!-- /.modal-dialog -->
-                                    </div>
+                                    <?php } ?>
 
                                     <div class="box-tools pull-right">
                                         <?php

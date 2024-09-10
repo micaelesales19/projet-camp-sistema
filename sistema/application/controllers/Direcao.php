@@ -385,7 +385,7 @@ class Direcao extends CI_Controller
 			);
 			array_push($pages, $page1);
 		} else {
-			if ($segmento == 'sregional') {
+			if ($segmento == 'slocal') {
 				$page1 = array(
 					"red" => "../../home",
 					"name" => "Home",
@@ -393,7 +393,7 @@ class Direcao extends CI_Controller
 				);
 				array_push($pages, $page1);
 				$page2 = array(
-					"red" => "../equipe",
+					"red" => "../slocal",
 					"name" => "Equipe",
 					"icon" => "fa fa-users",
 				);
@@ -406,7 +406,7 @@ class Direcao extends CI_Controller
 				);
 				array_push($pages, $page1);
 				$page2 = array(
-					"red" => "../../equipe",
+					"red" => "../../slocal",
 					"name" => "Equipe",
 					"icon" => "fa fa-users",
 				);

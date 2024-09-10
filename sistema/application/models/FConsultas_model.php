@@ -1163,7 +1163,7 @@ class FConsultas_model extends CI_Model
 	{
 		if ($opc == 1 && $opc2 == 1) {
 			// info de todos os supervisores regionais
-			$consultar_sregional = $this->db->query("SELECT * FROM supervisore ORDER BY nome_supervisorE ASC LIMIT 10");
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore ORDER BY nome_supervisorE ASC");
 			$row_1 = $consultar_sregional->num_rows();
 			$dados_consulta_sregional = $consultar_sregional->result_array();
 
@@ -1181,7 +1181,7 @@ class FConsultas_model extends CI_Model
 			return $dados;
 		} else if ($opc == 1 && $opc2 == 2) {
 			// info de todos os supervisores regionais
-			$consultar_sregional = $this->db->query("SELECT * FROM supervisore LIMIT 10");
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore");
 			$row_1 = $consultar_sregional->num_rows();
 			$dados_consulta_sregional = $consultar_sregional->result_array();
 
@@ -1218,7 +1218,7 @@ class FConsultas_model extends CI_Model
 			$data_final = $datas['dataFim']; // atual
 
 			// info de todos os supervisores regionais
-			$consultar_sregional = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorE ASC LIMIT 10");
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorE ASC");
 			$row = $consultar_sregional->num_rows();
 			$dados_consulta_sregional = $consultar_sregional->result_array();
 
@@ -1240,7 +1240,7 @@ class FConsultas_model extends CI_Model
 			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
 			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
 
-			$consultar_sregional = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorE ASC LIMIT 10");
+			$consultar_sregional = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorE ASC");
 			$row_1 = $consultar_sregional->num_rows();
 			$dados_consulta_sregional = $consultar_sregional->result_array();
 
@@ -1252,7 +1252,7 @@ class FConsultas_model extends CI_Model
 
 			array_push($dados, $sregionalAtivos);
 
-			$consultar_sregional_mesmo_ano = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_supervisorE ASC LIMIT 10");
+			$consultar_sregional_mesmo_ano = $this->db->query("SELECT * FROM supervisore WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_supervisorE ASC");
 			$row_1_mesmo_ano = $consultar_sregional_mesmo_ano->num_rows();
 			$dados_consulta_sregional_mesmo_ano = $consultar_sregional_mesmo_ano->result_array();
 
@@ -1314,7 +1314,7 @@ class FConsultas_model extends CI_Model
 	{
 		if ($opc == 1 && $opc2 == 1) {
 			// retornar todos os supervisores locais ordenardo pelo nome
-			$consultar_slocal = $this->db->query("SELECT * FROM supervisorr ORDER BY nome_supervisorR ASC LIMIT 10");
+			$consultar_slocal = $this->db->query("SELECT * FROM supervisorr ORDER BY nome_supervisorR ASC");
 			$row = $consultar_slocal->num_rows();
 			$dados_consulta_slocal = $consultar_slocal->result_array();
 
@@ -1367,7 +1367,7 @@ class FConsultas_model extends CI_Model
 			$data_inicio = $datas['dataInicio']; // antiga
 			$data_final = $datas['dataFim']; // atual
 
-			$consultar_slocais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC LIMIT 10");
+			$consultar_slocais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC");
 			$row = $consultar_slocais->num_rows();
 			$dados_consulta_slocais = $consultar_slocais->result_array();
 
@@ -1388,7 +1388,7 @@ class FConsultas_model extends CI_Model
 			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
 			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
 
-			$consultar_slocais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC LIMIT 10");
+			$consultar_slocais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC");
 			$row = $consultar_slocais->num_rows();
 			$dados_consulta_slocais = $consultar_slocais->result_array();
 
@@ -1400,7 +1400,7 @@ class FConsultas_model extends CI_Model
 			$sLocaisAtivos = $this->sLocaisAtivos($dados);
 			array_push($dados, $sLocaisAtivos);
 
-			$consultar_slocais_mesmo_ano = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_supervisorR ASC LIMIT 10");
+			$consultar_slocais_mesmo_ano = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_supervisorR ASC");
 			$row_1_mesmo_ano = $consultar_slocais_mesmo_ano->num_rows();
 			$dados_consulta_slocais_mesmo_ano = $consultar_slocais_mesmo_ano->result_array();
 
@@ -1421,7 +1421,7 @@ class FConsultas_model extends CI_Model
 			$data_inicio = $datas['dataInicio']; // antiga
 			$data_final = $datas['dataFim']; // atual
 			if ($nivel == '') {
-				$consultar_sregionais = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorE = '$id_user' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC LIMIT 10");
+				$consultar_sregionais = $this->db->query("SELECT * FROM supervisorr WHERE id_supervisorE = '$id_user' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC");
 				$row = $consultar_sregionais->num_rows();
 				$dados_consulta_sregionais = $consultar_sregionais->result_array();
 
@@ -1430,7 +1430,7 @@ class FConsultas_model extends CI_Model
 					'dados' => $dados_consulta_sregionais,
 				);
 			} else if ($nivel == 'todos') {
-				$consultar_sregionais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC LIMIT 10");
+				$consultar_sregionais = $this->db->query("SELECT * FROM supervisorr WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_supervisorR ASC");
 				$row = $consultar_sregionais->num_rows();
 				$dados_consulta_sregionais = $consultar_sregionais->result_array();
 
@@ -1493,7 +1493,7 @@ class FConsultas_model extends CI_Model
 	{
 		if ($opc == 1 && $opc2 == 1) {
 			// retornar todos os coordenadores ordenardo pelo nome
-			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador ORDER BY nome_coordenador ASC LIMIT 10");
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador ORDER BY nome_coordenador ASC");
 			$row = $consultar_coordenador->num_rows();
 			$dados_consulta_coordenador = $consultar_coordenador->result_array();
 
@@ -1505,7 +1505,7 @@ class FConsultas_model extends CI_Model
 			return $dados;
 		} else if ($opc == 1 && $opc2 == 2) {
 			// retornar todos os coordenadores sem ordem
-			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador LIMIT 10");
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador");
 			$row = $consultar_coordenador->num_rows();
 			$dados_consulta_coordenador = $consultar_coordenador->result_array();
 
@@ -1518,7 +1518,7 @@ class FConsultas_model extends CI_Model
 		} else if ($opc == 1 && $opc2 == 3) {
 			// retornar um supervisor local específico
 			$id_user = $id_usuario[0];
-			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = '$id_user' LIMIT 10");
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = '$id_user'");
 			$row = $consultar_coordenador->num_rows();
 			$dados_consulta_coordenador = $consultar_coordenador->row_array();
 
@@ -1531,7 +1531,7 @@ class FConsultas_model extends CI_Model
 		} else if ($opc == 2 && $opc2 == 1) {
 			// retornar um coordenador, de acordo com o s. regional
 			$id_user = $id_usuario[0];
-			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE = '$id_user' LIMIT 10");
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE = '$id_user'");
 			$row = $consultar_coordenador->num_rows();
 			$dados_consulta_coordenador = $consultar_coordenador->result_array();
 
@@ -1546,7 +1546,7 @@ class FConsultas_model extends CI_Model
 			$data_inicio = $datas['dataInicio']; // antiga
 			$data_final = $datas['dataFim']; // atual
 
-			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
 			$row = $consultar_coordenador->num_rows();
 			$dados_consulta_coordenador = $consultar_coordenador->result_array();
 
@@ -1567,7 +1567,7 @@ class FConsultas_model extends CI_Model
 			$data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
 			$data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
 
-			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+			$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
 			$row = $consultar_coordenador->num_rows();
 			$dados_consulta_coordenador = $consultar_coordenador->result_array();
 
@@ -1579,7 +1579,7 @@ class FConsultas_model extends CI_Model
 			$coordenadoresAtivos = $this->coordenadoresAtivos($dados);
 			array_push($dados, $coordenadoresAtivos);
 
-			$consultar_coordenador_mesmo_ano = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_coordenador ASC LIMIT 10");
+			$consultar_coordenador_mesmo_ano = $this->db->query("SELECT * FROM coordenador WHERE data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_coordenador ASC");
 			$row_1_mesmo_ano = $consultar_coordenador_mesmo_ano->num_rows();
 			$dados_consulta_coordenador_mesmo_ano = $consultar_coordenador_mesmo_ano->result_array();
 
@@ -1606,7 +1606,7 @@ class FConsultas_model extends CI_Model
 				$comparadores = $id_usuario[1];
 				if ($comparadores == '') {
 					$id_sregional = $id_usuario[2];
-					$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE = '$id_sregional' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+					$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE = '$id_sregional' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
 					$row_1 = $consultar_coordenadores->num_rows();
 					$dados_consulta_coordenadores_1 = $consultar_coordenadores->result_array();
 
@@ -1615,7 +1615,7 @@ class FConsultas_model extends CI_Model
 				} else {
 					$id_sregional = $id_usuario[2];
 					$id_slocal = $id_usuario[3];
-					$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE = '$id_sregional' AND id_supervisorR = '$id_slocal' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+					$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorE = '$id_sregional' AND id_supervisorR = '$id_slocal' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
 					$row_1 = $consultar_coordenadores->num_rows();
 					$dados_consulta_coordenadores_1 = $consultar_coordenadores->result_array();
 
@@ -1626,7 +1626,7 @@ class FConsultas_model extends CI_Model
 				$comparadores = $id_usuario[1];
 				if ($comparadores == '') {
 					$id_slocal = $id_usuario[2];
-					$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR = '$id_slocal' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC LIMIT 10");
+					$consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR = '$id_slocal' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_coordenador ASC");
 					$row_1 = $consultar_coordenadores->num_rows();
 					$dados_consulta_coordenadores_1 = $consultar_coordenadores->result_array();
 
@@ -1746,7 +1746,7 @@ class FConsultas_model extends CI_Model
 			// Consulta na tabela de líderes, líderes do supervisor regional
 			$id_user = $id_usuario[0];
 
-			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorE = '$id_user'");
+			$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorE = '$id_user' LIMIT 10");
 			$row = $consultar_lideres->num_rows();
 			$dados_consulta_lideres = $consultar_lideres->result_array();
 

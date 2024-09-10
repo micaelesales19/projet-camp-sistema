@@ -70,7 +70,6 @@ if (!isset($_SESSION['usuario'])) {
                     document.getElementById('linha_digitar').style.display = "inline";
                     document.getElementById('linha_digitar_nome_pais').style.display = "inline";
                     document.getElementById('nome_pais').value = "";
-
                 }
             }
         </script>
@@ -502,7 +501,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                         <div class="form-group">
                                             <center>
-                                                <label for="exampleInputEmail1">Deseja realmente desativar esse Líder?</label>
+                                                <label for="exampleInputEmail1">Deseja realmente desativar esse S. Regional?</label>
                                             </center>
                                         </div>
                                     </div>
