@@ -39,7 +39,7 @@ class Welcome extends CI_Controller
 		require_once 'import/sistema/fpdf/fpdf.php';
 		define('PDF_PATH', 'import/sistema/temp/');
 
-		require_once 'import/PHPExcel.php';
+		//require_once 'import/PHPExcel/Classes/PHPExcel.php';
 		define(
 			'LETRAS',
 			['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -2578,7 +2578,7 @@ class Welcome extends CI_Controller
 			);
 			$dados_new = $array;
 			$this->load->view('sistema/direcao/pages/slocal/mostrar_tabela_slocal_1', $dados_new);
-		} else if ($nivel == 'slocal/coordenador') {
+		} else if ($nivel == 'direcao/coordenador' || $nivel == 'slocal/coordenador') {
 			$array = array(
 				'id_user' => $id_user,
 				'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
@@ -2629,7 +2629,7 @@ class Welcome extends CI_Controller
 			$this->load->view('sistema/direcao/pages/sregional/mostrar_tabela_sregional_2', $dados_new);
 		} else if ($nivel == 'direcao/slocal-tudo') {
 			$this->load->view('sistema/direcao/pages/slocal/mostrar_tabela_slocal_2', $dados_new);
-		} else if ($nivel == 'slocal/coordenador') {
+		} else if ($nivel == 'direcao/coordenador' || $nivel == 'slocal/coordenador') {
 			$this->load->view('sistema/direcao/pages/coordenadores/mostrar_tabela_coordenador_2', $dados_new);
 		}
 	}
@@ -2638,6 +2638,7 @@ class Welcome extends CI_Controller
 
 		$datas = $this->FSistema_model->format_dates($opc1, $opc2, $dataInicio, $dataFim);
 
+		//echo "NIVEL - " . $nivel . " OPC 1 - " . $opc1 . " OPC 2 - " . $opc2 . " OPC 3 - " . $opc3;
 		/*if ($nivel == 'lideres') {
 
 			$consultarLideres = $this->FConsultas_model->getLideres([$id_user], $opc1, $opc2, $datas);
@@ -2813,7 +2814,6 @@ class Welcome extends CI_Controller
 			);
 			return $dados;
 		} else if ($nivel == 'direcao/sregional') {
-
 			$dados_slocal = $this->FConsultas_model->getSLocal(['', '', $id_user], $opc1, $opc2, $datas);
 			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['sregional', '', $id_user], $opc1, $opc2, $datas);
 			$dados_lideres = $this->FConsultas_model->getLideres(['sregional', '', $id_user], $opc1, $opc2, $datas);
@@ -2989,6 +2989,169 @@ class Welcome extends CI_Controller
 				'comparacao_ativos' => $comparacao_ativos,
 			);
 			return $dados;
+		} else if ($nivel == 'direcao/slocal-tudo') {
+			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$dados_lideres = $this->FConsultas_model->getLideres(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$total_criancas_lider = $dados_lideres[1];
+			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user, 3);
+
+			$comparacao = [];
+			$comparacao_ativos = [];
+
+			// criando a comparação
+			if ($opc2 == 'sim') {
+				$comparacao_slocal = $dados_slocal[1];
+				$comparacao_slocal_ativos = $dados_slocal[2];
+
+				array_push($comparacao, $comparacao_slocal);
+				array_push($comparacao_ativos, $comparacao_slocal_ativos);
+
+				$comparacao_coordenadores = $dados_coordenadores[1];
+				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
+
+				array_push($comparacao, $comparacao_coordenadores);
+				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
+
+				$comparacao_lideres = $dados_lideres[3];
+				$comparacao_lideres_ativos = $dados_lideres[4];
+
+				array_push($comparacao, $comparacao_lideres);
+				array_push($comparacao_ativos, $comparacao_lideres_ativos);
+
+				$total_criancas_lider_comparacao = $dados_lideres[5];
+				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
+
+				$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal['dados']);
+				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
+
+				$id_gerais_comparacao = array_merge($lista_de_id_2, $lista_de_id_3);
+
+				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
+
+				array_push($comparacao, $total_criancas_geral_comparacao);
+
+				$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal_ativos['dados']);
+				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
+
+				$id_ativos_comparacao = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
+
+				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
+
+				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
+			}
+
+			$lista = $opc3 == 'sregionais_ativos' ? $dados_slocal[0]['dados'] : $dados_slocal['dados'];
+			$dados_mostrar = $opc3 == 'sregionais_ativos' ? $dados_slocal[0] : $dados_slocal;
+
+			$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal['dados']);
+			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
+
+			$id_gerais = array_merge($lista_de_id_2, $lista_de_id_3);
+
+			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+
+			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
+			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
+
+			$id_ativos = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
+
+			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+
+			$dados = array(
+				'id_user' => $id_user,
+				'lista' => $lista,
+				'dados_slocal_gerais' => $dados_mostrar,
+				'dados_slocal_ativos' => $dados_slocal[0],
+				'dados_coordenadores_gerais' => $dados_coordenadores,
+				'dados_coordenadores_ativos' => $dados_coordenadores[0],
+				'dados_lideres_gerais' => $dados_lideres,
+				'dados_lideres_ativos' => $dados_lideres[0],
+				'dados_criancas_gerais' => $total_criancas_geral,
+				'dados_criancas_ativos' => $total_criancas_geral_ativos,
+				'mostrar_comparacao' => $opc2,
+				'check_is_coord_query' => $check_is_coord_query,
+				'comparacao' => $comparacao,
+				'comparacao_ativos' => $comparacao_ativos,
+			);
+			return $dados;
+		} else if ($nivel == 'direcao/coordenador') {
+			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$dados_lideres = $this->FConsultas_model->getLideres(['direcao', '', $id_user], $opc1, $opc2, $datas);
+			$total_criancas_lider = $dados_lideres[1];
+			$total_criancas_lider_ativos = $dados_lideres[2];
+
+			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user, 3);
+
+			$comparacao = [];
+			$comparacao_ativos = [];
+
+			// criando a comparação
+			if ($opc2 == 'sim') {
+				$comparacao_coordenadores = $dados_coordenadores[1];
+				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
+
+				array_push($comparacao, $comparacao_coordenadores);
+				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
+
+				$comparacao_lideres = $dados_lideres[3];
+				$comparacao_lideres_ativos = $dados_lideres[4];
+
+				array_push($comparacao, $comparacao_lideres);
+				array_push($comparacao_ativos, $comparacao_lideres_ativos);
+
+				$total_criancas_lider_comparacao = $dados_lideres[5];
+				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
+
+				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
+
+				$id_gerais_comparacao = $lista_de_id_3;
+
+				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
+
+				array_push($comparacao, $total_criancas_geral_comparacao);
+
+				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
+
+				$id_ativos_comparacao =  $lista_de_id_3_ativos;
+
+				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
+
+				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
+			}
+
+			$lista = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0]['dados'] : $dados_coordenadores['dados'];
+			$dados_mostrar = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0] : $dados_coordenadores;
+
+			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
+
+			$id_gerais =  $lista_de_id_3;
+
+			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
+
+			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
+
+			$id_ativos = $lista_de_id_3_ativos;
+
+			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
+
+			$dados = array(
+				'id_user' => $id_user,
+				'lista' => $lista,
+				'dados_coordenadores_gerais' => $dados_coordenadores,
+				'dados_coordenadores_ativos' => $dados_coordenadores[0],
+				'dados_lideres_gerais' => $dados_lideres,
+				'dados_lideres_ativos' => $dados_lideres[0],
+				'dados_criancas_gerais' => $total_criancas_geral,
+				'dados_criancas_ativos' => $total_criancas_geral_ativos,
+				'mostrar_comparacao' => $opc2,
+				'check_is_coord_query' => $check_is_coord_query,
+				'comparacao' => $comparacao,
+				'comparacao_ativos' => $comparacao_ativos,
+			);
+			return $dados;
 		} else if ($nivel == 'slocal/coordenador') {
 			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['slocal', '', $id_user], $opc1, $opc2, $datas);
 			$dados_lideres = $this->FConsultas_model->getLideres(['slocal', '', $id_user], $opc1, $opc2, $datas);
@@ -3065,1018 +3228,6 @@ class Welcome extends CI_Controller
 			);
 			return $dados;
 		}
-	}
-
-	public function gerar_excel()
-	{
-		$id_coordenador = $this->input->post("id_coordenador");
-		$opc1 = $this->input->post("opc1");
-		$opc2 = $this->input->post("opc2");
-
-		$dataInicio = $this->input->post("dataInicio");
-		$dataFim = $this->input->post("dataAte");
-
-		$nivel = $this->input->post("nivel") ?? "lideres";
-
-		$this->excel($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim, $nivel);
-	}
-
-	public function excel($id_coordenador, $opc1, $opc2, $dataInicio, $dataFim, $nivel)
-	{
-		ob_start();
-
-		$data = date('d/m/Y');
-
-		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, '', $dataInicio, $dataFim, $nivel, false);
-
-		$base = array(
-			'opc1' => $opc1,
-			'opc2' => $opc2,
-			'dataInicio' => $dataInicio,
-			'dataFim' => $dataFim,
-		);
-
-		$total_lideres_gerais = $dados['dados_lideres_gerais']['row'];
-		$dados_lideres_gerais = $dados['dados_lideres_gerais']['dados'];
-
-		$total_lideres_ativos = $dados['dados_lideres_ativos']['row'];
-		$dados_lideres_ativos = $dados['dados_lideres_ativos']['dados'];
-
-		$total_coordenadores_gerais = 0;
-		$dados_coordenadores_gerais = [];
-
-		$total_coordenadores_ativos = 0;
-		$dados_coordenadores_ativos = [];
-
-		$columns = $this->input->post("columns");
-		$columns_pg = $this->input->post("columns_pg");
-		$columns_coordenador = $this->input->post("columns_coordenador");
-
-		$letras = LETRAS;
-
-		//create PHPExcel object
-		$excel = new PHPExcel();
-		$excel->setActiveSheetIndex(0);
-
-		if ($nivel == 'lideres') {
-			$table1 = new PHPExcel_Worksheet($excel, 'Líderes');
-			$excel->addSheet($table1);
-
-			$table2 = new PHPExcel_Worksheet($excel, 'Informações Gerais');
-			$excel->addSheet($table2);
-
-			$excel->getActiveSheet()->setTitle("Crianças");
-
-			$infos1 = array(
-				'total_lideres_gerais' => $total_lideres_gerais,
-				'total_lideres_ativos' => $total_lideres_ativos,
-				'dados_lideres_gerais' => $dados_lideres_gerais,
-				'total_cri_geral' => $dados['dados_criancas_gerais'],
-				'total_cri_ativas' => $dados['dados_criancas_ativos'],
-			);
-
-			//$this->planilha_info_gerais($excel, 2, $columns, $columns_pg, $infos1);
-			//$this->planilha_info_criancas($excel, $total_lideres_gerais, $dados_lideres_gerais);
-			//$this->planilha_info_lideres($excel, $dados_lideres_gerais, $dados_lideres_ativos);
-		} else {
-			$table1 = new PHPExcel_Worksheet($excel, 'Líderes');
-			$excel->addSheet($table1);
-
-			$table2 = new PHPExcel_Worksheet($excel, 'Coordenadores');
-			$excel->addSheet($table2);
-
-			$table3 = new PHPExcel_Worksheet($excel, 'Informações Gerais');
-			$excel->addSheet($table3);
-
-			$excel->getActiveSheet()->setTitle("Crianças");
-
-			$total_coordenadores_gerais = $dados['dados_coordenadores_gerais']['row'];
-			$dados_coordenadores_gerais = $dados['dados_coordenadores_gerais']['dados'];
-
-			$total_coordenadores_ativos = $dados['dados_coordenadores_ativos']['row'];
-			$dados_coordenadores_ativos = $dados['dados_coordenadores_ativos']['dados'];
-
-			$infos1 = array(
-				'total_coordenadores_gerais' => $total_coordenadores_gerais,
-				'total_coordenadores_ativos' => $total_coordenadores_ativos,
-				'dados_coordenadores_gerais' => $dados_coordenadores_gerais,
-				'total_lideres_gerais' => $total_lideres_gerais,
-				'total_lideres_ativos' => $total_lideres_ativos,
-				'dados_lideres_gerais' => $dados_lideres_gerais,
-				'total_cri_geral' => $dados['dados_criancas_gerais'],
-				'total_cri_ativas' => $dados['dados_criancas_ativos'],
-			);
-
-			$this->planilha_info_gerais($excel, 3, $columns, $columns_coordenador, $columns_pg, $infos1, $base, $nivel);
-			//$this->planilha_info_criancas($excel, $total_lideres_gerais, $dados_lideres_gerais);
-			//$this->planilha_info_lideres($excel, $dados_lideres_gerais, $dados_lideres_ativos);
-		}
-
-		ob_end_clean();
-		header('Content-Type: application/vnd.openxmlformats- officedocument.spreadsheetml.sheet; charset=UTF-8');
-		header('Content-Disposition: attachment; filename=Planilha CAMP Brasil - Líderes (' . $data . ').xlsx');
-		header('Cache-Control: max-age=0');
-		$file = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-		$file->save('php://output');
-		exit;
-	}
-
-	public function planilha_info_criancas($excel, $total_lideres_gerais, $dados_lideres_gerais)
-	{
-		$letras = LETRAS;
-
-		// planilha crianças
-		$colunas_titulo_3 = "B2";
-		$excel->getSheet(0)->getStyle('B2')->getAlignment()->setHorizontal('center');
-		$excel->getSheet(0)->setCellValue('B2', 'Crianças');
-
-		$row3 = 4;
-		$i_cl_5 = 1;
-		$i_cl_6 = 1;
-		$i_cl_7 = 1;
-
-		$linha_descricao_para_pintar = [];
-		$linha_nenhuma_crianca = [];
-		$linha_borda = [];
-
-		$columns2 = $this->input->post("columns_criancas");
-		$bol_check_2_col_1 = false;
-		$bol_check_2_col_2 = false;
-
-
-		if ($total_lideres_gerais == 0) {
-		} else {
-
-			$excel->getSheet(0)->setCellValue($letras[$i_cl_5] . $row3, 'Líder');
-			$i_cl_5++;
-
-			foreach ($columns2 as $key => $coluna) {
-				if ($coluna == 'column1') {
-					$bol_check_2_col_1 = true;
-					$excel->getSheet(0)->setCellValue($letras[$i_cl_5] . $row3, "Nome");
-					$i_cl_5++;
-				} else if ($coluna == 'column2') {
-					$bol_check_2_col_2 = true;
-					$excel->getSheet(0)->setCellValue($letras[$i_cl_5] . $row3, "Nascimento");
-					$i_cl_5++;
-				}
-			}
-			array_push($linha_descricao_para_pintar, $row3);
-			$row3++;
-
-			for ($i = 0; $i < count($dados_lideres_gerais); $i++) {
-
-				$lider = $dados_lideres_gerais[$i];
-				$id_lider = $lider['id_lider'];
-
-				$info_criancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 3);
-
-				if ($info_criancas['row'] == 0) {
-					$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
-					$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $lider['nome_lider']);
-					array_push($linha_borda, $letras[$i_cl_7] . $row3);
-					$i_cl_7++;
-					$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, "Nenhuma Criança");
-					array_push($linha_nenhuma_crianca, $row3);
-					$i_cl_7 = 1;
-					$row3++;
-				} else {
-					foreach ($info_criancas['dados'] as $linha  => $crianca) {
-						$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
-						$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $lider['nome_lider']);
-						array_push($linha_borda, $letras[$i_cl_7] . $row3);
-						$i_cl_7++;
-						if ($bol_check_2_col_1) {
-							$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
-							$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $crianca['nome_crianca']);
-							array_push($linha_borda, $letras[$i_cl_7] . $row3);
-							$i_cl_7++;
-						}
-						if ($bol_check_2_col_2) {
-							$excel->getSheet(0)->getColumnDimension($letras[$i_cl_7])->setAutoSize(true);
-							$excel->getSheet(0)->setCellValue($letras[$i_cl_7] . $row3, $crianca['nascimento']);
-							array_push($linha_borda, $letras[$i_cl_7] . $row3);
-							$i_cl_7++;
-						}
-						$i_cl_7 = 1;
-						$row3++;
-					}
-				}
-			}
-		}
-
-		if ($bol_check_2_col_1) {
-			$i_cl_6 = $i_cl_6 + 1;
-		}
-		if ($bol_check_2_col_2) {
-			$i_cl_6 = $i_cl_6 + 1;
-		}
-
-		// style title
-		$colunas_titulo_3 = "";
-		if ($i_cl_6 == 1 || $i_cl_6 == 2) {
-			$colunas_titulo_3 = "B2";
-		} else {
-			$colunas_titulo_3 = "B2:D2";
-		}
-
-		if ($i_cl_6 == 1 || $i_cl_6 == 2) {
-		} else {
-			$excel->getSheet(0)->mergeCells($colunas_titulo_3);
-		}
-
-		$excel->getSheet(0)->getStyle($colunas_titulo_3)->applyFromArray(
-			array(
-				'font' => array(
-					'bold' => true,
-					'size' => 24,
-				),
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
-					'rotation' => 90,
-					'startcolor' => array(
-						'argb' => 'FFA0A0A0',
-					),
-					'endcolor' => array(
-						'argb' => 'FFFFFFFF',
-					),
-				),
-			)
-		);
-		// fim title
-
-		// style colunas info crianças
-		foreach ($linha_descricao_para_pintar as $key => $linha) {
-			$linhas_descricoes_criancas = $letras[1] . $linha . ":" . $letras[$i_cl_5 - 1] . $linha;
-			$excel->getSheet(0)->getStyle($linhas_descricoes_criancas)->applyFromArray(
-				array(
-					'font' => array(
-						'bold' => true
-					),
-					'borders' => array(
-						'allborders' => array(
-							'style' => PHPExcel_Style_Border::BORDER_THIN
-						)
-					),
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'rotation' => 90,
-						'startcolor' => array(
-							'argb' => 'FFA0A0A0',
-						),
-					),
-				)
-			);
-		}
-		// style colunas info crianças
-
-		// style bordas nenhuma criança
-		foreach ($linha_nenhuma_crianca as $key => $linha) {
-			$nenhuma_crianca = $letras[2] . $linha . ":" . $letras[$i_cl_6] . $linha;
-			$nenhuma_crianca2 = $letras[1] . $linha . ":" . $letras[$i_cl_6] . $linha;
-			$excel->getSheet(0)->mergeCells($nenhuma_crianca);
-			$excel->getSheet(0)->getStyle($nenhuma_crianca2)->applyFromArray(
-				array(
-					'borders' => array(
-						'allborders' => array(
-							'style' => PHPExcel_Style_Border::BORDER_THIN
-						)
-					),
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'rotation' => 90,
-						'startcolor' => array(
-							'argb' => 'FFE58782',
-						),
-					),
-				)
-			);
-		}
-		// style bordas nenhuma criança
-
-		// style bordas
-		foreach ($linha_borda as $key => $linha) {
-			$excel->getSheet(0)->getStyle($linha)->applyFromArray(
-				array(
-					'borders' => array(
-						'allborders' => array(
-							'style' => PHPExcel_Style_Border::BORDER_THIN
-						)
-					),
-				)
-			);
-		}
-		// style bordas
-
-		$excel->getSheet(0)->getStyle('B4:Z' . $row3)->getAlignment()->setHorizontal('center');
-		// planilha crianças
-	}
-
-	public function planilha_info_lideres($excel, $dados_lideres_gerais, $dados_lideres_ativos)
-	{
-		$letras = LETRAS;
-
-		// planilha líderes
-		$colunas_titulo_2 = "B2";
-		$excel->getSheet(1)->getStyle('B2')->getAlignment()->setHorizontal('center');
-		$excel->getSheet(1)->setCellValue('B2', 'Líderes');
-
-		$i_cl_2 = 1;
-
-		$columns1 = $this->input->post("columns_lideres");
-
-		$bol_check_col_1 = false;
-		$bol_check_col_2 = false;
-		$bol_check_col_3 = false;
-		$bol_check_col_4 = false;
-		$bol_check_col_5 = false;
-		$bol_check_col_6 = false;
-
-		foreach ($columns1 as $key => $coluna) {
-			$excel->getSheet(1)->getColumnDimension($letras[$i_cl_2])->setAutoSize(true);
-			if ($coluna == 'column1') {
-				$bol_check_col_1 = true;
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Nome');
-				$i_cl_2++;
-			} else if ($coluna == 'column2') {
-				$bol_check_col_2 = true;
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'E-mail');
-				$i_cl_2++;
-			} else if ($coluna == 'column3') {
-				$bol_check_col_3 = true;
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Telefone');
-				$i_cl_2++;
-			} else if ($coluna == 'column4') {
-				$bol_check_col_4 = true;
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Pais');
-				$i_cl_2++;
-			} else if ($coluna == 'column5') {
-				$bol_check_col_5 = true;
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Estado');
-				$i_cl_2++;
-			} else if ($coluna == 'column6') {
-				$bol_check_col_6 = true;
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_2] . '4', 'Cidade');
-				$i_cl_2++;
-			}
-		}
-
-		if ($i_cl_2 == 1 || $i_cl_2 == 2) {
-		} else if ($i_cl_2 == 3) {
-			$colunas_titulo_2 = $colunas_titulo_2 . ":C2";
-		} else if ($i_cl_2 == 4) {
-			$colunas_titulo_2 = $colunas_titulo_2 . ":D2";
-		} else if ($i_cl_2 == 5) {
-			$colunas_titulo_2 = $colunas_titulo_2 . ":E2";
-		} else if ($i_cl_2 == 6) {
-			$colunas_titulo_2 = $colunas_titulo_2 . ":F2";
-		} else if ($i_cl_2 == 7) {
-			$colunas_titulo_2 = $colunas_titulo_2 . ":G2";
-		}
-
-		if ($i_cl_2 == 1 || $i_cl_2 == 2) {
-		} else {
-			$excel->getSheet(1)->mergeCells($colunas_titulo_2);
-		}
-
-		// style to title
-		$excel->getSheet(1)->getStyle($colunas_titulo_2)->applyFromArray(
-			array(
-				'font' => array(
-					'bold' => true,
-					'size' => 24,
-				),
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
-					'rotation' => 90,
-					'startcolor' => array(
-						'argb' => 'FFA0A0A0',
-					),
-					'endcolor' => array(
-						'argb' => 'FFFFFFFF',
-					),
-				),
-			)
-		);
-		// fim title
-
-		$colunas_lideres = $letras[1] . "4:" . $letras[$i_cl_2 - 1] . "4";
-
-		// style to columns descricao
-		$excel->getSheet(1)->getStyle($colunas_lideres)->applyFromArray(
-			array(
-				'font' => array(
-					'bold' => true
-				),
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
-					'rotation' => 90,
-					'startcolor' => array(
-						'argb' => 'FFA0A0A0',
-					),
-				),
-			)
-		);
-		// style to columns descricao
-
-		$row2 = 5;
-
-		$i_cl_3 = 1;
-		$lideres_n_ativos_row = [];
-
-		for ($i = 0; $i < count($dados_lideres_gerais); $i++) {
-			$excel->getSheet(1)->getColumnDimension($letras[$i_cl_3])->setAutoSize(true);
-			$lideres = $dados_lideres_gerais[$i];
-
-			if (in_array($lideres, $dados_lideres_ativos)) {
-			} else {
-				array_push($lideres_n_ativos_row, $row2);
-			}
-
-			if ($bol_check_col_1) {
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['nome_lider']);
-				$i_cl_3++;
-			}
-			if ($bol_check_col_2) {
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['email']);
-				$i_cl_3++;
-			}
-			if ($bol_check_col_3) {
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['telefone_whatsapp']);
-				$i_cl_3++;
-			}
-			if ($bol_check_col_4) {
-				$nome_pais = "";
-				if ($lideres['pais'] == 'br') {
-					$nome_pais = "Brasil";
-				} else {
-					$nome_pais = $lideres['pais'];
-				}
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $nome_pais);
-				$i_cl_3++;
-			}
-			if ($bol_check_col_5) {
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['estado']);
-				$i_cl_3++;
-			}
-			if ($bol_check_col_6) {
-				$excel->getSheet(1)->setCellValue($letras[$i_cl_3] . $row2, $lideres['cidade']);
-			}
-			$row2++;
-			$i_cl_3 = 1;
-		}
-
-		$linhas_2 = $row2 - 1;
-		$colunas_dados_lideres = $letras[1] . "4:" . $letras[$i_cl_2 - 1] . $linhas_2;
-
-		// style to columns descricao
-		$excel->getSheet(1)->getStyle($colunas_dados_lideres)->applyFromArray(
-			array(
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-			)
-		);
-
-		foreach ($lideres_n_ativos_row as $key => $linha) {
-			$colunas_dados_lideres = $letras[1] . $linha . ":" . $letras[$i_cl_2 - 1] . $linha;
-
-			// style to columns descricao
-			$excel->getSheet(1)->getStyle($colunas_dados_lideres)->applyFromArray(
-				array(
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'rotation' => 90,
-						'startcolor' => array(
-							'argb' => 'FFE58782',
-						),
-					),
-				)
-			);
-		}
-		// style to columns descricao
-		$excel->getSheet(1)->getStyle('B4:Z' . $row2)->getAlignment()->setHorizontal('center');
-		// planilha líderes
-	}
-
-	public function planilha_info_gerais($excel, $table, $columns, $columns_coord, $columns_pg, $infos, $base, $nivel)
-	{
-		$letras = LETRAS;
-		// planilha informações gerais
-		$row = 5;
-
-		//tile
-		$excel->getSheet($table)->setCellValue('B2', 'CAMP Brasil');
-
-		$colunas_titulo_1 = "B2";
-		$excel->getSheet($table)->getStyle('B2')->getAlignment()->setHorizontal('center');
-
-		$i_cl_1 = 1;
-
-		foreach ($columns as $key => $coluna) {
-			$excel->getSheet($table)->getColumnDimension($letras[$i_cl_1])->setAutoSize(true);
-			if ($coluna == 'total_coordenadores_1') {
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . '4', 'Total de Coordenadores');
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . $row, $infos['total_coordenadores_gerais']);
-				$i_cl_1++; // 2
-			} else if ($coluna == 'total_coordenadores_2') {
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . '4', 'Total de Coordenadores Ativos');
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . $row, $infos['total_coordenadores_gerais']);
-				$i_cl_1++; // 3
-			} else if ($coluna == 'total_lideres_1') {
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . '4', 'Total de Líderes');
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . $row, $infos['total_lideres_gerais']);
-				$i_cl_1++; // 4
-			} else if ($coluna == 'total_lideres_2') {
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . '4', 'Total de Líderes Ativos');
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . $row, $infos['total_lideres_ativos']);
-				$i_cl_1++; // 5
-			} else if ($coluna == 'total_criancas_1') {
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . '4', 'Total de Crianças');
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . $row, $infos['total_cri_geral']);
-				$i_cl_1++; // 6
-			} else if ($coluna == 'total_criancas_2') {
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1] . '4', 'Total de Crianças Ativas');
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_1]  . $row, $infos['total_cri_ativas']);
-				$i_cl_1++; // 7
-			}
-		}
-
-		$colunas_descricao = "";
-
-		if ($i_cl_1 == 1 || $i_cl_1 == 2) {
-			$colunas_descricao = "B4";
-		} else if ($i_cl_1 == 3) {
-			$colunas_titulo_1 = $colunas_titulo_1 . ":C2";
-			$colunas_descricao = "B4:C4";
-		} else if ($i_cl_1 == 4) {
-			$colunas_titulo_1 = $colunas_titulo_1 . ":D2";
-			$colunas_descricao = "B4:D4";
-		} else if ($i_cl_1 == 5) {
-			$colunas_titulo_1 = $colunas_titulo_1 . ":E2";
-			$colunas_descricao = "B4:E4";
-		} else if ($i_cl_1 == 6) {
-			$colunas_titulo_1 = $colunas_titulo_1 . ":F2";
-			$colunas_descricao = "B4:F4";
-		} else if ($i_cl_1 == 7) {
-			$colunas_titulo_1 = $colunas_titulo_1 . ":G2";
-			$colunas_descricao = "B4:G4";
-		}
-
-		if ($i_cl_1 == 1) {
-		} else {
-			$excel->getSheet($table)->mergeCells($colunas_titulo_1);
-		}
-
-		// style to title
-		$excel->getSheet($table)->getStyle($colunas_titulo_1)->applyFromArray(
-			array(
-				'font' => array(
-					'bold' => true,
-					'size' => 24,
-				),
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
-					'rotation' => 90,
-					'startcolor' => array(
-						'argb' => 'FFA0A0A0',
-					),
-					'endcolor' => array(
-						'argb' => 'FFFFFFFF',
-					),
-				),
-			)
-		);
-		// fim title
-
-		// style to columns descricao
-		$excel->getSheet($table)->getStyle($colunas_descricao)->applyFromArray(
-			array(
-				'font' => array(
-					'bold' => true
-				),
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
-					'rotation' => 90,
-					'startcolor' => array(
-						'argb' => 'FFA0A0A0',
-					),
-				),
-			)
-		);
-
-		$colunas_dados_lideres = $letras[1] . "5:" . $letras[$i_cl_1 - 1] . "5";
-
-		// style to columns descricao
-		$excel->getSheet($table)->getStyle($colunas_dados_lideres)->applyFromArray(
-			array(
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-			)
-		);
-		// style to columns descricao
-
-		// informações dos coordenadores
-		if ($nivel == 'coordenadores') {
-			$i_cl_coord = 1;
-
-			$bol_check_col_1 = false;
-			$bol_check_col_2 = false;
-			$bol_check_col_3 = false;
-			$bol_check_col_4 = false;
-
-			$row++;
-			$row++;
-
-			$excel->getSheet($table)->setCellValue($letras[$i_cl_coord] . $row, 'Coordenador');
-			$i_cl_coord++;
-
-			foreach ($columns_coord as $key => $coluna) {
-				$excel->getSheet($table)->getColumnDimension($letras[$i_cl_coord])->setAutoSize(true);
-
-				if ($coluna == 'column7') {
-					$bol_check_col_1 = true;
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_coord] . $row, 'Total de Líderes');
-					$i_cl_coord++;
-				} else if ($coluna == 'column8') {
-					$bol_check_col_2 = true;
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_coord] . $row, 'Total de Líderes Ativos');
-					$i_cl_coord++;
-				} else if ($coluna == 'column9') {
-					$bol_check_col_3 = true;
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_coord] . $row, 'Total de Crianças');
-					$i_cl_coord++;
-				} else if ($coluna == 'column10') {
-					$bol_check_col_4 = true;
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_coord] . $row, 'Total de Crianças Ativas');
-					$i_cl_coord++;
-				}
-			}
-
-			$colunas_coordenadores = $letras[1] . $row . ":" . $letras[$i_cl_coord - 1] . $row;
-
-			// style to columns descricao
-			$excel->getSheet($table)->getStyle($colunas_coordenadores)->applyFromArray(
-				array(
-					'font' => array(
-						'bold' => true
-					),
-					'borders' => array(
-						'allborders' => array(
-							'style' => PHPExcel_Style_Border::BORDER_THIN
-						)
-					),
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'rotation' => 90,
-						'startcolor' => array(
-							'argb' => 'FFA0A0A0',
-						),
-					),
-				)
-			);
-			// style to columns descricao
-
-			$row++;
-			$row3 = $row;
-
-			$i_cl_coord_2 = 1;
-			$coord_n_ativos_row = [];
-
-			$columns_coordenador_2 = $this->input->post("columns_coordenador_2");
-
-			$mostar_info_todos_coord = true;
-			$so_mostrar_coord_ativos = false;
-			$so_mostrar_coord_inativos = false;
-
-			if (count($columns_coordenador_2) == 0 || count($columns_coordenador_2) == 2) {
-			} else {
-				foreach ($columns_coordenador_2 as $key => $coluna) {
-					if ($coluna == 'column11') {
-						$so_mostrar_coord_ativos = true;
-					}
-
-					if ($coluna == 'column12') {
-						$so_mostrar_coord_inativos = true;
-					}
-				}
-			}
-
-
-			for ($i = 0; $i < count($infos['dados_coordenadores_gerais']); $i++) {
-				$coordenador = $infos['dados_coordenadores_gerais'][$i];
-				$id_coordenador = $coordenador['id_coordenador'];
-
-				$excel->getSheet($table)->getColumnDimension($letras[$i_cl_pg2])->setAutoSize(true);
-
-				$dados_coord = $this->consultasBD([$id_coordenador], $base['opc1'], $base['opc2'], '', $base['dataInicio'], $base['dataFim'], $nivel, false);
-
-				if ($mostar_info_todos_coord) {
-					/*if (!$check) {
-						array_push($pg_n_ativos_row, $row2);
-					} else {
-					}*/
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $coordenador['nome_coordenador']);
-					$i_cl_pg2++;
-
-					if ($bol_check_col_1) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $dados_coord['dados_lideres_gerais']['row']);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_2) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $dados_coord['dados_lideres_ativos']['row']);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_3) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $dados_coord['dados_criancas_gerais']);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_4) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $dados_coord['dados_criancas_ativos']);
-						$i_cl_pg2++;
-					}
-					$row2++;
-					$i_cl_pg2 = 1;
-				}
-			}
-		} else {
-		}
-
-		// informações dos pgs
-		$i_cl_pg = 1;
-
-		$bol_check_col_1 = false;
-		$bol_check_col_2 = false;
-		$bol_check_col_3 = false;
-		$bol_check_col_4 = false;
-
-		$row++;
-		$row++;
-
-		$excel->getSheet($table)->setCellValue($letras[$i_cl_pg] . $row, 'Líder');
-		$i_cl_pg++;
-
-		foreach ($columns_pg as $key => $coluna) {
-			$excel->getSheet($table)->getColumnDimension($letras[$i_cl_pg])->setAutoSize(true);
-
-			if ($coluna == 'column1') {
-				$bol_check_col_1 = true;
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_pg] . $row, 'Quantidade de Crianças');
-				$i_cl_pg++;
-			} else if ($coluna == 'column2') {
-				$bol_check_col_2 = true;
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_pg] . $row, 'Ciclo');
-				$i_cl_pg++;
-			} else if ($coluna == 'column3') {
-				$bol_check_col_3 = true;
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_pg] . $row, 'Módulo');
-				$i_cl_pg++;
-			} else if ($coluna == 'column4') {
-				$bol_check_col_4 = true;
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_pg] . $row, 'Lição');
-				$i_cl_pg++;
-			}
-		}
-
-		$colunas_lideres = $letras[1] . $row . ":" . $letras[$i_cl_pg - 1] . $row;
-
-		// style to columns descricao
-		$excel->getSheet($table)->getStyle($colunas_lideres)->applyFromArray(
-			array(
-				'font' => array(
-					'bold' => true
-				),
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
-					'rotation' => 90,
-					'startcolor' => array(
-						'argb' => 'FFA0A0A0',
-					),
-				),
-			)
-		);
-		// style to columns descricao
-
-		$row++;
-		$row2 = $row;
-
-		$i_cl_pg2 = 1;
-		$pg_n_ativos_row = [];
-
-		$columns_pg_2 = $this->input->post("columns_pg_2");
-
-		$mostar_info_todos_pg = true;
-		$so_mostrar_ativos = false;
-		$so_mostrar_inativos = false;
-
-		if (count($columns_pg_2) == 0 || count($columns_pg_2) == 2) {
-		} else {
-			foreach ($columns_pg_2 as $key => $coluna) {
-				if ($coluna == 'pg_ativos') {
-					$so_mostrar_ativos = true;
-				}
-
-				if ($coluna == 'pg_inativos') {
-					$so_mostrar_inativos = true;
-				}
-			}
-		}
-
-		for ($i = 0; $i < count($infos['dados_lideres_gerais']); $i++) {
-			$lider = $infos['dados_lideres_gerais'][$i];
-			$id_lider = $lider['id_lider'];
-			$data_cadastro = $lider['data_cadastro'];
-			$confirmado = $lider['confirmado'];
-
-			$excel->getSheet($table)->getColumnDimension($letras[$i_cl_pg2])->setAutoSize(true);
-
-			$info_criancas = $this->FConsultas_model->mostrarCriancasPais($id_lider, 3);
-			$info_pg = $this->FConsultas_model->mostrarPG($id_lider, 3);
-
-			$check = $this->FConsultas_model->check_lider_is_ativo($id_lider, $data_cadastro, $confirmado);
-
-			if ($mostar_info_todos_pg) {
-				if (!$check) {
-					array_push($pg_n_ativos_row, $row2);
-				} else {
-				}
-				$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $lider['nome_lider']);
-				$i_cl_pg2++;
-
-				if ($bol_check_col_1) {
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $info_criancas['row']);
-					$i_cl_pg2++;
-				}
-				if ($bol_check_col_2) {
-					$nome_ciclo = "";
-					if ($info_pg['dados']['ano'] == 1) {
-						$nome_ciclo = "1º Ciclo";
-					} else if ($info_pg['dados']['ano'] == 2) {
-						$nome_ciclo = "2º Ciclo";
-					} else if ($info_pg['dados']['ano'] == 3) {
-						$nome_ciclo = "3º Ciclo";
-					}
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_ciclo);
-					$i_cl_pg2++;
-				}
-				if ($bol_check_col_3) {
-					$id_modulo = $info_pg['dados']['id_modulo'];
-					$modulo = $this->FConsultas_model->consultarModuloId($id_modulo);
-					$nome_modulo = $modulo['nome_modulo'];
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_modulo);
-					$i_cl_pg2++;
-				}
-				if ($bol_check_col_4) {
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $info_pg['dados']['n_licao']);
-					$i_cl_pg2++;
-				}
-				$row2++;
-				$i_cl_pg2 = 1;
-			} else if ($so_mostrar_ativos) {
-				if ($check) {
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $lider['nome_lider']);
-					$i_cl_pg2++;
-
-					if ($bol_check_col_1) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $info_criancas['row']);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_2) {
-						$nome_ciclo = "";
-						if ($info_pg['dados']['ano'] == 1) {
-							$nome_ciclo = "1º Ciclo";
-						} else if ($info_pg['dados']['ano'] == 2) {
-							$nome_ciclo = "2º Ciclo";
-						} else if ($info_pg['dados']['ano'] == 3) {
-							$nome_ciclo = "3º Ciclo";
-						}
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_ciclo);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_3) {
-						$id_modulo = $info_pg['dados']['id_modulo'];
-						$modulo = $this->FConsultas_model->consultarModuloId($id_modulo);
-						$nome_modulo = $modulo['nome_modulo'];
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_modulo);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_4) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $info_pg['dados']['n_licao']);
-						$i_cl_pg2++;
-					}
-					$row2++;
-					$i_cl_pg2 = 1;
-				} else {
-				}
-			} else if ($so_mostrar_inativos) {
-				if (!$check) {
-					array_push($pg_n_ativos_row, $row2);
-					$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $lider['nome_lider']);
-					$i_cl_pg2++;
-
-					if ($bol_check_col_1) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $info_criancas['row']);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_2) {
-						$nome_ciclo = "";
-						if ($info_pg['dados']['ano'] == 1) {
-							$nome_ciclo = "1º Ciclo";
-						} else if ($info_pg['dados']['ano'] == 2) {
-							$nome_ciclo = "2º Ciclo";
-						} else if ($info_pg['dados']['ano'] == 3) {
-							$nome_ciclo = "3º Ciclo";
-						}
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_ciclo);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_3) {
-						$id_modulo = $info_pg['dados']['id_modulo'];
-						$modulo = $this->FConsultas_model->consultarModuloId($id_modulo);
-						$nome_modulo = $modulo['nome_modulo'];
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $nome_modulo);
-						$i_cl_pg2++;
-					}
-					if ($bol_check_col_4) {
-						$excel->getSheet($table)->setCellValue($letras[$i_cl_pg2] . $row2, $info_pg['dados']['n_licao']);
-						$i_cl_pg2++;
-					}
-					$row2++;
-					$i_cl_pg2 = 1;
-				} else {
-				}
-			}
-		}
-
-		$linhas_2 = $row2 - 1;
-		$colunas_dados_lideres = $letras[1] . $row . ":" . $letras[$i_cl_pg - 1] . $linhas_2;
-
-		// style to columns descricao
-		$excel->getSheet($table)->getStyle($colunas_dados_lideres)->applyFromArray(
-			array(
-				'borders' => array(
-					'allborders' => array(
-						'style' => PHPExcel_Style_Border::BORDER_THIN
-					)
-				),
-			)
-		);
-
-		foreach ($pg_n_ativos_row as $key => $linha) {
-			$colunas_dados_lideres = $letras[1] . $linha . ":" . $letras[$i_cl_pg - 1] . $linha;
-
-			// style to columns descricao
-			$excel->getSheet($table)->getStyle($colunas_dados_lideres)->applyFromArray(
-				array(
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'rotation' => 90,
-						'startcolor' => array(
-							'argb' => 'FFE58782',
-						),
-					),
-				)
-			);
-		}
-		// style to columns descricao*/
-
-		$excel->getSheet($table)->getStyle('B4:Z' . $row2)->getAlignment()->setHorizontal('center');
-		// planilha informações gerais
 	}
 
 	// sregional

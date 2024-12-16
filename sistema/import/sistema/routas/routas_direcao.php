@@ -26,21 +26,18 @@ $route['sregional/page/coordenadores/mostrar1'] = 'welcome/mostrar_table_parte_1
 
 $route['sregional/page/coordenadores/gerar_excel'] = 'welcome/gerar_excel';
 
-// equipe - tudo
-$route['direcao/page/equipe'] = 'Direcao/pagina_ver_equipe';
-$route['direcao/page/equipe/mostrar1'] = 'welcome/mostrar_table_parte_1';
-$route['direcao/page/equipe/mostrar2'] = 'welcome/mostrar_table_parte_2';
-
 // sregional
 $route['direcao/page/sregional/cadastro/salvar'] = 'welcome/cadastro_sregional';
 $route['direcao/page/sregional/salvar'] = 'welcome/editar_info_sregional';
 
-$route['direcao/page/sregional/mostrar1'] = 'welcome/mostrar_table_parte_1';
+$route['direcao/page/sregional/mostrar1'] = 'Direcao/mostrar_info_sregional';
 $route['direcao/page/sregional/mostrar2'] = 'welcome/mostrar_table_parte_2';
 
 $route['direcao/page/sregional/desativar'] = 'welcome/desativar_sregional';
 $route['direcao/page/sregional/exclusao/ativar'] = 'welcome/ativar_sregional';
 $route['direcao/page/sregional/exclusao/permanente'] = 'welcome/excluir_sregional_permanentemente';
+
+$route['direcao/page/sregional'] = 'Direcao/pagina_ver_sregional';
 
 $route['direcao/page/sregional/:any'] = 'Direcao/pagina_ver_sregional';
 $route['direcao/page/sregional/detalhes/:any'] = 'Direcao/pagina_ver_detalhes_sregional';
@@ -63,9 +60,15 @@ $route['direcao/page/slocal/detalhes/:any'] = 'Direcao/pagina_ver_detalhes_sloca
 // coordenador
 $route['direcao/page/coordenador/cadastro/salvar'] = 'welcome/cadastro_coordenador';
 
+$route['direcao/page/coordenador'] = 'Direcao/pagina_ver_coordenador';
+
 $route['direcao/page/coordenador/mostrar1'] = 'welcome/mostrar_table_parte_1';
 $route['direcao/page/coordenador/mostrar2'] = 'welcome/mostrar_table_parte_2';
 
+$route['direcao/page/coordenador/:any'] = 'Direcao/pagina_ver_coordenador';
+$route['direcao/page/coordenador/detalhes/:any'] = 'Direcao/pagina_ver_detalhes_coordenador';
+
+// lideres
 $route['sregional/page/lideres_do_coordenador/:any'] = 'welcome/red_lideres_coord';
 $route['sregional/page/info_lider_pessoal/:any/:any'] = 'welcome/red_lideres_info_licao';
 

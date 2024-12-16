@@ -27,8 +27,7 @@ class FConsultas_model extends CI_Model
 	public function connect($active_group = 'default')
 	{
 		$this->active_group = $active_group;
-		$db = $this->load->database($active_group, TRUE);
-		$this->db = $db;
+		$this->load->database($active_group, TRUE);
 
 		// ADICIONE ISTO ABAIXO
 		$db2 = $this->load->database('auxiliar', TRUE);
@@ -1867,6 +1866,17 @@ class FConsultas_model extends CI_Model
 				if ($comparadores == '') {
 					$id_slocal = $id_usuario[2];
 					$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_supervisorR = '$id_slocal' AND  data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC LIMIT 10");
+					$row_1 = $consultar_lideres_1->num_rows();
+					$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
+
+					$row = $row_1;
+					$dados_consulta_lideres = $dados_consulta_lideres_1;
+				}
+			} else if ($nivel == 'coordenador') {
+				$comparadores = $id_usuario[1];
+				if ($comparadores == '') {
+					$id_coordenador = $id_usuario[2];
+					$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_coordenador = '$id_coordenador' AND  data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC LIMIT 10");
 					$row_1 = $consultar_lideres_1->num_rows();
 					$dados_consulta_lideres_1 = $consultar_lideres_1->result_array();
 

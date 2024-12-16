@@ -401,7 +401,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <h5 class="widget-user-desc">Arquivos para Treinamento Presencial</h5>
                                 </div>
                                 <div class="widget-user-image">
-                                    <br><img class="img-circle" src="<?php echo base_url('import/logo/treinamento-presencial.jpg'); ?>" alt="User Avatar">
+                                    <br><img class="img-circle" src="<?php echo base_url('import/logo/logo presencial.png'); ?>" alt="User Avatar">
                                 </div>
                                 <div class="box-footer no-padding">
                                     <ul class="nav nav-stacked"><br><br>

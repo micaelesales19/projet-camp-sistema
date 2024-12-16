@@ -164,9 +164,5 @@ $route['alerta/solicitar/troca_de_css'] = 'welcome/enviando_alerta_troca_de_css'
 $route['alerta/solicitar/troca_de_lider_pg'] = 'welcome/enviando_alerta_troca_de_lider_pg';
 $route['alerta/solicitar/tornar_de_funcao'] = 'welcome/trocar_de_funcao';
 
-
-
-
-
 $route['alerta/solicitar/tornar_slocal'] = 'welcome/tornar_coord_slocal';
 $route['alerta/solicitar/tornar_coord_lider'] = 'welcome/tornar_coord_lider';
