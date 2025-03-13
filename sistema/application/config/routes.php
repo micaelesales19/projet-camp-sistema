@@ -54,7 +54,12 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['offline'] = 'welcome/offline';
+
+// admin
 $route['atualizar_data'] = 'welcome/atualizar_data';
+$route['migrar_criancas'] = 'welcome/migrar';
+$route['migrar_pg'] = 'welcome/migrar_pg';
+$route['login/2'] = 'welcome/login_c_parametros';
 
 $route['gerar_certificado'] = 'welcome/gerar_certificado';
 
@@ -85,53 +90,6 @@ $route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDe
 // PAIS	
 $route['cadastro'] = 'welcome/cadastro';
 $route['cadastro/salvar'] = 'welcome/salvar_cadastro';
-
-/* NÍVEL PAIS */
-$route['pais/home'] = 'Pais/home';
-
-// Dados Pessoais
-$route['pais/pagina_editar_pessoal'] = 'Pais/pagina_editar_pessoal';
-$route['pais/salvar_edicao'] = 'Pais/e_pessoal';
-// Fim Dados Pessoais
-
-// Crianças
-$route['pais/page/criancas'] = 'Pais/pagina_visualizacao_criancas';
-$route['pais/page/criancas/cadastro'] = 'Pais/pagina_cadastro_criancas';
-
-$route['pais/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
-$route['pais/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';
-$route['pais/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca';
-$route['pais/page/criancas/ativar'] = 'welcome/ativar_crianca';
-$route['pais/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas';
-// Fim das Crianças
-
-// PG
-$route['pais/page/pg'] = 'Pais/pagina_visualizacao_pg';
-$route['pais/page/pg/get-informacoes-pg'] = 'welcome/get_informacoes_pg';
-
-$route['pais/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
-$route['pais/page/pg/edicao/salvar'] = 'welcome/editar_pg';
-$route['pais/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
-
-$route['pais/page/pg/licoes'] = 'Pais/pagina_licoes';
-$route['pais/page/pg/preenchimento'] = 'Pais/pagina_preenchimento_relatorio_pg';
-$route['pais/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio';
-$route['pais/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Pais/consulta_criancas_relatorios';
-
-$route['pais/page/pg/atualizar_data_pg'] = 'Pais/atualizarDataPG';
-$route['pais/page/pg/consultarProgresso'] = 'Pais/consulta_progresso_pg';
-// Fim das PG
-
-// Colíderes
-$route['pais/colider/cadastro/salvar'] = 'welcome/cadastro_colider';
-$route['pais/colider/desativar'] = 'welcome/desativar_colider';
-$route['pais/colider/ativar'] = 'welcome/ativar_colider';
-// Colíderes
-
-// Download de Material
-$route['pais/page/download'] = 'Pais/pagina_download_material';
-$route['pais/page/modulo'] = 'Pais/pagina_download_material_modulo';
-// FIM PAIS
 
 /* NÍVEL LÍDER */
 require_once(APPPATH . '../import/sistema/routas/routas_lider.php');

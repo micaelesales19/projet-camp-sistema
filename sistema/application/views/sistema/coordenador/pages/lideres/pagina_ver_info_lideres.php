@@ -1,3 +1,11 @@
+<script>
+    const idpg = [];
+    const idmodulo = [];
+    const idmoduloslist = [];
+    const anomodulo = [];
+    const datasemana = [];
+</script>
+
 <?php
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../../../index");
@@ -6,8 +14,42 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-    $voltar = "../../";
+    $voltar = "../../../";
     $array = array('voltar' => $voltar);
+    $dados_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_usuario);
+    if ($dados_coordenador['row'] == 0) {
+        // escrever uma mensagem
+    } else {
+        // id lider // opc // ativo
+        $consultarPG = $this->PG->query([$dados_do_lider['dados']['id_lider']], 'query_lider_ativo_order_by_nome_pg_asc', 1);
+
+        if ($consultarPG['row'] == 0) {
+        } else {
+            foreach ($consultarPG['dados'] as $key => $value) {
+
+                $ano = $value['ano'];
+
+                $modulos = $this->FConsultas_model->consultarModuloAno($ano);
+
+                foreach ($modulos as $key => $dadosModulos) {
+                    echo '
+                    <script>
+                    idmoduloslist.push("' . $dadosModulos['id_modulo'] . '");
+                    </script>
+                ';
+                }
+
+                echo '
+                <script>
+                idpg.push("' . $value['id_pg'] . '");
+                idmodulo.push("' . $value['id_modulo'] . '");
+                anomodulo.push("' . $ano . '");
+                datasemana.push("' . $value['data_semana'] . '");
+                </script>
+            ';
+            }
+        }
+    }
 ?>
     <!DOCTYPE html>
     <html>
@@ -17,12 +59,50 @@ if (!isset($_SESSION['usuario'])) {
     ?>
 
     <script>
+        function AjaxF() {
+            var ajax;
+
+            try {
+                ajax = new XMLHttpRequest();
+            } catch (e) {
+                try {
+                    ajax = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (e) {
+                        alert("Seu browser não da suporte à AJAX!");
+                        return false;
+                    }
+                }
+            }
+            return ajax;
+        }
+
         $(document).ready(function() {
             document.getElementById('btn_solicitar_1').disabled = true;
             document.getElementById('btn_solicitar_2').disabled = true;
 
-
             document.getElementById('remove_cri').style.display = 'none';
+
+            var count = idpg.length;
+            if (count == 0) {} else {
+
+                var id_lider = '<?= $dados_do_lider['dados']['id_lider']; ?>';
+
+                for (let index = 0; index < count; index++) {
+                    const id_pg = idpg[index];
+                    const id_modulo = idmodulo[index];
+                    const check = datasemana[index];
+                    const ano = anomodulo[index];
+
+                    if (check == '' || check == '00') {
+                        $('#atulizarDataComeco').modal('show');
+                    }
+
+                    mostrarProgressoInicial(id_modulo, id_lider, id_pg, ano, index);
+                }
+            }
         });
 
         function validar_edicao() {
@@ -62,6 +142,30 @@ if (!isset($_SESSION['usuario'])) {
             } else {
                 document.getElementById('btn_solicitar_2').disabled = false;
             }
+        }
+
+        function mostrarProgressoInicial(idModulo, idLider, idPg, ano, index) {
+            var moduloAtual = idmodulo[index];
+            var respostas = idmoduloslist;
+
+            respostas.push(moduloAtual);
+
+            var radio = document.getElementsByName('modulos_escolhidos');
+
+            var total = 1;
+
+            var ajax = AjaxF();
+
+            ajax.onreadystatechange = function() {
+                if (ajax.readyState == 4) {
+                    document.getElementById('conteudos_table').innerHTML = ajax.responseText;
+                }
+            }
+
+            ajax.open("GET", "../../pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral", false);
+
+            ajax.setRequestHeader("Content-Type", "text/html");
+            ajax.send();
         }
     </script>
 
@@ -1158,6 +1262,78 @@ if (!isset($_SESSION['usuario'])) {
                                                         } ?>
                                                     </tbody>
                                                 </table>
+
+                                                <section class="content">
+                                                    <!-- Small boxes (Stat box) -->
+                                                    <div class="row">
+                                                        <!-- CRIANÇAS -->
+                                                        <div class="box box-info">
+                                                            <div class="box-header with-border">
+                                                                <h3 class="box-title">
+                                                                    <i class="fa fa-bar-chart"></i> Progresso Geral
+                                                                </h3>
+
+                                                                <div class="box-tools pull-right">
+                                                                    <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#termos"><i class="fa fa-question"></i>
+                                                                    </button>
+                                                                    <div class="modal fade" id="termos">
+                                                                        <div class="modal-dialog">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">&times;</span></button>
+                                                                                    <h4 class="modal-title">Tabela de Progresso</h4>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <div class="box-body">
+                                                                                        <p style="text-align: justify;">
+                                                                                            <i><b>O que é?</b></i><br>
+                                                                                            Essa tabela contém informações do progresso do seu PG ao longo dos modúlos. <br>
+                                                                                            Ela contém informações de <b>Presença</b>, <b>Versículo</b>, <b>Mistério</b> e uma <b>Pontuação</b> total do Grupo. <br><br>
+                                                                                            <i><b>Como ela é calculada?</b></i><br>
+                                                                                            É calculada baseada nas informações do preenchimento dos relatórios dos encontros (IMPORTANTE: MANTENHA SEMPRE ELES ATUALIZADOS), o primeiro número de acordo com o preenchimento do relatório e o segundo número é o total do módulo multiplicado pelo número de crianças do PG. <br><br>
+                                                                                            <i><b>Exemplos:</b></i><br>
+                                                                                            <i>Grupo de 5 crianças que estão no Módulo Trilha na Lição 2</i><br>
+                                                                                            Na coluna Presença será assim: <u>10/40</u> (40 é minha meta e 10 é o caminho que estou pecorrendo) <br>
+                                                                                            Na coluna Versículo será assim: <u>5/20</u> (20 é minha meta e 5 é o caminho que estou pecorrendo) <br>
+                                                                                            Na coluna Mistério será assim: <u>5/20</u> (20 é minha meta e 5 é o caminho que estou pecorrendo) <br>
+                                                                                            A pontuação final será <u>190</u> <br><br>
+
+                                                                                            <i><b>Você também consegue vê o progresso individual de cada criança, ficando mais fácil a visualização e premiação</b></i><br>
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <!-- /.modal-content -->
+                                                                        </div>
+                                                                        <!-- /.modal-dialog -->
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="box-body chat" id="chat-box">
+                                                                <?php
+                                                                $total_crianca = $this->Criancas->query_criancas_lider_pg($id_usuario, 0, 2);
+                                                                ?>
+                                                                <div class="item">
+                                                                    <h4 style="text-align: center; font-weight: bold;"> PG - <?= $dadosPG['nome_pg']; ?></h4>
+                                                                    <h4 style="text-align: center;"> Quantidade de Crianças - <?= $total_crianca['row']; ?></h4>
+                                                                </div>
+
+                                                                <div id="conteudos_table"></div>
+                                                            </div>
+                                                            <!-- /.item -->
+                                                        </div>
+                                                        <!-- /.box-body -->
+                                                    </div>
+                                                    <!-- /.box -->
+                                                </section>
                                             <?php
                                             }
                                             ?>
@@ -1730,4 +1906,5 @@ if (!isset($_SESSION['usuario'])) {
     </body>
 
     </html>
-<?php } ?>
+<?php }
+?>

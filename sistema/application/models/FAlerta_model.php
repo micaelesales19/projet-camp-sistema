@@ -21,12 +21,14 @@ class FAlerta_model extends CI_Model
 
 		$texto_motivo = "";
 
-		if ($acao == "EX_CL_1") {
+		if ($acao == "EX_CRIANCAS_LIDERES") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
+		} else if ($acao == "ATIVAR_CRIANCA") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " reativou uma de suas Crianças ID - ($id)";
+		} else if ($acao == "EX_CL_1") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus colíderes ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_2") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
-		} else if ($acao == "EX_CL_3") {
-			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_4") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seu Líder ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_COORD_1") {
@@ -65,13 +67,15 @@ class FAlerta_model extends CI_Model
 		$texto_motivo = "";
 		$nome_acao = "";
 
-		if ($acao == "EX_CL_1") {
+		if ($acao == "EX_CRIANCAS_LIDERES") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
+		} else if ($acao == "ATIVAR_CRIANCA") {
+			$texto_motivo .= "O (A) " . $dados['nome'] . " reativou uma de suas Crianças ID - ($id)";
+		} else if ($acao == "EX_CL_1") {
 			$nome_acao = "Exclusão de Colíder";
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu o seu colíderes ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_2") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
-		} else if ($acao == "EX_CL_3") {
-			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu uma de suas Crianças ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "MUDANCA_DE_MODULO") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " ($id). " . $motivo;
 		} else if ($acao == "SOLICITACAO_TROCA_CSS") {
@@ -216,20 +220,24 @@ class FAlerta_model extends CI_Model
 	{
 
 		$data = explode("/", "$dat"); // fatia a string $dat em pedados, usando / como referência
-
-		$d = $data[0];
-		$m = $data[1];
-		$y = $data[2];
-
-		// verifica se a data é válida!
-		// 1 = true (válida)
-		// 0 = false (inválida)
-
-		$res = checkdate($m, $d, $y);
-		if ($res == 1) {
-			return true;
-		} else {
+		$check = count($data);
+		if ($check == 0) {
 			return false;
+		} else {
+			$d = $data[0];
+			$m = $data[1];
+			$y = $data[2];
+
+			// verifica se a data é válida!
+			// 1 = true (válida)
+			// 0 = false (inválida)
+
+			$res = checkdate($m, $d, $y);
+			if ($res == 1) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 }

@@ -224,7 +224,8 @@ if (!isset($_SESSION['usuario'])) {
             if (opc1 == 'opc3') {
                 opc2 = 'nao';
             } else {
-                opc2 = $('input[name="comparar_msm_ano"]:checked').val();
+                opc2 = 'nao';
+                // opc2 = $('input[name="comparar_msm_ano"]:checked').val();
             }
 
             var dataIn = document.getElementById('datepicker_de').value;
@@ -378,7 +379,7 @@ if (!isset($_SESSION['usuario'])) {
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        Líderes
+                        Equipe: <?= $dados_coordenador['dados']['nome_coordenador']; ?>
                         <small>Painel de Controle</small>
                     </h1>
                     <ol class="breadcrumb">
@@ -601,7 +602,9 @@ if (!isset($_SESSION['usuario'])) {
                                             </script>
                                         </div>
                                         <!-- justify-content: space-between; -->
-                                        <div class="col-lg-12" style="padding: 10px; display: flex; justify-content: start;">
+                                        <!-- <input type="hidden" id="comparar_msm_ano" name="comparar_msm_ano" value="nao" class="class5" onclick="mostrarResultado();" checked> -->
+                                        <!-- desabilitar por enquanto -->
+                                        <div class="col-lg-12" style="padding: 10px; display:none; justify-content: start;">
                                             <div class="col-lg-6" style="display: flex; justify-content: start;">
                                                 <h5>Deseja comparar com o mesmo período do ano anterior?</h5>
                                                 <div class="input-group">
@@ -616,13 +619,11 @@ if (!isset($_SESSION['usuario'])) {
                                                     </span>
                                                     <h5 id="label">Não</h5>
                                                 </div>
-                                                <!-- /input-group -->
                                             </div>
 
                                             <div style="display: flex;">
                                                 <a href="#" data-toggle="control-sidebar"><i class="fa fa-table"></i> Gerar Excel</a>
                                             </div>
-
                                         </div>
                                     </div>
 

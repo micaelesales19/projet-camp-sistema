@@ -57,7 +57,9 @@ if (!isset($_SESSION['usuario'])) {
                 </div>
                 <?php
 
-                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
+                //$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
+
+                $consultarPG = $this->PG->query([$id_usuario], 1, 1);
 
                 if ($consultarPG['row'] == 0) {
                 ?>
@@ -84,7 +86,7 @@ if (!isset($_SESSION['usuario'])) {
 
             <!-- PG -->
             <?php
-            $query_consulta_pg = $this->db->query("SELECT * FROM pg_2 WHERE id_lider LIKE $id_usuario AND ativo = 1");
+            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = 1");
             $consultar_pg = $query_consulta_pg->result_array();
 
             foreach ($consultar_pg as $key => $dados_pg) {
@@ -185,7 +187,7 @@ if (!isset($_SESSION['usuario'])) {
         </section>
 
         <?php
-        $query_consulta_pg = $this->db->query("SELECT * FROM pg_2 WHERE id_lider LIKE $id_usuario AND ativo = 1 ORDER BY id_modulo ASC LIMIT 1");
+        $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = 1 ORDER BY id_modulo ASC LIMIT 1");
         $consultar_pg = $query_consulta_pg->result_array();
 
         foreach ($consultar_pg as $key => $pg) {

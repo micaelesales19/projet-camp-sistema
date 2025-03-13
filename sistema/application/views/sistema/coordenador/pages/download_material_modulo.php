@@ -14,6 +14,7 @@ if (!isset($_SESSION['usuario'])) {
   require_once(APPPATH . '../import/sistema/materiais/materiais_4_arco.php');
   require_once(APPPATH . '../import/sistema/materiais/materiais_5_estacao.php');
   require_once(APPPATH . '../import/sistema/materiais/materiais_6_exped_ani_1_os_segredos.php');
+  require_once(APPPATH . '../import/sistema/materiais/materiais_7_exped_ani_2_os_sobreviventes.php');
 
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
@@ -197,8 +198,14 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoVisuaisSegredos1);
                 break;
               case 7:
-                $color_modulo = 'orange';
-                $color_h3 = 'black';
+                array_push($materialCapa, $materialCapaSobreviventes);
+                array_push($materialCapa, $materialContraCapaSobreviventes);
+                array_push($materialCards, $materialCardsSobreviventes);
+                array_push($materialCards, $materialSemanarioSobreviventes);
+                array_push($materialLicao, $materialIntroducaoSobreviventes);
+                array_push($materialLicao, $materialLicaoSobreviventes);
+                array_push($materialLicao, $materialLicaoVisuaisSobreviventes2);
+                array_push($materialLicao, $materialLicaoVisuaisSobreviventes1);
                 break;
               case 8:
                 $color_modulo = 'navy';
@@ -355,7 +362,7 @@ if (!isset($_SESSION['usuario'])) {
               <div class="col-md-6">
                 <div class="small-box bg-info">
                   <div class="box-header with-border">
-                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário</h3>
+                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário (Cards)</h3>
                     <div class="box-tools pull-right">
                       <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                       </button>

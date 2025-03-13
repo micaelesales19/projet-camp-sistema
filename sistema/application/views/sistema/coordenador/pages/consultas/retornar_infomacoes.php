@@ -3,7 +3,7 @@
     <table class="table table-bordered" id="table_c" width="100%" cellspacing="0">
 
       <?php
-      $pdo = new PDO("mysql:host=localhost;dbname=u301957058_camp_brasil", "u301957058_administrador", "campBr202@");
+      $pdo = new PDO("mysql:host=localhost;dbname=u301957058_campbrasil", "u301957058_camp_brasil", "campBr202@");
       /** @var \$this */
       $id_pg = $this->input->get('id_pg');
       $id_lider = $this->input->get('id_lider');
@@ -20,7 +20,6 @@
 
       <thead>
         <tr>
-          <th></th>
           <th>Nome da Criança</th>
           <th>Presença</th>
           <th style="display: <?= $isImpar ?>;">Versículo</th>
@@ -31,14 +30,14 @@
       <tbody>
         <?php
         // Consulta Criança                                                         
-        $sqlC = "SELECT * FROM criancas_2 WHERE lider LIKE :ID_LIDER AND id_pg LIKE :ID_PG AND ativo = 1";
+        $sqlC = "SELECT * FROM criancas WHERE lider LIKE :ID_LIDER AND id_pg LIKE :ID_PG AND ativo = 1";
         $consultaC = $pdo->prepare($sqlC);
         $consultaC->bindValue(":ID_LIDER", $id_lider);
         $consultaC->bindValue(":ID_PG", $id_pg);
         $consultaC->execute();
         $rowC = $consultaC->rowCount();
 
-        $sqlPG = "SELECT * FROM pg_2 WHERE id_pg LIKE :ID_PG";
+        $sqlPG = "SELECT * FROM pg WHERE id_pg LIKE :ID_PG";
         $consultaPG = $pdo->prepare($sqlPG);
         $consultaPG->bindValue(":ID_PG", $id_pg);
         $consultaPG->execute();
@@ -70,7 +69,7 @@
             } else {
             ?>
               <tr>
-                <td><input type="checkbox" class="lista_sim" name="todos" value="1"></td>
+                <!-- <td><input type="checkbox" class="lista_sim" name="todos" value="1"><td> -->
                 <td><?= $dadosCrianca['nome_crianca']; ?>
                   <input type="hidden" name="id_pg" value="<?= $id_pg; ?>">
                   <input type="hidden" name="id_crianca[]" value="<?= $dadosCrianca['id_crianca']; ?>">

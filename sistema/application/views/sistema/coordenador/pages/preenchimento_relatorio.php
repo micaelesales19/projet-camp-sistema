@@ -105,6 +105,7 @@ if (!isset($_SESSION['usuario'])) {
 
     $(document).ready(function() {
       $('#table_c').DataTable();
+      pesquisar_criancas();
     });
 
     function voltar() {
@@ -168,7 +169,6 @@ if (!isset($_SESSION['usuario'])) {
                 <input type="hidden" id="licao" value="<?= $licao; ?>">
 
                 <br>
-                <center><button class="btn btn-info" onclick="pesquisar_criancas()" id="b_modulo">Mostrar Crianças</button></center><br>
                 <form name="coder" action="preenchimento/salvar" method="post" autocomplete="off">
                   <input type="hidden" name="data_aula" value="<?= $data; ?>">
                   <input type="hidden" name="nivel" value="2">

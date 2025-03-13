@@ -17,6 +17,8 @@ $route['coordenador/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
 $route['coordenador/page/pg/exclusao/ativar'] = 'welcome/ativar_pg';
 $route['coordenador/page/pg/exclusao/permanente'] = 'welcome/excluir_pg_permanentemente';
 
+$route['coordenador/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg';
+
 $route['coordenador/page/pg/licoes'] = 'Coordenador/pagina_licoes';
 $route['coordenador/page/pg/preenchimento'] = 'Coordenador/pagina_preenchimento_relatorio_pg';
 $route['coordenador/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Coordenador/consulta_criancas_relatorios';

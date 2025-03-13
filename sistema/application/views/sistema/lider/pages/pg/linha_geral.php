@@ -30,7 +30,7 @@
 
             if ($modulos) {
 
-                $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_lider, $id_pg, 2);
+                $consultaCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
 
                 $qtdPresenca = 0;
                 $qtdVersiculo = 0;
@@ -68,15 +68,15 @@
                     if ($consultaCriancas['row'] == 0) {
                     } else {
                         foreach ($consultaCriancas['dados'] as $key => $linha) {
-                            $consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[0], 2);
-                            $consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[1], 2);
-                            $consultarProgresso3 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[2], 2);
-                            $consultarProgresso4 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[3], 2);
-                            $consultarProgresso5 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[4], 2);
-                            //$consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados'], $consultarProgresso3['dados'], $consultarProgresso4['dados'], $consultarProgresso5['dados'],);
+
+                            $id_cri = $linha['id_crianca'];
+                            $consultarProgresso1 = $this->PG->consultar_progresso('query_id_pg_id_lider_id_crianca_id_modulo', [$id_pg, $id_lider, $id_cri, $id_modulos[0]]);
+                            $consultarProgresso2 = $this->PG->consultar_progresso('query_id_pg_id_lider_id_crianca_id_modulo', [$id_pg, $id_lider, $id_cri, $id_modulos[1]]);
+                            $consultarProgresso3 = $this->PG->consultar_progresso('query_id_pg_id_lider_id_crianca_id_modulo', [$id_pg, $id_lider, $id_cri, $id_modulos[2]]);
+                            $consultarProgresso4 = $this->PG->consultar_progresso('query_id_pg_id_lider_id_crianca_id_modulo', [$id_pg, $id_lider, $id_cri, $id_modulos[3]]);
+                            $consultarProgresso5 = $this->PG->consultar_progresso('query_id_pg_id_lider_id_crianca_id_modulo', [$id_pg, $id_lider, $id_cri, $id_modulos[4]]);
                         }
                     }
-                    //$totalRelatorio = count($consultarProgresso);
 
                     $query = [];
 

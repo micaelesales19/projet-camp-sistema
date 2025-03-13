@@ -616,8 +616,6 @@ class Coordenador extends CI_Controller
 		$dataInicio = $this->input->get("dataInicio");
 		$dataFim = $this->input->get("dataAte");
 
-		//echo 'OPC 1 - ' . $opc1 . ' OPC 2 - ' . $opc2 . "<br>";
-
 		$dados = $this->consultasBD($id_coordenador, $opc1, $opc2, '', $dataInicio, $dataFim);
 
 		$this->load->view('sistema/coordenador/pages/lideres/mostrar_tabela_lideres_1', $dados);
@@ -715,17 +713,17 @@ class Coordenador extends CI_Controller
 			);
 		}
 
-		$consultarLideres = $this->FConsultas_model->getLideres([$id_coordenador], $opc1, $opc2, $datas);
-		$consultarLideresAtivos = $this->FConsultas_model->lideresAtivos($consultarLideres);
+		$list_lideres = $this->Lideres->infos(['coordenador', $id_coordenador], $opc1, $opc2, [false], $datas);
+		$list_lideres_ativos = $this->Lideres->lideresAtivos($list_lideres);
 
-		$total_criancas_geral = $this->FConsultas_model->getNumerosCriancas([$id_coordenador], $consultarLideres, 'criancas_coord_1');
-		$total_criancas_ativos = $this->FConsultas_model->getNumerosCriancas([$id_coordenador], $consultarLideresAtivos, 'criancas_coord_1');
+		$total_criancas_geral = $this->Criancas->list_criancas([$id_coordenador], $list_lideres['dados'], 'criancas_coord_1');
+		$total_criancas_ativos = $this->Criancas->list_criancas([$id_coordenador], $list_lideres_ativos['dados'], 'criancas_coord_1');
 
 		if ($opc3 == 'lideres_ativos') {
 			$dados = array(
 				'dados_coordenador' => $dados_coordenador,
-				'dados_lideres_gerais' => $consultarLideresAtivos,
-				'dados_lideres_ativos' => $consultarLideresAtivos,
+				'dados_lideres_gerais' => $list_lideres_ativos,
+				'dados_lideres_ativos' => $list_lideres_ativos,
 				'dados_criancas_gerais' => $total_criancas_geral,
 				'dados_criancas_ativos' => $total_criancas_ativos,
 				'mostrar_comparacao' => $opc2,
@@ -735,8 +733,8 @@ class Coordenador extends CI_Controller
 		} else {
 			$dados = array(
 				'dados_coordenador' => $dados_coordenador,
-				'dados_lideres_gerais' => $consultarLideres,
-				'dados_lideres_ativos' => $consultarLideresAtivos,
+				'dados_lideres_gerais' => $list_lideres,
+				'dados_lideres_ativos' => $list_lideres_ativos,
 				'dados_criancas_gerais' => $total_criancas_geral,
 				'dados_criancas_ativos' => $total_criancas_ativos,
 				'mostrar_comparacao' => $opc2,
@@ -849,6 +847,40 @@ class Coordenador extends CI_Controller
 		);
 
 		$this->load->view('sistema/coordenador/pages/preenchimento_relatorio', $dados);
+	}
+
+	public function consulta_progresso_pg()
+	{
+		$id_lider = $this->input->get("id_lider");
+		$id_pg = $this->input->get("id_pg");
+		$id_modulo = $this->input->get("id_modulo");
+		$ano = $this->input->get("ano");
+		$total = $this->input->get("total"); // total de botões dos módulos escolhidos
+
+		$id_crianca = $this->input->get("id_crianca");
+
+		$page = $this->input->get('page') == '' ? 'inicial' : $this->input->get('page');
+
+		// id_lider // id_pg
+		$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
+
+		$dados = array(
+			'id_lider' => $id_lider,
+			'id_pg' => $id_pg,
+			'id_modulo' => $id_modulo,
+			'total' => $total,
+			'ano' => $ano,
+			'page' => $page,
+			'id_crianca' => $id_crianca,
+			'pg' => $dadosPg['dados'],
+		);
+
+
+		if ($page == '' || $page == 'individual') {
+			$this->load->view('sistema/lider/pages/pg/linha', $dados);
+		} else {
+			$this->load->view('sistema/lider/pages/pg/linha_geral', $dados);
+		}
 	}
 
 	public function consulta_criancas_relatorios()

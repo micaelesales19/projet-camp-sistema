@@ -238,12 +238,13 @@ class FSistema_model extends CI_Model
 		$inserir['ativo'] = $ativo;
 		$inserir['foto'] = $foto;
 		$inserir['bonus'] = $bonus;
+		$this->db->insert("pg", $inserir);
 
-		if ($x == 1) {
+		/*if ($x == 1) {
 			$this->db->insert("pg_pais", $inserir);
 		} else if ($x == 2) {
 			$this->db->insert("pg_2", $inserir);
-		}
+		}*/
 	}
 
 	public function enviarEmailSupervisor($emailSupervisor, $nomeSupervisor, $nome, $email, $telefone, $estado, $cidade)
@@ -318,13 +319,15 @@ class FSistema_model extends CI_Model
 		$inserir['bonus'] = $bonus;
 
 		if ($x == 1) {
-			if ($this->db->insert("pg_pais", $inserir)) {
+			if ($this->db->insert("pg", $inserir)) {
+				//if ($this->db->insert("pg_pais", $inserir)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if ($x == 2) {
-			if ($this->db->insert("pg_2", $inserir)) {
+			if ($this->db->insert("pg", $inserir)) {
+				//if ($this->db->insert("pg_2", $inserir)) {
 				return true;
 			} else {
 				return false;
@@ -340,13 +343,15 @@ class FSistema_model extends CI_Model
 		$this->db->where('id_pg ', $id);
 
 		if ($x == 1) {
-			if ($this->db->update('pg_pais')) {
+			if ($this->db->update('pg')) {
+				//if ($this->db->update('pg_pais')) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if ($x == 2) {
-			if ($this->db->update('pg_2')) {
+			if ($this->db->update('pg')) {
+				//if ($this->db->update('pg_2')) {
 				return true;
 			} else {
 				return false;
@@ -362,13 +367,15 @@ class FSistema_model extends CI_Model
 		$this->db->where('id_pg ', $id);
 
 		if ($x == 1) {
-			if ($this->db->update('pg_pais')) {
+			if ($this->db->update('pg')) {
+				//if ($this->db->update('pg_pais')) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if ($x == 2) {
-			if ($this->db->update('pg_2')) {
+			if ($this->db->update('pg')) {
+				//if ($this->db->update('pg_2')) {
 				return true;
 			} else {
 				return false;
@@ -384,7 +391,8 @@ class FSistema_model extends CI_Model
 			$this->db->set('licao_devocional', $licao);
 			$this->db->where('id_pg ', $id);
 
-			if ($this->db->update('pg_pais')) {
+			if ($this->db->update('pg')) {
+				//if ($this->db->update('pg_pais')) {
 				return true;
 			} else {
 				return false;
@@ -396,7 +404,8 @@ class FSistema_model extends CI_Model
 			$this->db->set('licao_devocional', $licao);
 			$this->db->where('id_pg ', $id);
 
-			if ($this->db->update('pg_2')) {
+			if ($this->db->update('pg')) {
+				//if ($this->db->update('pg_2')) {
 				return true;
 			} else {
 				return false;
@@ -420,13 +429,14 @@ class FSistema_model extends CI_Model
 		$inserir['motivo'] = $motivo;
 		$inserir['data_saida'] = $data;
 
-		if ($this->db->insert('alcancado_pg', $inserir)) {
+		if ($this->db3->insert('alcancado_pg', $inserir)) {
 
 			if ($x == 1) {
 				$this->db->set('ativo', $ativo);
 				$this->db->where('id_pg', $id_pg);
 
-				if ($this->db->update('pg_pais')) {
+				if ($this->db->update('pg')) {
+					//if ($this->db->update('pg_pais')) {
 					$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
 					$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_pg, $motivo, $acao);
 					return true;
@@ -437,7 +447,8 @@ class FSistema_model extends CI_Model
 				$this->db->set('ativo', $ativo);
 				$this->db->where('id_pg', $id_pg);
 
-				if ($this->db->update('pg_2')) {
+				if ($this->db->update('pg')) {
+					//if ($this->db->update('pg_2')) {
 					$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
 					$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_lider, $id_pg, $motivo, $acao);
 					return true;
@@ -468,7 +479,8 @@ class FSistema_model extends CI_Model
 				return false;
 			}
 		} else if ($nivel == 2) {
-			if ($this->db->update('pg_2')) {
+			if ($this->db->update('pg')) {
+				//if ($this->db->update('pg_2')) {
 				$this->FSistema_model->excluirPgAlcancado($id_pg);
 				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
 				return true;
@@ -489,7 +501,7 @@ class FSistema_model extends CI_Model
 
 		$dadosPG = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
 
-		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_pg WHERE id_pg LIKE $id_pg");
+		$consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_pg WHERE id_pg LIKE $id_pg");
 		$row = $consultar_pg_desativado->num_rows();
 
 		if ($row == 0) {
@@ -501,7 +513,7 @@ class FSistema_model extends CI_Model
 			$inserir['motivo'] = $motivo;
 			$inserir['data_saida'] = $data;
 
-			if ($this->db->insert('alcancado_pg', $inserir)) {
+			if ($this->db3->insert('alcancado_pg', $inserir)) {
 			}
 		} else {
 		}
@@ -509,7 +521,8 @@ class FSistema_model extends CI_Model
 		$this->db->where('id_pg', $id_pg);
 
 		if ($nivel == 1) {
-			if ($this->db->delete('pg_pais')) {
+			if ($this->db->delete('pg')) {
+				//if ($this->db->delete('pg_pais')) {
 				$this->FSistema_model->excluirProgresso($id_pg, $id_lider);
 				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
 				return true;
@@ -517,7 +530,8 @@ class FSistema_model extends CI_Model
 				return false;
 			}
 		} else if ($nivel == 2) {
-			if ($this->db->delete('pg_2')) {
+			if ($this->db->delete('pg')) {
+				//if ($this->db->delete('pg_2')) {
 				$this->FSistema_model->excluirProgresso($id_pg, $id_lider);
 				$this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
 				return true;
@@ -699,9 +713,9 @@ class FSistema_model extends CI_Model
 
 	public function excluirPgAlcancado($id_pg)
 	{
-		$this->db->where('id_pg', $id_pg);
+		$this->db3->where('id_pg', $id_pg);
 
-		if ($this->db->delete('alcancado_pg')) {
+		if ($this->db3->delete('alcancado_pg')) {
 			return true;
 		} else {
 			return false;
@@ -738,48 +752,11 @@ class FSistema_model extends CI_Model
 		}
 	}
 	// Fim REATIVAR
-	/*Colíder*/
-
-	/*LÍDÉR*/
-
-	public function cadastro_lider($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional)
-	{
-		date_default_timezone_set('America/Sao_Paulo');
-		$data = date('d/m/Y'); // tirar
-		$data_2 = date('Y-m-d');
-
-		$foto = "fotoU/geral.jpg";
-
-		$inserir['nome_lider'] = $nome;
-		$inserir['cpf'] = $cpf;
-		$inserir['email'] = $email;
-		$inserir['telefone_whatsapp'] = $telefone;
-		$inserir['igreja'] = $igreja;
-		$inserir['nascimento'] = $nascimento;
-		$inserir['id_pastor'] = $id_pastor;
-		$inserir['pais'] = $pais;
-		$inserir['estado'] = $estado;
-		$inserir['cidade'] = $cidade;
-		$inserir['id_coordenador'] = $id_coordenador;
-		$inserir['id_supervisorR'] = $id_slocal;
-		$inserir['id_supervisorE'] = $id_sregional;
-		$inserir['foto'] = $foto;
-		$inserir['foto_2'] = '';
-		$inserir['confirmado'] = 2;
-		$inserir['data'] = $data;
-		$inserir['data_cadastro'] = $data_2;
-
-		if ($this->db->insert("lider", $inserir)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	/*LÍDER*/
 
 	// Crianças
-	public function cadastro_crianca($nome, $nascimento, $idLider, $id_pg, $obs, $opcao, $nomePai, $emailPai, $telefonePai, $x)
+	public function cadastro_crianca($nome, $nascimento, $idLider, $id_pg, $obs, $opcao, $nomePai, $emailPai, $telefonePai)
 	{
 		date_default_timezone_set('America/Sao_Paulo');
 		$data = date('d/m/Y');
@@ -798,18 +775,10 @@ class FSistema_model extends CI_Model
 		$inserir['data'] = $data;
 		$inserir['ativo'] = $ativo;
 
-		if ($x == 1) {
-			if ($this->db->insert("criancas", $inserir)) {
-				return true;
-			} else {
-				return false;
-			}
-		} else if ($x == 2) {
-			if ($this->db->insert("criancas_2", $inserir)) {
-				return true;
-			} else {
-				return false;
-			}
+		if ($this->db->insert("criancas", $inserir)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -994,18 +963,10 @@ class FSistema_model extends CI_Model
 		$this->db->where('id_pg', $id_pg);
 		$this->db->where('id_lider', $idlider);
 
-		if ($x == 1) {
-			if ($this->db->update('pg_pais')) {
-				return true;
-			} else {
-				return false;
-			}
-		} else if ($x == 2) {
-			if ($this->db->update('pg_2')) {
-				return true;
-			} else {
-				return false;
-			}
+		if ($this->db->update('pg')) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

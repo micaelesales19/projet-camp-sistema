@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------
@@ -76,11 +76,9 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	//'username' => 'root',
-	'username' => 'u301957058_administrador',
-	//'password' => '',
+	'username' => 'u301957058_camp_brasil',
 	'password' => 'campBr202@',
-	'database' => 'u301957058_camp_brasil',
+	'database' => 'u301957058_campbrasil',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -103,6 +101,28 @@ $db['auxiliar'] = array(
 	'username' => 'u301957058_admin',
 	'password' => 'a]9GvFf~O',
 	'database' => 'u301957058_treinamento',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+$db['camp'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+	'username' => 'u301957058_administrador',
+	'password' => 'campBr202@',
+	'database' => 'u301957058_camp_brasil',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

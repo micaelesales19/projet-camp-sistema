@@ -387,6 +387,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                             <th>Lição</th>
                                                                             <th>Status</th>
                                                                             <th>Ação</th>
+                                                                            <!-- <th>Ação</th> -->
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -431,8 +432,15 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                         <td><span class="label label-danger">Bloqueada</span></td>
                                                                                         <td>
-                                                                                            <div class="sparkbar" data-color="#f56954" data-height="20">Preencher</div>
+                                                                                            <div class="sparkbar" data-color="#f56954" data-height="20">
+                                                                                                <span class="label label-default">Preencher</span>
+                                                                                            </div>
                                                                                         </td>
+                                                                                        <!-- <td>
+                                                                                            <div class="sparkbar" data-color="#f56954" data-height="20">
+                                                                                                <span class="label label-warning">Visualizar</span>
+                                                                                            </div>
+                                                                                        </td> -->
                                                                                     </tr>
                                                                                     <?php
                                                                                 } else {
@@ -444,7 +452,8 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                 <td><span class="label label-info">Liberada</span></td>
                                                                                                 <td>
                                                                                                     <div class="sparkbar" data-color="#00c0ef" data-height="20">
-                                                                                                        <a href="#" onclick="document.getElementById('form1').submit();">Preencher
+                                                                                                        <a href="#" onclick="document.getElementById('form1').submit();">
+                                                                                                            <span class="label label-success">Preencher</span>
                                                                                                         </a>
 
                                                                                                         <form action="../pg/preenchimento" id="form1" method="post">
@@ -456,13 +465,20 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                         </form>
                                                                                                     </div>
                                                                                                 </td>
+                                                                                                <!-- <td>
+                                                                                                    <div class="sparkbar" data-color="#f56954" data-height="20">
+                                                                                                        <span class="label label-warning">Visualizar</span>
+                                                                                                    </div>
+                                                                                                </td> -->
                                                                                             </tr>
                                                                                         <?php } else { ?>
                                                                                             <tr>
                                                                                                 <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                                 <td><span class="label label-success">Feita</span></td>
                                                                                                 <td>
-                                                                                                    <div class="sparkbar" data-color="#00a65a" data-height="20">Preencher</div>
+                                                                                                    <div class="sparkbar" data-color="#00a65a" data-height="20">
+                                                                                                        <span class="label label-default">Preencher</span>
+                                                                                                    </div>
                                                                                                 </td>
                                                                                             </tr>
                                                                                         <?php } // fim do x
@@ -472,8 +488,15 @@ if (!isset($_SESSION['usuario'])) {
                                                                                             <td><?= $i2; ?> - <?= $nome_licao; ?></td>
                                                                                             <td><span class="label label-danger">Bloqueada</span></td>
                                                                                             <td>
-                                                                                                <div class="sparkbar" data-color="#f56954" data-height="20">Preencher</div>
+                                                                                                <div class="sparkbar" data-color="#f56954" data-height="20">
+                                                                                                    <span class="label label-default">Preencher</span>
+                                                                                                </div>
                                                                                             </td>
+                                                                                            <!-- <td>
+                                                                                                <div class="sparkbar" data-color="#f56954" data-height="20">
+                                                                                                    <span class="label label-warning">Visualizar</span>
+                                                                                                </div>
+                                                                                            </td> -->
                                                                                         </tr>
                                                                         <?php } // fim do check das lições
                                                                                 } // check das crianças
@@ -521,6 +544,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     <tbody>
                                                                         <?php
                                                                         $dados_pg = $pg['dados'];
+                                                                        //echo "ID PG - " . $dados_pg['id_pg'];
 
                                                                         $id_modulo = $dados_pg['id_modulo'];
 

@@ -3,7 +3,7 @@
     <table class="table table-bordered" id="table_c" width="100%" cellspacing="0">
 
       <?php
-      $pdo = new PDO("mysql:host=localhost;dbname=u301957058_camp_brasil", "u301957058_administrador", "campBr202@");
+      $pdo = new PDO("mysql:host=localhost;dbname=u301957058_campbrasil", "u301957058_camp_brasil", "campBr202@");
       /** @var \$this */
       $id_pg = $this->input->get('id_pg');
       $id_lider = $this->input->get('id_lider');
@@ -31,14 +31,14 @@
       <tbody>
         <?php
         // Consulta Criança                                                         
-        $sqlC = "SELECT * FROM criancas_2 WHERE lider LIKE :ID_LIDER AND id_pg LIKE :ID_PG AND ativo = 1";
+        $sqlC = "SELECT * FROM criancas WHERE lider LIKE :ID_LIDER AND id_pg LIKE :ID_PG AND ativo = 1";
         $consultaC = $pdo->prepare($sqlC);
         $consultaC->bindValue(":ID_LIDER", $id_lider);
         $consultaC->bindValue(":ID_PG", $id_pg);
         $consultaC->execute();
         $rowC = $consultaC->rowCount();
 
-        $sqlPG = "SELECT * FROM pg_2 WHERE id_pg LIKE :ID_PG";
+        $sqlPG = "SELECT * FROM pg WHERE id_pg LIKE :ID_PG";
         $consultaPG = $pdo->prepare($sqlPG);
         $consultaPG->bindValue(":ID_PG", $id_pg);
         $consultaPG->execute();
@@ -49,9 +49,10 @@
         } else {
           for ($i = 0; $i < $rowC; $i++) {
             $dadosCrianca = $consultaC->fetch(PDO::FETCH_ASSOC);
-            $sqlProgresso = "SELECT * FROM progresso_pg_pais WHERE id_crianca_presente LIKE :ID_USUARIO AND numero_licao LIKE :LICAO AND id_modulo LIKE :MODULO";
+            $sqlProgresso = "SELECT * FROM progresso_pg WHERE id_crianca_presente LIKE :ID_CRIANCA AND id_pg LIKE :ID_PG AND numero_licao LIKE :LICAO AND id_modulo LIKE :MODULO";
             $consultaProgresso = $pdo->prepare($sqlProgresso);
-            $consultaProgresso->bindValue(":ID_USUARIO", $dadosCrianca['id_crianca']);
+            $consultaProgresso->bindValue(":ID_CRIANCA", $dadosCrianca['id_crianca']);
+            $consultaProgresso->bindValue(":ID_PG", $id_pg);
             $consultaProgresso->bindValue(":LICAO", $licao);
             $consultaProgresso->bindValue(":MODULO", $modulo);
             $consultaProgresso->execute();

@@ -188,7 +188,7 @@ class Lider extends CI_Controller
 		// atualizarCriancas
 		$nome_antigo = $this->input->post("nome_antigo");
 
-		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id, 2);
+		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id);
 
 		if ($consultarCriancas['row'] == 0) {
 		} else {
@@ -241,7 +241,7 @@ class Lider extends CI_Controller
 		$ano = $this->input->post("ano");
 
 		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
-		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
+		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg);
 
 		$dados = array(
 			'id_lider' => $id_lider,
@@ -256,6 +256,10 @@ class Lider extends CI_Controller
 	public function pagina_preenchimento_relatorio_pg()
 	{
 		$this->load->view('sistema/lider/pages/preenchimento_relatorio');
+	}
+	public function pagina_editar_relatorio_pg()
+	{
+		$this->load->view('sistema/lider/pages/edicao_relatorio');
 	}
 
 	public function consulta_criancas_relatorios()
@@ -275,7 +279,8 @@ class Lider extends CI_Controller
 
 		$page = $this->input->get('page') == '' ? 'inicial' : $this->input->get('page');
 
-		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 1);
+		// id_lider // id_pg
+		$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
 
 		$dados = array(
 			'id_lider' => $id_lider,
@@ -295,7 +300,6 @@ class Lider extends CI_Controller
 			$this->load->view('sistema/lider/pages/pg/linha_geral', $dados);
 		}
 	}
-
 	public function atualizarDataPG()
 	{
 		$idPg = $this->input->post('id_pg');
@@ -339,7 +343,17 @@ class Lider extends CI_Controller
 
 	public function pagina_download_material_modulo()
 	{
-		$this->load->view('sistema/lider/pages/download_material_modulo');
+		$id_lider = $this->input->post('id_lider');
+		$id_pg = $this->input->post('id_pg');
+		$id_modulo = $this->input->post('id_modulo');
+
+		$dados = array(
+			'id_lider' => $id_lider,
+			'id_pg' => $id_pg,
+			'id_modulo' => $id_modulo,
+		);
+
+		$this->load->view('sistema/lider/pages/download_material_modulo', $dados);
 	}
 	/* FIM LÍDER */
 

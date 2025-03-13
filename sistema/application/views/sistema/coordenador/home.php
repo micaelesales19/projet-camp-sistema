@@ -60,18 +60,17 @@ if (!isset($_SESSION['usuario'])) {
           <section class="content">
             <!-- Small boxes (Stat box) -->
             <div class="row">
-
               <!-- CADASTRAR CRIANÇA -->
               <div class="col-lg-4">
                 <!-- small box -->
                 <div class="small-box bg-aqua">
                   <?php
-                  $consultarCriancas = $this->FConsultas_model->getLideres([$id_usuario], 1, 1, []);
-                  $total = $consultarCriancas['row'];
+                  $consultarCriancas = $this->Lideres->infos([$id_usuario], 1, 1, [false], []);
+                  //$total = $consultarCriancas['row'];
                   ?>
                   <div class="inner">
-                    <h4><?= $total; ?></h4>
-                    <p>Líderes</p>
+                    <h4>Líderes</h4>
+                    <br>
                     <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="small-box-footer">
                       <p>Copiar Link de Cadastro <i class="fa fa-link"></i></p>
                     </a>
@@ -89,10 +88,10 @@ if (!isset($_SESSION['usuario'])) {
 
               <!-- PG -->
               <?php
-              $query_consulta_pg = $this->db->query("SELECT * FROM pg_2 WHERE id_lider LIKE $id_usuario AND ativo = 1");
-              $consultar_pg = $query_consulta_pg->result_array();
 
-              foreach ($consultar_pg as $key => $dados_pg) {
+              $dados = $this->PG->query([$id_usuario], 1, 1);
+
+              foreach ($dados['dados'] as $key => $dados_pg) {
 
                 $id_pg_tabela = $dados_pg['id_pg'];
                 $id_lider = $dados_pg['id_lider'];
@@ -190,10 +189,9 @@ if (!isset($_SESSION['usuario'])) {
           </section>
 
           <?php
-          $query_consulta_pg = $this->db->query("SELECT * FROM pg_2 WHERE id_lider LIKE $id_usuario AND ativo = 1 ORDER BY id_modulo ASC LIMIT 1");
-          $consultar_pg = $query_consulta_pg->result_array();
+          $dados = $this->PG->query([$id_usuario], 2, 1);
 
-          foreach ($consultar_pg as $key => $pg) {
+          foreach ($dados['dados'] as $key => $pg) {
             $diaComecou = $pg['data_semana'];
 
             if ($diaComecou == '' || $diaComecou == '00') {
@@ -359,7 +357,7 @@ if (!isset($_SESSION['usuario'])) {
           //remove o elemento
           document.body.removeChild(inputTest);
 
-          document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
+          document.getElementById('text_sucess').innerHTML = 'Código Copiado! ' + texto;
 
           function msgEncerramento() {
             document.getElementById('text_sucess').innerHTML = '';

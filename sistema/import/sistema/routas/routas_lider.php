@@ -10,23 +10,25 @@ $route['lider/salvar_edicao'] = 'Lider/e_pessoal';
 $route['lider/page/criancas'] = 'Lider/pagina_visualizacao_criancas';
 $route['lider/page/criancas/cadastro'] = 'Lider/pagina_cadastro_criancas';
 
-$route['lider/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
-$route['lider/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';
-$route['lider/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca';
-$route['lider/page/criancas/ativar'] = 'welcome/ativar_crianca';
-$route['lider/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas';
+$route['lider/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca'; //ok
+$route['lider/page/criancas/edicao/salvar'] = 'welcome/editar_crianca'; // ok
+$route['lider/page/criancas/exclusao/desativar'] = 'welcome/desativar_crianca'; //ok
+$route['lider/page/criancas/exclusao/permanente'] = 'welcome/excluir_crianca_permanentemente'; // ok
+$route['lider/page/criancas/ativar'] = 'welcome/ativar_crianca'; // ok
+$route['lider/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas'; // ok
 // Fim das Crianças
 
 // PG
 $route['lider/page/pg'] = 'Lider/pagina_visualizacao_pg';
 
-$route['lider/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
+$route['lider/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg'; // ok
 $route['lider/page/pg/edicao/salvar'] = 'welcome/editar_pg';
 $route['lider/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
 
 $route['lider/page/pg/licoes'] = 'Lider/pagina_licoes';
 $route['lider/page/pg/preenchimento'] = 'Lider/pagina_preenchimento_relatorio_pg';
-$route['lider/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio';
+$route['lider/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio'; // ok
+$route['lider/page/pg/preenchimento/editar'] = 'Lider/pagina_editar_relatorio_pg';
 $route['lider/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Lider/consulta_criancas_relatorios';
 
 $route['lider/page/pg/atualizar_data_pg'] = 'Lider/atualizarDataPG';

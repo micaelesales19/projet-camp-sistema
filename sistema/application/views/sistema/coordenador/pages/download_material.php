@@ -121,7 +121,7 @@ if (!isset($_SESSION['usuario'])) {
               $color_modulo = '';
               $color_h3 = '';
 
-              switch ($id_modulo) {
+              /*switch ($id_modulo) {
                 case 1:
                   $color_modulo = 'green';
                   $color_h3 = 'white';
@@ -166,12 +166,70 @@ if (!isset($_SESSION['usuario'])) {
                   $color_modulo = 'green';
                   $color_h3 = 'white';
                   break;
+              }*/
+
+              switch ($id_modulo) {
+                case 1: // trilha
+                  $color_modulo = '#482F15';
+                  $color_h3 = 'white';
+                  break;
+                case 2: // mergulho
+                  $color_modulo = '#734B21';
+                  $color_h3 = 'white';
+                  break;
+                case 3: // santuario
+                  $color_modulo = '#835626';
+                  $color_h3 = 'white';
+                  break;
+                case 4: // arco
+                  $color_modulo = '#AE7233';
+                  $color_h3 = 'white';
+                  break;
+                case 5: // estacao
+                  $color_modulo = '#C7833A';
+                  $color_h3 = 'white';
+                  break;
+                case 6: // os segredos
+                  $color_modulo = '#E99944';
+                  $color_h3 = 'white';
+                  break;
+                case 7: // os sobreviventes
+                  $color_modulo = '#E8A548';
+                  $color_h3 = 'white';
+                  break;
+                case 8: // exploradores do sub solo
+                  $color_modulo = '#16CA55';
+                  $color_h3 = 'white';
+                  break;
+                case 9: // colheita
+                  $color_modulo = '#13A847';
+                  $color_h3 = 'white';
+                  break;
+                case 10: // evolução
+                  $color_modulo = '#237E43';
+                  $color_h3 = 'white';
+                  break;
+                case 11: // organelas
+                  $color_modulo = '#255422';
+                  $color_h3 = 'white';
+                  break;
+                default:
+                  $color_modulo = '#0F8639';
+                  $color_h3 = 'white';
+                  break;
+
+                  // cores verde na ordem
+                  // 1CF467
+                  // 1AEC64
+                  // 16CA55
+                  // 13A847
+                  // 13A847
               }
 
             ?>
 
               <div class="col-md-12" id="quadrado">
-                <div class="box bg-<?= $color_modulo; ?>">
+                <div class="box" style="background-color:<?= $color_modulo; ?>;">
                   <div class="box-header with-border">
                     <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
 
@@ -181,7 +239,7 @@ if (!isset($_SESSION['usuario'])) {
                     </div>
                   </div>
                   <div class="box-body chat" style="position: relative;">
-                    <p style="text-align: justify;"><?= $descricao; ?></p>
+                    <p style="text-align: justify; color: <?= $color_h3; ?>;"><?= $descricao; ?></p>
                     <div class="col-md-4" style="left: 50%;transform: translate( -50%);">
                       <div class="box box-primary box-solid">
                         <p>

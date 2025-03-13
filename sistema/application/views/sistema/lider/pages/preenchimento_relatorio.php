@@ -111,6 +111,7 @@ if (!isset($_SESSION['usuario'])) {
 
     $(document).ready(function() {
       $('#table_c').DataTable();
+      pesquisar_criancas();
     });
 
     function voltar() {
@@ -162,31 +163,31 @@ if (!isset($_SESSION['usuario'])) {
                 <input type="hidden" id="licao" value="<?= $licao; ?>">
 
                 <br>
-                <center><button class="btn btn-info" onclick="pesquisar_criancas()" id="b_modulo">Mostrar Crianças</button></center><br>
+                <!-- ><center><button class="btn btn-info" onclick="pesquisar_criancas()" id="b_modulo">Mostrar Crianças</button></center><br> -->
                 <form name="coder" action="preenchimento/salvar" method="post" autocomplete="off">
                   <input type="hidden" name="data_aula" value="<?= $data; ?>">
-                  <input type="hidden" name="nivel" value="2>
+                  <input type="hidden" name="nivel" value="2">
                   <div id=" conteudo">
-                  <center>
-                    <div class="card-body">
-                      <div class="table-responsive">
-                        <div class="form-group">
-                          <center><label for="exampleInputEmail1"><b>Dados das Crianças</b></label></center>
-                          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                              <tr>
-                                <th><input type="checkbox" id="todos" name="checkTodos" value="t"> Selecionar todos</th>
-                              </tr>
-                            </thead>
-                          </table>
-                          <div id="conteudo_crianca"></div>
-                        </div>
-                        <div>
-                        </div>
-                  </center>
-                  <div class="row" style="float:none;margin:auto; margin-bottom: 20px;">
-                    <div class="col-lg-6" style="float:none;margin:auto;">
-                      <br><input type="submit" class="btn btn-success btn-block" value="Salvar" /><br>
+                    <center>
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <div class="form-group">
+                            <center><label for="exampleInputEmail1"><b>Dados das Crianças</b></label></center>
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                              <thead>
+                                <tr>
+                                  <th><input type="checkbox" id="todos" name="checkTodos" value="t"> Selecionar todos</th>
+                                </tr>
+                              </thead>
+                            </table>
+                            <div id="conteudo_crianca"></div>
+                          </div>
+                          <div>
+                          </div>
+                    </center>
+                    <div class="row" style="float:none;margin:auto; margin-bottom: 20px;">
+                      <div class="col-lg-6" style="float:none;margin:auto;">
+                        <br><input type="submit" class="btn btn-success btn-block" value="Salvar" /><br>
                 </form>
                 <a href="../../page/pg" class="btn btn-primary btn-block">Voltar</a>
               </div>

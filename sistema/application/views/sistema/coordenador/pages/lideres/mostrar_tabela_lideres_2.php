@@ -116,8 +116,7 @@
 
         ?>
             <tr>
-                <td>
-                    <img src="<?= $foto; ?>" alt="" id="imgPhoto_usuario"> <?= $lider['nome_lider']; ?>
+                <td> <?= $lider['nome_lider']; ?>
                 </td>
                 <td><?= $qtd_criancas['row']; ?></td>
                 <td><?= $qtd_criancas_ativas['row']; ?></td>
