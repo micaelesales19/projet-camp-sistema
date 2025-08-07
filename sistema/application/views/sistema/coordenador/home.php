@@ -186,6 +186,170 @@ if (!isset($_SESSION['usuario'])) {
               <!-- ./col -->
             </div>
             <!-- /.row -->
+
+            <?php
+            $check_situacao_cadastro = $this->Lideres->infos([$id_usuario, 1], 'check_lider_situacao_cadastro_id_coordenador', '', '', '');
+
+            if ($check_situacao_cadastro['row'] == 0) {
+            } else {
+            ?>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="box box-default">
+                    <div class="box-header with-border">
+                      <i class="fa fa-warning"></i>
+
+                      <h3 class="box-title">Alertas</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+                      <input type="hidden" id="btn_enviar_c" value="">
+
+                      <?php
+                      if ($check_situacao_cadastro['row'] == 0) {
+                      } else {
+                      ?>
+                        <div class="alert alert-info alert-dismissible">
+                          <h4><i class="icon fa fa-info"></i> Novo líder cadastrado</h4>
+                          <?php
+                          foreach ($check_situacao_cadastro['dados'] as $key => $dados_l) {
+                          ?>
+                            <?= $dados_l['nome_lider']; ?>, se cadastrou no sistema
+                            <a href="#" style="text-decoration: none;" data-toggle="modal" data-target="#modal-default-<?= $dados_l['id_lider'] ?>">
+                              <span class="label label-default">Liberar</span>
+                            </a>
+                            <div class="modal fade" id="modal-default-<?= $dados_l['id_lider'] ?>">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span></button>
+                                    <?php
+                                    $date1 = date('d/m/Y', strtotime($dados_l['data_cadastro']));
+                                    ?>
+                                    <h4 class="modal-title" style="color: black;">Autorizar Líder (Data de Cadastro <?= $date1; ?>)</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="box-body">
+                                      <div class="col-lg-12">
+                                        <div class="form-group has-feedback">
+                                          <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome" value="<?= $dados_l['nome_lider']; ?>" disabled>
+                                          <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-lg-6">
+                                        <div class="form-group has-feedback">
+                                          <input type="email" class="form-control" placeholder="Email" name="email" value="<?= $dados_l['email']; ?>" disabled>
+                                          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-lg-6">
+                                        <div class="form-group has-feedback">
+                                          <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11" value="<?= $dados_l['cpf']; ?>" disabled>
+                                          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-lg-6">
+                                        <div class="form-group has-feedback">
+                                          <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone" value="<?= $dados_l['telefone_whatsapp']; ?>" disabled>
+                                          <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-lg-6">
+                                        <div class="form-group has-feedback">
+                                          <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" value="<?= $dados_l['nascimento']; ?>" disabled>
+                                          <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-lg-12">
+                                        <div class="col-lg-4">
+                                          <div class="form-group has-feedback">
+                                            <?php
+                                            $p = $dados_l['pais'];
+                                            $nome_pais = "";
+                                            if ($p == 'br' ||  $p == '') {
+                                              $nome_pais = "Brasil";
+                                            } else {
+                                              $nome_pais = $p;
+                                            }
+                                            ?>
+                                            <input type="text" id="estaods2" class="form-control" placeholder="Pais" name="pais" value="<?= $nome_pais; ?>" disabled>
+                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                          </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                          <div class="form-group has-feedback">
+                                            <input type="text" id="estaods2" class="form-control" placeholder="Estado" name="estados2" value="<?= $dados_l['estado']; ?>" disabled>
+                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                          </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                          <div class="form-group has-feedback">
+                                            <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2" value="<?= $dados_l['cidade']; ?>" disabled>
+                                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-lg-12">
+                                        <div class="form-group has-feedback">
+                                          <input type="text" class="form-control" placeholder="Igreja" minlength="5" name="igreja" value="<?= $dados_l['igreja']; ?>" disabled>
+                                          <span class="glyphicon glyphicon-home form-control-feedback"></span>
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                    <form action="page/lideres/liberar" method="post">
+                                      <input type="hidden" name="id_lider" value="<?= $dados_l['id_lider']; ?>">
+                                      <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
+                                      <input type="hidden" name="routa" value="home">
+                                      <input type="submit" class="btn btn-success" value="Autorizar">
+                                    </form>
+                                  </div>
+                                </div>
+                                <!-- /.modal-content -->
+                              </div>
+                              <!-- /.modal-dialog -->
+                            </div>
+                            <br>
+                          <?php } ?>
+                        </div>
+                      <?php } ?>
+                      <!-- <div class="alert alert-warning alert-dismissible">
+                        <h4><i class="icon fa fa-warning"></i> Alert!</h4>
+                        Warning alert preview. This alert is dismissable.
+                      </div> -->
+                      <!--<div class="alert alert-danger alert-dismissible">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                      Danger alert preview. This alert is dismissable. A wonderful serenity has taken possession of my entire
+                      soul, like these sweet mornings of spring which I enjoy with my whole heart.
+                    </div>
+                    <div class="alert alert-success alert-dismissible">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      <h4><i class="icon fa fa-check"></i> Alert!</h4>
+                      Success alert preview. This alert is dismissable.
+                    </div> -->
+                    </div>
+                    <!-- /.box-body -->
+                  </div>
+                  <!-- /.box -->
+                </div>
+                <!-- /.col -->
+              </div>
+
+            <?php } ?>
+            <!-- /.row -->
           </section>
 
           <?php

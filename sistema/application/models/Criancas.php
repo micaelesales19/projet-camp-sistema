@@ -46,6 +46,17 @@ class Criancas extends CI_Model
             );
 
             return $dados;
+        } else if ($x == 'query_id_lider_id_pg_geral_order_by_nome_crianca_asc') {
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG ORDER BY nome_crianca ASC");
+            $row = $consultar_criancas->num_rows();
+            $dados_consulta_criancas = $consultar_criancas->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_criancas,
+            );
+
+            return $dados;
         } else if ($x == 2) {
             $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND ativo = 1 ORDER BY nome_crianca ASC");
             $row = $consultar_criancas->num_rows();
@@ -160,7 +171,7 @@ class Criancas extends CI_Model
         } else if ($opc == 'check_criancas_id_crianca') {
             $id_crianca  = $dados[0];
 
-            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE id_crianca  = '$id_crianca '");
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE id_crianca  = '$id_crianca'");
             $row = $consultar_criancas->num_rows();
 
             if ($row == 0) {
@@ -171,7 +182,7 @@ class Criancas extends CI_Model
         } else if ($opc == 'check_criancas_id_lider') {
             $id_lider  = $dados[0];
 
-            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider  = '$id_lider '");
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider  = '$id_lider'");
             $row = $consultar_criancas->num_rows();
 
             if ($row == 0) {

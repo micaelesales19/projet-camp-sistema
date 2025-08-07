@@ -1,6 +1,4 @@
 <?php
-
-/** @var \$this */
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../index");
 } else {
@@ -483,7 +481,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <form action="../../gerar_certificado" method="POST">
                                         <input type="hidden" name="opc" value="1">
                                         <input type="hidden" name="img" value="<?= $treinamento_1_img; ?>">
-                                        <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_coordenador']; ?>">
+                                        <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_coordenador'] ?>">
                                         <div class="col-xs-5">
                                             <label for="">Nome</label>
                                             <input type="text" class="form-control" placeholder="Nome" name="nome" required>

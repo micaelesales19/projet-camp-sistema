@@ -9,6 +9,11 @@ $route['coordenador/page/lideres/mostrar2'] = 'Coordenador/mostrar_table_parte_2
 $route['coordenador/page/lideres/gerar_excel'] = 'Coordenador/gerar_excel';
 
 $route['coordenador/page/lideres/salvar'] = 'Coordenador/editar_lideres';
+$route['coordenador/page/lideres/liberar'] = 'welcome/liberar_acesso';
+
+$route['coordenador/page/lideres/desativar'] = 'welcome/desativar_lider';
+$route['coordenador/page/lideres/reativar'] = 'welcome/ativar_lider';
+$route['coordenador/page/lideres/excluir'] = 'welcome/excluir_lider_permanentemente';
 
 // pg
 $route['coordenador/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';
@@ -21,8 +26,11 @@ $route['coordenador/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg'
 
 $route['coordenador/page/pg/licoes'] = 'Coordenador/pagina_licoes';
 $route['coordenador/page/pg/preenchimento'] = 'Coordenador/pagina_preenchimento_relatorio_pg';
+$route['coordenador/page/pg/visualizar'] = 'Coordenador/pagina_visualizacao_relatorio_pg';
 $route['coordenador/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Coordenador/consulta_criancas_relatorios';
+$route['coordenador/page/pg/consultas/retornar_informacoes_relatorio_pg'] = 'Coordenador/consulta_relatorio_pg';
 $route['coordenador/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio';
+$route['coordenador/page/pg/preenchimento/edicao'] = 'welcome/edicao_relatorio';
 
 $route['coordenador/page/criancas/cadastro/salvar'] = 'welcome/cadastro_crianca';
 $route['coordenador/page/criancas/edicao/salvar'] = 'welcome/editar_crianca';

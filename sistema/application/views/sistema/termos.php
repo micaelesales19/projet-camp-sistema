@@ -42,6 +42,7 @@ $this->load->view('partes/head');
                 }
                 ?>
                 <input type="hidden" value="<?= $id_usuario_2; ?>" name="id_usuario">
+                <input type="hidden" value="<?= $id_usuario; ?>" name="id_lider">
                 <input type="hidden" value="<?= $x; ?>" name="x_ir">
                 <input type="hidden" value="<?= $nivel; ?>" name="nivel">
                 <div class="row">

@@ -23,6 +23,15 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $consultar_pg,
             );
+        } else if ($opc == 'query_pg_id_lider_all') {
+            $id_usuario = $dados[0];
+            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario");
+            $row = $query_consulta_pg->num_rows();
+            $consultar_pg = $query_consulta_pg->result_array();
+            $dados = array(
+                'row' => $row,
+                'dados' => $consultar_pg,
+            );
         } else if ($opc == 1) {
             $id_usuario = $dados[0];
             $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo");
@@ -83,7 +92,7 @@ class PG extends CI_Model
 
     public function mostrarPGId($id_usuario, $idPG)
     {
-        $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1");
+        $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $idPG");
         $row = $consultar_pg->num_rows();
         $dados_consulta_pg = $consultar_pg->row_array();
 
@@ -251,10 +260,8 @@ class PG extends CI_Model
             return false;
         }
     }
-
-    public function excluir_pg_permanentemente($id_pg, $id_lider, $id_responsavel, $nivel)
+    public function excluir_pg_permanentemente($id_pg, $id_lider, $id_responsavel)
     {
-        $ativo = "1";
         $acao = "EX_PG_1";
         $motivo = "Excluiu seu PG Permanentemente";
 
@@ -263,7 +270,7 @@ class PG extends CI_Model
 
         $dadosPG = $this->mostrarPGId($id_lider, $id_pg);
 
-        $consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_pg WHERE id_pg LIKE $id_pg");
+        $consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_pg WHERE id_pg LIKE $id_pg");
         $row = $consultar_pg_desativado->num_rows();
 
         if ($row == 0) {
@@ -275,29 +282,18 @@ class PG extends CI_Model
             $inserir['motivo'] = $motivo;
             $inserir['data_saida'] = $data;
 
-            if ($this->db->insert('alcancado_pg', $inserir)) {
+            if ($this->db3->insert('alcancado_pg', $inserir)) {
             }
         } else {
         }
 
         $this->db->where('id_pg', $id_pg);
-
-        if ($nivel == 1) {
-            if ($this->db->delete('pg_pais')) {
-                $this->FSistema_model->excluirProgresso($id_pg, $id_lider);
-                $this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
-                return true;
-            } else {
-                return false;
-            }
-        } else if ($nivel == 2) {
-            if ($this->db->delete('pg_2')) {
-                $this->FSistema_model->excluirProgresso($id_pg, $id_lider);
-                $this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
-                return true;
-            } else {
-                return false;
-            }
+        if ($this->db->delete('pg')) {
+            $this->excluir_progresso($id_pg, $id_lider);
+            $this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -340,6 +336,22 @@ class PG extends CI_Model
             $row = $consultar->num_rows();
             $dados = $consultar->result_array();
 
+            //echo "ID PG $id_pg | ID LIDER $id_lider | ID CRIANÇA $id_crianca | ID MODULO $id_modulo | total - $row <br>";
+
+            $array = array(
+                'row' => $row,
+                'dados' => $dados,
+            );
+        } else if ($opc == 'query_id_pg_id_lider_id_modulo') {
+            $id_pg = $dados[0];
+            $id_lider = $dados[1];
+            $id_modulo = $dados[2];
+            $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_pg = $id_pg AND id_lider = $id_lider AND id_modulo = $id_modulo");
+            $row = $consultar->num_rows();
+            $dados = $consultar->result_array();
+
+            //echo "ID PG $id_pg | ID LIDER $id_lider | ID CRIANÇA $id_crianca | ID MODULO $id_modulo | total - $row <br>";
+
             $array = array(
                 'row' => $row,
                 'dados' => $dados,
@@ -352,6 +364,16 @@ class PG extends CI_Model
             $numero_licao = $dados[3];
 
             $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_pg = $id_pg AND id_lider = '$id_lider' AND id_modulo = '$id_modulo' AND numero_licao = '$numero_licao'");
+            $row = $consultar->num_rows();
+            $dados = $consultar->row_array();
+
+            $array = array(
+                'row' => $row,
+                'dados' => $dados,
+            );
+        } else if ($opc == 'query_id_relatorio') {
+            $id_relatorio = $dados[0];
+            $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_relatorio = $id_relatorio");
             $row = $consultar->num_rows();
             $dados = $consultar->row_array();
 
@@ -507,6 +529,84 @@ class PG extends CI_Model
             } else {
                 $base .= "false";
             }
+        }
+
+        return $base;
+    }
+
+    public function relatorio_encontro_edicao($id_lider, $id_pg, $id_crianca, $versiculo, $presenca, $misterio, $devocional, $ano, $modulo, $licao, $data_aula)
+    {
+        $data = $data_aula;
+
+        $valor_presenca = "";
+        $valor_versiculo = "";
+        $valor_misterio = "";
+        $valor_devocional = "";
+
+        if ($presenca == 0) {
+            $valor_presenca .= 0;
+            $valor_versiculo .= 0;
+            $valor_misterio .= 0;
+            $valor_devocional .= 0;
+        } else {
+            $valor_presenca .= $presenca;
+            $valor_versiculo .= $versiculo;
+            $valor_misterio .= $misterio;
+            $valor_devocional .= $devocional;
+        }
+
+        $inserir['id_pg'] = $id_pg;
+        $inserir['id_lider'] = $id_lider;
+        $inserir['id_crianca_presente'] = $id_crianca;
+        $inserir['presenca'] = $valor_presenca;
+        $inserir['versiculo_memorizado'] = $valor_versiculo;
+        $inserir['misterio_respondido'] = $valor_misterio;
+        $inserir['devocional_respondido'] = $valor_devocional;
+        $inserir['ano'] = $ano;
+        $inserir['id_modulo'] = $modulo;
+        $inserir['numero_licao'] = $licao;
+        $inserir['data_aula'] = $data;
+
+        $base = "";
+
+        if ($this->db->insert("progresso_pg", $inserir)) {
+            $base .= "pg";
+        } else {
+            $base .= "false";
+        }
+
+        return $base;
+    }
+
+    public function editar_relatorio_encontro($id_relatorio, $versiculo, $presenca, $misterio, $devocional)
+    {
+        $valor_presenca = "";
+        $valor_versiculo = "";
+        $valor_misterio = "";
+        $valor_devocional = "";
+
+        if ($presenca == 0) {
+            $valor_presenca .= 0;
+            $valor_versiculo .= 0;
+            $valor_misterio .= 0;
+            $valor_devocional .= 0;
+        } else {
+            $valor_presenca .= $presenca;
+            $valor_versiculo .= $versiculo;
+            $valor_misterio .= $misterio;
+            $valor_devocional .= $devocional;
+        }
+
+        $this->db->set('presenca', $valor_presenca);
+        $this->db->set('versiculo_memorizado', $valor_versiculo);
+        $this->db->set('misterio_respondido', $valor_misterio);
+        $this->db->set('devocional_respondido', $valor_devocional);
+        $this->db->where('id_relatorio', $id_relatorio);
+
+        if ($this->db->update('progresso_pg')) {
+            $base = "pg";
+        } else {
+            $base = "false";
         }
 
         return $base;

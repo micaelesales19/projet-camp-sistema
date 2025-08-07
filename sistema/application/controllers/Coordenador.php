@@ -240,6 +240,8 @@ class Coordenador extends CI_Controller
 
 	public function editar_lideres()
 	{
+		$id_usuario = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
+
 		$idLider = $this->input->post("id");
 		$nome = $this->input->post("nome");
 		$cpf = $this->input->post("cpf");
@@ -328,6 +330,8 @@ class Coordenador extends CI_Controller
 				}
 			}
 		}
+
+		$this->FSistema_model->editarUsuário($id_usuario, $nome, $email, $cpf);
 
 		if ($nome_colider == '') {
 		} else {
@@ -800,6 +804,56 @@ class Coordenador extends CI_Controller
 		$this->load->view('sistema/coordenador/pages/pg/licaos', $dados);
 	}
 
+	public function pagina_visualizacao_relatorio_pg()
+	{
+		$id_pg = $this->input->post('id_pg');
+		$id_relatorio = $this->input->post('id_relatorio');
+		$id_lider = $this->input->post('id_lider');
+		$ano = $this->input->post('ano');
+		$id_modulo = $this->input->post('id_modulo');
+		$licao = $this->input->post('licao');
+		$routa = $this->input->post('routa');
+
+		$pages = [];
+
+		if ($routa == 'pg') {
+			$page1 = array(
+				"red" => "../pg",
+				"name" => "Meu PG",
+				"icon" => "fa fa-group",
+			);
+			array_push($pages, $page1);
+		} else {
+
+			$page1 = array(
+				"red" => "../lideres",
+				"name" => "Líderes",
+				"icon" => "fa fa-group",
+			);
+
+			$page2 = array(
+				"red" => "../lideres/detalhes/$id_lider",
+				"name" => "Informações",
+				"icon" => "fa fa-user",
+			);
+
+			array_push($pages, $page1);
+			array_push($pages, $page2);
+		}
+
+		$dados = array(
+			'id_lider' => $id_lider,
+			'id_pg' => $id_pg,
+			'ano' => $ano,
+			'id_modulo' => $id_modulo,
+			'licao' => $licao,
+			'routa' => $routa,
+			'pages' => $pages,
+			'id_relatorio' => $id_relatorio,
+		);
+
+		$this->load->view('sistema/coordenador/pages/edicao_preenchimento_relatorio', $dados);
+	}
 	public function pagina_preenchimento_relatorio_pg()
 	{
 		$id_pg = $this->input->post('id_pg');
@@ -886,6 +940,11 @@ class Coordenador extends CI_Controller
 	public function consulta_criancas_relatorios()
 	{
 		$this->load->view('sistema/coordenador/pages/consultas/retornar_infomacoes');
+	}
+
+	public function consulta_relatorio_pg()
+	{
+		$this->load->view('sistema/coordenador/pages/consultas/retornar_infomacoes_relatorio_pg');
 	}
 	// Fim PG
 

@@ -3,9 +3,11 @@
 $usuario = $_GET['id_lider'];
 $id_modulo = $_GET['id_modulo'];
 
-$pdo = new PDO("mysql:host=localhost;dbname=u301957058_camp_brasil", "u301957058_administrador", "campBr202@");
+$pdo = new PDO("mysql:host=localhost;dbname=u301957058_campbrasil", "u301957058_camp_brasil", "campBr202@");
 
 require_once '../../../fpdf/fpdf.php';
+
+//require_once 'import/sistema/fpdf/fpdf.php';
 
 $pdf = new FPDF("P", "pt", "A4");
 
@@ -26,7 +28,7 @@ $xC = $consultacoordenador->rowCount();
 $dadoscoordenador = $consultacoordenador->fetch(PDO::FETCH_ASSOC);
 
 // Dados SR
-$consultasr_sql = "SELECT * FROM supervisorr WHERE id_supervisorR LIKE :ID_USU";
+$consultasr_sql = "SELECT * FROM supervisor_local WHERE id_supervisorR LIKE :ID_USU";
 $consultasr = $pdo->prepare($consultasr_sql);
 $consultasr->bindValue(":ID_USU", $usuario);
 $consultasr->execute();
@@ -34,7 +36,7 @@ $xSR = $consultasr->rowCount();
 $dadossr = $consultasr->fetch(PDO::FETCH_ASSOC);
 
 // Dados SE
-$consultase_sql = "SELECT * FROM supervisore WHERE id_supervisorEs LIKE :ID_USU";
+$consultase_sql = "SELECT * FROM supervisor_regional WHERE id_supervisorEs LIKE :ID_USU";
 $consultase = $pdo->prepare($consultase_sql);
 $consultase->bindValue(":ID_USU", $usuario);
 $consultase->execute();
@@ -49,22 +51,8 @@ $consultadirecao->execute();
 $xD = $consultadirecao->rowCount();
 $dadosdirecao = $consultadirecao->fetch(PDO::FETCH_ASSOC);
 
-// Dados Pais
-$consulta_pais_sql = "SELECT * FROM pais WHERE id_pais LIKE :ID_USU";
-$consulta_pais = $pdo->prepare($consulta_pais_sql);
-$consulta_pais->bindValue(":ID_USU", $usuario);
-$consulta_pais->execute();
-$xPais = $consulta_pais->rowCount();
-$dados_pais = $consulta_pais->fetch(PDO::FETCH_ASSOC);
-
 $nivel = "";
 $nome_usuario = "";
-
-if ($xPais == 0) {
-} else {
-	$nivel .= "Usuário";
-	$nome_usuario .= $dados_pais['nome_pais'];
-}
 
 if ($xL == 0) {
 } else {
@@ -136,10 +124,10 @@ $pdf->Cell(0, 5, utf8_decode("Máterial Expedição Verde 2 - A Evolução"), 0,
 $pdf->Ln(8);
 $pdf->Cell(0, 5, "", "B", 1, 'C');
 
-// Página 2				
+// Página 2
 $pdf->AddPage();
 
-// I - Lição 01	
+// I - Lição 01
 //Capa
 $pdf->SetFont('arial', 'B', 18);
 $pdf->Cell(0, 0, utf8_decode("Lição 01"), 0, 0, 'C');
@@ -265,7 +253,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 $pdf->Cell(0, 10, "Este material impresso pelo(a) - " . $nome_usuario, 0, 1, 'J');
-// F - Lição 01				
+// F - Lição 01
 
 
 $pdf->AddPage();
@@ -668,7 +656,7 @@ $pdf->Image('../../capa.jpg', 50, 300, 500, 300);
 $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 $pdf->Cell(0, 10, "Este material impresso pelo(a) - " . $nome_usuario, 0, 1, 'J');
-// I - Lição 04		
+// I - Lição 04
 
 $pdf->AddPage();
 
@@ -924,7 +912,7 @@ $pdf->MultiCell(0, 15, utf8_decode("Vs 6 - Bondade e misericórdia me seguirão 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Sua presença é eterna"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Sabe o que acontece se você sempre se lembrar dessas verdades? Você estará ungindo a sua cabeça com o óleo do Espírito Santo, enchendo a sua mente de paz, segurança e alegria. Lembram do Candelabro? Sem ele como alguém poderia enxergar as outras coisas? Sem o Espírito Santo alguém pode entender a Palavra? Alguém pode orar da maneira certa? Vem de nós a verdadeira saúde? De quem dependemos? E qual a melhor maneira de demonstrar nossa dependência de Deus? O quê que sai de nós e sobe até Deus?  Nossas orações! Se eu chorar diante de Deus quando me sinto pressionado ou triste o que acontece? E se eu não orar, se eu não colocar para Deus as minhas dores? Ele vai ungir minhas feridas com óleo do E.S.? Vou ter a verdadeira saúde? Você está se sentindo pressionado? O que lhe pressiona? As vezes tentamos fugir da pressão, simplesmente fingindo que está tudo bem ou reagindo com raiva e desespero. Ore agora e diga a Deus como está se sentindo, peça que o Senhor coloque o consolo, a paz e a alegria do seu Espírito em seu coração! Peça a Deus também que você possa ser oliveira produzindo cura na vida de outros, apresentando Jesus, aquele que pode curar os corações dos pecados e seja forte e saudável no Senhor! (Peça às crianças que orem em silêncio e depois ore!) 
+$pdf->MultiCell(0, 15, utf8_decode("Sabe o que acontece se você sempre se lembrar dessas verdades? Você estará ungindo a sua cabeça com o óleo do Espírito Santo, enchendo a sua mente de paz, segurança e alegria. Lembram do Candelabro? Sem ele como alguém poderia enxergar as outras coisas? Sem o Espírito Santo alguém pode entender a Palavra? Alguém pode orar da maneira certa? Vem de nós a verdadeira saúde? De quem dependemos? E qual a melhor maneira de demonstrar nossa dependência de Deus? O quê que sai de nós e sobe até Deus?  Nossas orações! Se eu chorar diante de Deus quando me sinto pressionado ou triste o que acontece? E se eu não orar, se eu não colocar para Deus as minhas dores? Ele vai ungir minhas feridas com óleo do E.S.? Vou ter a verdadeira saúde? Você está se sentindo pressionado? O que lhe pressiona? As vezes tentamos fugir da pressão, simplesmente fingindo que está tudo bem ou reagindo com raiva e desespero. Ore agora e diga a Deus como está se sentindo, peça que o Senhor coloque o consolo, a paz e a alegria do seu Espírito em seu coração! Peça a Deus também que você possa ser oliveira produzindo cura na vida de outros, apresentando Jesus, aquele que pode curar os corações dos pecados e seja forte e saudável no Senhor! (Peça às crianças que orem em silêncio e depois ore!)
 				"), 0, 'J');
 
 //Tópico
@@ -1039,7 +1027,7 @@ $pdf->MultiCell(0, 15, utf8_decode("Quando Naamã já estava a certa distância,
 
 $pdf->MultiCell(0, 15, utf8_decode("Então Geazi correu para alcançar Naamã, que, vendo-o se aproximar, desceu da carruagem para encontrá-lo e perguntou: Está tudo bem?  Geazi respondeu: Sim, tudo bem. Mas o meu senhor enviou-me para dizer que dois jovens, discípulos dos profetas, acabaram de chegar, vindos dos montes de Efraim. Por favor, dê-lhes trinta e cinco quilos de prata e duas mudas de roupas finas."), 0, 'J');
 
-$pdf->Image('../../capa.jpg',50,300,500,300);
+$pdf->Image('../../capa.jpg', 50, 300, 500, 300);
 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Isso era verdade? Parece que Geazi enfiou a mão na caixa, ele comeu da árvore que não era para comer! Naamã deu a Geazi 70 kilos de tesouro e roupas e ainda mandou pessoas ajudarem ele a levar. Quando Geazi chegou à colina onde morava, pegou as sacolas dos servos e guardou-as em casa. Mandou os homens de volta, e eles partiram. Geazi era escravo como a menina? Não, ele era servo, com certeza tinha um salário. Ele era livre para fazer suas escolhas e o que ele escolheu? Vamos ver o resultado:"), 0, 'J');
@@ -1074,7 +1062,7 @@ $pdf->MultiCell(0, 15, utf8_decode("Disse Jesus aos judeus que haviam crido nele
 
 $pdf->Ln(10);
 
-$pdf->Image('../../capa.jpg',50,300,500,300);
+$pdf->Image('../../capa.jpg', 50, 300, 500, 300);
 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Mistério 4 - A Chave da Evolução"), 0, 'J');
@@ -1330,7 +1318,7 @@ $pdf->SetFont('arial', 'I', 8);
 // Print centered page number
 $pdf->Cell(0, 10, "Este material impresso pelo(a) - " . $nome_usuario, 0, 1, 'J');
 
-// F - Resposta do Mistério 
+// F - Resposta do Mistério
 
 $nome_relatorio = utf8_decode("Expedição Verde 2 - A Evolução");
 

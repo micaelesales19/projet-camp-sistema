@@ -25,7 +25,7 @@
           <th>Presença</th>
           <th style="display: <?= $isImpar ?>;">Versículo</th>
           <th style="display: <?= $isImpar ?>;">Mistério</th>
-          <th style="display: <?= $isImpar ?>;">Semanário</th>
+          <th>Semanário</th>
         </tr>
       </thead>
       <tbody>
@@ -92,7 +92,7 @@
                   <input type="radio" class="lista_sim" name="misterio[<?= $i; ?>]" value="1"> Sim<br>
                   <input type="radio" name="misterio[<?= $i; ?>]" value="0"> Não
                 </td>
-                <td style="display: <?= $isImpar ?>;">
+                <td>
                   <input type="radio" class="lista_sim" name="devocional[<?= $i; ?>]" value="1"> Sim<br>
                   <input type="radio" name="devocional[<?= $i; ?>]" value="0"> Não
                 </td>

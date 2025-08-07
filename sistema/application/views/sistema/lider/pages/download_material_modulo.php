@@ -15,6 +15,9 @@ if (!isset($_SESSION['usuario'])) {
   require_once(APPPATH . '../import/sistema/materiais/materiais_5_estacao.php');
   require_once(APPPATH . '../import/sistema/materiais/materiais_6_exped_ani_1_os_segredos.php');
   require_once(APPPATH . '../import/sistema/materiais/materiais_7_exped_ani_2_os_sobreviventes.php');
+  require_once(APPPATH . '../import/sistema/materiais/materiais_8_exped_exploradores_do_subsolo.php');
+  require_once(APPPATH . '../import/sistema/materiais/materiais_9_exped_verde_2_colheita.php');
+  require_once(APPPATH . '../import/sistema/materiais/materiais_10_exped_verde_2_evolucao.php');
 
   $dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
 
@@ -211,16 +214,44 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoVisuaisSobreviventes1);
                 break;
               case 8:
-                $color_modulo = 'navy';
-                $color_h3 = 'black';
+                array_push($materialCapa, $materialCapaTerrarios);
+                array_push($materialCapa, $materialContraCapaTerrarios);
+                array_push($materialCards, $materialCardsTerrarios);
+                array_push($materialCards, $materialSemanarioTerrarios);
+                array_push($materialLicao, $materialIntroducaoTerrarios);
+                array_push($materialLicao, $materialLicaoTerrarios);
+                array_push($materialLicao, $materialLicaoVisuaisTerrarios2);
+                array_push($materialLicao, $materialLicaoVisuaisTerrarios1);
                 break;
               case 9:
-                $color_modulo = 'brown';
-                $color_h3 = 'black';
+                array_push($materialCapa, $materialCapaOperacao);
+                array_push($materialCapa, $materialContraCapaOperacao);
+                array_push($materialCards, $materialCardsOperacao);
+                array_push($materialCards, $materialSemanarioOperacao);
+                array_push($materialLicao, $materialIntroducaoOperacao);
+                array_push($materialLicao, $materialLicaoOperacao);
+                array_push($materialLicao, $materialLicaoVisuaisOperacao2);
+                array_push($materialLicao, $materialLicaoVisuaisOperacao1);
                 break;
               case 10:
-                $color_modulo = 'brown-active';
-                $color_h3 = 'black';
+                array_push($materialCapa, $materialCapaEvolucao);
+                array_push($materialCapa, $materialContraCapaEvolucao);
+                array_push($materialCards, $materialCardsEvolucao);
+                array_push($materialCards, $materialSemanarioEvolucao);
+                array_push($materialLicao, $materialIntroducaoEvolucao);
+                array_push($materialLicao, $materialLicaoEvolucao);
+                array_push($materialLicao, $materialLicaoVisuaisEvolucao2);
+                array_push($materialLicao, $materialLicaoVisuaisEvolucao1);
+                break;
+              case 11:
+                array_push($materialCapa, $materialCapaEvolucao);
+                array_push($materialCapa, $materialContraCapaEvolucao);
+                array_push($materialCards, $materialCardsEvolucao);
+                array_push($materialCards, $materialSemanarioEvolucao);
+                array_push($materialLicao, $materialIntroducaoEvolucao);
+                array_push($materialLicao, $materialLicaoEvolucao);
+                array_push($materialLicao, $materialLicaoVisuaisEvolucao2);
+                array_push($materialLicao, $materialLicaoVisuaisEvolucao1);
                 break;
               default:
                 $color_modulo = 'green';

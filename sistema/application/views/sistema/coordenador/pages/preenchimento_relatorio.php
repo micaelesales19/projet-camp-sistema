@@ -66,43 +66,6 @@ if (!isset($_SESSION['usuario'])) {
       ajax.send();
     }
 
-    function pesquisar_licao() {
-      var ajax = AjaxF();
-      ajax.onreadystatechange = function() {
-        if (ajax.readyState == 4) {
-          document.getElementById('conteudo2').innerHTML = ajax.responseText;
-        }
-      }
-
-      // Variável com os dados que serão enviados ao PHP
-      var dados1 = "id_pg=" + document.getElementById('id_pg').value;
-      var dados2 = "id_lider=" + document.getElementById('id_lider').value;
-      var dados3 = "modulo=" + document.getElementById('modulo').value;
-      var dados4 = "ano=" + document.getElementById('ano').value;
-
-      ajax.open("GET", "consultas/retornar_dados_licao.php?" + dados1 + "&" + dados2 + "&" + dados3 + "&" + dados4, false);
-
-      ajax.setRequestHeader("Content-Type", "text/html");
-      ajax.send();
-    }
-
-    function pesquisar_ano() {
-      var ajax = AjaxF();
-      ajax.onreadystatechange = function() {
-        if (ajax.readyState == 4) {
-          document.getElementById('conteudo_modulo').innerHTML = ajax.responseText;
-        }
-      }
-      document.getElementById('b_ano').style.display = "none";
-      // Variável com os dados que serão enviados ao PHP
-      var dados1 = "id_pg=" + document.getElementById('id_pg').value;
-      var dados2 = "id_lider=" + document.getElementById('id_lider').value;
-      var dados3 = "ano=" + document.getElementById('ano').value;
-      ajax.open("GET", "consultas/retornar_dados_modulo.php?" + dados1 + "&" + dados2 + "&" + dados3, false);
-      ajax.setRequestHeader("Content-Type", "text/html");
-      ajax.send();
-    }
-
     $(document).ready(function() {
       $('#table_c').DataTable();
       pesquisar_criancas();

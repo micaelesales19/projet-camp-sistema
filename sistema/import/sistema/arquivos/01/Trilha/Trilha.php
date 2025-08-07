@@ -3,7 +3,7 @@
 $usuario = $_GET['id_lider'] ?? 0;
 $id_modulo = $_GET['id_modulo'] ?? "1";
 
-$pdo = new PDO("mysql:host=localhost;dbname=u301957058_camp_brasil", "u301957058_administrador", "campBr202@");
+$pdo = new PDO("mysql:host=localhost;dbname=u301957058_campbrasil", "u301957058_camp_brasil", "campBr202@");
 
 require_once '../../../fpdf/fpdf.php';
 
@@ -28,7 +28,7 @@ $xC = $consultacoordenador->rowCount();
 $dadoscoordenador = $consultacoordenador->fetch(PDO::FETCH_ASSOC);
 
 // Dados SR
-$consultasr_sql = "SELECT * FROM supervisorr WHERE id_supervisorR LIKE :ID_USU";
+$consultasr_sql = "SELECT * FROM supervisor_local WHERE id_supervisorR LIKE :ID_USU";
 $consultasr = $pdo->prepare($consultasr_sql);
 $consultasr->bindValue(":ID_USU", $usuario);
 $consultasr->execute();
@@ -36,7 +36,7 @@ $xSR = $consultasr->rowCount();
 $dadossr = $consultasr->fetch(PDO::FETCH_ASSOC);
 
 // Dados SE
-$consultase_sql = "SELECT * FROM supervisore WHERE id_supervisorEs LIKE :ID_USU";
+$consultase_sql = "SELECT * FROM supervisor_regional WHERE id_supervisorEs LIKE :ID_USU";
 $consultase = $pdo->prepare($consultase_sql);
 $consultase->bindValue(":ID_USU", $usuario);
 $consultase->execute();
@@ -51,20 +51,7 @@ $consultadirecao->execute();
 $xD = $consultadirecao->rowCount();
 $dadosdirecao = $consultadirecao->fetch(PDO::FETCH_ASSOC);
 
-// Dados Pais
-$consulta_pais_sql = "SELECT * FROM pais WHERE id LIKE :ID_USU";
-$consulta_pais = $pdo->prepare($consulta_pais_sql);
-$consulta_pais->bindValue(":ID_USU", $usuario);
-$consulta_pais->execute();
-$xPais = $consulta_pais->rowCount();
-$dados_pais = $consulta_pais->fetch(PDO::FETCH_ASSOC);
-
 $nome_usuario = "";
-
-if ($xPais == 0) {
-} else {
-	$nome_usuario .= $dados_pais['nome'];
-}
 
 if ($xL == 0) {
 } else {
@@ -350,7 +337,7 @@ $pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 // Lição 3
 
-// Lição 4		
+// Lição 4
 
 $pdf->AddPage();
 

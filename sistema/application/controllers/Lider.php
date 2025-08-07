@@ -247,10 +247,63 @@ class Lider extends CI_Controller
 			'id_lider' => $id_lider,
 			'id_pg' => $id_pg,
 			'modulos' => $modulos,
+			'ano_pg' => $ano,
 			'pg' => $dadosPg,
 		);
 
 		$this->load->view('sistema/lider/pages/pg/licaos', $dados);
+	}
+
+
+	public function pagina_visualizacao_relatorio_pg()
+	{
+		$id_pg = $this->input->post('id_pg');
+		$id_relatorio = $this->input->post('id_relatorio');
+		$id_lider = $this->input->post('id_lider');
+		$ano = $this->input->post('ano');
+		$id_modulo = $this->input->post('id_modulo');
+		$licao = $this->input->post('licao');
+		$routa = $this->input->post('routa');
+
+		$pages = [];
+
+		if ($routa == 'pg') {
+			$page1 = array(
+				"red" => "../pg",
+				"name" => "Meu PG",
+				"icon" => "fa fa-group",
+			);
+			array_push($pages, $page1);
+		} else {
+
+			$page1 = array(
+				"red" => "../lideres",
+				"name" => "Líderes",
+				"icon" => "fa fa-group",
+			);
+
+			$page2 = array(
+				"red" => "../lideres/detalhes/$id_lider",
+				"name" => "Informações",
+				"icon" => "fa fa-user",
+			);
+
+			array_push($pages, $page1);
+			array_push($pages, $page2);
+		}
+
+		$dados = array(
+			'id_lider' => $id_lider,
+			'id_pg' => $id_pg,
+			'ano' => $ano,
+			'id_modulo' => $id_modulo,
+			'licao' => $licao,
+			'routa' => $routa,
+			'pages' => $pages,
+			'id_relatorio' => $id_relatorio,
+		);
+
+		$this->load->view('sistema/lider/pages/edicao_preenchimento_relatorio', $dados);
 	}
 
 	public function pagina_preenchimento_relatorio_pg()
@@ -267,6 +320,11 @@ class Lider extends CI_Controller
 		$this->load->view('sistema/lider/pages/consultas/retornar_infomacoes');
 	}
 
+	public function consulta_relatorio_pg()
+	{
+		$this->load->view('sistema/lider/pages/consultas/retornar_infomacoes_relatorio_pg');
+	}
+
 	public function consulta_progresso_pg()
 	{
 		$id_lider = $this->input->get("id_lider");
@@ -275,12 +333,19 @@ class Lider extends CI_Controller
 		$ano = $this->input->get("ano");
 		$total = $this->input->get("total"); // total de botões dos módulos escolhidos
 
+		$ativo = $this->input->get("ativo") ?? 1;
+
 		$id_crianca = $this->input->get("id_crianca");
 
 		$page = $this->input->get('page') == '' ? 'inicial' : $this->input->get('page');
 
-		// id_lider // id_pg
-		$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
+		if ($ativo == 1) {
+			$consultaCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+			$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
+		} else {
+			$consultaCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_geral_order_by_nome_crianca_asc');
+			$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_pg_id_lider_all', 0);
+		}
 
 		$dados = array(
 			'id_lider' => $id_lider,
@@ -291,8 +356,8 @@ class Lider extends CI_Controller
 			'page' => $page,
 			'id_crianca' => $id_crianca,
 			'pg' => $dadosPg['dados'],
+			'consultaCriancas' => $consultaCriancas,
 		);
-
 
 		if ($page == '' || $page == 'individual') {
 			$this->load->view('sistema/lider/pages/pg/linha', $dados);

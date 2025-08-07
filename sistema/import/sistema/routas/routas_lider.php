@@ -26,10 +26,13 @@ $route['lider/page/pg/edicao/salvar'] = 'welcome/editar_pg';
 $route['lider/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
 
 $route['lider/page/pg/licoes'] = 'Lider/pagina_licoes';
+$route['lider/page/pg/visualizar'] = 'Lider/pagina_visualizacao_relatorio_pg';
 $route['lider/page/pg/preenchimento'] = 'Lider/pagina_preenchimento_relatorio_pg';
 $route['lider/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio'; // ok
 $route['lider/page/pg/preenchimento/editar'] = 'Lider/pagina_editar_relatorio_pg';
 $route['lider/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Lider/consulta_criancas_relatorios';
+$route['lider/page/pg/consultas/retornar_informacoes_relatorio_pg'] = 'Lider/consulta_relatorio_pg';
+$route['lider/page/pg/preenchimento/edicao'] = 'welcome/edicao_relatorio';
 
 $route['lider/page/pg/atualizar_data_pg'] = 'Lider/atualizarDataPG';
 $route['lider/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg';

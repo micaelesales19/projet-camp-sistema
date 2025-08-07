@@ -87,9 +87,10 @@ $route['controller/devocionalDiario'] = 'welcome/enviarEmailDevocionalDiario';
 $route['controller/atualizacaoModuloMensal'] = 'welcome/atualizarModuloMensal';
 $route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDevocional';
 
-// PAIS	
-$route['cadastro'] = 'welcome/cadastro';
+// PAIS
 $route['cadastro/salvar'] = 'welcome/salvar_cadastro';
+$route['cadastro'] = 'welcome/cadastro';
+$route['cadastro/:any'] = 'welcome/cadastro';
 
 /* NÍVEL LÍDER */
 require_once(APPPATH . '../import/sistema/routas/routas_lider.php');
@@ -124,3 +125,6 @@ $route['alerta/solicitar/tornar_de_funcao'] = 'welcome/trocar_de_funcao';
 
 $route['alerta/solicitar/tornar_slocal'] = 'welcome/tornar_coord_slocal';
 $route['alerta/solicitar/tornar_coord_lider'] = 'welcome/tornar_coord_lider';
+
+// material
+$route['pdf_modulo'] = 'welcome/ir_modulo';

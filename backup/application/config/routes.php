@@ -53,7 +53,7 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['offline'] = 'welcome/offline';
+//$route['offline'] = 'welcome/offline';
 $route['atualizar_data'] = 'welcome/atualizar_data';
 
 $route['gerar_certificado'] = 'welcome/gerar_certificado';
@@ -83,7 +83,7 @@ $route['controller/atualizacaoModuloMensal'] = 'welcome/atualizarModuloMensal';
 $route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDevocional';
 
 // PAIS	
-$route['cadastro'] = 'welcome/cadastro';
+$route['cadastro/:any'] = 'welcome/cadastro';
 $route['cadastro/salvar'] = 'welcome/salvar_cadastro';
 
 /* NÍVEL PAIS */

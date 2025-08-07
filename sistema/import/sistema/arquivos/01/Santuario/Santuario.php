@@ -3,9 +3,10 @@
 $usuario = $_GET['id_lider'] ?? 0;
 $id_modulo = $_GET['id_modulo'] ?? "3";
 
-$pdo = new PDO("mysql:host=localhost;dbname=u301957058_camp_brasil", "u301957058_administrador", "campBr202@");
+$pdo = new PDO("mysql:host=localhost;dbname=u301957058_campbrasil", "u301957058_camp_brasil", "campBr202@");
 
 require_once '../../../fpdf/fpdf.php';
+
 //require_once 'import/sistema/fpdf/fpdf.php';
 
 $pdf = new FPDF("P", "pt", "A4");
@@ -27,7 +28,7 @@ $xC = $consultacoordenador->rowCount();
 $dadoscoordenador = $consultacoordenador->fetch(PDO::FETCH_ASSOC);
 
 // Dados SR
-$consultasr_sql = "SELECT * FROM supervisorr WHERE id_supervisorR LIKE :ID_USU";
+$consultasr_sql = "SELECT * FROM supervisor_local WHERE id_supervisorR LIKE :ID_USU";
 $consultasr = $pdo->prepare($consultasr_sql);
 $consultasr->bindValue(":ID_USU", $usuario);
 $consultasr->execute();
@@ -35,7 +36,7 @@ $xSR = $consultasr->rowCount();
 $dadossr = $consultasr->fetch(PDO::FETCH_ASSOC);
 
 // Dados SE
-$consultase_sql = "SELECT * FROM supervisore WHERE id_supervisorEs LIKE :ID_USU";
+$consultase_sql = "SELECT * FROM supervisor_regional WHERE id_supervisorEs LIKE :ID_USU";
 $consultase = $pdo->prepare($consultase_sql);
 $consultase->bindValue(":ID_USU", $usuario);
 $consultase->execute();
@@ -50,20 +51,7 @@ $consultadirecao->execute();
 $xD = $consultadirecao->rowCount();
 $dadosdirecao = $consultadirecao->fetch(PDO::FETCH_ASSOC);
 
-// Dados Pais
-$consulta_pais_sql = "SELECT * FROM pais WHERE id_pais LIKE :ID_USU";
-$consulta_pais = $pdo->prepare($consulta_pais_sql);
-$consulta_pais->bindValue(":ID_USU", $usuario);
-$consulta_pais->execute();
-$xPais = $consulta_pais->rowCount();
-$dados_pais = $consulta_pais->fetch(PDO::FETCH_ASSOC);
-
 $nome_usuario = "";
-
-if ($xPais == 0) {
-} else {
-	$nome_usuario .= $dados_pais['nome'];
-}
 
 if ($xL == 0) {
 } else {
@@ -118,7 +106,7 @@ $pdf->Cell(0, 5, $pdf->textoUTF8("Máterial Santuário"), 0, 1, 'C');
 $pdf->Ln(8);
 $pdf->Cell(0, 5, "", "B", 1, 'C');
 
-// Página 2	
+// Página 2
 $pdf->AddPage();
 
 //Capa
@@ -188,7 +176,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
-// Página 3		
+// Página 3
 $pdf->AddPage();
 
 //Capa
@@ -258,7 +246,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
-// Página 4	
+// Página 4
 $pdf->AddPage();
 
 //Capa
@@ -433,7 +421,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
-// Página 6	
+// Página 6
 $pdf->AddPage();
 
 //Capa
@@ -991,7 +979,7 @@ $pdf->Cell(0, 5, "", "B", 1, 'C');
 
 $pdf->Image('../../capa.jpg', 50, 300, 500, 300);
 
-// 01	
+// 01
 $pdf->Ln(10);
 $pdf->SetFont('arial', '', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("Mistério 1 - Mais resistente que o aço."), 0, 'J');
@@ -1021,7 +1009,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Qual é o oráculo verdadeiro? - A Pal
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como consultar esse oráculo? - Lendo todos os dias"), 0, 'J');
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quê devemos consultar esse oráculo? - Para saber a vontade de Deus para nossas vidas"), 0, 'J');
 
-// 04				
+// 04
 $pdf->Ln(10);
 $pdf->SetFont('arial', '', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("Mistério 4 - O Santuário vivo"), 0, 'J');

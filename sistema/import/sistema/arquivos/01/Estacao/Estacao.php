@@ -3,10 +3,10 @@
 $usuario = $_GET['id_lider'] ?? 0;
 $id_modulo = $_GET['id_modulo'] ?? "5";
 
-
-$pdo = new PDO("mysql:host=localhost;dbname=u301957058_camp_brasil", "u301957058_administrador", "campBr202@");
+$pdo = new PDO("mysql:host=localhost;dbname=u301957058_campbrasil", "u301957058_camp_brasil", "campBr202@");
 
 require_once '../../../fpdf/fpdf.php';
+
 //require_once 'import/sistema/fpdf/fpdf.php';
 
 $pdf = new FPDF("P", "pt", "A4");
@@ -28,7 +28,7 @@ $xC = $consultacoordenador->rowCount();
 $dadoscoordenador = $consultacoordenador->fetch(PDO::FETCH_ASSOC);
 
 // Dados SR
-$consultasr_sql = "SELECT * FROM supervisorr WHERE id_supervisorR LIKE :ID_USU";
+$consultasr_sql = "SELECT * FROM supervisor_local WHERE id_supervisorR LIKE :ID_USU";
 $consultasr = $pdo->prepare($consultasr_sql);
 $consultasr->bindValue(":ID_USU", $usuario);
 $consultasr->execute();
@@ -36,7 +36,7 @@ $xSR = $consultasr->rowCount();
 $dadossr = $consultasr->fetch(PDO::FETCH_ASSOC);
 
 // Dados SE
-$consultase_sql = "SELECT * FROM supervisore WHERE id_supervisorEs LIKE :ID_USU";
+$consultase_sql = "SELECT * FROM supervisor_regional WHERE id_supervisorEs LIKE :ID_USU";
 $consultase = $pdo->prepare($consultase_sql);
 $consultase->bindValue(":ID_USU", $usuario);
 $consultase->execute();
@@ -51,20 +51,7 @@ $consultadirecao->execute();
 $xD = $consultadirecao->rowCount();
 $dadosdirecao = $consultadirecao->fetch(PDO::FETCH_ASSOC);
 
-// Dados Pais
-$consulta_pais_sql = "SELECT * FROM pais WHERE id_pais LIKE :ID_USU";
-$consulta_pais = $pdo->prepare($consulta_pais_sql);
-$consulta_pais->bindValue(":ID_USU", $usuario);
-$consulta_pais->execute();
-$xPais = $consulta_pais->rowCount();
-$dados_pais = $consulta_pais->fetch(PDO::FETCH_ASSOC);
-
 $nome_usuario = "";
-
-if ($xPais == 0) {
-} else {;
-	$nome_usuario .= $dados_pais['nome_pais'];
-}
 
 if ($xL == 0) {
 } else {
@@ -120,7 +107,7 @@ $pdf->Ln(8);
 $pdf->Cell(0, 5, "", "B", 1, 'C');
 $pdf->Ln(400);
 
-// Página 2	
+// Página 2
 
 //Capa
 $pdf->SetFont('arial', 'B', 14);
@@ -195,10 +182,10 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Quando ganhamos esse combustível?"), 
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que o Espírito Santo faz?"), 0, 'J');
 
 $pdf->ln(10);
-$pdf->SetFont('arial', 'I', 8);		    
+$pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
-// Página 3		
+// Página 3
 $pdf->AddPage();
 
 //Capa
@@ -275,7 +262,7 @@ $pdf->ln(10);
 $pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
-// Página 4	
+// Página 4
 $pdf->AddPage();
 
 //Capa
@@ -463,10 +450,10 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que deve vir em último lugar?"), 0,
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Para quem serve nosso trem?"), 0, 'J');
 
 $pdf->ln(10);
-$pdf->SetFont('arial', 'I', 8);			    
+$pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
-// Página 6	
+// Página 6
 $pdf->AddPage();
 
 //Capa
@@ -627,7 +614,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como saber suas direções?"), 0, 'J')
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como ter este contato?"), 0, 'J');
 
 $pdf->ln(10);
-$pdf->SetFont('arial', 'I', 8);			    
+$pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 8
@@ -717,7 +704,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que devemos fazer até chegarmos lá
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Ela é o fim ou o começo?"), 0, 'J');
 
 $pdf->ln(10);
-$pdf->SetFont('arial', 'I', 8);			    
+$pdf->SetFont('arial', 'I', 8);
 $pdf->Cell(0, 10, "Este material foi impresso por: " . $pdf->textoUTF8($nome_usuario), 0, 1, 'J');
 
 // Página 9

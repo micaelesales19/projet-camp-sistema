@@ -6,6 +6,26 @@
 
 class FSistema_model extends CI_Model
 {
+	public function formatar_telefone($telefone, $is_br)
+	{
+		$telefone_formatado = '';
+		if ($telefone == '') {
+		} else {
+			$numeroLimpo = preg_replace('/\D/', '', $telefone);
+			if ($is_br) {
+				if ($numeroLimpo[0] == '5') {
+					$telefone_formatado = $numeroLimpo;
+				} else {
+					$telefone_formatado = "55" . $numeroLimpo;
+				}
+			} else {
+				$telefone_formatado = $numeroLimpo;
+			}
+		}
+
+		return $telefone_formatado;
+	}
+
 	public function cadastrarUsuário($nome_usuario, $email, $cpf, $nivel)
 	{
 		$ativo = "0";
@@ -671,7 +691,7 @@ class FSistema_model extends CI_Model
 
 		$dadosColider = $this->FConsultas_model->getNomeUserId($id_colider);
 
-		$consultar_pg_desativado = $this->db->query("SELECT * FROM alcancado_colider WHERE id_colider = '$id_colider'");
+		$consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_colider WHERE id_colider = '$id_colider'");
 		$row = $consultar_pg_desativado->num_rows();
 
 		if ($row == 0) {
@@ -683,7 +703,7 @@ class FSistema_model extends CI_Model
 			$inserir['motivo'] = $motivo;
 			$inserir['data_saida'] = $data;
 
-			if ($this->db->insert('alcancado_colider', $inserir)) {
+			if ($this->db3->insert('alcancado_colider', $inserir)) {
 			}
 		} else {
 		}

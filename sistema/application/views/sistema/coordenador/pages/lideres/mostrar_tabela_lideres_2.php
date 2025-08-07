@@ -96,7 +96,7 @@
 
                             $data_convertida = $this->FConsultas_model->converterData($data_ultimo_relatorio);
 
-                            $data_mais_2_meses = date('Y-m-d', strtotime('+2 months', strtotime($data_convertida)));
+                            $data_mais_2_meses = date('Y-m-d', strtotime('+4 months', strtotime($data_convertida)));
 
                             // echo "DULTIMO - " . $data_convertida . " D2MESES - " . $data_mais_2_meses . '<br>';
                             if (strtotime($data_mais_2_meses) < strtotime($data)) {
