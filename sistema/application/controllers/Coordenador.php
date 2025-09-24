@@ -6,6 +6,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property $input
  * @property FConsultas_model $FConsultas_model
  * @property FSistema_model $FSistema_model
+ * @property Coordenadores $Coordenadores
  * @property $db
  * @property $upload
  * @property $email
@@ -28,7 +29,10 @@ class Coordenador extends CI_Controller
 
 	public function home()
 	{
-		$this->load->view('sistema/coordenador/home');
+		$id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
+		$link = $this->Coordenadores->criar_link($id_usuario);
+		$dados = array('link' => $link);
+		$this->load->view('sistema/coordenador/home', $dados);
 	}
 	// Dados Pessoal
 	public function pagina_editar_pessoal()
@@ -221,7 +225,10 @@ class Coordenador extends CI_Controller
 	// Líderes
 	public function pagina_ver_lideres()
 	{
-		$this->load->view('sistema/coordenador/pages/pagina_ver_lideres');
+		$id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
+		$link = $this->Coordenadores->criar_link($id_usuario);
+		$dados = array('link' => $link);
+		$this->load->view('sistema/coordenador/pages/pagina_ver_lideres', $dados);
 	}
 
 	public function pagina_ver_detalhes_lideres()
@@ -422,7 +429,7 @@ class Coordenador extends CI_Controller
 					window.location="pagina_editar_pessoal";
 				}else{
 					window.location="pagina_editar_pessoal";
-				}	
+				}
 			</script>
 		';*/
 

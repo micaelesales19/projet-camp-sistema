@@ -64,6 +64,7 @@ $route['login/2'] = 'welcome/login_c_parametros';
 $route['gerar_certificado'] = 'welcome/gerar_certificado';
 
 $route['index'] = 'welcome/index';
+$route['loginpage'] = 'welcome/loginpage';
 $route['sair'] = 'welcome/sair';
 $route['login'] = 'welcome/login';
 $route['acesso'] = 'welcome/autenticacao_login';
@@ -88,6 +89,7 @@ $route['controller/atualizacaoModuloMensal'] = 'welcome/atualizarModuloMensal';
 $route['controller/page/pg/progresso/atualizar'] = 'welcome/atualizarProgressoDevocional';
 
 // PAIS
+$route['aprovar'] = 'welcome/aprovar_acesso_lider';
 $route['cadastro/salvar'] = 'welcome/salvar_cadastro';
 $route['cadastro'] = 'welcome/cadastro';
 $route['cadastro/:any'] = 'welcome/cadastro';

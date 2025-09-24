@@ -155,19 +155,19 @@ $pdf->Cell(90, 20, utf8_decode("Energizando:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Vamos começar nossa Operação ouvindo Isaías 61:1-4, Jesus leu esse texto diante dos sacerdotes (Lc 4:18-19): "), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Vamos começar nossa Operação ouvindo Isaías 61:1-4, Jesus leu esse texto diante dos sacerdotes (Lc 4:18-19): (Fig.1.2)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("O Espírito do Soberano Senhor está sobre mim porque o Senhor ungiu-me para levar boas notícias aos pobres. Enviou-me para cuidar dos que estão com o coração quebrantado, anunciar liberdade aos cativos e libertação das trevas aos prisioneiros, para proclamar o ano da bondade do Senhor e o dia da vingança do nosso Deus; para consolar todos os que andam tristes, e dar a todos os que choram em Sião uma bela coroa em vez de cinzas, o óleo da alegria em vez de pranto, e um manto de louvor em vez de espírito deprimido. Eles serão chamados carvalhos de justiça, plantio do Senhor, para manifestação da sua glória. Eles reconstruirão as velhas ruínas e restaurarão os antigos escombros; renovarão as cidades arruinadas que têm sido devastadas de geração em geração."), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("O Espírito do Soberano Senhor está sobre mim porque o Senhor ungiu-me para levar boas notícias aos pobres. Enviou-me para cuidar dos que estão com o coração quebrantado, anunciar liberdade aos cativos e libertação das trevas aos prisioneiros, para proclamar o ano da bondade do Senhor e o dia da vingança do nosso Deus; para consolar todos os que andam tristes, e dar a todos os que choram em Sião uma bela coroa em vez de cinzas, o óleo da alegria em vez de pranto, e um manto de louvor em vez de espírito deprimido. Eles serão chamados carvalhos de justiça, plantio do Senhor, para manifestação da sua glória. Eles reconstruirão as velhas ruínas e restaurarão os antigos escombros; renovarão as cidades arruinadas que têm sido devastadas de geração em geração. (Fig.1.3)"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Isaias estava falando sobre quem? Sobre ele mesmo? Sobre Jesus? E como ele nos chama No verso 3? Você e eu somos Carvalhos? Como assim? (Deixe que deem suas opiniões, dê a sua!) Os Carvalhos são fortes e resistentes!"), 0, 'J');
 
 $pdf->MultiCell(0, 15, utf8_decode("E não somos apenas carvalhos, somos Carvalhos de justiça! O que é justiça? (deixe que falem) No dicionário, significa manter o que é justo, correto, certo, dando recompensas e punições para que isso aconteça."), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("E na Bíblia? Deuteronômio 32:4 ralaciona justiça como o quê? Com as obras e os caminhos de Deus.É manter a ordem que Ele criou! Lembra que era tudo muito bom? Tudo era certo! E o que aconteceu de errado? Por causa do pecado tudo o que foi criado saiu de ordem. O pecado deixa as pessoas tristes, raivosas, ansiosas e com muito medo. As pessoas ficaram fracas e erradas em vez de resistentes e corretas.Podem dizer coisas que saíram da ordem em que foram criadas? Como fazer tudo isso voltar a ordem? Como obter justiça novamente?"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("E na Bíblia? Deuteronômio 32:4 ralaciona justiça como o quê? Com as obras e os caminhos de Deus.É manter a ordem que Ele criou! Lembra que era tudo muito bom? Tudo era certo! E o que aconteceu de errado? Por causa do pecado tudo o que foi criado saiu de ordem. O pecado deixa as pessoas tristes, raivosas, ansiosas e com muito medo. As pessoas ficaram fracas e erradas em vez de resistentes e corretas. Podem dizer coisas que saíram da ordem em que foram criadas? Como fazer tudo isso voltar a ordem? Como obter justiça novamente?"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Como Jesus livra as pessoas do pecado? Como ele as ajuda a serem pessoas resistentes ao pecado? A serem justas? Estou curiosa! Vamos agora analisar o texto:"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Como Jesus livra as pessoas do pecado? Como ele as ajuda a serem pessoas resistentes ao pecado? A serem justas? Estou curiosa! Vamos agora analisar o texto: (Fig.1.4)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("O Espírito do Soberano Senhor está sobre mim porque o Senhor ungiu-me para levar boas notícias aos pobres."), 0, 'J');
@@ -299,14 +299,14 @@ $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Vamos lá! Vamos energizar na Palavra para aprendermos a evoluir a verdadeira evolução! A ter o verdadeiro sucesso! Vamos analisar esta passagem!"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Os justos florescerão como a palmeira, crescerão como o cedro do Líbano; plantados na casa do Senhor, florescerão nos átrios do nosso Deus. Mesmo na velhice darão fruto, permanecerão viçosos e verdejantes, para proclamar que o Senhor é justo. Ele é a minha rocha; nele não há injustiça. Salmos 92:12-15"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.2.1) Os justos florescerão como a palmeira, crescerão como o cedro do Líbano; plantados na casa do Senhor, florescerão nos átrios do nosso Deus. Mesmo na velhice darão fruto, permanecerão viçosos e verdejantes, para proclamar que o Senhor é justo. Ele é a minha rocha; nele não há injustiça. Salmos 92:12-15"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Ok, o texto fala de todas as fases da planta. Vocês já devem ter aprendido na escola! (Coloque essas palavras escritas em tiras de papel e misture-as - Plantados, Casa do Senhor, crescerão, florescerão, darão fruto, viçosos e verdejantes, germinação, crescimento (fotossíntese e respiração) ,floração e frutificação!) Voces conseguem fazer a relação do versículo com as fases?"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.2.2) Ok, o texto fala de todas as fases da planta. Vocês já devem ter aprendido na escola! (Coloque essas palavras escritas em tiras de papel e misture-as - Plantados, Casa do Senhor, crescerão, florescerão, darão fruto, viçosos e verdejantes, germinação, crescimento (fotossíntese e respiração) ,floração e frutificação!) Voces conseguem fazer a relação do versículo com as fases?"), 0, 'J');
 
 $pdf->MultiCell(0, 15, utf8_decode("(Coloque os textos abaixo em papeis e entregue a diferentes duplas ou individualmente) Ok! Agora vamos ler essa narrativa dos textos que estão na sua mão, depois vocês vão ter a missão de me recontar a história e depois, responder as perguntas que eu vou fazer!"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("A Bíblia nos conta a hisória de Ana, esposa de Elcana que não tinha filhos e pediu a Deus que lhe desse um filho, Deus atendeu! (Fig 1) Ana dedicou seu filho a Deus e o levou para ser criado pelo sacerdote Eli! (Seu papel)"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("A Bíblia nos conta a hisória de Ana, esposa de Elcana que não tinha filhos e pediu a Deus que lhe desse um filho, Deus atendeu! (Fig 2.3) Ana dedicou seu filho a Deus e o levou para ser criado pelo sacerdote Eli! (Seu papel)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Era este menino que eu pedia, e o Senhor concedeu-me o pedido. Por isso, agora, eu o dedico ao Senhor. Por toda a sua vida será dedicado ao Senhor. E ali adorou o Senhor. 1 Samuel 1:27,28"), 0, 'J');
@@ -315,7 +315,7 @@ $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("(Suas perguntas) Ela alcançou sucesso em ser mãe? Como? E o que ela fez? Por que? (Dupla 1)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Os filhos de Eli eram ímpios; não se importavam com o Senhor nem cumpriam os deveres de sacerdotes para com o povo. 2:12,13 O pecado desses jovens era muito grande à vista do Senhor, pois eles estavam tratando com desprezo a oferta do Senhor. Samuel, contudo, ainda menino, ministrava perante o Senhor, vestindo uma túnica de linho. 2:17,18"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.2.4) Os filhos de Eli eram ímpios; não se importavam com o Senhor nem cumpriam os deveres de sacerdotes para com o povo. 2:12,13 O pecado desses jovens era muito grande à vista do Senhor, pois eles estavam tratando com desprezo a oferta do Senhor. Samuel, contudo, ainda menino, ministrava perante o Senhor, vestindo uma túnica de linho. 2:17,18"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("(Recontar) Perguntas para eles - O que é sucesso para um jovem que não se importa com Deus? Como procedem com relação a Deus? O que as atitudes de Samuel demonstravam? O que os filhos de Eli deviam pensar de Samuel? O que seus colegas pensam de você? Como você se sente? (Dupla 2)"), 0, 'J');
@@ -329,7 +329,7 @@ $pdf->MultiCell(0, 15, utf8_decode("(Recontar) Perguntas  - Hoje, os jovens sem 
 $pdf->Image('../../capa.jpg', 50, 300, 500, 300);
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Portanto, o Senhor, o Deus de Israel, declara (A Eli): Prometi à sua família e à linhagem de seu pai, que ministrariam diante de mim para sempre. Mas agora o Senhor declara: ‘Longe de mim tal coisa! Honrarei aqueles que me honram, mas aqueles que me desprezam serão tratados com desprezo."), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Portanto, o Senhor, o Deus de Israel, declara (A Eli): Prometi à sua família e à linhagem de seu pai, que ministrariam diante de mim para sempre. Mas agora o Senhor declara: 'Longe de mim tal coisa! Honrarei aqueles que me honram, mas aqueles que me desprezam serão tratados com desprezo."), 0, 'J');
 
 $pdf->MultiCell(0, 15, utf8_decode("É chegada a hora em que eliminarei a sua força e a força da família de seu pai, e não haverá mais nenhum idoso na sua família, e você verá aflição na minha habitação. Embora Israel prospere, na sua família ninguém alcançará idade avançada. E todo descendente seu que eu não eliminar de meu altar será poupado apenas para lhe consumir os olhos com lágrimas e para lhe entristecer o coração, e todos os seus descendentes morrerão no vigor da vida. E o que acontecer a seus dois filhos, Hofni e Finéias, será um sinal para você: os dois morrerão no mesmo dia.  2:30-34"), 0, 'J');
 
@@ -337,9 +337,9 @@ $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("(Recontar) Qual o resultado diante de Deus? Qual o castigo de Eli por não ter prestado atenção em seus filhos? E dos filhos? (Dupla 4)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("O menino Samuel ministrava perante o Senhor, sob a direção de Eli; naqueles dias raramente o Senhor falava, e as visões não eram freqüentes. Certa noite, Eli, cujos olhos estavam ficando tão fracos que já não conseguia mais enxergar, estava deitado em seu lugar de costume. ...Samuel estava deitado no santuário do Senhor, onde se encontrava a arca de Deus. Então o Senhor chamou Samuel. Samuel respondeu: Estou aqui. E correu até Eli e disse: Estou aqui; o senhor me chamou?  Eli, porém, disse: Não o chamei; volte e deite-se. Então, ele foi e se deitou. De novo o Senhor chamou: Samuel!  E Samuel se levantou e foi até Eli e disse: Estou aqui; o senhor me chamou? Disse Eli: Meu filho, não o chamei; volte e deite-se. Ora, Samuel ainda não conhecia o Senhor. A palavra do Senhor ainda não lhe havia sido revelada."), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.2.5) O menino Samuel ministrava perante o Senhor, sob a direção de Eli; naqueles dias raramente o Senhor falava, e as visões não eram freqüentes. Certa noite, Eli, cujos olhos estavam ficando tão fracos que já não conseguia mais enxergar, estava deitado em seu lugar de costume. ...Samuel estava deitado no santuário do Senhor, onde se encontrava a arca de Deus. Então o Senhor chamou Samuel. Samuel respondeu: Estou aqui. E correu até Eli e disse: Estou aqui; o senhor me chamou?  Eli, porém, disse: Não o chamei; volte e deite-se. Então, ele foi e se deitou. De novo o Senhor chamou: Samuel!  E Samuel se levantou e foi até Eli e disse: Estou aqui; o senhor me chamou? Disse Eli: Meu filho, não o chamei; volte e deite-se. Ora, Samuel ainda não conhecia o Senhor. A palavra do Senhor ainda não lhe havia sido revelada."), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("O Senhor chamou Samuel pela terceira vez. Ele se levantou, foi até Eli e disse: Estou aqui; o senhor me chamou?  Então Eli percebeu que o Senhor estava chamando o menino e lhe disse: Vá e deite-se; se ele chamá-lo, diga: Fala, Senhor, pois o teu servo está ouvindo . Então Samuel foi se deitar. O Senhor voltou a chamá-lo como nas outras vezes: Samuel, Samuel!  Então Samuel disse: Fala, pois o teu servo está ouvindo. 3:1-10"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.2.6) O Senhor chamou Samuel pela terceira vez. Ele se levantou, foi até Eli e disse: Estou aqui; o senhor me chamou?  Então Eli percebeu que o Senhor estava chamando o menino e lhe disse: Vá e deite-se; se ele chamá-lo, diga: Fala, Senhor, pois o teu servo está ouvindo . Então Samuel foi se deitar. O Senhor voltou a chamá-lo como nas outras vezes: Samuel, Samuel!  Então Samuel disse: Fala, pois o teu servo está ouvindo. 3:1-10"), 0, 'J');
 
 $pdf->MultiCell(0, 15, utf8_decode("O Senhor estava com Samuel enquanto este crescia, e fazia com que todas as suas palavras se cumprissem. 3:19"), 0, 'J');
 
@@ -409,7 +409,7 @@ $pdf->Cell(90, 20, utf8_decode("Germinando:"), 0, 1, 'L');
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("(Faça cartões com as palavras - Salomão, Templo, Palácio, Lepra, Poder, Justos, Homem, Casa e Altura e com os versículos : 1 Reis 10:26-27, 1 Reis 6;18, (2 Samuel 5:11, 1 Reis 7:2-3), Levitico 14:1-7, Ezequiel 31:2-3, Salmo 92:12, (Cantares 5:15, Ezequiel 17:22-23), Cantares 1:17 e Amós 2:9). Qual a idade de vocês? Quantos anos tem a pessoa mais velha que você conhece? Agora me diga, quantos anos vive uma árvore? Você sabia que algumas árvores vivem milhares de anos?"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Como sabemos a idade de uma árvore? Pelos anéis formados dentro do tronco. Cada par de anéis corresponde a 1 ano porque há mudança no tronco cada vez que chega o verão e cada vez que chega o inverno. Pelos anéis, dá até para saber se houve mudança no clima do local. A árvore que vamos conhecer hoje se chama Cedro, o famoso Cedro do Líbano! Ela está desenhada na bandeira do Líbano! E você sabia que existem cedros com mais de 3000 anos? Outra característica do cedro é que a madeira é dura, mas moldável. Vamos ver alguns versos que falam sobre o Cedro.(Distribua os versos e coloque os cartões de palavras na mesa) Em duplas (ou individual) vamos ler os versos e pegar o cartão com a palavra mencionada! "), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Como sabemos a idade de uma árvore? Pelos anéis formados dentro do tronco. Cada par de anéis corresponde a 1 ano porque há mudança no tronco cada vez que chega o verão e cada vez que chega o inverno. Pelos anéis, dá até para saber se houve mudança no clima do local. (Fig.3.1) A árvore que vamos conhecer hoje se chama Cedro, o famoso Cedro do Líbano! Ela está desenhada na bandeira do Líbano! E você sabia que existem cedros com mais de 3000 anos? Outra característica do cedro é que a madeira é dura, mas moldável. Vamos ver alguns versos que falam sobre o Cedro.(Distribua os versos e coloque os cartões de palavras na mesa) Em duplas (ou individual) vamos ler os versos e pegar o cartão com a palavra mencionada! "), 0, 'J');
 
 $pdf->MultiCell(0, 15, utf8_decode("O Cedro tinha valor? O cedro é símbolo de força, poder, majestade e riqueza! Mas porque Deus compara os justos com o Cedro? Que poder e força são esses?"), 0, 'J');
 
@@ -420,7 +420,7 @@ $pdf->Cell(90, 20, utf8_decode("Energizando:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Em nossa expedição verde 2, já utilizamos 2 árvores para analisarmos o conceito de Justiça e o de Sucesso. E agora o Cedro nos ensinará sobre FORÇA e PODER. Salmo 92 diz que vamos crescer como os Cedros. Como será que eles desenvolvem? Quem aqui tem vontade de crescer, ter força, ser um homem ou uma mulher poderosa? E, o que é ter poder e força verdadeiros? Vamos analisar a vida de Salomão, ele foi filho de Davi e foi o homem mais poderoso da Bíblia."), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Em nossa expedição verde 2, já utilizamos 2 árvores para analisarmos o conceito de Justiça e o de Sucesso. E agora o Cedro nos ensinará sobre FORÇA e PODER. Salmo 92 diz que vamos crescer como os Cedros. Como será que eles desenvolvem? Quem aqui tem vontade de crescer, ter força, ser um homem ou uma mulher poderosa? E, o que é ter poder e força verdadeiros? Vamos analisar a vida de Salomão, ele foi filho de Davi e foi o homem mais poderoso da Bíblia. (Fig.3.2)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Quando se aproximava o dia de sua morte, Davi deu instruções ao seu filho Salomão: Estou para seguir o caminho de toda a terra. Por isso, seja forte e seja homem."), 0, 'J');
@@ -432,9 +432,9 @@ $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Obedeça ao que o Senhor, o seu Deus, exige: Ande nos seus caminhos e obedeça aos seus decretos, aos seus mandamentos, às suas ordenanças e aos seus testemunhos, conforme se acham escritos na Lei de Moisés; assim você prosperará em tudo o que fizer e por onde quer que for, e o Senhor manterá a promessa que me fez: Se os seus descendentes cuidarem de sua conduta, e se me seguirem fielmente de todo o coração e de toda a alma, você jamais ficará sem descendente no trono de Israel. 1 Reis 2:1-4"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("O que Salomão precisava fazer para prosperar e ser um rei poderoso e forte? Que força e poder são esses? É mandar em outros? Controlar? Fazer com que  tenham medo? Na escola há aqueles que querem mandar em todos? Mas, eles tiram boas notas? Tem a simpatia dos outros? São exemplos? Você quer ter esse tipo de força? Pessoas fortes fazem bem aos outros, abençoam e seguem em seu crescimento com Deus! Os Cedros, tem ramos grandes que servem de ninho para os pássaros e sombra para animais e pessoas. Como você poderia fazer o bem?"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("O que Salomão precisava fazer para prosperar e ser um rei poderoso e forte? Que força e poder são esses? É mandar em outros? Controlar? Fazer com que tenham medo? Na escola há aqueles que querem mandar em todos? Mas, eles tiram boas notas? Tem a simpatia dos outros? São exemplos? Você quer ter esse tipo de força? Pessoas fortes fazem bem aos outros, abençoam e seguem em seu crescimento com Deus! Os Cedros, tem ramos grandes que servem de ninho para os pássaros e sombra para animais e pessoas. Como você poderia fazer o bem?"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Creio que Salomão tentou seguir os mandamentos, controlar os problemas de seu reinado mas depois de várias mortes no seu povo, decidiu falar com Deus. Ofereceu sacrifícios, e Deus lhe falou em sonho e disse:"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Creio que Salomão tentou seguir os mandamentos, controlar os problemas de seu reinado mas depois de várias mortes no seu povo, decidiu falar com Deus. Ofereceu sacrifícios, e Deus lhe falou em sonho e disse: (Fig.3.3)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Peça-me o que quiser, e eu lhe darei."), 0, 'J');
@@ -448,7 +448,7 @@ $pdf->MultiCell(0, 15, utf8_decode("Agora, Senhor meu Deus, fizeste o teu servo 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Não era só para seguir os mandamentos? Ele tentou! Mas conseguiu? Conseguimos sabedoria sozinhos? Por que ele pediu Sabedoria? Sabedoria nos ajuda a saber o certo e o errado! A tomar decisões acertadas! Quando fazemos isso, baseados na Palavra, ficamos seguros e isso nos fortalece, aconteça o que acontecer sabemos que está certo e que é a vontade de Deus! (Dê aqui, um testemunho quando seguiu a vontade de Deus na sua vida)"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Mas, podemos encontrar sabedoria para vender na esquina? Tem black Friday de sabedoria em algum lugar? Onde podemos encontrar sabedoria free? Vamos encontrar na humildade de pedir a Deus, reconhecendo que não sabe o que fazer! Você já fez isso? Já reconheceu diante de Deus que é apenas um jovem e não sabe o que fazer nesse mundo louco? Sabedoria é a força que você precisa! Agora, vamos continuar com a resposta de Deus a Salomão!"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Mas, podemos encontrar sabedoria para vender na esquina? Tem black Friday de sabedoria em algum lugar? Onde podemos encontrar sabedoria free? Vamos encontrar na humildade de pedir a Deus, reconhecendo que não sabe o que fazer! Você já fez isso? Já reconheceu diante de Deus que é apenas um jovem e não sabe o que fazer nesse mundo louco? Sabedoria é a força que você precisa! Agora, vamos continuar com a resposta de Deus a Salomão! (Fig.3.4)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("O pedido que Salomão fez agradou ao Senhor. Por isso Deus lhe disse: Já que você pediu isto e não uma vida longa nem riqueza, nem pediu a morte dos seus inimigos, mas discernimento para ministrar a justiça, farei o que você pediu. Eu lhe darei um coração sábio e capaz de discernir, de modo que nunca houve nem haverá ninguém como você. Também lhe darei o que você não pediu: riquezas e fama; de forma que não haverá rei igual a você durante toda a sua vida. E, se você andar nos meus caminhos e obedecer aos meus decretos e aos meus mandamentos, como o seu pai Davi, eu prolongarei a sua vida. 1 Reis 3:10-14"), 0, 'J');
@@ -554,7 +554,7 @@ $pdf->Cell(90, 20, utf8_decode("Energizando:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Quem já comeu figo? Que árvore produz figos? A Figueira! Esta árvore é mencionada mais de 50 vezes na Bíblia! Você sabia que o figo não é um fruto? Parece, mas não é! O figo é uma flor! Uma flor virada para dentro, e os frutos são os pequenos pontos pretos dentro dela. Para o povo de Deus, a figueira tem um significado. Prestem atenção nesse versículo:"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.4.1) Quem já comeu figo? Que árvore produz figos? A Figueira! Esta árvore é mencionada mais de 50 vezes na Bíblia! Você sabia que o figo não é um fruto? Parece, mas não é! O figo é uma flor! Uma flor virada para dentro, e os frutos são os pequenos pontos pretos dentro dela. Para o povo de Deus, a figueira tem um significado. Prestem atenção nesse versículo:"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Durante a vida de Salomão, Judá e Israel viveram em segurança, cada homem debaixo da sua videira e da sua figueira, desde Dã até Berseba. 1 Reis 4:25"), 0, 'J');
@@ -576,7 +576,7 @@ $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("E os Respondeu Jesus: Homem, quem me designou juiz ou árbitro entre vocês? Então lhes disse: Cuidado! Fiquem de sobreaviso contra todo tipo de ganância; a vida de um homem não consiste na quantidade dos seus bens."), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("O que significa ficar de sobreaviso? Médicos muitas vezes ficam de sobreaviso, isto é, eles podem ser chamados para trabalhar, mesmo estando de folga. Ele precisa estar vigiando, alerta para estar pronto, caso seja chamado. Jesus disse para ficarem de atentos com o quê? Com a ganância! O que é ganância? Vejam essa explicação de Jesus na parábola!"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("O que significa ficar de sobreaviso? Médicos muitas vezes ficam de sobreaviso, isto é, eles podem ser chamados para trabalhar, mesmo estando de folga. Ele precisa estar vigiando, alerta para estar pronto, caso seja chamado. Jesus disse para ficarem de atentos com o quê? Com a ganância! O que é ganância? Vejam essa explicação de Jesus na parábola! (Fig.4.2)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Então lhes contou esta parábola: A terra de certo homem rico produziu muito bem. Ele pensou consigo mesmo: O que vou fazer? Não tenho onde armazenar minha colheita."), 0, 'J');
@@ -584,7 +584,7 @@ $pdf->MultiCell(0, 15, utf8_decode("Então lhes contou esta parábola: A terra d
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Ele ficou preocupado! Preocupado por quê? Porque tinha demais e não tinha onde guardar! Será que existem pessoas que tem esse tipo de preocupação? Sim, e muitas! Muitas pessoas se preocupam em acumular cada vez mais riquezas. Agora me respondam, elas são prósperas? Com relação as riquezas sim! Mas o que falta na vida delas? Agora pense se você estivesse no lugar desse homem, o que você faria?"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Vejamos o que o homem fez:"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Vejamos o que o homem fez: (Fig.4.3)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Então disse: Já sei o que vou fazer. Vou derrubar os meus celeiros e construir outros maiores, e ali guardarei toda a minha safra e todos os meus bens. E direi a mim mesmo: Você tem grande quantidade de bens, armazenados para muitos anos. Descanse, coma, beba e alegre-se."), 0, 'J');
@@ -593,7 +593,7 @@ $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("O que você acha disso? Você faria isso? Por quê? Por quê não? Olhem o que Deus disse sobre isso:"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Contudo, Deus lhe disse: Insensato! Esta mesma noite a sua vida lhe será exigida. Então, quem ficará com o que você preparou?"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.4.4) Contudo, Deus lhe disse: Insensato! Esta mesma noite a sua vida lhe será exigida. Então, quem ficará com o que você preparou?"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Parece que nem filhos esse homem tinha, talvez não era importante para ele casar e ter filhos. O que era a coisa mais importante para ele? Sua produção, seu dinheiro! Talvez, para ele, prosperidade, seria ter cada vez mais e não dividir! Mas o que diz a Palavra? Olhem a conclusão de Deus:"), 0, 'J');
@@ -684,7 +684,7 @@ $pdf->Cell(90, 20, utf8_decode("Germinando:"), 0, 1, 'L');
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Hoje, vamos conversar sobre mais um valor, a beleza. O que é beleza para as pessoas em geral? Que coisas vocês acham bonitas? Que pessoas vocês acham bonitas? O que as pessoas levam mais em conta quando vão avaliar se uma coisa é bonita ou não? E Uma pessoa? O que é levado em conta? Geralmente coisas são avaliadas pelas cores, harmonia, se são bem feitas, se fazem nos sentir bem, alegres, se nos inspiram a sermos melhores..."), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("As pessoas são avaliadas da mesma maneira? Ou só olhamos a aparência? A forma? O que é avaliado nos rapazes? Cabelo, pele, roupa, sapatos,físico? E nas meninas? Cabelo, unhas, pele, roupas, maquiagem... As pessoas se preocupam sempre com a aparência. As vezes agem como se a aparência fosse tudo. Esse comportamento lembra o do Narciso. Segundo o mito Grego, Narciso era um jovem tão belo e tão vaidoso que, após desprezar inúmeras pretendentes, acabou se apaixonando pelo próprio reflexo. Morreu de fome e sede à beira da fonte de água onde via sua imagem refletida. Existe uma flor com o nome do Mito. E a Bíblia? Será que ela nos fala de beleza? Vamos nos energizar na Palavra para cumprirmos nossas penúltimas missões."), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.5.1) As pessoas são avaliadas da mesma maneira? Ou só olhamos a aparência? A forma? O que é avaliado nos rapazes? Cabelo, pele, roupa, sapatos,físico? E nas meninas? Cabelo, unhas, pele, roupas, maquiagem... As pessoas se preocupam sempre com a aparência. As vezes agem como se a aparência fosse tudo. Esse comportamento lembra o do Narciso. Segundo o mito Grego, Narciso era um jovem tão belo e tão vaidoso que, após desprezar inúmeras pretendentes, acabou se apaixonando pelo próprio reflexo. Morreu de fome e sede à beira da fonte de água onde via sua imagem refletida. Existe uma flor com o nome do Mito. E a Bíblia? Será que ela nos fala de beleza? Vamos nos energizar na Palavra para cumprirmos nossas penúltimas missões."), 0, 'J');
 
 //Tópico
 $pdf->Ln(10);
@@ -709,18 +709,15 @@ $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Absalão, seu irmão, lhe perguntou: 'Seu irmão, Amnom, lhe fez algum mal? Agora, acalme-se, minha irmã; ele é seu irmão! Não se deixe dominar pela angústia'. E Tamar, muito triste, ficou na casa de seu irmão Absalão. 2 Sm 13:20"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("O que é uma herança? Como é dividida uma herança? Um casal morre, seus bens são divididos igualmente entre seus filhos. Em Israel a lei era outra. A herança era dividida assim: O mais velho ganhava o dobro do que ganhavam os outros filhos.  Aquela pessoa queria que Jesus atuasse como juiz. Vamos ver a resposta de Jesus:"), 0, 'J');
-
-$pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Tamar foi ignorada e Absalão escondeu o que havia acontecido de Davi."), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Ao saber de tudo isso, o rei Davi ficou furioso. E Absalão não falou nada com Amnom, nem bem, nem mal, embora o odiasse por ter violentado sua irmã Tamar. 2 Sm 13:21,22"), 0, 'J');
 
-$pdf->Image('../../capa.jpg', 50, 300, 500, 300);
+//$pdf->Image('../../capa.jpg', 50, 300, 500, 300);
 
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Dois anos depois, (Fig. 5.2) Absalão armou uma cilada para Amnom e mandou matar seu irmão pelo que ele fizera com Tamar. Será que ele pensou em sua irmã? Ele seguiu a lei que Deus havia dado para proteger as mulheres em caso de abuso? Ele agiu com a verdade? Lembra das belezas? Que belezas sobraram para Absalão? Vamos voltar à história:"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Dois anos depois, Absalão armou uma cilada para Amnom e mandou matar seu irmão pelo que ele fizera com Tamar. Será que ele pensou em sua irmã? Ele seguiu a lei que Deus havia dado para proteger as mulheres em caso de abuso? Ele agiu com a verdade? Lembra das belezas? Que belezas sobraram para Absalão? Vamos voltar à história: (Fig.5.2)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Assim os homens de Absalão mataram Amnom, obedecendo às suas ordens. Então todos os filhos do rei montaram em suas mulas e fugiram. Estando eles ainda a caminho, chegou a seguinte notícia ao rei: 'Absalão matou todos os teus filhos; nenhum deles escapou'. O rei levantou-se, rasgou as suas vestes, prostrou-se, e todos os conselheiros que estavam com ele também rasgaram as vestes. Mas, Jonadabe, filho de Siméia, irmão de Davi, disse: 'Não pense o meu senhor que mataram todos os teus filhos. Somente Amnom foi morto. Essa era a intenção de Absalão desde o dia em que Amnom violentou Tamar, irmã dele.' 2 Sm 13:29-32"), 0, 'J');
@@ -737,15 +734,15 @@ $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("O que essa atitude de Absalão demonstra? Ele estava arrependido? Ele havia mudado? Como ele queria que fossem as coisas?"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Então Joabe foi contar tudo ao rei. Este mandou chamar Absalão, que entrou e prostrou-se, rosto em terra, perante o rei. E o rei saudou-o com um beijo. 2 Sm 14:33"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Então Joabe foi contar tudo ao rei. Este mandou chamar Absalão, que entrou e prostrou-se, rosto em terra, perante o rei. E o rei saudou-o com um beijo. 2 Sm 14:33 (Fig.5.3)"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("(Fig. 5.3)Um tempo depois, Absalão adquiriu uma carruagem, cavalos e uma escolta de cinqüenta homens. Ele se levantava cedo e ficava junto ao caminho que levava à porta da cidade. Sempre que alguém trazia uma causa para ser decidida pelo rei, Absalão o chamava e perguntava de que cidade vinha. A pessoa respondia que era de uma das tribos de Israel, e Absalão dizia: 'A sua causa é válida e legítima, mas não há nenhum representante do rei para ouvi-lo'. E Absalão acrescentava: 'Quem me dera ser designado juiz desta terra! Todos os que tivessem uma causa ou uma questão legal viriam a mim, e eu lhe faria justiça'. 2 Sm 15:1-4"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Um tempo depois, Absalão adquiriu uma carruagem, cavalos e uma escolta de cinqüenta homens. Ele se levantava cedo e ficava junto ao caminho que levava à porta da cidade. Sempre que alguém trazia uma causa para ser decidida pelo rei, Absalão o chamava e perguntava de que cidade vinha. A pessoa respondia que era de uma das tribos de Israel, e Absalão dizia: 'A sua causa é válida e legítima, mas não há nenhum representante do rei para ouvi-lo'. E Absalão acrescentava: 'Quem me dera ser designado juiz desta terra! Todos os que tivessem uma causa ou uma questão legal viriam a mim, e eu lhe faria justiça'. 2 Sm 15:1-4"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("O que Absalão estava pretendendo? Tomar o lugar de seu pai? 4 anos depois ele juntou um exercito contra seu pai. Davi precisou fugir, mas o Senhor lhe deu sabedoria e estratégia e o abençoou e seu exercito ganhou a batalha contra Absalão."), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("O que Absalão estava pretendendo? Tomar o lugar de seu pai? 4 anos depois ele juntou um exercito contra seu pai. Davi precisou fugir, mas o Senhor lhe deu sabedoria e estratégia e o abençoou e seu exercito ganhou a batalha contra Absalão. (Fig.5.4)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Durante a batalha, Absalão, montado em sua mula, encontrou-se com os soldados de Davi. Passando a mula debaixo dos galhos de uma grande árvore, Absalão ficou preso pela cabeça nos galhos.(Fig. 5.4)  Ele ficou pendurado entre o céu e a terra, e a mula prosseguiu. 2 Sm 18:9"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Durante a batalha, Absalão, montado em sua mula, encontrou-se com os soldados de Davi. Passando a mula debaixo dos galhos de uma grande árvore, Absalão ficou preso pela cabeça nos galhos. Ele ficou pendurado entre o céu e a terra, e a mula prosseguiu. 2 Sm 18:9"), 0, 'J');
 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Um soldado foi avisar a Joabe e ele foi até Absalão e o matou. Vocês lembram do Narciso? Como Absalão foi morto? Por sua beleza! Ele poderia ter cortado seus cabelos com a espada enquanto Joabe não vinha. Admirar a beleza de sua aparência em excesso pode lhe destruir, pois tira o seu foco de Deus!"), 0, 'J');
@@ -759,7 +756,7 @@ $pdf->MultiCell(0, 15, utf8_decode("Observem como crescem os lírios. Eles não 
 $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Por quê Jesus usou o lírio? Lírios são flores bonitas, mas simples. Havia lírios em todo lugar, em Israel. Algo interessante sobre os lírios - Suas flores vem direto das raízes, não das folhas e caules. De onde vem a verdadeira beleza? E a beleza da aparência, o que acontece com ela, dura para sempre? Para onde você começará a olhar? A beleza verdadeira glorifica a Deus pois reflete Seus atributos! Evolua em beleza!"), 0, 'J');
 
-$pdf->Image('../../capa.jpg', 50, 300, 500, 300);
+//$pdf->Image('../../capa.jpg', 50, 300, 500, 300);
 
 //Tópico
 $pdf->Ln(10);
@@ -974,7 +971,7 @@ $pdf->Cell(90, 20, utf8_decode("Germinando:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("( Prepare 2 caixas de sapato ou maior, em uma aberta, vocé pode colocar coisas como chocolate, chips, bolo.... A outra deve ter uma abertura em forma de circulo onde só uma mão pode entrar. Dentro da caixa coloque uma fruta ou outra coisa grande, de modo que se a pessoa colocar a mão ela vai pegar, mas não conseguirá tirar o objeto. Receba a todos e diga que tem algo para eles, mostre as caixas e diga que eles podem pegar o que quiserem da caixa aberta, mas da outra não devem pegar. Conversem enquanto eles comem da caixa aberta. Diga que precisa pegar sua Bíblia e os deixe sós com a caixa)"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Prepare 2 caixas de sapato ou maior, em uma aberta, vocé pode colocar coisas como chocolate, chips, bolo.... A outra deve ter uma abertura em forma de circulo onde só uma mão pode entrar. Dentro da caixa coloque uma fruta ou outra coisa grande, de modo que se a pessoa colocar a mão ela vai pegar, mas não conseguirá tirar o objeto. Receba a todos e diga que tem algo para eles, mostre as caixas e diga que eles podem pegar o que quiserem da caixa aberta, mas da outra não devem pegar. Conversem enquanto eles comem da caixa aberta. Diga que precisa pegar sua Bíblia e os deixe sós com a caixa)"), 0, 'J');
 
 $pdf->MultiCell(0, 15, utf8_decode("E então? Voces gostaram das coisas que estavam na caixa aberta? Alguém ficou curioso com a caixa prtoibida? Alguém tentou olhar dentro? Pegar o que está dentro? Alguém gostaria de tentar? (No caso de alguém querer, deixe que coloque a mão e tente tirar o que está na caixa). Você pegou o que está ai? Consegue tirar? Está satisfeito? Por que não? O que aconteceu? Como você vai tirar sua mão? (Para retirar a mão a criança precisa largar o que pegou) Vamos pensar sobre essa experiência enquanto conversamos sobre a nossa penúltima árvore!!! "), 0, 'J');
 
@@ -985,7 +982,7 @@ $pdf->Cell(90, 20, utf8_decode("Energizando:"), 0, 1, 'L');
 
 //Texto
 $pdf->SetFont('arial', '', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Essa árvore estava plantada no meio do jardim do Éden. Lembram do nome? Árvore do Conhecimento do Bem e do Mal. Nós já conversamos sobre essa árvore no mergulho, lembram? O que foi que Deus disse com relação a ela? Vamos ler Gênesis 2:16,17? "), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("(Fig.7.1) Essa árvore estava plantada no meio do jardim do Éden. Lembram do nome? Árvore do Conhecimento do Bem e do Mal. Nós já conversamos sobre essa árvore no mergulho, lembram? O que foi que Deus disse com relação a ela? Vamos ler Gênesis 2:16,17? "), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("E o Senhor Deus ordenou ao homem: 'Coma livremente de qualquer árvore do jardim, mas não coma da árvore do conhecimento do bem e do mal, porque no dia em que dela comer, certamente você morrerá.'"), 0, 'J');
@@ -998,7 +995,7 @@ $pdf->MultiCell(0, 15, utf8_decode("- Ser livre de controle ao fazer escolhas"),
 $pdf->MultiCell(0, 15, utf8_decode("- Ser livre de qualquer controle do mal"), 0, 'J');
 $pdf->MultiCell(0, 15, utf8_decode("- Direito de agir segundo a sua própria vontade desde que não prejudique outros"), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Escolha o que você acha que é a verdadeira definição. Vamos falar dela e da caixa depois de conhecermos a história de 2 jovens. Abram em II Reis 5"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Escolha o que você acha que é a verdadeira definição. Vamos falar dela e da caixa depois de conhecermos a história de 2 jovens. Abram em II Reis 5 (Fig.7.2)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Naamã, comandante do exército do rei da Síria, era muito respeitado e honrado pelo seu senhor, pois por meio dele o Senhor dera vitória à Síria. Mas esse grande guerreiro ficou leproso. Ora, tropas da Síria haviam atacado Israel e levado cativa uma menina, que passou a servir à mulher de Naamã."), 0, 'J');
@@ -1015,7 +1012,7 @@ $pdf->MultiCell(0, 15, utf8_decode("O que vocês acham da atitude dela? O que vo
 $pdf->SetFont('arial', 'I', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Eliseu enviou um mensageiro para lhe dizer: Vá e lave-se sete vezes no rio Jordão; sua pele será restaurada e você ficará purificado. Mas Naamã ficou indignado e saiu dizendo: Eu estava certo de que ele sairia para receber-me, invocaria de pé o nome do Senhor seu Deus, moveria a mão sobre o lugar afetado e me curaria da lepra."), 0, 'J');
 
-$pdf->MultiCell(0, 15, utf8_decode("Não são os rios Abana e Farfar, em Damasco, melhores do que todas as águas de Israel? Será que não poderia lavar-me neles e ser purificado? Então, foi embora dali furioso. Mas os seus servos lhe disseram: Meu pai, se o profeta lhe tivesse pedido alguma coisa difícil, o senhor não faria? Quanto mais, quando ele apenas lhe diz para que se lave e seja purificado!"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Não são os rios Abana e Farfar, em Damasco, melhores do que todas as águas de Israel? Será que não poderia lavar-me neles e ser purificado? Então, foi embora dali furioso. Mas os seus servos lhe disseram: Meu pai, se o profeta lhe tivesse pedido alguma coisa difícil, o senhor não faria? Quanto mais, quando ele apenas lhe diz para que se lave e seja purificado! (Fig.7.3)"), 0, 'J');
 
 $pdf->MultiCell(0, 15, utf8_decode("Assim ele desceu ao Jordão e mergulhou sete vezes conforme a ordem do homem de Deus; ele foi purificado e sua pele tornou-se como a de uma criança! "), 0, 'J');
 
@@ -1033,7 +1030,7 @@ $pdf->SetFont('arial', '', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Isso era verdade? Parece que Geazi enfiou a mão na caixa, ele comeu da árvore que não era para comer! Naamã deu a Geazi 70 kilos de tesouro e roupas e ainda mandou pessoas ajudarem ele a levar. Quando Geazi chegou à colina onde morava, pegou as sacolas dos servos e guardou-as em casa. Mandou os homens de volta, e eles partiram. Geazi era escravo como a menina? Não, ele era servo, com certeza tinha um salário. Ele era livre para fazer suas escolhas e o que ele escolheu? Vamos ver o resultado:"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 12);
-$pdf->MultiCell(0, 15, utf8_decode("Então entrou e apresentou-se ao seu senhor Eliseu. E este perguntou: Onde você esteve, Geazi?  Geazi respondeu: Teu servo não foi a lugar algum. Mas Eliseu lhe disse: Você acha que eu não estava com você em espírito quando o homem desceu da carruagem para encontrar-se com você?"), 0, 'J');
+$pdf->MultiCell(0, 15, utf8_decode("Então entrou e apresentou-se ao seu senhor Eliseu. E este perguntou: Onde você esteve, Geazi?  Geazi respondeu: Teu servo não foi a lugar algum. Mas Eliseu lhe disse: Você acha que eu não estava com você em espírito quando o homem desceu da carruagem para encontrar-se com você? (Fig.7.4)"), 0, 'J');
 
 $pdf->SetFont('arial', 'IB', 12);
 $pdf->MultiCell(0, 15, utf8_decode("Este não era o momento de aceitar prata nem roupas, nem de cobiçar olivais, vinhas, ovelhas, bois, servos e servas. Por isso a lepra de Naamã atingirá você e os seus descendentes para sempre. Então Geazi saiu da presença de Eliseu já leproso, parecido com neve. 2 Reis 5:1-27"), 0, 'J');

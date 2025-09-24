@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  */
 class FAlerta_model extends CI_Model
 {
@@ -17,7 +17,7 @@ class FAlerta_model extends CI_Model
 
 		// Consulta
 		$dados = $this->FConsultas_model->getNomeUserId($id_responsavel);
-		// Fim Consulta	
+		// Fim Consulta
 
 		$texto_motivo = "";
 
@@ -62,7 +62,7 @@ class FAlerta_model extends CI_Model
 		// Consulta
 		$dados = $this->FConsultas_model->getNomeUserId($id_responsavel);
 
-		// Fim Consulta			
+		// Fim Consulta
 
 		$texto_motivo = "";
 		$nome_acao = "";
@@ -224,9 +224,9 @@ class FAlerta_model extends CI_Model
 		if ($check == 0) {
 			return false;
 		} else {
-			$d = $data[0];
-			$m = $data[1];
-			$y = $data[2];
+			$d = $data[0] ?? "00";
+			$m = $data[1] ?? "00";
+			$y = $data[2] ?? "0000";
 
 			// verifica se a data é válida!
 			// 1 = true (válida)

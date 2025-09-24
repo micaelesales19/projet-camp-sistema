@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  */
 
 class FSistema_model extends CI_Model
@@ -26,7 +26,62 @@ class FSistema_model extends CI_Model
 		return $telefone_formatado;
 	}
 
-	public function cadastrarUsuário($nome_usuario, $email, $cpf, $nivel)
+	function gerarCodigo($length = 10)
+	{
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[Rand(0, $charactersLength - 1)];
+		}
+		return $randomString;
+	}
+
+	function gerarLink()
+	{
+		for ($i = true; $i == true; $i) {
+
+			$codigo = $this->gerarCodigo();
+
+			$consultarLink = $this->db->select("*")
+				->from("link_cadastro")
+				->where("codigo", $codigo)
+				->get();
+			$totalLink = $consultarLink->num_rows();
+			if ($totalLink == 0) {
+				return $codigo;
+			} else {
+				return true;
+			}
+		}
+	}
+
+	function check_codigo($codigo)
+	{
+		$consultarLink = $this->db->select("*")
+			->from("link_cadastro")
+			->where("codigo", $codigo)
+			->get();
+		$totalLink = $consultarLink->num_rows();
+		if ($totalLink == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+
+	function infos_codigo($codigo)
+	{
+		$consultarLink = $this->db->select("*")
+			->from("link_cadastro")
+			->where("codigo", $codigo)
+			->get();
+		$link = $consultarLink->row_array();
+		return $link;
+	}
+
+	public function cadastrarUsuário($nome_usuario, $email, $cpf, $nivel, $senha)
 	{
 		$ativo = "0";
 
@@ -34,6 +89,7 @@ class FSistema_model extends CI_Model
 		$inserir['nome'] = $nome_usuario;
 		$inserir['email'] = $email;
 		$inserir['cpf'] = $cpf;
+		$inserir['senha'] = $senha;
 		$inserir['nivel'] = $nivel;
 		$inserir['ativo'] = $ativo;
 
@@ -69,7 +125,7 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-	public function excluirUsuário($email, $cpf)
+	/*public function excluirUsuário($email, $cpf)
 	{
 		$this->db->where('cpf', $cpf);
 		$this->db->where('email', $email);
@@ -79,7 +135,7 @@ class FSistema_model extends CI_Model
 		} else {
 			return false;
 		}
-	}
+	}*/
 
 	public function desativarUsuário($nome_usuario, $email, $cpf)
 	{
@@ -625,9 +681,9 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
-	// Fim CADASTROS		
+	// Fim CADASTROS
 
-	// EDIÇÃO	
+	// EDIÇÃO
 	public function editarColider($id, $nome, $cpf, $email, $telefone, $nascimento, $foto)
 	{
 		$this->db->set('nome_colider', $nome);
@@ -717,7 +773,7 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
-	// Fim EXCLUSÂO		
+	// Fim EXCLUSÂO
 
 	// EXCLUSÃO ALCANÇADO
 	public function excluirColiderAlcancado($id_colider)
@@ -751,7 +807,7 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
-	// Fim EXCLUSÂO ALCANÇADO	
+	// Fim EXCLUSÂO ALCANÇADO
 
 	// REATIVAR
 	public function reativarColider($id_colider, $id_responsavel)

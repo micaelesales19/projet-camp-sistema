@@ -37,7 +37,7 @@ class Supervisores extends CI_Model
         } else if ($opc == 'info_supervisor') {
             // Consulta na tabela de líderes de acordo com o ID SUPERVISOR
             $id_usuario = $id_usuario[0];
-            $consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = '$id_usuario'");
+            $consultar_coordenador = $this->db->query("SELECT * FROM supervisor_local WHERE id_supervisorR = '$id_usuario'");
             $row = $consultar_coordenador->num_rows();
             $dados_consulta_coordenadores = $consultar_coordenador->row_array();
 

@@ -2,6 +2,7 @@
 
 /**
  * @property $db
+ * @property $db3
  * @property $load
  * @property $uri
  * @property $FSistema_model

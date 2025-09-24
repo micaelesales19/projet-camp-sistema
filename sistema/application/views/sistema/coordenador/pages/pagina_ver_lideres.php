@@ -20,7 +20,7 @@ if (!isset($_SESSION['usuario'])) {
     $id_sr = $dados_coordenador['dados']['id_supervisorR'];
     $id_se = $dados_coordenador['dados']['id_supervisorE'];
 
-    $link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_usuario&tres=$id_sr&quatro=$id_se";
+    //$link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_usuario&tres=$id_sr&quatro=$id_se";
 
 ?>
     <!DOCTYPE html>
@@ -85,13 +85,25 @@ if (!isset($_SESSION['usuario'])) {
                 document.getElementById('cidades2').value = '';
                 document.getElementById('consultar_endereco').style.display = "inline";
                 document.getElementById('escrever_endereco').style.display = "none";
-            }
 
-            if (opc == "outro") {
+                document.getElementById('precisa_cpf').style.display = "inline";
+                document.getElementById('precisa_cpf_colider').style.display = "inline";
+
+                document.getElementById('cpf').setAttribute('required', 'true');
+                document.getElementById('cpf_colider').setAttribute('required', 'true');
+            } else {
                 document.getElementById('estados').value = '';
                 document.getElementById('cidades').value = '';
                 document.getElementById('escrever_endereco').style.display = "inline";
                 document.getElementById('consultar_endereco').style.display = "none";
+
+                document.getElementById('precisa_cpf').style.display = "none";
+                document.getElementById('cpf').value = '';
+                document.getElementById('cpf').removeAttribute('required');
+
+                document.getElementById('precisa_cpf_colider').style.display = "none";
+                document.getElementById('cpf_colider').value = '';
+                document.getElementById('cpf_colider').removeAttribute('required');
             }
         }
     </script>
@@ -308,6 +320,14 @@ if (!isset($_SESSION['usuario'])) {
     </script>
 
     <style>
+        #precisa_cpf {
+            display: none;
+        }
+
+        #precisa_cpf_colider {
+            display: none;
+        }
+
         .loader {
             border: 16px solid #f3f3f3;
             border-radius: 50%;
@@ -420,40 +440,6 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
                                                 <div class="box-body">
 
-                                                    <div class="col-lg-12">
-                                                        <div class="form-group has-feedback">
-                                                            <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome">
-                                                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group has-feedback">
-                                                            <input type="email" class="form-control" placeholder="Email" name="email">
-                                                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group has-feedback">
-                                                            <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11">
-                                                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group has-feedback">
-                                                            <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone">
-                                                            <span class="glyphicon glyphicon-phone form-control-feedback"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group has-feedback">
-                                                            <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento">
-                                                            <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
-                                                        </div>
-                                                    </div>
 
                                                     <div class="col-lg-12">
                                                         <div class="col-lg-4">
@@ -461,6 +447,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                 <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
                                                                     <option value="" selected>País</option>
                                                                     <option value="br">Brasil</option>
+                                                                    <option value="Moçambique">Moçambique</option>
                                                                     <option value="outro">Outros</option>
                                                                 </select>
                                                                 <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
@@ -469,13 +456,13 @@ if (!isset($_SESSION['usuario'])) {
                                                         <div id="escrever_endereco">
                                                             <div class="col-lg-4">
                                                                 <div class="form-group has-feedback">
-                                                                    <input type="text" id="estaods2" class="form-control" placeholder="Estado" name="estados2">
+                                                                    <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-4">
                                                                 <div class="form-group has-feedback">
-                                                                    <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2">
+                                                                    <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
@@ -500,10 +487,53 @@ if (!isset($_SESSION['usuario'])) {
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-lg-12">
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome">
+                                                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="email" class="form-control" placeholder="Email" name="email">
+                                                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone">
+                                                            <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento">
+                                                            <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
                                                         <div class="form-group has-feedback">
                                                             <input type="text" class="form-control" placeholder="Igreja" minlength="5" name="igreja">
                                                             <span class="glyphicon glyphicon-home form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="password" class="form-control" placeholder="Senha" name="senha" required>
+                                                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group has-feedback" id="precisa_cpf">
+                                                            <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" id="cpf" maxlength="14">
+                                                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                                                         </div>
                                                     </div>
 

@@ -2,9 +2,11 @@
 
 /**
  * @property $db
+ * @property $db3
  * @property $load
  * @property $uri
  * @property $FSistema_model
+ * @property $FAlerta_model
  * @property $Criancas
  * @property $PG
  * @property $FConsultas_model
@@ -53,11 +55,81 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'info_lider_or_email_cpf_nome') {
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $cpf2 = $id_usuario[2];
+            $nome = $id_usuario[3];
+            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_usuario_or_email_cpf_nome') {
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $nome = $id_usuario[2];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' OR cpf = '$cpf' OR nome = '$nome'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_usuario_and_email_cpf') {
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_usuario_or_email_nome') {
+            $email = $id_usuario[0];
+            $nome = $id_usuario[1];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' OR nome = '$nome'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
         } else if ($opc == 'info_lider_email_cpf') {
             // Consulta na tabela de líderes de acordo com o ID LIDER
             $email = $id_usuario[0];
             $cpf = $id_usuario[1];
             $consultar_lider = $this->db->query("SELECT * FROM lider WHERE email = '$email' AND cpf = '$cpf'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_lider_nome_email_data_nascimento') {
+            // Consulta na tabela de líderes de acordo com o ID LIDER
+            $email = $id_usuario[0];
+            $nome = $id_usuario[1];
+            $data_nascimento = $id_usuario[2];
+            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE email = '$email' AND nome_lider = '$nome' AND nascimento = '$data_nascimento'");
             $row = $consultar_lider->num_rows();
             $dados_consulta_lideres = $consultar_lider->row_array();
 
@@ -242,7 +314,84 @@ class Lideres extends CI_Model
         }
     }
 
-    public function cadastro_lider($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional)
+    public function check_cadastro($opc, $data)
+    {
+        if ($opc == 'consultar_por_2_cpf_email_nome') {
+            $nome = $data[0];
+            $cpf = $data[1];
+            $cpf2 = $data[2];
+            $email = $data[3];
+
+            $consultar_1 = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row_1 = $consultar_1->num_rows();
+
+            $consultar_2 = $this->db->query("SELECT * FROM coordenador WHERE nome_coordenador LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row_2 = $consultar_2->num_rows();
+
+            $consultar_3 = $this->db->query("SELECT * FROM supervisor_local WHERE nome_supervisorR LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row_3 = $consultar_3->num_rows();
+
+            $consultar_4 = $this->db->query("SELECT * FROM supervisor_regional WHERE nome_supervisorE LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row_4 = $consultar_4->num_rows();
+
+            $consultar_5 = $this->db->query("SELECT * FROM direcao WHERE nome_direcao LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row_5 = $consultar_5->num_rows();
+
+            if ($row_1 != 0 || $row_2 != 0 || $row_3 != 0 || $row_4 != 0 || $row_5 != 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else if ($opc == 'consultar_por_email_nome_data_nascimento') {
+            $nome = $data[0];
+            $email = $data[1];
+            $data_nascimento = $data[2];
+
+            $consultar_1 = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' OR email = '$email' OR nascimento = '$data_nascimento'");
+            $row_1 = $consultar_1->num_rows();
+
+            $consultar_2 = $this->db->query("SELECT * FROM coordenador WHERE nome_coordenador LIKE '$nome' OR email = '$email' OR nascimento = '$data_nascimento'");
+            $row_2 = $consultar_2->num_rows();
+
+            $consultar_3 = $this->db->query("SELECT * FROM supervisor_local WHERE nome_supervisorR LIKE '$nome' OR email = '$email' OR nascimento = '$data_nascimento'");
+            $row_3 = $consultar_3->num_rows();
+
+            $consultar_4 = $this->db->query("SELECT * FROM supervisor_regional WHERE nome_supervisorE LIKE '$nome' OR email = '$email' OR nascimento = '$data_nascimento'");
+            $row_4 = $consultar_4->num_rows();
+
+            $consultar_5 = $this->db->query("SELECT * FROM direcao WHERE nome_direcao LIKE '$nome' OR email = '$email' OR nascimento = '$data_nascimento'");
+            $row_5 = $consultar_5->num_rows();
+
+            if ($row_1 != 0 || $row_2 != 0 || $row_3 != 0 || $row_4 != 0 || $row_5 != 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public function check_cadastro_usuario($opc, $data)
+    {
+        if ($opc == 'check_nome_2_cpf_email') {
+            $nome = $data[0];
+            $cpf = $data[1];
+            $cpf2 = $data[2];
+            $email = $data[3];
+
+            $consultar = $this->db->query("SELECT * FROM usuario WHERE nome LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row = $consultar->num_rows();
+
+            return $row;
+        } else if ($opc == 'check_nome_email') {
+            $nome = $data[0];
+            $email = $data[1];
+            $consultar = $this->db->query("SELECT * FROM usuario WHERE nome LIKE '$nome' OR email = '$email'");
+            $row = $consultar->num_rows();
+
+            return $row;
+        }
+    }
+    public function cadastro_lider($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, $confirmado)
     {
         date_default_timezone_set('America/Sao_Paulo');
         $data = date('d/m/Y'); // tirar
@@ -265,7 +414,7 @@ class Lideres extends CI_Model
         $inserir['id_supervisorE'] = $id_sregional;
         $inserir['foto'] = $foto;
         $inserir['foto_2'] = '';
-        $inserir['confirmado'] = 2;
+        $inserir['confirmado'] = $confirmado;
         $inserir['data'] = $data;
         $inserir['data_cadastro'] = $data_2;
 
@@ -350,4 +499,32 @@ class Lideres extends CI_Model
             return false;
         }
     }
+
+    /*Colíder*/
+    // CADASTROS
+    public function cadastrarColider($id_lider, $nome_colider, $cpf, $email, $telefone, $nascimento)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date('d/m/Y');
+        $ativo = "1";
+        $foto = "fotoU/geral.jpg";
+
+        $inserir['id_colider'] = NULL;
+        $inserir['nome_colider'] = $nome_colider;
+        $inserir['email'] = $email;
+        $inserir['cpf'] = $cpf;
+        $inserir['telefone_whatsapp'] = $telefone;
+        $inserir['nascimento'] = $nascimento;
+        $inserir['id_lider'] = $id_lider;
+        $inserir['foto'] = $foto;
+        $inserir['ativo'] = $ativo;
+        $inserir['data'] = $data;
+
+        if ($this->db->insert('colider', $inserir)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Fim CADASTROS
 }

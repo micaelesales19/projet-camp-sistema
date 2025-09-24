@@ -4,9 +4,6 @@
 
 $voltar = "../";
 $array = array('voltar' => $voltar);
-
-$CI = &get_instance();
-$CI->load->model('FConsultas_model');
 ?>
 <!DOCTYPE html>
 <html>
@@ -32,13 +29,25 @@ $this->load->view('partes/head');
             document.getElementById('cidades2').value = '';
             document.getElementById('consultar_endereco').style.display = "inline";
             document.getElementById('escrever_endereco').style.display = "none";
-        }
 
-        if (opc == "outro") {
+            document.getElementById('precisa_cpf').style.display = "inline";
+            document.getElementById('precisa_cpf_colider').style.display = "inline";
+
+            document.getElementById('cpf').setAttribute('required', 'true');
+            document.getElementById('cpf_colider').setAttribute('required', 'true');
+        } else {
             document.getElementById('estados').value = '';
             document.getElementById('cidades').value = '';
             document.getElementById('escrever_endereco').style.display = "inline";
             document.getElementById('consultar_endereco').style.display = "none";
+
+            document.getElementById('precisa_cpf').style.display = "none";
+            document.getElementById('cpf').value = '';
+            document.getElementById('cpf').removeAttribute('required');
+
+            document.getElementById('precisa_cpf_colider').style.display = "none";
+            document.getElementById('cpf_colider').value = '';
+            document.getElementById('cpf_colider').removeAttribute('required');
         }
     }
 </script>
@@ -50,6 +59,20 @@ $this->load->view('partes/head');
 
     #escrever_endereco {
         display: none;
+    }
+
+    #precisa_cpf {
+        display: none;
+    }
+
+    #precisa_cpf_colider {
+        display: none;
+    }
+
+    #cpf,
+    #cpf_colider,
+    .cpf-icon {
+        margin-bottom: 13px;
     }
 
     /* The switch - the box around the slider */
@@ -137,31 +160,15 @@ $this->load->view('partes/head');
         <div class="register-box-body">
             <h4>Formulário de Cadastro</h4>
             <p class="login-box-msg">Preencha com todos os dados e informações válidas.</p>
-            <form action="cadastro/salvar" method="post" name="form_cadastro_lider">
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" name="nome" minlength="5" placeholder="Seu nome" required>
-                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                </div>
+            <form action="../cadastro/salvar" method="post" name="form_cadastro_lider">
 
-                <div class="form-group has-feedback">
-                    <input type="email" class="form-control" placeholder="Email" name="email" required>
-                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                </div>
-
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" required>
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                </div>
-
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Telefone (DDD + Telefone)" minlength="11" name="telefone" required>
-                    <span class="glyphicon glyphicon-phone form-control-feedback"></span>
-                </div>
+                <input type="hidden" name="codigo" value="<?= $codigo; ?>">
 
                 <div class="form-group has-feedback">
                     <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
                         <option value="" selected>País</option>
                         <option value="br">Brasil</option>
+                        <option value="Moçambique">Moçambique</option>
                         <option value="outro">Outros</option>
                     </select>
                     <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
@@ -169,12 +176,12 @@ $this->load->view('partes/head');
 
                 <div id="escrever_endereco">
                     <div class="form-group has-feedback">
-                        <input type="text" id="estaods2" class="form-control" placeholder="Estado" name="estados2">
+                        <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
                         <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                     </div>
 
                     <div class="form-group has-feedback">
-                        <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2">
+                        <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
                         <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                     </div>
                 </div>
@@ -195,6 +202,26 @@ $this->load->view('partes/head');
                 </div>
 
                 <div class="form-group has-feedback">
+                    <input type="text" class="form-control" name="nome" minlength="5" placeholder="Seu nome" required>
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                </div>
+
+                <div class="form-group has-feedback">
+                    <input type="email" class="form-control" placeholder="Email" name="email" required>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+
+                <div class="form-group has-feedback" id="precisa_cpf">
+                    <input type="text" class="form-control" id="cpf" placeholder="CPF" minlength="11" maxlength="14" name="cpf">
+                    <span class="glyphicon glyphicon-lock form-control-feedback cpf-icon"></span>
+                </div>
+
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" placeholder="Telefone (DDD + Telefone)" minlength="11" name="telefone" required>
+                    <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                </div>
+
+                <div class="form-group has-feedback">
                     <input type="text" class="form-control" minlength="5" placeholder="Igreja" name="igreja">
                     <span class="glyphicon glyphicon-home form-control-feedback"></span>
                 </div>
@@ -202,6 +229,11 @@ $this->load->view('partes/head');
                 <div class="form-group has-feedback">
                     <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
                     <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                </div>
+
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="Senha" name="senha" required>
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                 </div>
 
                 <div class="form-group has-feedback" id="linha">
@@ -239,9 +271,9 @@ $this->load->view('partes/head');
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                     </div>
 
-                    <div class="form-group has-feedback">
-                        <input type="text" class="form-control" placeholder="CPF do Colíder" minlength="11" name="cpfColider">
-                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <div class="form-group has-feedback" id="precisa_cpf_colider">
+                        <input type="text" class="form-control" placeholder="CPF do Colíder" minlength="11" maxlength="14" id="cpf_colider" name="cpfColider">
+                        <span class="glyphicon glyphicon-lock form-control-feedback cpf-icon"></span>
                     </div>
 
                     <div class="form-group has-feedback">

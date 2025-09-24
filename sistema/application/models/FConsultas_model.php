@@ -10,7 +10,7 @@
 class FConsultas_model extends CI_Model
 {
 	protected $active_group;
-	protected $db2; // <------ ADICIONE 
+	protected $db2; // <------ ADICIONE
 
 	public function __construct()
 	{
@@ -274,7 +274,7 @@ class FConsultas_model extends CI_Model
 	function red($route, $time, $data)
 	{
 
-		$funcao = "  
+		$funcao = "
 			<br>
 			<form action='$route' method='post' id='dateForm'>
 
@@ -292,7 +292,7 @@ class FConsultas_model extends CI_Model
 				setTimeout(function(){
 					document.getElementById('dateForm').submit(); // SUBMIT FORM
 				}, $time);
-				
+
 			</script>
 		";
 
@@ -390,7 +390,7 @@ class FConsultas_model extends CI_Model
 		}
 	}
 
-	public function consultarLiderJaCadastrado($nome, $cpf, $cpf2, $email)
+	/*public function consultarLiderJaCadastrado($nome, $cpf, $cpf2, $email)
 	{
 		$consultar_1 = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
 		$row_1 = $consultar_1->num_rows();
@@ -407,31 +407,20 @@ class FConsultas_model extends CI_Model
 		$consultar_5 = $this->db->query("SELECT * FROM direcao WHERE nome_direcao LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
 		$row_5 = $consultar_5->num_rows();
 
-		if ($row_1 == 0) {
-			return false;
-		} else if ($row_2 == 0) {
-			return false;
-		} else if ($row_3 == 0) {
-			return false;
-		} else if ($row_4 == 0) {
-			return false;
-		} else if ($row_5 == 0) {
-			return false;
+		if ($row_1 != 0 || $row_2 != 0 || $row_3 != 0 || $row_4 != 0 || $row_5 != 0) {
+			return 1;
 		} else {
-			return true;
+			return 0;
 		}
 	}
 
-	public function consultarUsuarioCadastrado($nome, $cpf, $cpf2, $email)
+	public function consultarUsuarioJaCadastrado($nome, $cpf, $cpf2, $email)
 	{
 		$consultar = $this->db->query("SELECT * FROM usuario WHERE nome LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
 		$row = $consultar->num_rows();
-		if ($row == 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+
+		return $row;
+	}*/
 	// já revisou
 
 	// mostrar pais
@@ -448,7 +437,7 @@ class FConsultas_model extends CI_Model
 		}
 	}
 
-	// mostrar_usuario 
+	// mostrar_usuario
 	public function mostrar_registro_tabela($email, $cpf)
 	{
 		$query_rementente_colider = $this->db->select('*')

@@ -24,7 +24,7 @@ if (!isset($_SESSION['usuario'])) {
     $id_sr = $dados_coordenador['dados']['id_supervisorR'];
     $id_se = $dados_coordenador['dados']['id_supervisorE'];
 
-    $link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_usuario&tres=$id_sr&quatro=$id_se";
+    //$link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_usuario&tres=$id_sr&quatro=$id_se";
 ?>
 
     <!DOCTYPE html>

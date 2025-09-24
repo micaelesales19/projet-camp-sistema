@@ -78,6 +78,14 @@ class Welcome extends CI_Controller
 		$this->load->view('sistema/page_login', $dados);
 	}
 
+	public function loginpage()
+	{
+		$x = $this->input->get('x');
+		$dados = array('x' => $x);
+
+		$this->load->view('sistema/page_login_back', $dados);
+	}
+
 	public function migrar()
 	{
 		$consultar_criancas = $this->db->query("SELECT * FROM crianca");
@@ -167,15 +175,15 @@ class Welcome extends CI_Controller
 				} else {
 					$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
 				}
-				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND (cpf = '$cpf' OR cpf = '$cpf_completo')");
+				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND (cpf = '$cpf' OR cpf = '$cpf_completo') LIMIT 1");
 				$dados = $consultar->row_array();
 				$total = $consultar->num_rows();
 			} else if ($opc == 2 || $opc == 4) {
-				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND senha = '$senha'");
+				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND senha = '$senha'  LIMIT 1");
 				$dados = $consultar->row_array();
 				$total = $consultar->num_rows();
 			} else if ($opc == 3) {
-				$consultar = $this->db->query("SELECT * FROM usuario WHERE nome LIKE '$nome%' AND senha = '$senha'");
+				$consultar = $this->db->query("SELECT * FROM usuario WHERE nome LIKE '$nome%' AND senha = '$senha'  LIMIT 1");
 				$dados = $consultar->row_array();
 				$total = $consultar->num_rows();
 			} else {
@@ -498,27 +506,50 @@ class Welcome extends CI_Controller
 		';
 	}
 
+	// página de cadastro via link
 	public function cadastro()
 	{
 		$codigo =  $this->uri->segment(2);
 
 		if ($codigo == '') {
-			echo "Link Inválido ou vazio! Tente novamente!";
-		} else {
 			$dados = array(
-				'codigo' => $codigo,
+				'titulo' => "Discipulando no Lar",
+				'mensagem_1' => "Link Inválido",
+				'mensagem_2' => "Peça o seu coodenador/supervisor para gerar um novo link",
+				'rodape' => "Se tiver alguma dúvida ou precisar de mais informações, por favor não hesite em entrar em contato conosco.",
 			);
 
-			$this->load->view('sistema/cadastro', $dados);
+			$this->load->view('partes/mensagem', $dados);
+		} else {
+
+			$check = $this->FSistema_model->check_codigo($codigo);
+
+			if ($check) {
+				$dados = array(
+					'codigo' => $codigo,
+				);
+
+				$this->load->view('sistema/cadastro', $dados);
+			} else {
+				$dados = array(
+					'titulo' => "Discipulando no Lar",
+					'mensagem_1' => "Link Inválido",
+					'mensagem_2' => "Peça o seu coodenador/supervisor para gerar um novo link",
+					'rodape' => "Se tiver alguma dúvida ou precisar de mais informações, por favor não hesite em entrar em contato conosco.",
+				);
+
+				$this->load->view('partes/mensagem', $dados);
+			}
 		}
 	}
 
+	// cadastro lider via link
 	public function salvar_cadastro()
 	{
 		$nome = $this->input->post('nome');
 		$cpf = $this->input->post('cpf');
 		$email = $this->input->post('email');
-		$telefone = $this->input->post('telefone');
+		$telefone_digitado = $this->input->post('telefone');
 		$igreja = $this->input->post('igreja');
 		$pais = $this->input->post('pais');
 		$estado1 = $this->input->post('estados');
@@ -526,6 +557,14 @@ class Welcome extends CI_Controller
 		$estado2 = $this->input->post('estados2');
 		$cidade2 = $this->input->post('cidades2');
 		$nascimento = $this->input->post('nascimento');
+
+		$senha = $this->input->post('senha');
+
+		$is_br = $pais == 'br' || '' ? true : false;
+
+		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
+
+		$codigo = $this->input->post('codigo');
 
 		$estado = "";
 		$cidade = "";
@@ -535,119 +574,361 @@ class Welcome extends CI_Controller
 		$nomeColider = $this->input->post('nomeColider');
 		$cpfColider = $this->input->post('cpfColider');
 		$emailColider = $this->input->post('emailColider');
-		$telefoneColider = $this->input->post('telefoneColider');
+		$telefoneColider_digitado = $this->input->post('telefoneColider');
 		$nascimentoColider = $this->input->post('nascimentoColider');
 
 		if ($estado1 == "" and $cidade1 == "") {
-			$estado .= $estado2;
-			$cidade .= $cidade2;
+			$estado = $estado2;
+			$cidade = $cidade2;
 		} else {
-			$estado .= $estado1;
-			$cidade .= $cidade1;
+			$estado = $estado1;
+			$cidade = $cidade1;
 		}
 
-		$ponto1 = $cpf[3];
+		$infocodigo = $this->FSistema_model->infos_codigo($codigo);
 
-		$cpf_completo = "";
+		// cadastro líder pais = brasil
+		if ($is_br) {
+			$cpfSoNumeros = preg_replace('/\D/', '', $cpf);
+			$total_numeros_cpf = strlen($cpfSoNumeros);
 
-		if ($ponto1 == ".") {
-			$cpf_completo .= $cpf;
-		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
-		}
+			$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento);
+			$total_numeros_data_nascimento = strlen($dataNascimentoSoNumeros);
 
-		//if ($this->FAlerta_model->valida_cpf($cpf) or $this->FAlerta_model->validaNIF($cpf)) {
-		if ($this->FAlerta_model->ValidaData($nascimento)) {
-			$consultarPais = $this->FConsultas_model->consultaraisJaCadastrado($nome, $cpf, $cpf_completo, $email);
-			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
+			$liberado = false;
 
-			if ($consultarPais || $consultarUsuario) {
+			if ($isColider == '') {
+				$liberado = true;
+			} else {
+				$cpfColiderSoNumeros = preg_replace('/\D/', '', $cpfColider);
+				$total_numeros_cpf_colider = strlen($cpfColiderSoNumeros);
 
-				$consultarTreinamento = $this->FConsultas_model->consultaraisJaTerminouOTreinamento($nome, $email, $nascimento);
+				$dataNascimentoColiderSoNumeros = preg_replace('/\D/', '', $nascimentoColider);
+				$total_numeros_data_nascimento_colider = strlen($dataNascimentoColiderSoNumeros);
 
-				if (!$consultarTreinamento) {
-					$supervisor = $this->FConsultas_model->selecionarSupervisorEstado($estado);
-					$id_supervisor = $supervisor['id_supervisor'];
-					$nome_supervisor = $supervisor['nome_supervisor'];
-					$emailSupervisor = $supervisor['email'];
-					$nivel = 8;
-					$cadastro = $this->FSistema_model->cadastro_pais($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $pais, $estado, $cidade, $id_supervisor);
-					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
-					if ($cadastro && $cadastroUsuario) {
-						if ($isColider == '') {
-						} else {
-							$consultarDados = $this->FConsultas_model->consultaDadosLiderNomeCPFEMail($nome, $cpf, $cpf_completo, $email);
-							$id_lider = $consultarDados['id'];
-							$this->FSistema_model->cadastrarColider($id_lider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
-						}
-						$this->FSistema_model->enviarEmailSupervisor($emailSupervisor, $nome_supervisor, $nome, $email, $telefone, $estado, $cidade);
-						echo '
-								<script>
-									if(window.confirm("Sucesso!")) {
-										window.location="https://sistema.campbrasil.com/";
-									}else{
-										window.location="https://sistema.campbrasil.com/";
-									}
-								</script>
-							';
-					} else {
-						echo '
-								<script>
-									if(window.confirm("Erro, tente novamente!")) {
-										window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-									}else{
-										window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-									}
-								</script>
-							';
-					}
+				if ($total_numeros_cpf_colider == 11 && $total_numeros_data_nascimento_colider == 8 && $this->FAlerta_model->valida_cpf($cpfColiderSoNumeros)) {
+					$liberado = true;
 				} else {
-					echo '
-							<script>
-								if(window.confirm("Você não terminou o treinamento para pais!")) {
-									window.location="https://treinamento.campbrasil.com/";
-								}else{
-									window.location="https://treinamento.campbrasil.com/";
+					$liberado = false;
+				}
+			}
+
+			if ($liberado) {
+				if ($total_numeros_cpf == 11 && $total_numeros_data_nascimento == 8 && $this->FAlerta_model->valida_cpf($cpfSoNumeros)) {
+					$cpf_completo = $cpfSoNumeros[0] . $cpfSoNumeros[1] . $cpfSoNumeros[2] . "." . $cpfSoNumeros[3] . $cpfSoNumeros[4] . $cpfSoNumeros[5] . "." . $cpfSoNumeros[6] . $cpfSoNumeros[7] . $cpfSoNumeros[8] . "-" . $cpfSoNumeros[9] . $cpfSoNumeros[10];
+					$data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+					$id_coordenador = "";
+					$id_supervisor = "";
+
+					$codigo_id_c = $infocodigo['dados'];
+					if ($codigo_id_c == '') {
+						$id_coordenador = $infocodigo['id_usuario'];
+						$id_supervisor = 4000;
+					} else {
+						$id_coordenador = $infocodigo['id_usuario'];
+						$id_supervisor = $infocodigo['dados'];
+					}
+
+					$liderjacadastrado = $this->Lideres->check_cadastro('consultar_por_2_cpf_email_nome', [$nome, $cpfSoNumeros, $cpf_completo, $email]);
+					$usuariojatacadastrado = $this->Lideres->check_cadastro_usuario('check_nome_2_cpf_email', [$nome, $cpfSoNumeros, $cpf_completo, $email]);
+
+					if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
+						$nivel = 1;
+						$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
+						$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
+						if ($cadastro && $cadastroUsuario) {
+							$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '', '');
+							$id_lider = $consultarDados['dados']['id_lider'];
+
+							$consultarDadosUsuario = $this->Lideres->infos([$email, $cpf_completo], 'info_usuario_and_email_cpf', '', '', '');
+							$id_usuario = $consultarDadosUsuario['dados']['id_usuario'];
+
+							if ($isColider == '') {
+							} else {
+
+								$cpfColiderSoNumeros = preg_replace('/\D/', '', $cpfColider);
+								$total_numeros_cpf_colider = strlen($cpfColiderSoNumeros);
+
+								$dataNascimentoColiderSoNumeros = preg_replace('/\D/', '', $nascimentoColider);
+								$total_numeros_data_nascimento_colider = strlen($dataNascimentoColiderSoNumeros);
+
+								if ($total_numeros_cpf_colider == 11 && $total_numeros_data_nascimento_colider == 8 && $this->FAlerta_model->valida_cpf($cpfColiderSoNumeros)) {
+									$cpf_completo_colider = $cpfColiderSoNumeros[0] . $cpfColiderSoNumeros[1] . $cpfColiderSoNumeros[2] . "." . $cpfColiderSoNumeros[3] . $cpfColiderSoNumeros[4] . $cpfColiderSoNumeros[5] . "." . $cpfColiderSoNumeros[6] . $cpfColiderSoNumeros[7] . $cpfColiderSoNumeros[8] . "-" . $cpfColiderSoNumeros[9] . $cpfColiderSoNumeros[10];
+
+									$data_nascimento_colider_completo = $dataNascimentoColiderSoNumeros[0] . $dataNascimentoColiderSoNumeros[1] . "/" . $dataNascimentoColiderSoNumeros[2] . $dataNascimentoColiderSoNumeros[3] . "/" . $dataNascimentoColiderSoNumeros[4] . $dataNascimentoColiderSoNumeros[5] . $dataNascimentoColiderSoNumeros[6] . $dataNascimentoColiderSoNumeros[7];
+
+									$telefoneColider = $this->FSistema_model->formatar_telefone($telefoneColider_digitado, $is_br);
+
+									$this->Lideres->cadastrarColider($id_lider, $nomeColider, $cpf_completo_colider, $emailColider, $telefoneColider, $data_nascimento_colider_completo);
+								} else {
 								}
+							}
+
+							$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $id_usuario, $id_lider);
+							$this->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
+
+							$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
+							echo '
+							<script>
+								setTimeout(function(){ window.location="https://site.campbrasil.com/" }, 3000);
 							</script>
 						';
-				}
-			} else {
-				echo '
+						} else {
+							$link = $infocodigo['link'];
+							$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+							echo '
+							<script>
+								setTimeout(function(){ window.location="' . $link . '" }, 3000);
+							</script>
+						';
+						}
+					} else {
+						$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_or_email_cpf_nome', '', '', '');
+
+						if ($info_usuario['row'] == 0) {
+							$mensagem = "Link Inválido!\nDados não Encontrado";
+							$link = "https://sistemas.campbrasil.com";
+						} else {
+							$nome_usuario = $info_usuario['dados']['nome'];
+							$email_usuario = $info_usuario['dados']['email'];
+							$cpf_usuario = $info_usuario['dados']['cpf'];
+							$senha = $info_usuario['dados']['senha'];
+							$mensagem = "Sucesso!\nLíder Liberado!";
+							$link = "https://sistema.campbrasil.com/sistema/acesso?email=$email_usuario&cpf=$cpf_usuario&nome=$nome_usuario&senha=$senha&x_ir=1&opc=1";
+						}
+
+						$this->FConsultas_model->mensagem('danger', 'Você já está cadastrado! Você será redirecionado!', [$mensagem]);
+						echo '
 						<script>
-							if(window.confirm("Você já está cadastrado!")) {
-								window.location="https://sistema.campbrasil.com/";
-							}else{
-								window.location="https://sistema.campbrasil.com/";
-							}
+							setTimeout(function(){ window.location="' . $link . '" }, 3000);
 						</script>
 					';
-			}
-		} else {
-			echo '
-					<script>
-						if(window.confirm("Erro, data de nascimento inválida!")) {
-							window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-						}else{
-							window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-						}
-					</script>
-				';
-		}
-		/*} else {
-			echo '
-				<script>
-					if(window.confirm("Erro, CPF inválido!")) {
-						window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
-					}else{
-						window.location="https://sistema.campbrasil.com/sistema/pais/cadastro";
 					}
+				} else {
+					$link = $infocodigo['link'];
+					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Informações de CPF e/ou Data de Nascimento Inválidas!"]);
+					echo '
+				<script>
+					setTimeout(function(){ window.location="' . $link . '" }, 3000);
 				</script>
 			';
-		}*/
+				}
+			} else {
+				$link = $infocodigo['link'];
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Informações do Colíder (CPF e/ou Data de Nascimento) Inválidas!"]);
+				echo '
+					<script>
+						setTimeout(function(){ window.location="' . $link . '" }, 3000);
+					</script>
+				';
+			}
+		} else {
+			// cadastro líder outro pais
+			$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento);
+			$total_numeros_data_nascimento = strlen($dataNascimentoSoNumeros);
+
+			$liberado = false;
+
+			if ($isColider == '') {
+				$liberado = true;
+			} else {
+				$dataNascimentoColiderSoNumeros = preg_replace('/\D/', '', $nascimentoColider);
+				$total_numeros_data_nascimento_colider = strlen($dataNascimentoColiderSoNumeros);
+
+				if ($total_numeros_data_nascimento_colider == 8) {
+					$liberado = true;
+				} else {
+					$liberado = false;
+				}
+			}
+
+			if ($liberado) {
+				if ($total_numeros_data_nascimento == 8) {
+					$id_coordenador = "";
+					$id_supervisor = "";
+
+					$data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+					$codigo_id_c = $infocodigo['dados'];
+					if ($codigo_id_c == '') {
+						$id_coordenador = $infocodigo['id_usuario'];
+						$id_supervisor = 4000;
+					} else {
+						$id_coordenador = $infocodigo['id_usuario'];
+						$id_supervisor = $infocodigo['dados'];
+					}
+
+					$liderjacadastrado = $this->Lideres->check_cadastro('consultar_por_email_nome_data_nascimento', [$nome, $email, $data_nascimento_completo]);
+					$usuariojatacadastrado = $this->Lideres->check_cadastro_usuario('check_nome_email', [$nome, $email]);
+
+					if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
+						$nivel = 1;
+						$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
+						$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, '', $nivel, $senha);
+						if ($cadastro && $cadastroUsuario) {
+							$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '', '');
+							$id_lider = $consultarDados['dados']['id_lider'];
+
+							$consultarDadosUsuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '', '');
+							$id_usuario = $consultarDadosUsuario['dados']['id_usuario'];
+
+							if ($isColider == '') {
+							} else {
+								$dataNascimentoColiderSoNumeros = preg_replace('/\D/', '', $nascimentoColider);
+								$total_numeros_data_nascimento_colider = strlen($dataNascimentoColiderSoNumeros);
+
+								if ($total_numeros_data_nascimento_colider == 8) {
+									$data_nascimento_colider_completo = $dataNascimentoColiderSoNumeros[0] . $dataNascimentoColiderSoNumeros[1] . "/" . $dataNascimentoColiderSoNumeros[2] . $dataNascimentoColiderSoNumeros[3] . "/" . $dataNascimentoColiderSoNumeros[4] . $dataNascimentoColiderSoNumeros[5] . $dataNascimentoColiderSoNumeros[6] . $dataNascimentoColiderSoNumeros[7];
+
+									$telefoneColider = $this->FSistema_model->formatar_telefone($telefoneColider_digitado, $is_br);
+
+									$this->Lideres->cadastrarColider($id_lider, $nomeColider, "", $emailColider, $telefoneColider, $data_nascimento_colider_completo);
+								} else {
+								}
+							}
+
+							$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $id_usuario, $id_lider);
+							$this->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
+
+							$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
+							echo '
+							<script>
+								setTimeout(function(){ window.location="https://site.campbrasil.com/" }, 3000);
+							</script>
+						';
+						} else {
+							$link = $infocodigo['link'];
+							$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+							echo '
+							<script>
+								setTimeout(function(){ window.location="' . $link . '" }, 3000);
+							</script>
+						';
+						}
+					} else {
+						$info_usuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '', '');
+
+						if ($info_usuario['row'] == 0) {
+							$mensagem = "Link Inválido!\nDados não Encontrado";
+							$link = "https://sistemas.campbrasil.com";
+						} else {
+							$nome_usuario = $info_usuario['dados']['nome'];
+							$email_usuario = $info_usuario['dados']['email'];
+							$cpf_usuario = $info_usuario['dados']['cpf'];
+							$senha = $info_usuario['dados']['senha'];
+							$mensagem = "Sucesso!\nLíder Liberado!";
+							$link = "https://sistema.campbrasil.com/sistema/acesso?email=$email_usuario&cpf=$cpf_usuario&nome=$nome_usuario&senha=$senha&x_ir=1&opc=2";
+						}
+
+						$this->FConsultas_model->mensagem('danger', 'Você já está cadastrado! Você será redirecionado!', [$mensagem]);
+						echo '
+						<script>
+							setTimeout(function(){ window.location="' . $link . '" }, 3000);
+						</script>
+					';
+					}
+				} else {
+					$link = $infocodigo['link'];
+					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Informações de CPF e/ou Data de Nascimento Inválidas!"]);
+					echo '
+				<script>
+					setTimeout(function(){ window.location="' . $link . '" }, 3000);
+				</script>
+			';
+				}
+			} else {
+				$link = $infocodigo['link'];
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Informações do Colíder (CPF e/ou Data de Nascimento) Inválidas!"]);
+				echo '
+					<script>
+						setTimeout(function(){ window.location="' . $link . '" }, 3000);
+					</script>
+				';
+			}
+		}
 	}
 
-	public function liberar_acesso()
+	// coordenador aprovar via link email
+	public function aprovar_acesso_lider()
+	{
+		$id_operador = $this->input->get('id_operador');
+
+		$id_usuario = $this->input->get('id_usuario');
+		$id_lider = $this->input->get('id_lider');
+
+		$mensagem = "";
+		$link = "https://sistemas.campbrasil.com";
+
+		if ($id_operador == '' || $id_usuario == '' || $id_lider == '') {
+			$mensagem = "Link Inválido!\nDados Vazios";
+		} else {
+
+			$info_lider = $this->FConsultas_model->getInfoUserId($id_lider);
+			if ($info_lider['row'] == 0) {
+				$mensagem = "Link Inválido!\nDados não Encontrado";
+			} else {
+				$email = $info_lider['dados']['email'];
+				$cpf = $info_lider['dados']['cpf'];
+				$nome = $this->FConsultas_model->getNomeUserId($id_lider)['nome'];
+
+				$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+
+				if ($info_usuario['row'] == 0) {
+					$mensagem = "Link Inválido!\nDados não Encontrado";
+				} else {
+					$senha = $info_usuario['dados']['senha'];
+					$mensagem = "Sucesso!\nLíder Liberado!";
+					$link_lider = "https://sistema.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
+
+					$this->Lideres->editar_autorizacao_lider($id_lider, 2);
+					$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+				}
+			}
+
+			// gerar link acesso coordenador/supervisor
+			$dados_coordenador = $this->Coordenadores->infos([$id_operador], 'info_coordenador', '', '', '');
+
+			if ($dados_coordenador['row'] == 0) {
+
+				$dados_supervisor = $this->Supervisores->infos([$id_operador], 'info_supervisor', '', '', '');
+				if ($dados_supervisor['row'] == 0) {
+				} else {
+					$email = $dados_coordenador['dados']['email'];
+					$cpf = $dados_coordenador['dados']['cpf'];
+					$nome = $dados_coordenador['dados']['nome_coordenador'];
+					$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+					$senha = $info_usuario['dados']['senha'];
+					$link = "https://sistema.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
+				}
+			} else {
+				$email = $dados_coordenador['dados']['email'];
+				$cpf = $dados_coordenador['dados']['cpf'];
+				$nome = $dados_coordenador['dados']['nome_coordenador'];
+				$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+				$senha = $info_usuario['dados']['senha'];
+				$link = "https://sistema.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
+			}
+		}
+
+		$dados = array(
+			'titulo' => "Discipulando no Lar",
+			'mensagem_1' => $mensagem,
+			'mensagem_2' => "Aguarde você será redirecionado.",
+			'rodape' => "Se tiver alguma dúvida ou precisar de mais informações, por favor não hesite em entrar em contato conosco.",
+		);
+
+		$this->load->view('partes/mensagem', $dados);
+
+		echo '
+				<script>
+					setTimeout(function(){ window.location="' . $link . '" }, 3000);
+				</script>
+			';
+	}
+
+	// liberar acesso via plataforma sem ser no link do email
+	public function liberar_acesso(): void
 	{
 		$id_lider = $this->input->post('id_lider');
 		$id_usuario = $this->input->post('id_usuario');
@@ -660,13 +941,18 @@ class Welcome extends CI_Controller
 
 		$routa = $this->input->post('routa');
 
-		//$mudar = $this->Lideres->editar_autorizacao_lider($id_lider, 2);
+		$mudar = $this->Lideres->editar_autorizacao_lider($id_lider, 2);
 
-		$this->enviar_email_coordenador(3000, $id_lider);
+		$email = $info_lider['dados']['email'];
+		$cpf = $info_lider['dados']['cpf'];
+		$nome = $info_lider['dados']['nome_lider'];
+		$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+		$senha = $info_usuario['dados']['senha'];
 
-		//$this->enviar_email_lider($id_lider);
+		$link_lider = "https://sistema.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
+		$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 
-		/*if ($mudar) {
+		if ($mudar) {
 			$this->FAlerta_model->alerta_controle($id_usuario, $id_lider, "autorizou com sucesso seu lider", 'coord_autoriza_lider');
 
 			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Sucesso!']);
@@ -680,10 +966,10 @@ class Welcome extends CI_Controller
 				newTab.location.href = "https://api.whatsapp.com/send?phone=' . $telefone . '&text=' . $mensagem . '";
 				}, 0);
 			</script>';
-		}*/
+		}
 	}
 
-	public function enviar_email_lider($id_lider)
+	public function enviar_email_lider_liberacao_sistema($id_lider, $link): void
 	{
 		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
 		if ($dados_lider['row'] == 0) {
@@ -696,7 +982,7 @@ class Welcome extends CI_Controller
 
 			$dados = array(
 				'dados_lider' => $lider,
-				'link' => "https://sistemas.campbrasil.com/",
+				'link' => $link,
 			);
 
 			$page = $this->load->view('email/bem-vindo-sistema', $dados, TRUE);
@@ -716,47 +1002,131 @@ class Welcome extends CI_Controller
 		}
 	}
 
-	public function criar_link_cadastro($id_usuario) {
-		$dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
-		$dados_supervisor = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
-	}
-
-	public function enviar_email_coordenador($id_usuario, $id_lider)
+	public function enviar_email_coordenador_liberacao_sistema($id_coordenador, $id_usuario, $id_lider)
 	{
 		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
-		$info_usuario = $this->FConsultas_model->getNomeUserId($id_usuario);
-		$nome_coordenador = $info_usuario['nome'];
+		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+		$data_hoje = date('d/m/Y');
 
 		if ($dados_lider['row'] == 0) {
-			// enviar alerta p direção
 		} else {
+
 			$lider = $dados_lider['dados'];
-			$email = $lider['email'];
-			// Suucesso
-			$assunto = "Bem-Vindo(a) " . $lider['nome_lider'] . " ao nosso sistema de discipulado infantil!";
+			$assunto = "Alerta de novo cadastrado no sistema - $data_hoje";
 
-			$dados = array(
-				'dados_lider' => $lider,
-				'nome' => $nome_coordenador,
-				'link' => "https://sistemas.campbrasil.com/",
-			);
+			if ($dados_coordenador['row'] == 0) {
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => 'Micaele Sales Ribeiro',
+					'link' => "https://sistema.campbrasil.com/sistema/aprovar?id_operador=$id_coordenador&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
 
-			//$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
-			$this->load->view('email/alerta_c-novo-lider', $dados);
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
 
-			/*$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-			$this->email->subject($assunto);
-			$this->email->to($email);
-			$this->email->message($page);
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to("sales.micaele1911@gmail.com");
+				$this->email->message($page);
 
-			if ($this->email->send()) {
-				//echo "\nsucesso";
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
 			} else {
-				//echo "\nerro\n";
-				//echo $this->email->print_debugger();
-			}*/
+				$nome_coordenador = $dados_coordenador['dados']['nome_coordenador'];
+				$email = $dados_coordenador['dados']['email'];
+				// Suucesso
+
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => $nome_coordenador,
+					'link' => "https://sistema.campbrasil.com/sistema/aprovar?id_operador=$id_coordenador&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
+
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
+
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to($email);
+				$this->email->message($page);
+
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
+			}
 		}
 	}
+
+	public function enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider)
+	{
+		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		$dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '', '');
+		$data_hoje = date('d/m/Y');
+
+		if ($dados_lider['row'] == 0) {
+		} else {
+
+			$lider = $dados_lider['dados'];
+			$assunto = "Alerta de novo cadastrado no sistema - $data_hoje";
+
+			if ($dados_supervisor['row'] == 0) {
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => 'Micaele Sales Ribeiro',
+					'link' => "https://sistema.campbrasil.com/sistema/aprovar?id_operador=$id_supervisor&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
+
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
+
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to("sales.micaele1911@gmail.com");
+				$this->email->message($page);
+
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
+			} else {
+				$nome_coordenador = $dados_supervisor['dados']['nome_supervisorR'];
+				$email = $dados_supervisor['dados']['email'];
+				// Suucesso
+
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => $nome_coordenador,
+					'link' => "https://sistema.campbrasil.com/sistema/aprovar?id_operador=$id_supervisor&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
+
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
+
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to($email);
+				$this->email->message($page);
+
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
+			}
+		}
+	}
+
+
 	public function enviarEmailDevocionalDiario()
 
 	{
@@ -2142,7 +2512,7 @@ class Welcome extends CI_Controller
 
 		$nivel = $this->input->post("nivel") == '' ? 1 : $this->input->post("nivel");
 
-		$excluir = $this->PG->excluir_pg_permanentemente($id_pg, $idLider, $idUsuario, $nivel);
+		$excluir = $this->PG->excluir_pg_permanentemente($id_pg, $idLider, $idUsuario);
 
 		$red = $this->input->post('red') ?? 'pg';
 
@@ -4405,13 +4775,13 @@ class Welcome extends CI_Controller
 		echo $funcao;
 	}
 
-	// líder
+	// cadastro lider via sistema
 	public function cadastro_lider()
 	{
 		$nome = $this->input->post('nome');
 		$cpf = $this->input->post('cpf');
 		$email = $this->input->post('email');
-		$telefone = $this->input->post('telefone');
+		$telefone_digitado = $this->input->post('telefone');
 		$igreja = $this->input->post('igreja');
 		$pais = $this->input->post('pais');
 		$estado1 = $this->input->post('estados');
@@ -4419,6 +4789,12 @@ class Welcome extends CI_Controller
 		$estado2 = $this->input->post('estados2');
 		$cidade2 = $this->input->post('cidades2');
 		$nascimento = $this->input->post('nascimento');
+
+		$senha = $this->input->post('senha');
+
+		$is_br = $pais == 'br' || '' ? true : false;
+
+		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
 
 		$id_pastor = $this->input->post('id_pastor');
 		$id_coordenador = $this->input->post('id_coordenador');
@@ -4434,16 +4810,6 @@ class Welcome extends CI_Controller
 		} else {
 			$estado .= $estado1;
 			$cidade .= $cidade1;
-		}
-
-		$ponto1 = $cpf[3];
-
-		$cpf_completo = "";
-
-		if ($ponto1 == ".") {
-			$cpf_completo .= $cpf;
-		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
 		}
 
 		$red = $this->input->post('red') ?? 'coordenador/lideres';
@@ -4468,32 +4834,88 @@ class Welcome extends CI_Controller
 			$routa = "coordenador/page/lideres";
 		}
 
-		if ($this->FAlerta_model->ValidaData($nascimento)) {
-			$consultarLider = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
-			$consultarUsuario = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
+		$cpfSoNumeros = preg_replace('/\D/', '', $cpf);
+		$total_numeros_cpf = strlen($cpfSoNumeros);
 
-			if ($consultarLider || $consultarUsuario) {
-				$nivel = 1;
-				$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional);
-				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
-				if ($cadastro && $cadastroUsuario) {
-					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
-					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-					echo $funcao;
+		$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento);
+		$total_numeros_data_nascimento = strlen($dataNascimentoSoNumeros);
+
+		// cadastrando lider pais = brasil
+		if ($is_br) {
+			if ($total_numeros_cpf == 11 && $total_numeros_data_nascimento == 8 && $this->FAlerta_model->valida_cpf($cpfSoNumeros)) {
+
+				$cpf_completo = $cpfSoNumeros[0] . $cpfSoNumeros[1] . $cpfSoNumeros[2] . "." . $cpfSoNumeros[3] . $cpfSoNumeros[4] . $cpfSoNumeros[5] . "." . $cpfSoNumeros[6] . $cpfSoNumeros[7] . $cpfSoNumeros[8] . "-" . $cpfSoNumeros[9] . $cpfSoNumeros[10];
+				$data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+				$liderjacadastrado = $this->Lideres->check_cadastro('consultar_por_2_cpf_email_nome', [$nome, $cpfSoNumeros, $cpf_completo, $email]);
+				$usuariojatacadastrado = $this->Lideres->check_cadastro_usuario('check_nome_2_cpf_email', [$nome, $cpfSoNumeros, $cpf_completo, $email]);
+
+				if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
+					$nivel = 1;
+					$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, 2);
+					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
+					if ($cadastro && $cadastroUsuario) {
+						$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '', '');
+						$id_lider = $consultarDados['dados']['id_lider'];
+
+						$link_lider = "https://sistema.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
+						$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+
+						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
+						$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+						echo $funcao;
+					} else {
+						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+						$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+						echo $funcao;
+					}
 				} else {
-					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Líder já Cadastrado!"]);
 					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
 					echo $funcao;
 				}
 			} else {
-				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Líder já Cadastrado!"]);
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["CPF ou Data de Nascimento Inválido!"]);
 				$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
 				echo $funcao;
 			}
 		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
-			$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
-			echo $funcao;
+			// cadastro líder outro pais
+			if ($total_numeros_data_nascimento == 8) {
+				$data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+				$liderjacadastrado = $this->Lideres->check_cadastro('consultar_por_email_nome_data_nascimento', [$nome, $email, $data_nascimento_completo]);
+				$usuariojatacadastrado = $this->Lideres->check_cadastro_usuario('check_nome_email', [$nome, $email]);
+
+				if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
+					$nivel = 1;
+					$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, 2);
+					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, "", $nivel, $senha);
+					if ($cadastro && $cadastroUsuario) {
+						$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '', '');
+						$id_lider = $consultarDados['dados']['id_lider'];
+
+						$link_lider = "https://sistema.campbrasil.com/sistema/acesso?email=$email&cpf=&nome=$nome&senha=$senha&x_ir=1&opc=2";
+						$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+
+						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
+						$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+						echo $funcao;
+					} else {
+						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+						$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+						echo $funcao;
+					}
+				} else {
+					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Líder já Cadastrado!"]);
+					$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+					echo $funcao;
+				}
+			} else {
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["CPF ou Data de Nascimento Inválido!"]);
+				$funcao = $this->FConsultas_model->red("../$routa", 2000, $data);
+				echo $funcao;
+			}
 		}
 	}
 
@@ -4720,7 +5142,7 @@ class Welcome extends CI_Controller
 		}
 
 		if ($consultarColider) {
-			$cadastroColider = $this->FSistema_model->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
+			$cadastroColider = $this->Lideres->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
 
 			if ($cadastroColider) {
 				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Cadastro Relizado com Sucesso!']);
