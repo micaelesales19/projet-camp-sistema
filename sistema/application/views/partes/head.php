@@ -33,7 +33,7 @@
   <!-- jQuery 3 -->
   <script src="<?php echo base_url('import/sistema/bower_components/jquery/dist/jquery.min.js'); ?>"></script>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 

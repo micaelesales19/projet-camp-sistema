@@ -20,6 +20,11 @@ $materialSemanarioOperacao = array(
     'arquivo' => 'import/sistema/arquivos/02/Operacao/semanarios.pdf'
 );
 
+$materialChequinhoOperacao = array(
+    'nome' => 'Chequinho',
+    'arquivo' => 'import/sistema/arquivos/02/Operacao/feirinha.pdf'
+);
+
 $materialIntroducaoOperacao = array(
     'id' => 0
     /*'id' => 1,

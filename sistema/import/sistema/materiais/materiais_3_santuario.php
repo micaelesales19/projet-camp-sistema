@@ -19,6 +19,11 @@ $materialSemanarioSantuario = array(
     'arquivo' => 'import/sistema/arquivos/01/Santuario/devocional.pdf'
 );
 
+$materialChequinhoSantuario = array(
+    'nome' => 'Chequinho',
+    'arquivo' => 'import/sistema/arquivos/01/Santuario/feirinha.pdf'
+);
+
 $materialIntroducaoSantuario = array(
     'id' => 1,
     'nome' => 'Introdução ao Santuário',

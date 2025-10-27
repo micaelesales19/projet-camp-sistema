@@ -19,6 +19,11 @@ $materialSemanarioMergulho = array(
     'arquivo' => 'import/sistema/arquivos/01/Mergulho/devocional.pdf'
 );
 
+$materialChequinhoMergulho = array(
+    'nome' => 'Chequinho',
+    'arquivo' => 'import/sistema/arquivos/01/Mergulho/feirinha.pdf'
+);
+
 $materialIntroducaoMergulho = array(
     'id' => 1,
     'nome' => 'Introdução ao Mergulhuo',
@@ -47,6 +52,6 @@ $materialLicaoVisuaisMergulho2 = array(
     'id' => 4,
     'nome' => 'Lição em PowerPoint do Mergulho',
     'nome_visivel' => 'Lição em PowerPoint',
-    'arquivo' => 'import/sistema/arquivos/01/Mergulho/O Mergulho.ppsx',
+    'arquivo' => 'import/sistema/arquivos/01/Mergulho/Mergulho.ppsx',
     'imagem' => 'import/sistema/img/documento.png',
 );

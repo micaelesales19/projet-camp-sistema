@@ -2,6 +2,11 @@
 
 $route['coordenador/home'] = 'Coordenador/home';
 
+// Dados Pessoais
+$route['coordenador/pagina_editar_pessoal'] = 'Coordenador/pagina_editar_pessoal';
+$route['coordenador/salvar_edicao'] = 'Coordenador/e_pessoal';
+// Fim Dados Pessoais
+
 $route['coordenador/page/lideres'] = 'Coordenador/pagina_ver_lideres';
 $route['coordenador/page/lideres/detalhes/:any'] = 'Coordenador/pagina_ver_detalhes_lideres';
 $route['coordenador/page/lideres/mostrar1'] = 'Coordenador/mostrar_table_parte_1';

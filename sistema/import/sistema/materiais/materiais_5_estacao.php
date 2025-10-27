@@ -19,6 +19,11 @@ $materialSemanarioEstacao = array(
     'arquivo' => 'import/sistema/arquivos/01/Estacao/devocional.pdf'
 );
 
+$materialChequinhoEstacao = array(
+    'nome' => 'Chequinho',
+    'arquivo' => 'import/sistema/arquivos/01/Estacao/feirinha.pdf'
+);
+
 $materialIntroducaoEstacao = array(
     'id' => 1,
     'nome' => 'Introdução',
@@ -47,6 +52,6 @@ $materialLicaoVisuaisEstacao2 = array(
     'id' => 4,
     'nome' => 'Lição em PowerPoint da Estação Final',
     'nome_visivel' => 'Lição em PowerPoint',
-    'arquivo' => 'import/sistema/arquivos/01/Estacao/Estação Final.ppsx',
+    'arquivo' => 'import/sistema/arquivos/01/Estacao/EstaçãoFinal.ppsx',
     'imagem' => 'import/sistema/img/documento.png',
 );

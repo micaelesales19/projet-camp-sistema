@@ -30,7 +30,7 @@
       </thead>
       <tbody>
         <?php
-        // Consulta Criança                                                         
+        // Consulta Criança
         $sqlC = "SELECT * FROM criancas WHERE id_pg = $id_pg AND lider = $id_lider";
         $consultaC = $pdo->prepare($sqlC);
         $consultaC->execute();

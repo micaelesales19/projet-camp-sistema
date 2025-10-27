@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  */
 class Criancas extends CI_Model
 {
@@ -259,6 +259,25 @@ class Criancas extends CI_Model
         $this->db->set('telefone_responsavel', $telefone_responsavel);
 
         $this->db->where('id_crianca', $idCrianca);
+
+        if ($this->db->update('criancas')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+    public function editar_nome_responsavel_crianca($idCrianca, $nomeResponsavel, $emailResponsavel, $telefoneResponsavel)
+    {
+        $this->db->set('nome_responsavel', $nomeResponsavel);
+        $this->db->set('email_responsavel', $emailResponsavel);
+        $this->db->set('telefone_responsavel', $telefoneResponsavel);
+
+        $this->db->where('id_crianca', $idCrianca);
+
+        $this->db->error();
 
         if ($this->db->update('criancas')) {
             return true;

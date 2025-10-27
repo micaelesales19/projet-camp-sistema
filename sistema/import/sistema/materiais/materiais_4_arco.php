@@ -27,6 +27,11 @@ $materialIntroducaoArco = array(
     'imagem' => 'import/sistema/img/documento.png',
 );
 
+$materialChequinhoArco = array(
+    'nome' => 'Chequinho',
+    'arquivo' => 'import/sistema/arquivos/01/Arco/feirinha.pdf'
+);
+
 $materialLicaoArco = array(
     'id' => 2,
     'nome' => 'Manual do Arco',

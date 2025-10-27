@@ -12,7 +12,7 @@ if (!isset($_SESSION['usuario'])) {
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-  $dados_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_usuario);
+  $dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
 
   if ($dados_coordenador['row'] == 0) {
     $data = [];
@@ -20,11 +20,6 @@ if (!isset($_SESSION['usuario'])) {
     $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
     echo $funcao;
   } else {
-    $id_pastor = "2000";
-    $id_sr = $dados_coordenador['dados']['id_supervisorR'];
-    $id_se = $dados_coordenador['dados']['id_supervisorE'];
-
-    //$link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_usuario&tres=$id_sr&quatro=$id_se";
 ?>
 
     <!DOCTYPE html>

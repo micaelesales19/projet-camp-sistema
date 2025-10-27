@@ -20,6 +20,11 @@ $materialSemanarioEvolucao = array(
     'arquivo' => 'import/sistema/arquivos/02/Evolucao/semanarios.pdf'
 );
 
+$materialChequinhoEvolucao = array(
+    'nome' => 'Chequinho',
+    'arquivo' => 'import/sistema/arquivos/02/Evolucao/feirinha.pdf'
+);
+
 $materialIntroducaoEvolucao = array(
     'id' => 0
     /*'id' => 1,

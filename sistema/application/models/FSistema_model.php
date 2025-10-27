@@ -100,22 +100,12 @@ class FSistema_model extends CI_Model
 		}
 	}
 
-	public function editarUsuário($id_usuario, $nome_usuario, $email, $cpf)
+	public function editar_usuario($id_usuario, $nome_usuario, $email, $cpf, $senha)
 	{
-		$ponto1 = $cpf[3];
-		$ponto2 = $cpf[7];
-		$ponto3 = $cpf[11];
-		$cpf_completo = "";
-
-		if ($ponto1 == "." && $ponto2 == "." && $ponto3 == "-") {
-			$cpf_completo .= $cpf;
-		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
-		}
-
 		$this->db->set('nome', $nome_usuario);
-		$this->db->set('cpf', $cpf_completo);
+		$this->db->set('cpf', $cpf);
 		$this->db->set('email', $email);
+		$this->db->set('senha', $senha);
 		$this->db->where('id_usuario', $id_usuario);
 
 		if ($this->db->update('usuario')) {
@@ -1382,6 +1372,7 @@ class FSistema_model extends CI_Model
 			return false;
 		}
 	}
+
 	public function desativar_coordenador($id_coordenador)
 	{
 		$ativo = "0";

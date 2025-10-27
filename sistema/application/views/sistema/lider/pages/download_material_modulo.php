@@ -141,6 +141,7 @@ if (!isset($_SESSION['usuario'])) {
             $materialCapa = array();
             $materialCards = array();
             $materialLicao = array();
+            $materialExtra = array();
 
             switch ($id_modulo) {
               case 1:
@@ -152,6 +153,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoTrilha);
                 array_push($materialLicao, $materialLicaoVisuaisTrilha2);
                 array_push($materialLicao, $materialLicaoVisuaisTrilha1);
+                array_push($materialExtra, $materialChequinhoTrilha);
                 break;
               case 2:
                 array_push($materialCapa, $materialCapaMergulho);
@@ -162,6 +164,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoMergulho);
                 array_push($materialLicao, $materialLicaoVisuaisMergulho2);
                 array_push($materialLicao, $materialLicaoVisuaisMergulho1);
+                array_push($materialExtra, $materialChequinhoMergulho);
                 break;
               case 3:
                 array_push($materialCapa, $materialCapaSantuario);
@@ -172,6 +175,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoSantuario);
                 array_push($materialLicao, $materialLicaoVisuaisSantuario2);
                 array_push($materialLicao, $materialLicaoVisuaisSantuario1);
+                array_push($materialExtra, $materialChequinhoSantuario);
                 break;
               case 4:
                 array_push($materialCapa, $materialCapaArco);
@@ -180,8 +184,9 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialCards, $materialSemanarioArco);
                 array_push($materialLicao, $materialIntroducaoArco);
                 array_push($materialLicao, $materialLicaoArco);
-                array_push($materialLicao, $materialLicaoVisuaisArco2);
                 array_push($materialLicao, $materialLicaoVisuaisArco1);
+                array_push($materialLicao, $materialLicaoVisuaisArco2);
+                array_push($materialExtra, $materialChequinhoArco);
                 break;
               case 5:
                 array_push($materialCapa, $materialCapaEstacao);
@@ -192,6 +197,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoEstacao);
                 array_push($materialLicao, $materialLicaoVisuaisEstacao2);
                 array_push($materialLicao, $materialLicaoVisuaisEstacao1);
+                array_push($materialExtra, $materialChequinhoEstacao);
                 break;
               case 6:
                 array_push($materialCapa, $materialCapaSegredos);
@@ -202,6 +208,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoSegredos);
                 array_push($materialLicao, $materialLicaoVisuaisSegredos2);
                 array_push($materialLicao, $materialLicaoVisuaisSegredos1);
+                array_push($materialExtra, $materialChequinhoSegredos);
                 break;
               case 7:
                 array_push($materialCapa, $materialCapaSobreviventes);
@@ -212,6 +219,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoSobreviventes);
                 array_push($materialLicao, $materialLicaoVisuaisSobreviventes2);
                 array_push($materialLicao, $materialLicaoVisuaisSobreviventes1);
+                array_push($materialExtra, $materialChequinhoSobreviventes);
                 break;
               case 8:
                 array_push($materialCapa, $materialCapaTerrarios);
@@ -222,6 +230,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoTerrarios);
                 array_push($materialLicao, $materialLicaoVisuaisTerrarios2);
                 array_push($materialLicao, $materialLicaoVisuaisTerrarios1);
+                array_push($materialExtra, $materialChequinhoTerrarios);
                 break;
               case 9:
                 array_push($materialCapa, $materialCapaOperacao);
@@ -232,6 +241,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoOperacao);
                 array_push($materialLicao, $materialLicaoVisuaisOperacao2);
                 array_push($materialLicao, $materialLicaoVisuaisOperacao1);
+                array_push($materialExtra, $materialChequinhoOperacao);
                 break;
               case 10:
                 array_push($materialCapa, $materialCapaEvolucao);
@@ -242,16 +252,17 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialLicaoEvolucao);
                 array_push($materialLicao, $materialLicaoVisuaisEvolucao2);
                 array_push($materialLicao, $materialLicaoVisuaisEvolucao1);
+                array_push($materialExtra, $materialChequinhoEvolucao);
                 break;
               case 11:
-                array_push($materialCapa, $materialCapaEvolucao);
-                array_push($materialCapa, $materialContraCapaEvolucao);
-                array_push($materialCards, $materialCardsEvolucao);
-                array_push($materialCards, $materialSemanarioEvolucao);
-                array_push($materialLicao, $materialIntroducaoEvolucao);
-                array_push($materialLicao, $materialLicaoEvolucao);
-                array_push($materialLicao, $materialLicaoVisuaisEvolucao2);
-                array_push($materialLicao, $materialLicaoVisuaisEvolucao1);
+                array_push($materialCapa, $materialCapaOrganelas);
+                array_push($materialCapa, $materialContraCapaOrganelas);
+                array_push($materialCards, $materialCardsOrganelas);
+                array_push($materialCards, $materialSemanarioOrganelas);
+                array_push($materialLicao, $materialIntroducaoOrganelas);
+                array_push($materialLicao, $materialLicaoOrganelas);
+                array_push($materialLicao, $materialLicaoVisuaisOrganelas2);
+                array_push($materialLicao, $materialLicaoVisuaisOrganelas1);
                 break;
               default:
                 $color_modulo = 'green';
@@ -597,6 +608,36 @@ if (!isset($_SESSION['usuario'])) {
                 } ?>
 
                 <?php
+                if ($materialExtra) {
+                ?>
+                  <div class="col-md-6">
+                    <div class="small-box bg-info">
+                      <div class="box-header with-border">
+                        <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+                        <div class="box-tools pull-right">
+                          <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="box-body chat" id="linha">
+                        <?php
+                        foreach ($materialExtra as $key => $extra) {
+                        ?>
+                          <div class="succ not-active">
+                            <div class="img-center">
+                              <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+                            </div>
+                            <label for=""><?= $extra['nome']; ?></label>
+                          </div>
+                        <?php } ?>
+                      </div>
+                    </div>
+                    <!-- /.box-body -->
+                  </div>
+                <?php } else {
+                } ?>
+
+                <?php
               } else {
 
                 $idModuloPG = $consultarPG['dados']['id_modulo'];
@@ -742,6 +783,36 @@ if (!isset($_SESSION['usuario'])) {
                                 <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
                               </div>
                               <label for=""><?= $cards['nome']; ?></label>
+                            </div>
+                          <?php } ?>
+                        </div>
+                      </div>
+                      <!-- /.box-body -->
+                    </div>
+                  <?php } else {
+                  } ?>
+
+                  <?php
+                  if ($materialExtra) {
+                  ?>
+                    <div class="col-md-6">
+                      <div class="small-box bg-info">
+                        <div class="box-header with-border">
+                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="box-body chat" id="linha">
+                          <?php
+                          foreach ($materialExtra as $key => $extra) {
+                          ?>
+                            <div class="succ not-active">
+                              <div class="img-center">
+                                <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+                              </div>
+                              <label for=""><?= $extra['nome']; ?></label>
                             </div>
                           <?php } ?>
                         </div>
@@ -967,6 +1038,39 @@ if (!isset($_SESSION['usuario'])) {
                     </div>
                   <?php } else {
                   } ?>
+
+                  <?php
+                  if ($materialExtra) {
+                  ?>
+                    <div class="col-md-6">
+                      <div class="small-box bg-info">
+                        <div class="box-header with-border">
+                          <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+                          <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="box-body chat" id="linha">
+                          <?php
+                          foreach ($materialExtra as $key => $extra) {
+                          ?>
+                            <div class="succ">
+                              <a href="<?php echo base_url($extra['arquivo']); ?>" target="_blank" download>
+                                <div class="img-center">
+                                  <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+                                </div>
+                                <label for=""><?= $extra['nome']; ?></label>
+                              </a>
+                            </div>
+                          <?php } ?>
+                        </div>
+                      </div>
+                      <!-- /.box-body -->
+                    </div>
+                  <?php } else {
+                  } ?>
+
                 <?php } ?>
               <?php } ?>
             <?php } ?>

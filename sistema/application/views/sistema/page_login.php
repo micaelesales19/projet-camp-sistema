@@ -52,13 +52,181 @@ $this->load->view('partes/head');
             <div class="tab-content">
 
               <div class="tab-pane active" id="tab_brasil">
-                <p class="login-box-msg">Sistema em atualização! Voltamos em breve</p>
-                <button type="submit" onclick="enviar_whatsapp();" class="btn btn-primary btn-block btn-flat">Falar com o suporte</button>
+
+                <p class="login-box-msg">Se você não tiver cadastrado sua senha, utilize o CPF</p>
+
+                <p class="login-box-msg" style="width: 400px;">🚨 Atenção! <br>
+                  O sistema está passando por uma atualização e, durante esse processo, podem ocorrer alguns erros ao utilizá-lo. Pedimos a compreensão de todos, pois essas melhorias são importantes para oferecer uma experiência cada vez melhor.<br>
+
+                  🔹 Supervisores: no momento o sistema ainda não está disponível para vocês, pois a atualização está sendo aplicada especificamente no nível de acesso de supervisão.
+
+                  Em breve tudo será normalizado. Obrigado pela paciência! 🙏</p>
+
+                <div class="nav-tabs-custom">
+                  <ul class="nav nav-tabs">
+                    <li class="active"><a href="#usar_cpf" data-toggle="tab">Usar CPF</a></li>
+                    <li><a href="#usar_senha" data-toggle="tab">Usar Senha</a></li>
+                  </ul>
+
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="usar_cpf">
+                      <div class="content">
+                        <form action="acesso" method="POST">
+                          <input type="hidden" name="opc" value="1">
+                          <div class="col-lg-12">
+                            <input class="form-control" name="email" type="email" placeholder="E-mail" value="">
+                            <!-- <span class="glyphicon glyphicon-envelope form-control-feedback"></span> -->
+                          </div>
+
+                          <br><br>
+
+                          <div class="col-lg-12">
+                            <input class="form-control" id="id_cpfs" name="cpf" maxlength="14" type="text" placeholder="CPF (000.000.000-00)" value="">
+                            <!-- <span class="glyphicon glyphicon-lock form-control-feedback"></span> -->
+                          </div>
+
+                          <?php
+
+                          if ($x == "") {
+                            $x .= 1;
+                          } else {
+                          }
+                          ?>
+                          <input type="hidden" value="<?= $x; ?>" name="x_ir">
+                          <br><br>
+                          <center>
+                            <div class="col-xs-4">
+                              <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+                            </div>
+                          </center>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane" id="usar_senha">
+                      <div class="content">
+                        <form action="acesso" method="POST">
+                          <input type="hidden" name="opc" value="2">
+                          <div class="col-lg-12">
+                            <input class="form-control" name="email" type="email" placeholder="E-mail">
+                            <!-- <span class="glyphicon glyphicon-envelope form-control-feedback"></span> -->
+                          </div>
+
+                          <br><br>
+
+                          <div class="col-lg-12">
+                            <input id="password-field" type="password" class="form-control" name="senha" placeholder="Senha">
+                            <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                          </div>
+
+                          <?php
+
+                          if ($x == "") {
+                            $x .= 1;
+                          } else {
+                          }
+                          ?>
+                          <input type="hidden" value="<?= $x; ?>" name="x_ir">
+
+                          <br><br>
+                          <div class="col-xs-4">
+                            <!-- <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button> -->
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div class="tab-pane" id="tab_africa">
-                <p class="login-box-msg">Sistema em atualização! Voltamos em breve</p>
-                <button type="submit" onclick="enviar_whatsapp();" class="btn btn-primary btn-block btn-flat">Falar com o suporte</button>
+
+                <p class="login-box-msg">Se você não tiver cadastrado seu e-mail, utilize só o Nome</p>
+
+                <p class="login-box-msg" style="width: 400px;">🚨 Atenção! <br>
+                  O sistema está passando por uma atualização e, durante esse processo, podem ocorrer alguns erros ao utilizá-lo. Pedimos a compreensão de todos, pois essas melhorias são importantes para oferecer uma experiência cada vez melhor.<br>
+
+                  🔹 Supervisores: no momento o sistema ainda não está disponível para vocês, pois a atualização está sendo aplicada especificamente no nível de acesso de supervisão.
+
+                  Em breve tudo será normalizado. Obrigado pela paciência! 🙏</p>
+
+                <div class="nav-tabs-custom">
+                  <ul class="nav nav-tabs">
+                    <li class="active"><a href="#usar_nome" data-toggle="tab">Usar Nome</a></li>
+                    <li><a href="#usar_email" data-toggle="tab">Usar E-mail</a></li>
+                  </ul>
+
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="usar_nome">
+                      <div class="content">
+                        <form action="acesso" method="POST">
+                          <input type="hidden" name="opc" value="3">
+                          <div class="col-lg-12">
+                            <input class="form-control" name="nome" type="text" placeholder="Nome">
+                            <!-- <span class="glyphicon glyphicon-envelope form-control-feedback"></span> -->
+                          </div>
+
+                          <br><br>
+
+                          <div class="col-lg-12">
+                            <input id="password2-field" type="password" class="form-control" name="senha" placeholder="Senha">
+                            <span toggle="#password2-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                          </div>
+
+                          <?php
+
+                          if ($x == "") {
+                            $x .= 1;
+                          } else {
+                          }
+                          ?>
+                          <input type="hidden" value="<?= $x; ?>" name="x_ir">
+                          <br><br>
+                          <center>
+                            <div class="col-xs-4">
+                              <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+                            </div>
+                          </center>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="tab-pane" id="usar_email">
+                      <div class="content">
+                        <form action="acesso" method="POST">
+                          <input type="hidden" name="opc" value="4">
+                          <div class="col-lg-12">
+                            <input class="form-control" name="email" type="email" placeholder="E-mail">
+                            <!-- <span class="glyphicon glyphicon-envelope form-control-feedback"></span> -->
+                          </div>
+
+                          <br><br>
+
+                          <div class="col-lg-12">
+                            <input id="password3-field" type="password" class="form-control" name="senha" placeholder="Senha">
+                            <span toggle="#password3-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                          </div>
+
+                          <?php
+
+                          if ($x == "") {
+                            $x .= 1;
+                          } else {
+                          }
+                          ?>
+                          <input type="hidden" value="<?= $x; ?>" name="x_ir">
+
+                          <br><br>
+                          <div class="col-xs-4">
+                            <!-- <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button> -->
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <!-- /.tab-content -->

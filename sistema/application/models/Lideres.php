@@ -42,6 +42,19 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 1 && $opc2 == 2 && $order[0] == false) {
+            // Consulta na tabela de líderes de acordo com o ID COORDENADOR
+            $id_usuario = $id_usuario[0];
+            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorR = $id_usuario");
+            $row = $consultar_lideres->num_rows();
+            $dados_consulta_lideres = $consultar_lideres->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
         } else if ($opc == 'info_lider') {
             // Consulta na tabela de líderes de acordo com o ID LIDER
             $id_usuario = $id_usuario[0];
@@ -110,6 +123,18 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'info_usuario_id_usuario') {
+            $id = $id_usuario[0];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE id_usuario = '$id'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
         } else if ($opc == 'info_lider_email_cpf') {
             // Consulta na tabela de líderes de acordo com o ID LIDER
             $email = $id_usuario[0];
@@ -153,79 +178,22 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc2 == 'nao' && $id_usuario[0] == 'coordenador') {
-            // Consulta na tabela de líderes entre datas
-            $data_inicio = $datas['dataInicio']; // antiga
-            $data_final = $datas['dataFim']; // atual
+        } else if ($opc == 'query_coordenador_supervisor_inicial') {
+            // retornando todos os coordenadores de acordo com uma data específica
+            $id_usuario = $id_usuario[0];
+            $data_1 = $datas['data_1']; // antiga
+            $data_2 = $datas['data_2']; // atual
 
-            $id_coordenador = $id_usuario[1];
-
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = '$id_coordenador' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            /*$dados = array(
-                'row' => 0,
-                'dados' => [],
-            );*/
+            $consultar_coordenador = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario AND data_cadastro BETWEEN '$data_1' AND '$data_2' ORDER BY nome_lider ASC");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenador = $consultar_coordenador->result_array();
 
             $dados = array(
                 'row' => $row,
-                'dados' => $dados_consulta_lideres,
+                'dados' => $dados_consulta_coordenador,
             );
+
             return $dados;
-        } else if ($opc2 == 'sim' && $id_usuario[0] == 'coordenador') {
-            // Consulta na tabela de líderes entre datas geral
-            $id_coordenador = $id_usuario[0];
-
-            //$data_inicio = $datas['dataInicio']; // antiga
-            //$data_final = $datas['dataFim']; // atual
-
-            $data_inicio_menos_um_ano = $datas['dataInicioAnoPassado']; // antiga - menos um ano
-            $data_final_menos_um_ano = $datas['dataFimAnoPassado']; // atual - menos um ano
-
-            /*$consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = '$id_coordenador' AND data_cadastro BETWEEN '$data_inicio' AND '$data_final' ORDER BY nome_lider ASC");
-            $row_4 = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row_4,
-                'dados' => $dados_consulta_lideres,
-            );
-            $lideresAtivos = $this->lideresAtivos($dados);
-            array_push($dados, $lideresAtivos);
-
-            $lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_lider', $dados['dados']);
-            $total_criancas_lider = $this->getNumerosCriancas($id_usuario, $lista_de_id_1, 'direcao');
-            array_push($dados, $total_criancas_lider);
-
-            $lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_lider', $lideresAtivos['dados']);
-            $total_criancas_lider_ativos = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_ativos, 'direcao');
-            array_push($dados, $total_criancas_lider_ativos);*/
-
-            // comparação do ano passado
-            $consultar_lider_mesmo_ano = $this->db->query("SELECT * FROM lider WHERE id_coordenador = '$id_coordenador' AND data_cadastro BETWEEN '$data_inicio_menos_um_ano' AND '$data_final_menos_um_ano' ORDER BY nome_lider ASC");
-            $row_1_mesmo_ano = $consultar_lider_mesmo_ano->num_rows();
-            $dados_consulta_lider_mesmo_ano = $consultar_lider_mesmo_ano->result_array();
-
-            $dados1_mesmo_ano = array(
-                'row' => $row_1_mesmo_ano,
-                'dados' => $dados_consulta_lider_mesmo_ano,
-            );
-
-            /*$lideresAtivos_mesmo_ano = $this->lideresAtivos($dados1_mesmo_ano);
-            array_push($dados, $dados1_mesmo_ano); // lideres comparados ao ao passado
-            array_push($dados, $lideresAtivos_mesmo_ano); // lideres ativos comparado ao ano passado
-
-            $lista_de_id_1_mesmo_ano = $this->FSistema_model->retornando_so_id('id_lider', $dados1_mesmo_ano['dados']);
-            $total_criancas_lider_mesmo_ano = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_mesmo_ano, 'direcao');
-            array_push($dados, $total_criancas_lider_mesmo_ano);
-
-            $lista_de_id_1_ativos_mesmo_ano = $this->FSistema_model->retornando_so_id('id_lider', $lideresAtivos_mesmo_ano['dados']);
-            $total_criancas_lider_ativos_mesmo_ano = $this->getNumerosCriancas($id_usuario, $lista_de_id_1_ativos_mesmo_ano, 'direcao');
-            array_push($dados, $total_criancas_lider_ativos_mesmo_ano);*/
-
-            return $dados1_mesmo_ano;
         }
     }
 
@@ -244,7 +212,7 @@ class Lideres extends CI_Model
 
                 $check = $this->check_lider_is_ativo($id_lider, $data_cadastro, $ativo);
 
-                if (!$check) {
+                if ($check == 0) {
                 } else {
                     // líder novo
                     array_push($dados_lider, $lideres);
@@ -270,14 +238,14 @@ class Lideres extends CI_Model
         $pgs = $this->PG->query([$id_lider], 1, 1);
 
         if ($ativo == 0 || $ativo == 1 || $ativo == 3) {
-            return false;
+            return 0;
         } else {
             if (strtotime($data_mais_um_mes) > strtotime($data)) {
-                return true;
+                return 1;
             } else {
                 if ($pgs['row'] == 0 && $qtd_criancas_ativas['row'] == 0 && $qtd_criancas['row'] == 0) {
                     // inativo por n ter pg e nem crianças
-                    return false;
+                    return 0;
                 } else {
                     $id_modulo = $pgs['dados']['id_modulo'] ?? 1;
                     $numero_licao = $pgs['dados']['n_licao'] ?? 1;
@@ -295,18 +263,18 @@ class Lideres extends CI_Model
 
                     if ($data_ultimo_relatorio == '') {
                         // inativo por não preenchimento de relatórios
-                        return false;
+                        return 0;
                     } else {
                         $data_convertida = $this->FConsultas_model->converterData($data_ultimo_relatorio);
                         $data_mais_2_meses = date('Y-m-d', strtotime('+2 months', strtotime($data_convertida)));
 
                         if (strtotime($data_mais_2_meses) < strtotime($data)) {
                             // inativo por ter passado mais de 2 meses inativos
-                            return false;
+                            return 0;
                         } else if ($id_modulo == 10 && $numero_licao == $modulo['n_licao']) {
-                            return true;
+                            return 1;
                         } else {
-                            return true;
+                            return 1;
                         }
                     }
                 }

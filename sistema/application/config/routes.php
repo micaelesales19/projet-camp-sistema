@@ -69,6 +69,7 @@ $route['sair'] = 'welcome/sair';
 $route['login'] = 'welcome/login';
 $route['acesso'] = 'welcome/autenticacao_login';
 $route['atualizar_session'] = 'welcome/atualizar_session';
+$route['sessao/pegar'] = 'welcome/pegar';
 
 $route['termos'] = 'welcome/PaginaDosTermos';
 $route['primeiro_acesso'] = 'welcome/PrimeiroAcesso';
@@ -102,13 +103,9 @@ require_once(APPPATH . '../import/sistema/routas/routas_lider.php');
 require_once(APPPATH . '../import/sistema/routas/routas_coordenador.php');
 // FIM COORDENADOR
 
-/* NÍVEL SUPERVISOR LOCAL */
-require_once(APPPATH . '../import/sistema/routas/routas_slocal.php');
-// FIM SUPERVISOR LOCAL
-
-/* NÍVEL SUPERVISOR REGIONAL */
-require_once(APPPATH . '../import/sistema/routas/routas_sregional.php');
-// FIM SUPERVISOR REGIONAL
+/* NÍVEL SUPERVISOR */
+require_once(APPPATH . '../import/sistema/routas/routas_supervisor.php');
+// FIM SUPERVISOR
 
 /* NÍVEL DIREÇÃO */
 require_once(APPPATH . '../import/sistema/routas/routas_direcao.php');

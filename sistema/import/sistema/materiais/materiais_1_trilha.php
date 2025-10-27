@@ -20,6 +20,12 @@ $materialSemanarioTrilha = array(
     'arquivo' => 'import/sistema/arquivos/01/Trilha/devocional.pdf'
 );
 
+
+$materialChequinhoTrilha = array(
+    'nome' => 'Chequinho',
+    'arquivo' => 'import/sistema/arquivos/01/Trilha/feirinha.pdf'
+);
+
 $materialIntroducaoTrilha = array(
     'id' => 1,
     'nome' => 'Introdução à Trilha',
