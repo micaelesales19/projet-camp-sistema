@@ -1,5 +1,9 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+/**
+ * @property $db
+ */
+
 class Supervisor extends CI_Controller
 {
     function __construct()
@@ -12,14 +16,92 @@ class Supervisor extends CI_Controller
         );
     }
 
+
+    // ok
+    public function criar_link($id_usuario)
+    {
+        $consultarLink = $this->db->select("*")
+            ->from("link_cadastro")
+            ->where("id_usuario", $id_usuario)
+            ->get();
+        $totalLink = $consultarLink->num_rows();
+        $info_codigo = $consultarLink->row_array();
+
+        if ($totalLink == 0) {
+            $dados = "";
+            $nivel = "4";
+            $codigo = $this->FSistema_model->gerarLink();
+            $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
+            $data = date('Y-m-d');
+
+            $inserir = [
+                'id_usuario' => $id_usuario,
+                'nivel' => $nivel,
+                'codigo' => $codigo,
+                'link' => $link,
+                'dados' => $dados,
+                'data' => $data
+            ];
+
+            if ($this->db->insert('link_cadastro', $inserir)) {
+                echo json_encode(['link' => $link]);
+            } else {
+                echo json_encode(['erro' => true]);
+            }
+        } else {
+            echo json_encode(['link' => $info_codigo['link']]);
+        }
+    }
+
+    // ok
+    public function criar_link_coordenador($id_usuario, $id_coordenador)
+    {
+
+        $consultarLink = $this->db->select("*")
+            ->from("link_cadastro")
+            ->where("id_usuario", $id_coordenador)
+            ->get();
+        $totalLink = $consultarLink->num_rows();
+        $info_codigo = $consultarLink->row_array();
+
+        if ($totalLink == 0) {
+            $dados = $id_usuario;
+            $nivel = "3";
+
+            $codigo = $this->FSistema_model->gerarLink();
+
+            $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
+
+            //return $codigo;
+            $data = date('Y-m-d');
+
+            $inserir = [
+                'id_usuario' => $id_usuario,
+                'nivel' => $nivel,
+                'codigo' => $codigo,
+                'link' => $link,
+                'dados' => $dados,
+                'data' => $data
+            ];
+
+            if ($this->db->insert('link_cadastro', $inserir)) {
+                echo json_encode(['link' => $link]);
+            } else {
+                echo json_encode(['erro' => true]);
+            }
+        } else {
+            echo json_encode(['link' => $info_codigo['link']]);
+        }
+    }
+
     /* SUPERVISOR */
     // ok
     public function home()
     {
         $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
-        $link = $this->Supervisores->criar_link($id_usuario);
-        $dados = array('link' => $link);
-        $this->load->view('sistema/supervisor/home', $dados);
+        //$link = $this->Supervisores->criar_link($id_usuario);
+        //$dados = array('link' => $link);
+        $this->load->view('sistema/supervisor/home');
     }
 
     // PG
@@ -36,6 +118,9 @@ class Supervisor extends CI_Controller
         $ano = $this->input->post("ano");
         $routa = $this->input->post('routa');
 
+        $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+        $id_coordenador = $dados_lider['dados']['id_coordenador'];
+
         $modulos = $this->FConsultas_model->consultarModuloAno($ano);
         $dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
 
@@ -48,8 +133,41 @@ class Supervisor extends CI_Controller
                 "icon" => "fa fa-group",
             );
             array_push($pages, $page1);
-        } else {
+        } else if ($routa == 'super/coord') {
+            $page1 = array(
+                "routa" => "../coordenadores",
+                "name" => "Coordenadores",
+                "icon" => "fa fa-group",
+            );
+            $page2 = array(
+                "routa" => "../coordenadores/lideres/$id_coordenador",
+                "name" => "Líderes",
+                "icon" => "fa fa-group",
+            );
+            $page3 = array(
+                "routa" => "../coordenadores/lider/$id_lider",
+                "name" => "Líder",
+                "icon" => "fa fa-user",
+            );
 
+            array_push($pages, $page1);
+            array_push($pages, $page2);
+            array_push($pages, $page3);
+        } else if ($routa == 'super') {
+            $page1 = array(
+                "routa" => "../lideres",
+                "name" => "Líderes",
+                "icon" => "fa fa-group",
+            );
+            $page2 = array(
+                "routa" => "../lider/$id_lider",
+                "name" => "Líder",
+                "icon" => "fa fa-user",
+            );
+
+            array_push($pages, $page1);
+            array_push($pages, $page2);
+        } else {
             $page1 = array(
                 "routa" => "../lideres",
                 "name" => "Líderes",
@@ -140,6 +258,9 @@ class Supervisor extends CI_Controller
         $id_modulo = $this->input->post('id_modulo');
         $licao = $this->input->post('licao');
 
+        $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+        $id_coordenador = $dados_lider['dados']['id_coordenador'];
+
         $red = $this->input->post('red');
 
         $routa = $this->input->post('routa');
@@ -159,6 +280,26 @@ class Supervisor extends CI_Controller
             );
             array_push($pages, $page1);
             array_push($pages, $page2);
+        } else if ($routa == 'super/coord') {
+            $page1 = array(
+                "routa" => "../coordenadores",
+                "name" => "Coordenadores",
+                "icon" => "fa fa-group",
+            );
+            $page2 = array(
+                "routa" => "../coordenadores/lideres/$id_coordenador",
+                "name" => "Líderes",
+                "icon" => "fa fa-group",
+            );
+            $page3 = array(
+                "routa" => "../coordenadores/lider/$id_lider",
+                "name" => "Líderes",
+                "icon" => "fa fa-user",
+            );
+
+            array_push($pages, $page1);
+            array_push($pages, $page2);
+            array_push($pages, $page3);
         } else {
             $page1 = array(
                 "red" => "../lideres",
@@ -251,174 +392,54 @@ class Supervisor extends CI_Controller
     }
 
     // Coordenadores
-    public function pagina_ver_coordenadores()
+    public function pagina_ver_coordenadores() // ok
     {
-        $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
-        $link = $this->Supervisores->criar_link($id_usuario);
-        $dados = array('link' => $link);
-        $this->load->view('sistema/supervisor/pages/pagina_ver_coordenadores', $dados);
+        $this->load->view('sistema/supervisor/pages/pagina_ver_coordenadores');
     }
 
-    /*public function mostrar_table_coordenador_parte_1()
+    public function pagina_ver_lideres_coordenadores() // ok
     {
-        $id_user = $this->input->get("id_user");
-        $opc1 = $this->input->get("opc1");
-        $opc2 = $this->input->get("opc2");
-        $opc3 = $this->input->get("opc3");
-        $opc4 = $this->input->get("opc4");
+        $id_coordenador =  $this->uri->segment(5);
+        $dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+        $dados = array('id_coordenador' => $id_coordenador, 'dados_do_coordenador' => $dados_coordenador);
+        $this->load->view('sistema/supervisor/pages/coordenadores/pagina_ver_lideres_coordenador', $dados);
+    }
 
-        $dataInicio = $this->input->get("dataInicio");
-        $dataFim = $this->input->get("dataAte");
+    public function pagina_ver_detalhes_coordenadores() // ok
+    {
+        $id_coordenador =  $this->uri->segment(5);
+        $dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
 
-        // opc1 = periodo - ultimo mês (opc1) ultimo 6 meses (opc2) desde 2017 (opc3) data (opc4)
-        // opc2 = comparar com o ultimo ano - sim nao
-        $data = date('Y-m-d');
-        $data_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($data)));
+        $dados = array('id_coordenador' => $id_coordenador, 'dados_do_coordenador' => $dados_coordenador);
+        $this->load->view('sistema/supervisor/pages/coordenadores/pagina_ver_info_coordenador', $dados);
+    }
 
-        $data_formatada_1 = "";
-        $data_formatada_2 = "";
-
-        if ($opc2 == 'nao') {
-            if ($opc1 == 'opc1') {
-                // consulta baseada no ultimo mês
-                $menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
-                $data_formatada_1 = $menos_um_mes;
-                $data_formatada_2 = $data;
-            } else if ($opc1 == 'opc2') {
-                // consulta baseada nos últimos 6 meses
-                //$data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
-                $data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
-                $data_formatada_1 = $data_menos_seis_meses;
-                $data_formatada_2 = $data;
-            } else if ($opc1 == 'opc3') {
-                // desde o inicio
-                $data_formatada_1 = "01-02-2017";
-                $data_formatada_2 = $data;
-            } else if ($opc1 == 'opc4') {
-                if ($dataInicio == '' || $dataFim == '') {
-                } else {
-                    $data_formatada_1 = $dataInicio;
-                    $data_formatada_2 = $dataFim;
-                }
-            }
-
-            $datas = array(
-                'dataInicio' => $data_formatada_1,
-                'dataFim' => $data_formatada_2,
-            );
-        } else {
-            if ($opc1 == 'opc1') {
-                // consulta baseada no ultimo mês
-                $menos_um_mes = date('Y-m-d', strtotime('-1 month', strtotime($data)));
-                $menos_um_mes_ano = date('Y-m-d', strtotime('-1 year', strtotime($menos_um_mes)));
-                $data_formatada_1 = $menos_um_mes;
-                $data_formatada_2 = $data;
-                $data_formatada_3 = $menos_um_mes_ano;
-                $data_formatada_4 = $data_menos_um_ano;
-            } else if ($opc1 == 'opc2') {
-                // consulta baseada nos últimos 6 meses
-                $data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
-                $menos_seis_meses_ano = date('Y-m-d', strtotime('-1 year', strtotime($data_menos_seis_meses)));
-                $data_formatada_1 = $data_menos_seis_meses;
-                $data_formatada_2 = $data;
-                $data_formatada_3 = $menos_seis_meses_ano;
-                $data_formatada_4 = $data_menos_um_ano;
-            } else if ($opc1 == 'opc4') {
-                if ($dataInicio == '' || $dataFim == '') {
-                } else {
-                    $data_inicio_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataInicio)));
-                    $data_fim_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($dataFim)));
-
-                    $data_formatada_1 = $dataInicio;
-                    $data_formatada_2 = $dataFim;
-                    $data_formatada_3 = $data_inicio_menos_um_ano;
-                    $data_formatada_4 = $data_fim_menos_um_ano;
-                }
-            }
-
-            $datas = array(
-                'dataInicio' => $data_formatada_1,
-                'dataFim' => $data_formatada_2,
-                'dataInicioAnoPassado' => $data_formatada_3,
-                'dataFimAnoPassado' => $data_formatada_4,
-            );
-        }
-
-        $dados_usuario = $this->Supervisores->infos([$id_user], 'info_supervisor', '', '', '');
-        // 'mostrar_comparacao' => $opc2,
-        $dados_coordenador = $this->consultasBDCoordenador($id_user, $opc2, $opc3, $opc4, $datas);
-
-        $dados = array(
-            'info' => $dados_usuario,
-            'info_coordenadores' => $dados_coordenador,
-        );
-
-        $this->load->view('sistema/supervisor/pages/coordenadores/mostrar_tabela_coord_1', $dados);
-    }*/
-
-    public function mostrar_table_coordenador()
+    public function mostrar_table_coordenador() // ok
     {
         $id_user = $this->input->get("id_user");
 
-        // opc2 = comparar com o ultimo ano - sim nao
-        $opc2 = $this->input->get("comparar_ultimo_ano");
-
-        // nivel da consulta
-        $opc3 = $this->input->get("query");
-
-        // depois é para remover a data inicio e data fim vai ser usado só a session
-        $dataInicio = $this->input->get("dataInicio");
-        $dataFim = $this->input->get("dataAte");
-
-        // opc1 = periodo - ultimo mês (opc1) ultimo 6 meses (opc2) desde 2017 (opc3) data (opc4)
-        $data = date('Y-m-d');
-        $data_menos_um_ano = date('Y-m-d', strtotime('-1 year', strtotime($data)));
-
-        $data_formatada_1 = "";
-        $data_formatada_2 = "";
-
-        $data_menos_seis_meses = date('Y-m-d', strtotime('-6 month', strtotime($data)));
-        $data_formatada_1 = $data_menos_seis_meses;
-        $data_formatada_2 = $data;
-
-        $datas = array(
-            'dataInicio' => $data_formatada_1,
-            'dataFim' => $data_formatada_2,
-        );
-
         $dados_usuario = $this->Supervisores->infos([$id_user], 'info_supervisor', '', '', '');
-        // 'mostrar_comparacao' => $opc2,
-        $dados_coordenador = $this->consultasBDCoordenador($id_user, $opc2, $opc3, $datas);
+        $dados_coordenador = $this->consultasBDCoordenador($id_user);
 
         $dados = array(
-            "opc2" => $opc2,
-            "opc3" => $opc3,
-            'info' => $dados_usuario,
             'info_coordenadores' => $dados_coordenador,
-            'datas' => $datas,
+            'info' => $dados_usuario,
         );
 
-        //print_r($dados);
-        $this->load->view('sistema/supervisor/pages/coordenadores/mostrar_tabela_coordenador_2', $dados);
+        $this->load->view('sistema/supervisor/pages/coordenadores/mostrar_tabela_coordenador', $dados);
     }
 
-    public function consultasBDCoordenador($id_user, $opc2, $opc3, $datas)
+    public function consultasBDCoordenador($id_user)
     {
         $list_coordenadores = [];
         $list_coordenadores_comparacao = [];
 
-        // datas atuais
-        $data_inicio = $datas['dataInicio'];
-        $data_final = $datas['dataFim'];
-        $datas_1 = ['data_1' => $data_inicio, 'data_2' => $data_final];
-
         // consulta coordenadores do período atual
-        //AND data_cadastro BETWEEN '$data_inicio' AND '$data_final'
         $coordenadores = $this->db->query("
-        SELECT * FROM coordenador
-        WHERE id_supervisorR = $id_user
-        ORDER BY nome_coordenador ASC
-    ")->result_array();
+            SELECT * FROM coordenador
+            WHERE id_supervisorR = $id_user
+            ORDER BY nome_coordenador ASC
+        ")->result_array();
 
         $total_coordenadores_ativos = 0;
 
@@ -433,12 +454,12 @@ class Supervisor extends CI_Controller
             $total_criancas_ativos = 0;
 
             // líderes e líderes ativos
-            $lideres_info = $this->Lideres->infos([$id_coordenador], 'query_coordenador_supervisor_inicial', '', [], $datas_1);
+            $lideres_info = $this->Lideres->infos([$id_coordenador], 'query_coordenador_supervisor_inicial_2', '', [], []);
             $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
 
             if (!empty($lideres_info['dados'])) {
                 $ids_lideres = array_column($lideres_info['dados'], 'id_lider');
-                $ids_lideres_str = implode(',', $ids_lideres);
+                $ids_lideres_str = implode(',', array: $ids_lideres);
 
                 // total crianças
                 $query_criancas = $this->db->query("
@@ -465,6 +486,9 @@ class Supervisor extends CI_Controller
             }
 
             // adiciona os totais ao coordenador
+            //$c['total_lideres'] = 10;
+            //$c['lista_lideres'] = $lideres_info;
+            //$c['total_lideres_ativos'] = 10;
             $c['total_lideres'] = $lideres_info['row'];
             $c['total_lideres_ativos'] = $lideres_ativos_info['row'];
             $c['total_criancas'] = $total_criancas;
@@ -475,7 +499,7 @@ class Supervisor extends CI_Controller
         }
 
         // comparação com o ano anterior, se necessário
-        if ($opc2 == 'sim' && $opc3 == 'query_supervisor_inicial') {
+        /*if ($opc2 == 'sim' && $opc3 == 'query_supervisor_inicial') {
             //if ($opc3 == 'query_supervisor_inicial') {
             $data_inicio_ano_passado = $datas['dataInicioAnoPassado'];
             $data_fim_ano_passado = $datas['dataFimAnoPassado'];
@@ -534,23 +558,253 @@ class Supervisor extends CI_Controller
 
                 $list_coordenadores_comparacao[] = $c;
             }
-        }
-
-        /*if ($opc4 == 'ativos') {
-            $dados_c = array(
-                'row' => count($coordenadores),
-                'dados' => $coordenadores
-            );
-            $coordenadores_ativos = $this->Coordenadores->coordenadoresAtivos($dados_c);
-            $list_c = $coordenadores_ativos['dados'];
-        } else {
-            $list_c = $coordenadores;
         }*/
 
         return [
             'total_coordenadores_ativos' => $total_coordenadores_ativos,
             'dados_coordenadores_gerais' => ['dados' => $list_coordenadores],
             'dados_coordenadores_gerais_comparacao' => ['dados' => $list_coordenadores_comparacao],
+        ];
+    }
+
+    public function mostrar_table_lideres_coordenador() // ok
+    {
+        $id_user = $this->input->get("id_user");
+        $id_coordenador = $this->input->get("id_coordenador");
+        $url_redirecionamento = $this->input->get("url_redirecionamento");
+
+        $dados_usuario = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+        $dados_coordenador = $this->consultasBDLideresCoordenador($id_coordenador);
+
+        $dados = array(
+            'id_user' => $id_user,
+            'info_coordenadores' => $dados_coordenador,
+            'info' => $dados_usuario,
+            'url_redirecionamento' => $url_redirecionamento,
+        );
+
+        $this->load->view('sistema/supervisor/pages/coordenadores/mostrar_tabela_lideres_coordenador', $dados);
+    }
+
+    public function consultasBDLideresCoordenador($id_user)
+    {
+        $list_lideres = [];
+
+        // busca todos os líderes do coordenador
+        $lideres_info = $this->Lideres->infos([$id_user], 'query_coordenador_supervisor_inicial_2', '', [], []);
+        $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
+
+        if (!empty($lideres_info['dados'])) {
+            // adiciona informações individuais por líder
+            foreach ($lideres_info['dados'] as $lider) {
+                $id_lider = $lider['id_lider'];
+
+                $total_criancas_lider = 0;
+                $total_criancas_ativas_lider = 0;
+
+                // total de crianças desse líder
+                $q1 = $this->db->query("
+                SELECT COUNT(*) AS total
+                FROM criancas
+                WHERE lider = $id_lider
+            ")->row_array();
+                $total_criancas_lider = $q1['total'] ?? 0;
+
+                // se o líder for ativo, conta crianças ativas também
+                $lider_ativo = in_array($id_lider, array_column($lideres_ativos_info['dados'], 'id_lider'));
+                if ($lider_ativo) {
+                    $q2 = $this->db->query("
+                    SELECT COUNT(*) AS total
+                    FROM criancas
+                    WHERE lider = $id_lider
+                ")->row_array();
+                    $total_criancas_ativas_lider = $q2['total'] ?? 0;
+                }
+
+                $lider['total_criancas'] = $total_criancas_lider;
+                $lider['total_criancas_ativos'] = $total_criancas_ativas_lider;
+                $lider['ativo'] = $lider_ativo ? 1 : 0;
+
+                $list_lideres[] = $lider;
+            }
+        }
+        return [
+            'dados_lideres' => ['dados' => $list_lideres],
+        ];
+    }
+
+    public function pagina_ver_detalhes_lider() // ok
+    {
+        $id_lider =  $this->uri->segment(5) ?? $this->uri->segment(4);
+
+        if (empty($this->uri->segment(5))) {
+            $x = "is_page_inicial_lider";
+        } else {
+            $x = "is_page_coordenador";
+        }
+        $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+        $dados = array('id_lider' => $id_lider, 'dados_do_lider' => $dados_lider, 'x' => $x);
+        $this->load->view('sistema/supervisor/pages/lideres/pagina_ver_info_lideres', $dados);
+    }
+
+    // líderes
+    public function pagina_ver_lideres() // ok
+    {
+        $this->load->view('sistema/supervisor/pages/pagina_ver_lideres');
+    }
+
+    public function mostrar_table_lider() // ok
+    {
+        $id_user = $this->input->get("id_user");
+
+        $dados_usuario = $this->Supervisores->infos([$id_user], 'info_supervisor', '', '', '');
+        $dados_lideres = $this->consultasBDLider($id_user);
+
+        $dados = array(
+            'info_lideres' => $dados_lideres,
+            'info' => $dados_usuario,
+        );
+
+        $this->load->view('sistema/supervisor/pages/lideres/mostrar_tabela_lider', $dados);
+    }
+
+    public function consultasBDLider($id_user)
+    {
+        $list_lideres = [];
+        $list_lideres_comparacao = [];
+
+        // Consulta líderes do supervisor
+        $lideres = $this->db->query("
+        SELECT * FROM lider
+        WHERE id_supervisorR = $id_user
+        ORDER BY nome_lider ASC
+    ")->result_array();
+
+        $lideres_info = array(
+            'row' => count($lideres),
+            'dados' => $lideres,
+        );
+
+        $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
+
+        $total_lideres_ativos = 0;
+
+        // 🔹 1. Coleta todos os IDs de líderes de uma vez
+        $ids = array_column($lideres, 'id_lider');
+        if (empty($ids)) {
+            return ['row' => 0, 'dados' => []];
+        }
+
+        // 🔹 2. Busca todas as crianças desses líderes de uma vez
+        $criacas_por_lider = $this->Criancas->criacasPorLideres($ids);
+
+        // 🔹 3. Busca todos os progressos de uma vez
+        $progresso_por_lider = $this->PG->progressoPorLideres($ids);
+
+        foreach ($lideres as $l) {
+            $id_lider = $l['id_lider'];
+            $ativo = $l['confirmado'];
+            $data_cadastro = $l['data_cadastro'];
+
+            // verifica se o líder está ativo (função já existente)
+            $check_lider_ativo = $this->Lideres->check_lider_is_ativo_otimizado(
+                $id_lider,
+                $data_cadastro,
+                $ativo,
+                $criacas_por_lider,
+                $progresso_por_lider
+            );
+
+            $total_lideres_ativos += $check_lider_ativo;
+
+            // total de crianças do líder
+            $query_criancas = $this->db->query("
+            SELECT COUNT(*) AS total
+            FROM criancas
+            WHERE lider = $id_lider
+        ")->row_array();
+            $total_criancas = $query_criancas['total'] ?? 0;
+
+            /*$total_criancas_ativas = 0;
+
+            if ($check_lider_ativo == 0) {
+            } else {*/
+            // total de crianças ativas do líder
+            $query_criancas_ativas = $this->db->query("
+                    SELECT COUNT(*) AS total
+                    FROM criancas
+                    WHERE lider = $id_lider AND ativo = 1
+                ")->row_array();
+            $total_criancas_ativas = $query_criancas_ativas['total'] ?? 0;
+            //}
+
+            // adiciona os totais ao array do líder
+            $l['total_criancas'] = $total_criancas;
+            $l['total_criancas_ativos'] = $total_criancas_ativas;
+            $l['check_lider_ativo'] = $check_lider_ativo;
+
+            $list_lideres[] = $l;
+        }
+
+        // === COMPARAÇÃO COM O ANO ANTERIOR ===
+        /*if ($opc2 == 'sim' && $opc3 == 'query_supervisor_inicial') {
+            $data_inicio_ano_passado = $datas['dataInicioAnoPassado'];
+            $data_fim_ano_passado = $datas['dataFimAnoPassado'];
+            $datas_2 = ['data_1' => $data_inicio_ano_passado, 'data_2' => $data_fim_ano_passado];
+
+            $lideres_ano_passado = $this->db->query("
+            SELECT * FROM lider
+            WHERE id_supervisorR = $id_user
+            AND data_cadastro BETWEEN '$data_inicio_ano_passado' AND '$data_fim_ano_passado'
+            ORDER BY nome_lider ASC
+        ")->result_array();
+
+            foreach ($lideres_ano_passado as $l) {
+                $id_lider = $l['id_lider'];
+                $ativo = $l['confirmado'];
+                $data_cadastro = $l['data_cadastro'];
+
+                // verifica se o líder está ativo (função já existente)
+                $check_lider_ativo = $this->Lideres->check_lider_is_ativo_otimizado(
+                    $id_lider,
+                    $data_cadastro,
+                    $ativo,
+                    $criacas_por_lider,
+                    $progresso_por_lider
+                );
+
+                // Total de crianças do ano passado
+                $query_criancas = $this->db->query("
+                SELECT COUNT(*) AS total
+                FROM criancas
+                WHERE lider = $id_lider
+                AND data_cadastro BETWEEN '$data_inicio_ano_passado' AND '$data_fim_ano_passado'
+            ")->row_array();
+                $total_criancas = $query_criancas['total'] ?? 0;
+
+                // Total de crianças ativas do ano passado
+                $query_criancas_ativas = $this->db->query("
+                SELECT COUNT(*) AS total
+                FROM criancas
+                WHERE lider = $id_lider
+                AND ativo = 1
+                AND data_cadastro BETWEEN '$data_inicio_ano_passado' AND '$data_fim_ano_passado'
+            ")->row_array();
+                $total_criancas_ativos = $query_criancas_ativas['total'] ?? 0;
+
+                $l['total_criancas'] = $total_criancas;
+                $l['total_criancas_ativos'] = $total_criancas_ativos;
+                $l['check_lider_ativo'] = $check_lider_ativo;
+
+                $list_lideres_comparacao[] = $l;
+            }
+        }*/
+
+        return [
+            'total_lideres' => count($lideres),
+            'total_lideres_ativos' => $total_lideres_ativos,
+            'dados_lideres_gerais' => ['dados' => $list_lideres],
+            'dados_lideres_gerais_comparacao' => ['dados' => $list_lideres_comparacao], // deixei vazio, igual no original
         ];
     }
 }

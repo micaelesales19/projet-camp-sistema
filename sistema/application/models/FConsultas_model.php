@@ -59,16 +59,70 @@ class FConsultas_model extends CI_Model
 
 	public function converterData($data)
 	{
-		$dia = $data[0] . $data[1];
+		// normaliza entrada
+		$data = trim((string)$data);
+		if ($data === '') return false;
 
-		$mes = $data[3] . $data[4];
+		// 1) se já está no formato Y-m-d e é válido, retorna como está
+		$dt = DateTime::createFromFormat('Y-m-d', $data);
+		if ($dt && $dt->format('Y-m-d') === $data) {
+			return $data;
+		}
 
-		$ano = $data[6] . $data[7] . $data[8] . $data[9];
+		// 2) tenta vários formatos comuns
+		$formatos = [
+			'd/m/Y',
+			'd-m-Y',
+			'j/n/Y',
+			'j-n-Y', // sem zero à esquerda
+			'd/m/y',
+			'd-m-y',
+			'Y/m/d',
+			'Y.n.j',
+			'd M Y',
+			'd F Y' // por precaução (ex: 1 Jan 2024)
+		];
 
-		$data_nova = $ano . "-" . $mes . "-" . $dia;
+		foreach ($formatos as $fmt) {
+			$dt = DateTime::createFromFormat($fmt, $data);
+			if ($dt !== false) {
+				// valida erros de parsing (por exemplo 32/13/2020)
+				$errors = DateTime::getLastErrors();
+				if ($errors['warning_count'] === 0 && $errors['error_count'] === 0) {
+					return $dt->format('Y-m-d');
+				}
+			}
+		}
 
-		return $data_nova;
+		// 3) tenta extrair só dígitos e formar DDMMYYYY ou YYYYMMDD
+		$nums = preg_replace('/\D+/', '', $data);
+		if (strlen($nums) === 8) {
+			// tenta assumir DDMMYYYY primeiro
+			$d = substr($nums, 0, 2);
+			$m = substr($nums, 2, 2);
+			$y = substr($nums, 4, 4);
+			if (checkdate((int)$m, (int)$d, (int)$y)) {
+				return sprintf('%04d-%02d-%02d', $y, $m, $d);
+			}
+			// tenta YYYYMMDD
+			$y = substr($nums, 0, 4);
+			$m = substr($nums, 4, 2);
+			$d = substr($nums, 6, 2);
+			if (checkdate((int)$m, (int)$d, (int)$y)) {
+				return sprintf('%04d-%02d-%02d', $y, $m, $d);
+			}
+		}
+
+		// 4) tenta strtotime() — último recurso (pode falhar com formatos ambíguos)
+		$ts = strtotime($data);
+		if ($ts !== false) {
+			return date('Y-m-d', $ts);
+		}
+
+		// Não conseguiu converter — retorna false para ser tratado pelo chamador
+		return false;
 	}
+
 	public function getInfoUserId($id)
 	{
 		$query_rementente_lider = $this->db->select('*')

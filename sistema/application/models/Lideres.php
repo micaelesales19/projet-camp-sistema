@@ -194,10 +194,24 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'query_coordenador_supervisor_inicial_2') {
+            // retornando todos os coordenadores de acordo com uma data específica
+            $id_usuario = $id_usuario[0];
+
+            $consultar_coordenador = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario AND data_cadastro ORDER BY nome_lider ASC");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenador = $consultar_coordenador->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenador,
+            );
+
+            return $dados;
         }
     }
 
-    public function lideresAtivos($list)
+    /*public function lideresAtivos($list)
     {
         $lista = $list['dados'];
         $total_ativos = 0;
@@ -226,7 +240,8 @@ class Lideres extends CI_Model
             'dados' => $dados_lider,
         );
         return $dados;
-    }
+    }*/
+
     public function check_lider_is_ativo($id_lider, $data_cadastro, $ativo)
     {
         $data = date('Y-m-d');
@@ -250,7 +265,7 @@ class Lideres extends CI_Model
                     $id_modulo = $pgs['dados']['id_modulo'] ?? 1;
                     $numero_licao = $pgs['dados']['n_licao'] ?? 1;
                     $modulo = $this->FConsultas_model->consultarModuloId($id_modulo);
-                    $progresso = $this->PG->consultarProgressoGeral($id_lider, 2);
+                    $progresso = $this->PG->consultarProgressoGeral($id_lider);
                     $data_ultimo_relatorio = "";
                     $i = 0;
                     foreach ($progresso['dados'] as $key => $p) {
@@ -280,6 +295,105 @@ class Lideres extends CI_Model
                 }
             }
         }
+    }
+
+    public function lideresAtivos($list)
+    {
+        $lista = $list['dados'];
+        $dados_lider = [];
+        $total_ativos = 0;
+
+        if ($list['row'] == 0) {
+            return ['row' => 0, 'dados' => []];
+        }
+
+        // 🔹 1. Coleta todos os IDs de líderes de uma vez
+        $ids = array_column($lista, 'id_lider');
+        if (empty($ids)) {
+            return ['row' => 0, 'dados' => []];
+        }
+
+        // 🔹 2. Busca todas as crianças desses líderes de uma vez
+        $criacas_por_lider = $this->Criancas->criacasPorLideres($ids);
+
+        // 🔹 3. Busca todos os progressos de uma vez
+        $progresso_por_lider = $this->PG->progressoPorLideres($ids);
+
+        // 🔹 4. Itera pelos líderes e checa se cada um é ativo
+        foreach ($lista as $lider) {
+            $id_lider = $lider['id_lider'];
+            $ativo = $lider['confirmado'];
+            $data_cadastro = $lider['data_cadastro'];
+
+            $check = $this->check_lider_is_ativo_otimizado(
+                $id_lider,
+                $data_cadastro,
+                $ativo,
+                $criacas_por_lider,
+                $progresso_por_lider
+            );
+
+            if ($check) {
+                $dados_lider[] = $lider;
+                $total_ativos++;
+            }
+        }
+
+        return [
+            'row' => $total_ativos,
+            'dados' => $dados_lider
+        ];
+    }
+
+
+    public function check_lider_is_ativo_otimizado($id_lider, $data_cadastro, $ativo, $criacas_por_lider, $progresso_por_lider)
+    {
+        $data = date('Y-m-d');
+        $data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
+
+        // 🔸 Inativo pelos status
+        if (in_array($ativo, [0, 1, 3])) {
+            return 0;
+        }
+
+        // 🔸 Ativo por ser novo (menos de 1 mês)
+        if (strtotime($data_mais_um_mes) > strtotime($data)) {
+            return 1;
+        }
+
+        // 🔸 Busca os dados em cache (sem nova query)
+        $tem_criancas = !empty($criacas_por_lider[$id_lider]);
+        $progresso = $progresso_por_lider[$id_lider] ?? [];
+
+        // 🔸 Se não tem PG, nem crianças, nem progresso → inativo
+        if (!$tem_criancas && empty($progresso)) {
+            return 0;
+        }
+
+        // 🔸 Busca data do último relatório
+        $datas = array_column($progresso, 'data_aula');
+        if (empty($datas)) {
+            return 0;
+        }
+
+        rsort($datas);
+        $data_ultimo_relatorio = $datas[0];
+        //$data_ultimo_relatorio = $data_ultimo_relatorio == '' ? "zero" : $data_ultimo_relatorio;
+
+        $data_convertida = $this->FConsultas_model->converterData($data_ultimo_relatorio);
+        if ($data_convertida === false) {
+            // data inválida: decide o que fazer (aqui tratamos como inativo)
+            // opcional: error_log("Data inválida para líder $id_lider: $data_ultimo_relatorio");
+            return 0;
+        }
+        $data_mais_2_meses = date('Y-m-d', strtotime('+2 months', strtotime($data_convertida)));
+
+        // 🔸 Inativo se passou mais de 2 meses sem relatório
+        if (strtotime($data_mais_2_meses) < strtotime($data)) {
+            return 0;
+        }
+
+        return 1;
     }
 
     public function check_cadastro($opc, $data)
@@ -359,6 +473,14 @@ class Lideres extends CI_Model
             return $row;
         }
     }
+
+    public function check_colider($nome, $cpf, $email, $telefone)
+    {
+        $consultar_colider = $this->db->query("SELECT * FROM colider WHERE nome_colider LIKE '$nome' OR email LIKE '$email' OR cpf LIKE '$cpf' OR telefone_whatsapp LIKE '$telefone'");
+        $row = $consultar_colider->num_rows();
+        return $row;
+    }
+
     public function cadastro_lider($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, $confirmado)
     {
         date_default_timezone_set('America/Sao_Paulo');
@@ -387,6 +509,31 @@ class Lideres extends CI_Model
         $inserir['data_cadastro'] = $data_2;
 
         if ($this->db->insert("lider", $inserir)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function editar_lider($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $pais, $estado, $cidade, $ativo, $id_coordenador, $id_supervisor, $foto)
+    {
+        $this->db->set('nome_lider', $nome);
+        $this->db->set('cpf', $cpf);
+        $this->db->set('email', $email);
+        $this->db->set('telefone_whatsapp', $telefone);
+        $this->db->set('igreja', $igreja);
+        $this->db->set('nascimento', $nascimento);
+        $this->db->set('pais', $pais);
+        $this->db->set('estado', $estado);
+        $this->db->set('cidade', $cidade);
+        $this->db->set('id_coordenador', $id_coordenador);
+        $this->db->set('id_supervisorR', $id_supervisor);
+        $this->db->set('id_supervisorE', $id_supervisor);
+        $this->db->set('foto', $foto);
+        $this->db->set('confirmado', $ativo);
+        $this->db->where('id_lider', $id);
+
+        if ($this->db->update('lider')) {
             return true;
         } else {
             return false;
@@ -495,4 +642,133 @@ class Lideres extends CI_Model
         }
     }
     // Fim CADASTROS
+
+    // EDITAR COLIDER
+    public function editarColider($id, $nome, $cpf, $email, $telefone, $nascimento, $foto)
+    {
+        $this->db->set('nome_colider', $nome);
+        $this->db->set('cpf', $cpf);
+        $this->db->set('email', $email);
+        $this->db->set('telefone_whatsapp', $telefone);
+        $this->db->set('nascimento', $nascimento);
+        $this->db->set('foto', $foto);
+        $this->db->where('id_colider', $id);
+
+        if ($this->db->update('colider')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // EXCLUSÃO
+    public function excluirColider($id_colider, $nome_colider, $id_lider, $id_responsavel, $motivo)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date('d/m/Y');
+
+        $ativo = "0";
+        $acao = "EX_CL_1";
+
+        $inserir['id_exclusao'] = NULL;
+        $inserir['id_colider'] = $id_colider;
+        $inserir['nome_colider'] = $nome_colider;
+        $inserir['id_lider'] = $id_lider;
+        $inserir['id_responsavel'] = $id_responsavel;
+        $inserir['motivo'] = $motivo;
+        $inserir['data_saida'] = $data;
+
+        if ($this->db3->insert('alcancado_colider', $inserir)) {
+
+            $this->db->set('ativo', $ativo);
+            $this->db->where('id_colider', $id_colider);
+
+            if ($this->db->update('colider')) {
+                $this->FAlerta_model->alerta_controle($id_responsavel, $id_colider, $motivo, $acao);
+                //$this->FAlerta_model->alerta_para_coordenador($id_responsavel, $id_colider, $motivo, $acao);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    // REATIVAR
+    public function reativarColider($id_colider, $id_responsavel)
+    {
+        $ativo = "1";
+        $acao = "RE_CL_1";
+        $motivo = "Reativou seu colíder";
+
+        $this->db->set('ativo', $ativo);
+        $this->db->where('id_colider', $id_colider);
+
+        if ($this->db->update('colider')) {
+            $this->excluirColiderAlcancado($id_colider);
+            $this->FAlerta_model->alerta_controle($id_responsavel, $id_colider, $motivo, $acao);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function excluirColiderPermanentemente($id_colider, $id_lider, $id_responsavel)
+    {
+        $acao = "EX_P_CL_1";
+        $motivo = "Excluiu seu Colider Permanentemente";
+
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date('d/m/Y');
+
+        $dadosColider = $this->FConsultas_model->getNomeUserId($id_colider);
+
+        $consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_colider WHERE id_colider = '$id_colider'");
+        $row = $consultar_pg_desativado->num_rows();
+
+        if ($row == 0) {
+            $inserir['id_exclusao'] = NULL;
+            $inserir['id_colider'] = $id_colider;
+            $inserir['nome_colider'] = $dadosColider['nome'];
+            $inserir['id_lider'] = $id_lider;
+            $inserir['id_responsavel'] = $id_responsavel;
+            $inserir['motivo'] = $motivo;
+            $inserir['data_saida'] = $data;
+
+            if ($this->db3->insert('alcancado_colider', $inserir)) {
+            }
+        } else {
+        }
+
+        $this->db->where('id_colider', $id_colider);
+
+        if ($this->db->delete('colider')) {
+            $this->FAlerta_model->alerta_controle($id_responsavel, $id_colider, $motivo, $acao);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // Fim EXCLUSÂO
+
+    // EXCLUSÃO ALCANÇADO
+    public function excluirColiderAlcancado($id_colider)
+    {
+        $this->db3->where('id_colider', $id_colider);
+
+        if ($this->db3->delete('alcancado_colider')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // trocar coordenação
+    public function trocar_coordenacao_do_lider($id_coordenador, $id_novo_coordenador)
+    {
+        $this->db->set('id_coordenador', $id_novo_coordenador);
+        $this->db->where('id_coordenador', $id_coordenador);
+        $this->db->update('lider');
+    }
 }

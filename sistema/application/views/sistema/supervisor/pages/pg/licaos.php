@@ -194,6 +194,13 @@ if (!isset($_SESSION['usuario'])) {
                         </h1>
                         <ol class="breadcrumb">
                             <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
+                            <?php
+                            foreach ($pages as $key => $value) {
+                            ?>
+                                <li><a href="<?= $value['routa']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
+                            <?php
+                            }
+                            ?>
                             <li class="active">Preenchimento de Relatório</li>
                         </ol>
                     </section>
@@ -223,14 +230,13 @@ if (!isset($_SESSION['usuario'])) {
 
                                                     <ul class="nav nav-tabs">
                                                         <?php
-
-                                                        $checksCriancas = $this->FConsultas_model->checkCriancasPG($id_lider, $id_pg, 2);
+                                                        $checksCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
 
                                                         $comparador_modulo = 1;
 
                                                         $i = 1;
 
-                                                        if ($pg['row'] != 0 || $checksCriancas) {
+                                                        if ($pg['row'] != 0 || $checksCriancas['row'] == 0) {
 
                                                             $dados_pg = $pg['dados'];
 
@@ -296,7 +302,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     </div>
                                                                     <?php
                                                                 } else {
-                                                                    if (!$checksCriancas) {
+                                                                    if ($checksCriancas['row'] == 0) {
                                                                     ?>
                                                                         <div class="col-md-12">
                                                                             <div class="callout callout-danger"><br>
@@ -350,7 +356,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                 $dados_licao = $this->FConsultas_model->consultarLicaoId($i, $i2);
                                                                                 $nome_licao = $dados_licao['nome_licao'];
 
-                                                                                if ($pg['row'] == 0 || !$checksCriancas ||  $i > $id_modulo) {
+                                                                                if ($pg['row'] == 0 || $checksCriancas['row'] == 0 ||  $i > $id_modulo) {
                                                                         ?>
                                                                                     <tr>
                                                                                         <td><?= $i2; ?> - <?= $nome_licao; ?></td>

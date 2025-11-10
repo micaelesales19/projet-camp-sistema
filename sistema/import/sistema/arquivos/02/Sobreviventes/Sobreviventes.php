@@ -119,7 +119,7 @@ $pdf->Ln(8);
 
 $pdf->Ln(300);
 $pdf->SetFont('arial', 'B', 18);
-$pdf->Cell(0, 5, utf8_decode("Máterial Expedição Animal 2- Os sobreviventes (Cenário Caatinga)"), 0, 1, 'C');
+$pdf->Cell(0, 5, utf8_decode("Máterial Expedição Animal 2- Os Sobreviventes"), 0, 1, 'C');
 $pdf->Ln(8);
 $pdf->Cell(0, 5, "", "B", 1, 'C');
 

@@ -118,12 +118,9 @@ $route['adm/devocionais/cadastrar'] = 'adm/cadastrar_devocionais';
 $route['adm/devocionais/salvar'] = 'adm/salvar_cadastro_devocionais';
 
 // alertas
-$route['alerta/solicitar/troca_de_css'] = 'welcome/enviando_alerta_troca_de_css';
+$route['alerta/solicitar/troca_de_coordenador_supervisor'] = 'welcome/enviando_alerta_troca_de_cs'; // ok
 $route['alerta/solicitar/troca_de_lider_pg'] = 'welcome/enviando_alerta_troca_de_lider_pg';
-$route['alerta/solicitar/tornar_de_funcao'] = 'welcome/trocar_de_funcao';
-
-$route['alerta/solicitar/tornar_slocal'] = 'welcome/tornar_coord_slocal';
-$route['alerta/solicitar/tornar_coord_lider'] = 'welcome/tornar_coord_lider';
+$route['alerta/solicitar/trocar_de_funcao'] = 'welcome/trocar_de_funcao'; // ok
 
 // material
 $route['pdf_modulo'] = 'welcome/ir_modulo';

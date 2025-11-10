@@ -7,6 +7,9 @@
 <!-- ChartJS -->
 <script src="<?php echo base_url('import/sistema/bower_components/chart.js/Chart.js'); ?>"></script>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(function() {
         $("#datepicker").datepicker({

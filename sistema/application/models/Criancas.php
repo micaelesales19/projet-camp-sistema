@@ -267,8 +267,6 @@ class Criancas extends CI_Model
         }
     }
 
-
-
     public function editar_nome_responsavel_crianca($idCrianca, $nomeResponsavel, $emailResponsavel, $telefoneResponsavel)
     {
         $this->db->set('nome_responsavel', $nomeResponsavel);
@@ -284,6 +282,14 @@ class Criancas extends CI_Model
         } else {
             return false;
         }
+    }
+
+    public function editar_liderenca_crianca($id_pg, $id_lider_antigo, $id_lider_novo)
+    {
+        $this->db->set('lider', $id_lider_novo);
+        $this->db->where('lider', $id_lider_antigo);
+        $this->db->where('id_pg', $id_pg);
+        $this->db->update('criancas');
     }
 
     public function excluir_crianca($id_crianca, $id_lider, $id_responsavel, $motivo)
@@ -321,6 +327,21 @@ class Criancas extends CI_Model
     }
     // Fim REATIVAR
 
+    public function excluir_criancas_do_pg($id_pg, $id_lider, $id_usuario)
+    {
+
+        $lista_de_criancas = $this->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_geral_order_by_nome_crianca_asc');
+
+        if ($lista_de_criancas['row'] == 0) {
+        } else {
+            foreach ($lista_de_criancas['dados'] as $key => $c) {
+                $id = $c['id_crianca'];
+                $nome = $c['nome_crianca'];
+                $this->excluir_crianca_permanentemente($id, $nome, $id_lider, $id_usuario);
+            }
+        }
+    }
+
     public function excluir_crianca_permanentemente($id_crianca, $nome_crianca, $id_lider, $id_responsavel)
     {
         $acao = "EX_CL_3";
@@ -342,8 +363,10 @@ class Criancas extends CI_Model
             $inserir['data_saida'] = $data;
 
             if ($this->db3->insert('alcancado_crianca', $inserir)) {
+                return 'true';
             }
         } else {
+            return 'false';
         }
 
         $this->db->where('id_crianca', $id_crianca);
@@ -351,9 +374,9 @@ class Criancas extends CI_Model
         if ($this->db->delete('criancas')) {
             $this->PG->excluir_progresso_crianca_id($id_crianca);
             $this->FAlerta_model->alerta_controle($id_responsavel, $id_crianca, $motivo, $acao);
-            return true;
+            //return true;
         } else {
-            return false;
+            //return false;
         }
     }
 
@@ -369,5 +392,25 @@ class Criancas extends CI_Model
         );
 
         return $dados;
+    }
+
+    public function criacasPorLideres($ids)
+    {
+        if (empty($ids)) return [];
+
+        $ids_str = implode(',', array_map('intval', $ids));
+        $query = $this->db->query("
+        SELECT lider, COUNT(*) AS total
+        FROM criancas
+        WHERE lider IN ($ids_str)
+        GROUP BY lider
+    ");
+
+        $result = [];
+        foreach ($query->result_array() as $row) {
+            $result[$row['lider']] = (int)$row['total'];
+        }
+
+        return $result;
     }
 }

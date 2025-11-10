@@ -24,6 +24,7 @@ $this->load->view('partes/head');
 
     function aparecer_select() {
         var opc = document.getElementById('pais').value;
+        var precisacolider = document.getElementById('isColider').value;
         if (opc == "br") {
             document.getElementById('estaods2').value = '';
             document.getElementById('cidades2').value = '';
@@ -31,10 +32,12 @@ $this->load->view('partes/head');
             document.getElementById('escrever_endereco').style.display = "none";
 
             document.getElementById('precisa_cpf').style.display = "inline";
-            document.getElementById('precisa_cpf_colider').style.display = "inline";
-
             document.getElementById('cpf').setAttribute('required', 'true');
-            document.getElementById('cpf_colider').setAttribute('required', 'true');
+
+            if (precisacolider == '') {} else {
+                document.getElementById('precisa_cpf_colider').style.display = "inline";
+                document.getElementById('cpf_colider').setAttribute('required', 'true');
+            }
         } else {
             document.getElementById('estados').value = '';
             document.getElementById('cidades').value = '';

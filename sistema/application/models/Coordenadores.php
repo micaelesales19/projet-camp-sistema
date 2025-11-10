@@ -2,6 +2,7 @@
 
 /**
  * @property $db
+ * @property $db3
  * @property Lideres $Lideres
  * @property FSistema_model $FSistema_model
  */
@@ -37,11 +38,54 @@ class Coordenadores extends CI_Model
 
             return $dados;
         } else if ($opc == 'info_coordenador') {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR
+            // Consulta na tabela de coordenador de acordo com o ID COORDENADOR
             $id_usuario = $id_usuario[0];
             $consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = '$id_usuario'");
             $row = $consultar_coordenador->num_rows();
             $dados_consulta_coordenadores = $consultar_coordenador->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_coordenador_or_email_cpf_nome') {
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $cpf2 = $id_usuario[2];
+            $nome = $id_usuario[3];
+            $consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE nome_coordenador LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenador->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_coordenador_nome_email_data_nascimento') {
+            // Consulta na tabela de coordenador de acordo com o EMAIL, NOME E DATA DE NASCIMENTO
+            $email = $id_usuario[0];
+            $nome = $id_usuario[1];
+            $data_nascimento = $id_usuario[2];
+            $consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE email = '$email' AND nome_coordenador = '$nome' AND nascimento = '$data_nascimento'");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenador->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_coordenador_id_supervisor') {
+            // Consulta na tabela de coordenadores de acordo com o ID SUPERVISOR
+            $id_supervisor = $id_usuario[0];
+            $consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR = '$id_supervisor'");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenador->result_array();
 
             $dados = array(
                 'row' => $row,
@@ -175,7 +219,7 @@ class Coordenadores extends CI_Model
         }
     }
 
-    public function cadastro_coordenador($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_supervisor)
+    public function cadastro_coordenador($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_supervisor, $ativo)
     {
         date_default_timezone_set('America/Sao_Paulo');
         $data_2 = date('Y-m-d');
@@ -193,7 +237,7 @@ class Coordenadores extends CI_Model
         $inserir['id_supervisorR'] = $id_supervisor;
         $inserir['id_supervisorE'] = $id_supervisor;
         $inserir['foto'] = $foto;
-        $inserir['ativo'] = 1;
+        $inserir['ativo'] = $ativo;
         $inserir['data_cadastro'] = $data_2;
 
         if ($this->db->insert("coordenador", $inserir)) {
@@ -220,6 +264,82 @@ class Coordenadores extends CI_Model
         $this->db->where('id_coordenador', $id);
 
         if ($this->db->update('coordenador')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function desativar_coordenador($id_coordenador)
+    {
+        $ativo = "0";
+
+        $this->db->set('ativo', $ativo);
+        $this->db->where('id_coordenador ', $id_coordenador);
+
+        if ($this->db->update('coordenador')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function ativar_coordenador($id_coordenador)
+    {
+        $ativo = "1";
+
+        $this->db->set('ativo', $ativo);
+        $this->db->where('id_coordenador ', $id_coordenador);
+
+        if ($this->db->update('coordenador')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function excluirCoordenadorPermanentemente($id_coordenador, $id_responsavel)
+    {
+        $motivo = "Excluiu seu Coordenador Permanentemente";
+        $acao = "EX_COORD_P_1";
+
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date('d/m/Y');
+
+        $dados_lider = $this->FConsultas_model->getInfoCoordenadorId($id_coordenador);
+
+        $consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_coordenador WHERE id_pastor LIKE '$id_coordenador'");
+        $row = $consultar_pg_desativado->num_rows();
+
+        if ($row == 0) {
+            //$inserir['id_exclusao'] = NULL;
+            $inserir['id_pastor'] = $id_coordenador;
+            $inserir['nome_coordenador'] = $dados_lider['dados']['nome_coordenador'];
+            $inserir['id_responsavel'] = $id_responsavel;
+            $inserir['motivo'] = $motivo;
+            $inserir['data_saida'] = $data;
+
+            if ($this->db3->insert('alcancado_coordenador', $inserir)) {
+            }
+        } else {
+        }
+
+        $this->db->where('id_coordenador', $id_coordenador);
+        if ($this->db->delete('coordenador')) {
+            $this->FAlerta_model->alerta_controle($id_responsavel, $id_coordenador, $motivo, $acao);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function editar_lider_exclusao_coord($id_lider, $id_coordenador, $id_responsavel)
+    {
+        $acao = "EX_CL_1";
+        $motivo = "Excluiu seu coordenador ($id_coordenador) permanentemente, e seu líder ($id_lider) foi atualizado para o coordenador padrão";
+
+        $this->db->set('id_coordenador', 3000);
+        $this->db->where('id_lider', $id_lider);
+
+        if ($this->db->update('lider')) {
+            $this->FAlerta_model->alerta_controle($id_responsavel, $id_lider, $motivo, $acao);
             return true;
         } else {
             return false;

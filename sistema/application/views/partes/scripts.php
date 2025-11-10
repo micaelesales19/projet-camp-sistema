@@ -40,3 +40,6 @@
 <!-- fullCalendar -->
 <script src="<?php echo base_url('import/sistema/bower_components/moment/moment.js'); ?>"></script>
 <script src="<?php echo base_url('import/sistema/bower_components/fullcalendar/dist/fullcalendar.min.js'); ?>"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -75,6 +75,17 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $dados_consulta_pg,
             );
+        } else if ($opc == 'query_id_lider_row') {
+            $id_usuario = $dados[0];
+
+            $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario");
+            $row = $consultar_pg->num_rows();
+            $dados_consulta_pg = $consultar_pg->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_pg,
+            );
         } else if ($opc == 'query_id_lider_ativo_order_by_modulo_desc_limit_1_download_material') {
             $id_usuario = $dados[0];
 
@@ -89,6 +100,15 @@ class PG extends CI_Model
         }
 
         return $dados;
+    }
+
+    public function trocar_lideranca_pg($id_pg, $id_lider_antigo, $id_novo_lider)
+    {
+        $this->db->set('id_lider', $id_novo_lider);
+        $this->db->set('ativo', 1);
+        $this->db->where('id_pg ', $id_pg);
+        $this->db->where('id_lider', $id_lider_antigo);
+        $this->db->update('pg');
     }
 
     public function mostrarPGId($id_usuario, $idPG)
@@ -215,8 +235,9 @@ class PG extends CI_Model
             return false;
         }
     }
-    public function editar_pg($id, $nomePg, $foto, $autorizacao)
+    public function editar_pg($id_lider, $id, $nomePg, $foto, $autorizacao)
     {
+        $this->db->set('id_lider', $id_lider);
         $this->db->set('nome_pg', $nomePg);
         $this->db->set('foto', $foto);
         $this->db->set('autorizacao', $autorizacao);
@@ -290,6 +311,7 @@ class PG extends CI_Model
 
         $this->db->where('id_pg', $id_pg);
         if ($this->db->delete('pg')) {
+            $this->Criancas->excluir_criancas_do_pg($id_pg, $id_lider, $id_responsavel);
             $this->excluir_progresso($id_pg, $id_lider);
             $this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
             return true;
@@ -299,31 +321,18 @@ class PG extends CI_Model
     }
 
     // progresso
-    public function consultarProgressoGeral($id_lider, $x)
+    public function consultarProgressoGeral($id_lider)
     {
-        if ($x == 1) {
-            $consultar = $this->db->query("SELECT * FROM progresso_pg_pais WHERE id_lider = $id_lider");
-            $row = $consultar->num_rows();
-            $dados = $consultar->result_array();
+        $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_lider = $id_lider");
+        $row = $consultar->num_rows();
+        $dados = $consultar->result_array();
 
-            $array = array(
-                'row' => $row,
-                'dados' => $dados,
-            );
+        $array = array(
+            'row' => $row,
+            'dados' => $dados,
+        );
 
-            return $array;
-        } else if ($x == 2) {
-            $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_lider = $id_lider");
-            $row = $consultar->num_rows();
-            $dados = $consultar->result_array();
-
-            $array = array(
-                'row' => $row,
-                'dados' => $dados,
-            );
-
-            return $array;
-        }
+        return $array;
     }
 
     public function consultar_progresso($opc, $dados)
@@ -579,6 +588,14 @@ class PG extends CI_Model
         return $base;
     }
 
+    public function editar_lideranca_relatorio($id_pg, $id_lider_antigo, $id_lider_novo)
+    {
+        $this->db->set('id_lider', $id_lider_novo);
+        $this->db->where('id_lider', $id_lider_antigo);
+        $this->db->where('id_pg', $id_pg);
+        $this->db->update('progresso_pg');
+    }
+
     public function editar_relatorio_encontro($id_relatorio, $versiculo, $presenca, $misterio, $devocional)
     {
         $valor_presenca = "";
@@ -625,5 +642,24 @@ class PG extends CI_Model
     {
         $this->db->where('id_crianca_presente', $id_crianca);
         $this->db->delete('progresso_pg');
+    }
+
+    public function progressoPorLideres($ids)
+    {
+        if (empty($ids)) return [];
+
+        $ids_str = implode(',', array_map('intval', $ids));
+        $query = $this->db->query("
+        SELECT id_lider, data_aula
+        FROM progresso_pg
+        WHERE id_lider IN ($ids_str)
+    ");
+
+        $result = [];
+        foreach ($query->result_array() as $row) {
+            $result[$row['id_lider']][] = $row;
+        }
+
+        return $result;
     }
 }

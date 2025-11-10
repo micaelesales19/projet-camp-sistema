@@ -4,7 +4,6 @@
 if (!isset($_SESSION['usuario'])) {
     header("location: ../../index");
 } else {
-    $_SESSION['is_ativo'] = "ativo";
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
@@ -28,10 +27,15 @@ if (!isset($_SESSION['usuario'])) {
     <!-- Head -->
     <script>
         $(document).ready(function() {
+            $('button[name="btn_link_cadastro"]').prop('disabled', true);
             consultardb();
         });
 
         function mostrarResultado() {
+
+            //document.getElementById('campoBusca').value = '';
+
+            console.log('CHAMANDO A FUNÇÃO ONCLICK');
 
             var opc1 = $('input[name="opc"]:checked').val();
 
@@ -49,6 +53,7 @@ if (!isset($_SESSION['usuario'])) {
                 $('.class5').prop('checked', true);
                 document.getElementById('comparar_msm_ano').disabled = true;
             }
+
             exibirStatus();
         }
 
@@ -73,15 +78,16 @@ if (!isset($_SESSION['usuario'])) {
         }
 
         function consultardb() {
-
             console.log('consultar DB');
+
+            $('input[name="opc"]').prop('disabled', true);
 
             document.getElementById('_controller').value = 0;
 
             var id_user = '<?= $id_usuario; ?>';
+            var ativo = '';
 
             var opc2 = '';
-
             var opc1 = $('input[name="opc"]:checked').val();
 
             if (opc1 == 'opc3') {
@@ -111,54 +117,63 @@ if (!isset($_SESSION['usuario'])) {
 
             $('#conteudos_table_informacoes_lideres').empty();
 
-            // depois é para remover a data inicio e data fim vai ser usado só a session
-            var url = 'coordenadores/mostrar?id_user=' + id_user + '&comparar_ultimo_ano=' + opc2 + '&query=query_supervisor_inicial&dataInicio=' + dataIn + '&dataAte=' + dataFim;
+            sessionStorage.setItem('opc1', opc1);
+            sessionStorage.setItem('data_in', dataIn);
+            sessionStorage.setItem('data_final', dataFim);
 
-            $.get(url)
-                .done(function(data) {
+            // URL da requisição
+            var url = 'coordenadores/mostrar';
+            var params = {
+                id_user: id_user,
+            };
+
+            $.ajax({
+                url: url,
+                type: 'GET', // se quiser enviar via POST, troque para 'POST'
+                data: params,
+                dataType: 'html', // ou 'json' se o servidor retornar JSON
+                beforeSend: function() {
+                    console.log('🔄 Enviando requisição AJAX...');
+                },
+                success: function(data) {
+                    if (document.getElementById('_controller').value == 0) {
+                        console.log('✅ Dados recebidos com sucesso.');
+                        $('#conteudos_table_informacoes_lideres')
+                            .empty()
+                            .append(data);
+
+                        $('input[name="opc"]').prop('disabled', false);
+                        $('button[name="btn_link_cadastro"]').prop('disabled', false);
+                        document.getElementById('_controller').value = 1;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('❌ Erro na requisição AJAX:', error);
+                    alert('Ocorreu um erro ao buscar os dados. Tente novamente.');
                     $('#conteudos_table_informacoes_lideres')
                         .empty()
-                        .append(data);
-
-                    // força a execução dos <script> dentro do conteúdo carregado
-                    $('#conteudos_table_informacoes_lideres').find('script').each(function() {
-                        $.globalEval(this.text || this.textContent || this.innerHTML || '');
-                    });
-
-                    document.getElementById('_controller').value = 1;
+                        .append('❌ Erro na Consulta! O sistema encontrou um problema ao carregar as informações, atualize a página e/ou entre em contato com o suporte!');
+                },
+                complete: function() {
+                    // independente de sucesso ou erro
                     message.style.display = "none";
                     loader.style.display = "inline";
                     botao.disabled = false;
-                    mostrarResultado();
-                });
+                }
+            });
         }
 
         function exibirStatus() {
-
-            sessionStorage.getItem("is_ativo") || "";
-            sessionStorage.getItem('opc1') || 'opc1';
-            sessionStorage.getItem('data_in') || '2018-02-01';
-            sessionStorage.getItem('data_final') || '';
-
             const control_2 = document.getElementById('_controller_2');
             if (control_2.value == 0) {
                 console.log('atualizou');
                 control_2.value = 1;
                 document.getElementById('_controller_2').value = control_2.value;
+                atualizar_session();
             } else {
                 console.log('não precisa atualizar');
                 atualizar_session();
             }
-        }
-
-        function voltar_list_coordenadores() {
-            sessionStorage.setItem("is_ativo", "");
-            exibirStatus();
-        }
-
-        function list_coordenadores_ativos() {
-            sessionStorage.setItem("is_ativo", "is_ativo");
-            exibirStatus();
         }
 
         function enviar_whatsapp(telefones) {
@@ -226,30 +241,33 @@ if (!isset($_SESSION['usuario'])) {
             setTimeout(dismissLoadingScreen, 3000);
         }
 
-        let copiarTexto = (texto) => {
-            //O texto que será copiado
-            //const texto = "00020126470014br.gov.bcb.pix0125campbrasilemail@gmail.com27600016BR.COM.PAGSEGURO013659BAD104-74E5-4E29-8EE8-9738E5D5784A5204000053039865802BR5925CAMP - CENTRO DE APOIO MI6007Caucaia62290525PAGS0000000002404131224896304431F";
-            //Cria um elemento input (pode ser um textarea)
+        function gerarELCopiarLink(id_usuario) {
+            fetch(`<?= base_url('Supervisor/criar_link/'); ?>${id_usuario}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.link) {
+                        copiarTexto(data.link);
+                    } else {
+                        alert('Erro ao gerar o link.');
+                    }
+                })
+                .catch(() => alert('Falha na requisição.'));
+        }
+
+        function copiarTexto(texto) {
             let inputTest = document.createElement("input");
             inputTest.value = texto;
-            //Anexa o elemento ao body
             document.body.appendChild(inputTest);
-            //seleciona todo o texto do elemento
             inputTest.select();
-            //executa o comando copy
-            //aqui é feito o ato de copiar para a area de trabalho com base na seleção
             document.execCommand('copy');
-            //remove o elemento
             document.body.removeChild(inputTest);
 
             document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
 
-            function msgEncerramento() {
+            setTimeout(() => {
                 document.getElementById('text_sucess').innerHTML = '';
-            }
-
-            setTimeout(msgEncerramento, 3000);
-        };
+            }, 3000);
+        }
 
         function aparecer_select() {
             var opc = document.getElementById('pais').value;
@@ -371,7 +389,7 @@ if (!isset($_SESSION['usuario'])) {
             <div class="content-wrapper">
 
                 <input type="hidden" id="_controller" value="0">
-                <input type="text" id="_controller_2" value="0">
+                <input type="hidden" id="_controller_2" value="0">
                 <input type="hidden" id="btn_enviar_c" value="">
 
                 <!-- Content Header (Page header) -->
@@ -393,19 +411,18 @@ if (!isset($_SESSION['usuario'])) {
                         <div class="box box-info">
 
                             <div class="box-header with-border">
-                                <h3 class="box-title"><i class="fa fa-table"></i> Seus Líderes</h3>
+                                <h3 class="box-title"><i class="fa fa-table"></i> Seus Coordenadores</h3>
 
-                                <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="btn btn-success">
-                                    Copiar Link de Cadastro <i class="fa fa-link"></i>
-                                </a>
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_coordenador">Cadastrar +</button>
+                                <button type="button" name="btn_link_cadastro" class="btn btn-success" onclick="gerarELCopiarLink('<?= $id_usuario; ?>')" disabled>Copiar Link de Cadastro Coordenador <i class="fa fa-link"></i></button>
+
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_coordenador">Cadastrar Coordenador +</button>
 
                                 <p id="text_sucess"></p>
 
                                 <div class="modal fade" id="cadastro_coordenador">
                                     <div class="modal-dialog modal-success">
                                         <div class="modal-content">
-                                            <form action="../../coordenadores/salvar" method="POST">
+                                            <form action="coordenadores/salvar" method="POST">
                                                 <input type="hidden" name="id_pastor" value="2000">
                                                 <input type="hidden" name="id_supervisor" value="<?= $id_usuario; ?>">
                                                 <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
@@ -575,42 +592,48 @@ if (!isset($_SESSION['usuario'])) {
                                                 });
                                             </script>
 
+                                            <!-- /input-group -->
                                             <div class="input-group">
                                                 <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" value="opc1" class="radio1" onclick="mostrarResultado();">
+                                                    <input type="radio" id="opc" name="opc" value="opc1" class="radio1"
+                                                        onclick="mostrarResultado();" disabled>
                                                 </span>
                                                 <h5 id="label">Último mês</h5>
                                             </div>
                                             <!-- /input-group -->
                                             <div class="input-group">
                                                 <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" value="opc2" class="radio2" onclick="mostrarResultado();" checked>
+                                                    <input type="radio" id="opc" name="opc" value="opc2" class="radio2"
+                                                        onclick="mostrarResultado();" checked disabled>
                                                 </span>
                                                 <h5 id="label">Últimos 6 meses</h5>
                                             </div>
-                                            <!-- /input-group -->
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" value="opc3" class="radio3" onclick="mostrarResultado();">
-                                                </span>
-                                                <h5 id="label">Desde 2017</h5>
-                                            </div>
-                                            <!-- /input-group -->
 
                                             <div class="input-group">
                                                 <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" class="radio4" value="opc4" onclick="mostrarResultado();">
+                                                    <input type="radio" id="opc" name="opc" value="opc3" class="radio3" onclick="mostrarResultado();" disabled>
                                                 </span>
-                                                <?php
-                                                date_default_timezone_set('America/Sao_Paulo');
-                                                $data = date('d-m-Y');
-                                                $data_2 = date('Y-m-d');
-                                                ?>
-                                                <h5 id="label">De: </h5>
-                                                <input id="datepicker_de" type="date" name="data_1" onchange="mudou();" value="2017-02-01" min="2017-02-01" max="<?= $data_2; ?>" />
-                                                <h5 id="label">Até: </h5>
-                                                <input id="datepicker_ate" type="date" name="data_2" onchange="mudou();" value="<?= $data_2; ?>" min="2017-02-01" max="<?= $data_2; ?>" />
+                                                <h5 id="label">Desde 2017</h5>
                                             </div>
+
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <input type="radio" id="opc" name="opc" class="radio4" value="opc4"
+                                                        onclick="mostrarResultado();" disabled>
+                                                </span>
+                                            </div>
+                                            <!-- /input-group -->
+
+                                            <?php
+                                            date_default_timezone_set('America/Sao_Paulo');
+                                            $data = date('d-m-Y');
+                                            $data_2 = date('Y-m-d');
+                                            ?>
+
+                                            <h5 id="label">De: </h5>
+                                            <input id="datepicker_de" type="date" name="data_1" onchange="mudou();" value="2017-02-01" min="2017-02-01" max="<?= $data_2; ?>" />
+                                            <h5 id="label">Até: </h5>
+                                            <input id="datepicker_ate" type="date" name="data_2" onchange="mudou();" value="<?= $data_2; ?>" min="2017-02-01" max="<?= $data_2; ?>" />
 
                                             <script>
                                                 var hoje = new Date();

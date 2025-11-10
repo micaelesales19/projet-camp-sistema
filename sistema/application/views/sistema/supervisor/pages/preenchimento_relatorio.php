@@ -80,11 +80,12 @@ if (!isset($_SESSION['usuario'])) {
 
       function voltar() {
         var routa = '<?= $routa; ?>';
-        window.location = "../../page/pg";
 
-        if (routa == 'lideres/detalhes') {
-          window.location = "../lideres/detalhes/<?= $id_lider; ?>";
-        } else {}
+        if (routa == 'super/coord') {
+          window.location = "../coordenadores/lider/<?= $id_lider; ?>";
+        } else {
+          window.location = "../../page/pg";
+        }
       }
     </script>
 

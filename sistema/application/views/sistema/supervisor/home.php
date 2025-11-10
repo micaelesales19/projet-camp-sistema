@@ -11,9 +11,6 @@ if (!isset($_SESSION['usuario'])) {
 
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
-
-  $_SESSION['is_ativo'] = "";
-
   $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');
 ?>
 
@@ -57,15 +54,13 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="inner">
                   <h4 style="color: white;">Coordenadores</h4>
                   <br>
-                  <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="small-box-footer">
-                    <p>Copiar Link de Cadastro <i class="fa fa-link"></i></p>
-                  </a>
+                  <a href="#" name="btn_link_cadastro" class="small-box-footer" onclick="gerarELCopiarLinkCoordenador('<?= $id_usuario; ?>')" style="color:white; pointer-events: auto;">Copiar Link de Cadastro<i class="fa fa-link"></i></a>
                   <p id="text_sucess"></p>
                 </div>
                 <div class="icon">
                   <i class="fa fa-users"></i>
                 </div>
-                <a href="page/lideres" class="small-box-footer">Ver Mais <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="page/coordenadores" class="small-box-footer">Ver Mais <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -77,7 +72,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="inner">
                   <h4>Líderes</h4>
                   <br>
-                  <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="small-box-footer">
+                  <a href="#" onclick="copiarTexto('')" style="color:white;" class="small-box-footer">
                     <p>Copiar Link de Cadastro <i class="fa fa-link"></i></p>
                   </a>
                   <p id="text_sucess"></p>
@@ -511,30 +506,33 @@ if (!isset($_SESSION['usuario'])) {
     ?>
 
     <script>
-      let copiarTexto = (texto) => {
-        //O texto que será copiado
-        //const texto = "00020126470014br.gov.bcb.pix0125campbrasilemail@gmail.com27600016BR.COM.PAGSEGURO013659BAD104-74E5-4E29-8EE8-9738E5D5784A5204000053039865802BR5925CAMP - CENTRO DE APOIO MI6007Caucaia62290525PAGS0000000002404131224896304431F";
-        //Cria um elemento input (pode ser um textarea)
+      function gerarELCopiarLinkCoordenador(id_usuario) {
+        fetch(`<?= base_url('Supervisor/criar_link/'); ?>${id_usuario}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.link) {
+              copiarTexto(data.link);
+            } else {
+              alert('Erro ao gerar o link.');
+            }
+          })
+          .catch(() => alert('Falha na requisição.'));
+      }
+
+      function copiarTexto(texto) {
         let inputTest = document.createElement("input");
         inputTest.value = texto;
-        //Anexa o elemento ao body
         document.body.appendChild(inputTest);
-        //seleciona todo o texto do elemento
         inputTest.select();
-        //executa o comando copy
-        //aqui é feito o ato de copiar para a area de trabalho com base na seleção
         document.execCommand('copy');
-        //remove o elemento
         document.body.removeChild(inputTest);
 
-        document.getElementById('text_sucess').innerHTML = 'Código Copiado! ' + texto;
+        document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
 
-        function msgEncerramento() {
+        setTimeout(() => {
           document.getElementById('text_sucess').innerHTML = '';
-        }
-
-        setTimeout(msgEncerramento, 3000);
-      };
+        }, 3000);
+      }
     </script>
   </body>
 

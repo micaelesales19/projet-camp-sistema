@@ -54,7 +54,7 @@
     </div>
     <div class="col-lg-12">
         <p id="texto1">
-            Matheus 28:19 e 20<br>
+            Mateus 28:19 e 20<br>
             Atenciosamente, Equipe do CAMP Brasil
         </p>
     </div>

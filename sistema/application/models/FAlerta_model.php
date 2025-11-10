@@ -26,7 +26,7 @@ class FAlerta_model extends CI_Model
 		} else if ($acao == "ATIVAR_CRIANCA") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " reativou uma de suas Crianças ID - ($id)";
 		} else if ($acao == "EX_CL_1") {
-			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus colíderes ID - ($id). Por esse motivo - " . $motivo;
+			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus colíder ID - ($id) do seu líder. Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_2") {
 			$texto_motivo .= "O (A) " . $dados['nome'] . " excluiu um de seus PG's ID - ($id). Por esse motivo - " . $motivo;
 		} else if ($acao == "EX_CL_4") {

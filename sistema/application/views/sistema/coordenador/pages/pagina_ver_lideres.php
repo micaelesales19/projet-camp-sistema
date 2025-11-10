@@ -430,9 +430,9 @@ if (!isset($_SESSION['usuario'])) {
                                             <form action="../../lider/salvar" method="POST">
                                                 <input type="hidden" name="id_pastor" value="<?= $id_pastor; ?>">
                                                 <input type="hidden" name="id_coordenador" value="<?= $id_usuario; ?>">
-                                                <input type="hidden" name="id_slocal" value="<?= $id_sr; ?>">
-                                                <input type="hidden" name="id_sregional" value="<?= $id_se; ?>">
-                                                <input type="hidden" name="red" value="coordenador/lideres">
+                                                <input type="hidden" name="id_supervisor" value="<?= $id_sr; ?>">
+                                                <input type="hidden" name="id_supervisor" value="<?= $id_se; ?>">
+                                                <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                 <div class="modal-header">
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span></button>
