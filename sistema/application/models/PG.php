@@ -207,6 +207,40 @@ class PG extends CI_Model
         }
     }
 
+    public function cadastro_pg_pular($idLider, $nome)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date('d/m/Y');
+
+        $foto = "import/sistema/fotoPG/geral.jpg";
+
+        $ano_pg = "1";
+        $modulo = "1";
+        $licao = "1";
+
+        $ativo = "1";
+        $bonus = "0";
+        $autorizacao = "0";
+
+        $inserir['nome_pg'] = $nome;
+        $inserir['id_lider'] = $idLider;
+        $inserir['autorizacao'] = $autorizacao;
+        $inserir['ano'] = $ano_pg;
+        $inserir['id_modulo'] = $modulo;
+        $inserir['n_licao'] = $licao;
+        $inserir['data_cadastro'] = $data;
+        $inserir['data_inicio'] = '';
+        $inserir['data_previsao_termino'] = '';
+        $inserir['data_semana'] = '';
+        $inserir['ano_devocional'] = $ano_pg;
+        $inserir['modulo_devocional'] = $modulo;
+        $inserir['licao_devocional'] = $licao;
+        $inserir['ativo'] = $ativo;
+        $inserir['foto'] = $foto;
+        $inserir['bonus'] = $bonus;
+        $this->db->insert("pg", $inserir);
+    }
+
     public function cadastro_pg_c_infos($id_pg, $idLider, $nome, $ano_pg, $id_modulo, $n_licao, $data_cadastro, $data_inicio, $data_fim, $ativo, $foto, $bonus)
     {
         $autorizacao = "0"; // autorização envio de emails

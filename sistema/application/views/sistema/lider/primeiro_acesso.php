@@ -6,6 +6,8 @@ if (!isset($_SESSION['usuario'])) {
 
 	require_once(APPPATH . '../import/sistema/materiais/materiais_1_trilha.php');
 
+	$url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
+
 	$id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
 	$id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
@@ -61,7 +63,6 @@ if (!isset($_SESSION['usuario'])) {
 									<div class="box-body">
 										<input class="form-control" type="hidden" name="idLider" value="<?= $id_usuario; ?>">
 										<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">
-										<input class="form-control" type="hidden" name="nivel_2" value="2">
 
 										<div class="col-lg-12">
 											<div class="form-group">
@@ -94,7 +95,6 @@ if (!isset($_SESSION['usuario'])) {
 									<input type="hidden" name="idLider" value="<?= $id_usuario ?>">
 									<input type="hidden" name="nome" value="<?= $dados_lider['nome_lider']; ?>">
 									<input type="hidden" name="nivel" value="1">
-									<input type="hidden" name="nivel_2" value="2">
 									<br><input type="submit" value="Pular" class="btn btn-warning">
 								</form>
 							</div>
@@ -156,7 +156,6 @@ if (!isset($_SESSION['usuario'])) {
 							<div class="box-body">
 								<input class="form-control" id="id_lider" type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
 								<input class="form-control" type="hidden" name="nivel" value="<?= $nivel; ?>">
-								<input class="form-control" type="hidden" name="nivel_2" value="2">
 								<div class="col-lg-12">
 									<div class="form-group">
 										<label for="exampleInputEmail1">PG</label>
@@ -270,16 +269,8 @@ if (!isset($_SESSION['usuario'])) {
 			</section>
 
 		<?php } else {
-						/*$data = [
-					"<input type='hidden' name='id_usuario' value='$id_usuario'>",
-					"<input type='hidden' name='nivel' value='$nivel'>",
-					"<input type='hidden' name='x_ir' value='3'>",
-				];
-				$funcao = $this->FConsultas_model->red('primeiro_acesso', 0, $data);
-				echo $funcao;*/
 					}
 		?>
-
 	<?php }
 				if ($x_ir == 3) { ?>
 
@@ -367,10 +358,6 @@ if (!isset($_SESSION['usuario'])) {
 
 			<!-- Small boxes (Stat box) -->
 			<script>
-				// $(function() {
-				//   $("#datepicker").datepicker(
-				//   );
-				// });
 				$(function() {
 					$("#datepicker").datepicker({
 						dateFormat: 'dd/mm/yy',

@@ -80,8 +80,8 @@ $route['download_material'] = 'welcome/downloadMaterial';
 $route['download'] = 'welcome/download_material';
 
 // Primeiro Acesso
-$route['pg/cadastro/salvar'] = 'welcome/cadastro_pg_inicial';
-$route['pg/pular'] = 'welcome/cadastro_pg_inicial_pular';
+$route['pg/cadastro/salvar'] = 'welcome/cadastro_pg_inicial'; // ok
+$route['pg/pular'] = 'welcome/cadastro_pg_inicial_pular'; // ok
 $route['criancas/cadastro/salvar'] = 'welcome/cadastro_crianca_inicial';
 
 // CronJobs

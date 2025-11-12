@@ -25,11 +25,12 @@ $route['lider/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg'; // ok
 $route['lider/page/pg/edicao/salvar'] = 'welcome/editar_pg';
 $route['lider/page/pg/exclusao/desativar'] = 'welcome/desativar_pg';
 
-$route['lider/page/pg/licoes'] = 'Lider/pagina_licoes';
-$route['lider/page/pg/visualizar'] = 'Lider/pagina_visualizacao_relatorio_pg';
-$route['lider/page/pg/preenchimento'] = 'Lider/pagina_preenchimento_relatorio_pg';
+$route['lider/page/pg/licoes'] = 'Lider/pagina_licoes'; // ok
+
+
+$route['lider/page/pg/visualizar'] = 'Lider/pagina_visualizacao_relatorio_pg'; // ok
+$route['lider/page/pg/preenchimento'] = 'Lider/pagina_preenchimento_relatorio_pg'; // ok
 $route['lider/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio'; // ok
-$route['lider/page/pg/preenchimento/editar'] = 'Lider/pagina_editar_relatorio_pg';
 $route['lider/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Lider/consulta_criancas_relatorios';
 $route['lider/page/pg/consultas/retornar_informacoes_relatorio_pg'] = 'Lider/consulta_relatorio_pg';
 $route['lider/page/pg/preenchimento/edicao'] = 'welcome/edicao_relatorio';
@@ -39,9 +40,10 @@ $route['lider/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg';
 // Fim das PG
 
 // Colíderes
-$route['lider/colider/cadastro/salvar'] = 'welcome/cadastro_colider';
-$route['lider/colider/desativar'] = 'welcome/desativar_colider';
-$route['lider/colider/ativar'] = 'welcome/ativar_colider';
+$route['lider/colider/cadastro/salvar'] = 'welcome/cadastro_colider'; // ok
+$route['lider/colider/desativar'] = 'welcome/desativar_colider'; // ok
+$route['lider/colider/ativar'] = 'welcome/ativar_colider'; // ok
+$route['lider/colider/exclusao/permanente'] = 'welcome/excluir_colider_permanentemente'; // ok
 // Colíderes
 
 // Download de Material

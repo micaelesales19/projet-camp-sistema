@@ -17,6 +17,8 @@ if (!isset($_SESSION['usuario'])) {
     $CI = &get_instance();
     $CI->load->model('FConsultas_model');
 
+    $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
+
     // id lider // opc // opc2 // ordem // datas
     $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
     $dados_lider = $query['dados'];
@@ -228,8 +230,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="box-body">
                                                 <input class="form-control" id="id_lider" type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
 
-                                                <input type="hidden" name="nivel_routa" value="lider">
-                                                <input type="hidden" name="red" value="page_criancas">
+                                                <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
                                                 <div class="col-lg-12">
                                                     <div class="form-group">
@@ -244,7 +245,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <select name="id_pg" id="id_pg" class="form-control">
                                                             <optgroup label="Seu PG">
                                                                 <?php
-                                                                $consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
+                                                                $consultarPG = $this->PG->query([$id_usuario], 'query_pg_id_lider_all', 1);
 
                                                                 foreach ($consultarPG['dados'] as $key => $val) {
                                                                 ?>
@@ -275,7 +276,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
                                                             <label for="exampleInputEmail1">Responsável da Criança:</label>
-                                                            <select name="responsavel_crianca[]" id="isRespon_1" onchange="mostrarCamposPais(1);" class="form-control" required>
+                                                            <select name="responsavel_crianca[]" id="isRespon_1" onchange="mostrarCampos(1);" class="form-control" required>
                                                                 <option value="<?= $dados_lider['nome_lider'] ?>" selected><?= $dados_lider['nome_lider'] ?></option>
                                                                 <option value="outro">Outro</option>
                                                             </select>
@@ -284,7 +285,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
 
                                                 <script>
-                                                    function mostrarCamposPais(i) {
+                                                    function mostrarCampos(i) {
                                                         //var i = document.getElementById('controller').value;
                                                         var isRespon = document.getElementById('isRespon_' + i).value;
 
@@ -366,7 +367,6 @@ if (!isset($_SESSION['usuario'])) {
                                     ?>
                                         <button type="button" style="margin-right: 50px;" class="btn btn-warning pull-right" data-toggle="modal" data-target="#criancas_desativadas">Crianças Desativadas</button>
 
-
                                         <div class="modal fade" id="criancas_desativadas">
                                             <div class="modal-dialog modal-warning">
                                                 <div class="modal-content">
@@ -407,7 +407,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <input type="hidden" name="opc" id="id_crianca_escolhido_1" value="<?= $criancas_desativadas['dados'][0]['id_crianca']; ?>">
                                                                         <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
                                                                         <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                        <input type="hidden" name="red" value="page_criancas">
+                                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                                         <center>
                                                                             <label for="opc">Opção 1:</label><br>
                                                                             <input type="submit" class="btn btn-success" value="Ativar">
@@ -422,7 +422,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <input type="hidden" name="opc" id="id_crianca_escolhido_2" value="<?= $criancas_desativadas['dados'][0]['id_crianca']; ?>">
                                                                         <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
                                                                         <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                        <input type="hidden" name="red" value="page_criancas">
+                                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                                         <center>
                                                                             <label for="opc">Opção 2:</label><br>
                                                                             <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
@@ -528,8 +528,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                     <input type="hidden" name="idCrianca" value="<?= $linha['id_crianca']; ?>">
                                                                                     <input type="hidden" name="idLider" value="<?= $linha['lider']; ?>">
 
-                                                                                    <input type="hidden" name="nivel_routa" value="lider">
-                                                                                    <input type="hidden" name="red" value="page_criancas">
+                                                                                    <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
                                                                                     <div class="col-lg-12">
                                                                                         <div class="form-group">
@@ -705,8 +704,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                     <input type="hidden" name="idLider" value="<?= $linha['lider']; ?>">
                                                                                     <input type="hidden" name="idCrianca" value="<?= $linha['id_crianca']; ?>">
 
-                                                                                    <input type="hidden" name="nivel_routa" value="lider">
-                                                                                    <input type="hidden" name="red" value="page_criancas">
+                                                                                    <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
                                                                                     <div class="form-group">
                                                                                         <label for="exampleInputEmail1">Deseja realmente desativar essa Criança?</label>
@@ -793,7 +791,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                 foreach ($criancas['dados'] as $key => $cri) {
                                                                     $id_crianca = $cri['id_crianca'];
                                                                     $nome = $cri['nome_crianca'];
-                                                                    //atualizarProgresso(idModulo, idLider, idPg, ano, id_crianca, index)
                                                                     if ($i == 0) {
                                                                 ?>
                                                                         <li class="active"><a href="#tab_<?= $i; ?>" data-toggle="tab"><?= $nome; ?></a></li>
@@ -978,7 +975,7 @@ if (!isset($_SESSION['usuario'])) {
 
                         $("#conteudo").append('<div id="' + conteudo2 + '"></div>');
 
-                        $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-6"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-6"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="2">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCamposPais(' + i + ');" class="form-control" required><option value="<?= $dados_lider['nome_lider'] ?>" selected><?= $dados_lider['nome_lider'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total" name="total[]">');
+                        $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-6"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-6"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="2">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCampos(' + i + ');" class="form-control" required><option value="<?= $dados_lider['nome_lider'] ?>" selected><?= $dados_lider['nome_lider'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total" name="total[]">');
                         return false;
                     });
 

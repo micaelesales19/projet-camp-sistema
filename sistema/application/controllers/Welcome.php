@@ -1351,9 +1351,10 @@ class Welcome extends CI_Controller
 		$lider = $this->input->post('id_lider');
 		$nome = $this->input->post('nome');
 		$id_pg = $this->input->post('id_pg');
-		$nascimento = $this->input->post('nascimento');
 		$obs = $this->input->post('obs');
 		$opcao = $this->input->post('opcao');
+
+		$nascimento_digitado = $this->input->post('nascimento');
 
 		$responsavel_crianca = $this->input->post('responsavel_crianca');
 		$nome_responsavel = $this->input->post('nome_responsavel');
@@ -1367,7 +1368,11 @@ class Welcome extends CI_Controller
 
 		for ($i = 0; $i < $total_count; $i++) {
 
-			$nascimento2 = $nascimento[$i];
+			$nascimento2_digitado = $nascimento_digitado[$i];
+			$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento2_digitado);
+
+			$nascimento2 = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
 			$nome2 = $nome[$i];
 			$lider2 = $lider;
 			$id_pg2 = $id_pg;
@@ -1400,25 +1405,6 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red');
 		$data = [];
-		/*$routa = "";
-
-		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
-
-
-		if ($red == 'page_criancas') {
-			$routa = "criancas";
-		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "lideres/detalhes/$lider";
-		} else if ($red == 'pg') {
-			$routa = "pg";
-		} else {
-			$routa = "criancas";
-		}*/
 
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Cadastro Relizado com Sucesso!']);
 		$funcao = $this->FConsultas_model->red($red, 2000, $data);
@@ -1432,13 +1418,11 @@ class Welcome extends CI_Controller
 		$lider = $this->input->post('id_lider');
 		$nome = $this->input->post('nome');
 		$id_pg = $this->input->post('id_pg');
-		$nascimento = $this->input->post('nascimento');
 		$obs = $this->input->post('obs');
 		$opcao = $this->input->post('opcao');
+		$nascimento_digitado = $this->input->post('nascimento');
 
 		$nivel = $this->input->post('nivel');
-
-		$nivel_2 = $this->input->post("nivel_2") == '' ? 1 : $this->input->post("nivel_2");
 
 		$responsavel_crianca = $this->input->post('responsavel_crianca');
 		$nome_responsavel = $this->input->post('nome_responsavel');
@@ -1446,13 +1430,16 @@ class Welcome extends CI_Controller
 		$telefone_responsavel = $this->input->post('telefone_responsavel');
 
 		$dadosPais = $this->Lideres->infos([$lider], 'info_lider', '', '', []);
-		echo "O id lider é $lider";
 
 		$total_count = count($total);
 
 		for ($i = 0; $i < $total_count; $i++) {
 
-			$nascimento2 = $nascimento[$i];
+			$nascimento2_digitado = $nascimento_digitado[$i];
+			$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento2_digitado);
+
+			$nascimento2 = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
 			$nome2 = $nome[$i];
 			$lider2 = $lider;
 			$id_pg2 = $id_pg;
@@ -1499,9 +1486,12 @@ class Welcome extends CI_Controller
 		$lider = $this->input->post('idLider');
 		$nome = $this->input->post('nome');
 		$id_pg = $this->input->post('idPg');
-		$nascimento = $this->input->post('nascimento');
 		$obs = $this->input->post('obs');
 		$opcao = $this->input->post('opcao');
+
+		$nascimento_digitado = $this->input->post('nascimento');
+		$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento_digitado);
+		$nascimento = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
 
 		$isResponsavel = $this->input->post('isResponsavel');
 
@@ -1513,25 +1503,6 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red');
 		$data = [];
-
-		/*$routa = "";
-
-		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
-
-		if ($red == 'page_criancas') {
-			$routa = "criancas";
-		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "lideres/detalhes/$lider";
-		} else if ($red == 'pg') {
-			$routa = "pg";
-		} else {
-			$routa = "criancas";
-		}*/
 
 		if ($checkCriancas) {
 			$editar = $this->Criancas->edita_crianca($id_crianca, $nome, $nascimento, $lider, $id_pg, $obs, $opcao, $nome_responsavel, $email_responsavel, $telefone_responsavel);
@@ -1610,38 +1581,21 @@ class Welcome extends CI_Controller
 		$info_criancas = $this->Criancas->query_crianca_id_crianca($id_cri);
 		$nomeCrianca = $info_criancas['dados']['nome_crianca'];
 
-		$excluir = $this->Criancas->excluir_crianca_permanentemente($id_cri, $nomeCrianca, $idLider, $idUsuario);
+		$this->Criancas->excluir_crianca_permanentemente($id_cri, $nomeCrianca, $idLider, $idUsuario);
 
 		$red = $this->input->post('red');
 		$data = [];
 
-		/*$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Criança Excluida Permanentemente!']);
+		$funcao = $this->FConsultas_model->red($red, 2000, $data);
+		echo $funcao;
 
-
-		if ($red == 'page_criancas') {
-			$routa = "criancas";
-		} else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "lideres/detalhes/$idLider";
-		} else if ($red == 'pg') {
-			$routa = "pg";
-		} else {
-			$routa = "criancas";
-		}*/
-
-		if ($excluir == 'true') {
-			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Atenção! Criança Excluida Permanentemente!']);
-			$funcao = $this->FConsultas_model->red($red, 2000, $data);
-			echo $funcao;
+		/*if ($excluir == 'true') {
 		} else {
 			$this->FConsultas_model->mensagem('danger', 'Erro!', ['Erro! Tente novamente!']);
 			$funcao = $this->FConsultas_model->red($red, 2000, $data);
-			echo $funcao;
-		}
+			//echo $funcao;
+		}*/
 	}
 
 	public function RelatoriosCriancas()
@@ -2242,15 +2196,14 @@ class Welcome extends CI_Controller
 		echo $dados;
 	}
 
+	// ok
 	public function cadastro_pg_inicial_pular()
 	{
 		$idLider = $this->input->post("idLider");
 		$nome = $this->input->post("nome");
 		$nivel = $this->input->post("nivel");
 
-		$nivel_2 = $this->input->post("nivel_2") == '' ? 1 : $this->input->post("nivel_2");
-
-		$this->FSistema_model->cadastro_pg_pular($idLider, $nome, $nivel_2);
+		$this->PG->cadastro_pg_pular($idLider, $nome);
 
 		$data = [
 			"<input type='hidden' name='id_lider' value='$idLider'>",
@@ -2261,17 +2214,20 @@ class Welcome extends CI_Controller
 		echo $funcao;
 	}
 
+	// ok
 	public function cadastro_pg_inicial()
 	{
 		$idLider = $this->input->post('idLider');
 		$nome_pg = $this->input->post('nome_pg');
-		$data_inicio = $this->input->post('data_inicio');
 		$autorizacao = $this->input->post('autorizacao') == '' ? 0 : $this->input->post('autorizacao');
 		$nivel = $this->input->post('nivel');
 
-		$nivel_2 = $this->input->post("nivel_2") == '' ? 1 : $this->input->post("nivel_2");
+		$data_inicio_digitado = $this->input->post('data_inicio');
+		$dataInicioSoNumero = preg_replace('/\D/', '', $data_inicio_digitado);
+		$data_inicio = $dataInicioSoNumero[0] . $dataInicioSoNumero[1] . "/" . $dataInicioSoNumero[2] . $dataInicioSoNumero[3] . "/" . $dataInicioSoNumero[4] . $dataInicioSoNumero[5] . $dataInicioSoNumero[6] . $dataInicioSoNumero[7];
 
-		$this->FSistema_model->cadastro_pg($idLider, $nome_pg, $data_inicio, $autorizacao, $nivel_2);
+
+		$this->PG->cadastro_pg($idLider, $nome_pg, $data_inicio, $autorizacao);
 
 		$data = [
 			"<input type='hidden' name='id_lider' value='$idLider'>",
@@ -4785,26 +4741,6 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red') ?? 'coordenador/lideres';
 		$data = [];
-		/*$routa = "";
-
-		$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
-
-		if ($red == 'coordenador/lideres') {
-			$data = [];
-			$routa = "coordenador/page/lideres";
-		} else if ($red == 'slocal/lideres') {
-			if ($nivel_routa == 'lider') {
-				$data = [];
-			} else {
-				$data = [
-					"<input type='hidden' name='id_user' value='$id_coordenador'>"
-				];
-			}
-			$routa = "slocal/page/lideres";
-		} else {
-			$data = [];
-			$routa = "coordenador/page/lideres";
-		}*/
 
 		$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento);
 		$total_numeros_data_nascimento = strlen($dataNascimentoSoNumeros);

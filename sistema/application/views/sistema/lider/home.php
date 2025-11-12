@@ -56,9 +56,6 @@ if (!isset($_SESSION['usuario'])) {
                   <i class="fa fa-child"></i>
                 </div>
                 <?php
-
-                //$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, 2);
-
                 $consultarPG = $this->PG->query([$id_usuario], 1, 1);
 
                 if ($consultarPG['row'] == 0) {

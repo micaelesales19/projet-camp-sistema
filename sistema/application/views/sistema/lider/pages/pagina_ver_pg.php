@@ -33,6 +33,8 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
+    $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
+
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
@@ -252,7 +254,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     </div>
                                                     <div class="box-body">
                                                         <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
-                                                        <input type="hidden" name="red" value="page_pg">
+                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                         <div class="col-lg-12">
                                                             <div class="form-group">
                                                                 <label for="exampleInputEmail1">Nome para o PG</label>
@@ -376,7 +378,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                             <input type="hidden" name="idPg" id="id_pg<?= $i ?>" value="<?= $dadosPG['id_pg']; ?>">
                                                                             <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
                                                                             <input type="hidden" name="fotoOriginal" value="<?= $dadosPG['foto']; ?>">
-                                                                            <input type="hidden" name="red" value="page_pg">
+                                                                            <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                                             <div class="col-lg-12" style="display: flex; justify-content: center;">
                                                                                 <div class="col-lg-4">
                                                                                     <div class="form-group">
@@ -464,7 +466,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                             <input type="hidden" name="idLider" value="<?= $dadosPG['id_lider']; ?>">
                                                                             <input type="hidden" name="idPg" value="<?= $dadosPG['id_pg']; ?>">
                                                                             <input type="hidden" name="nomePg" value="<?= $dadosPG['nome_pg']; ?>">
-                                                                            <input type="hidden" name="nivel" value="2">
+                                                                            <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                                             <div class="form-group">
                                                                                 <label for="exampleInputEmail1">Deseja realmente retirar essa PG do projeto CAMP?</label>
                                                                                 <label for="exampleInputPassword1">Conte-nos o motivo:</label>
@@ -499,6 +501,8 @@ if (!isset($_SESSION['usuario'])) {
                                                                     <input type="hidden" name="id_pg" value="<?= $dadosPG['id_pg'] ?>">
                                                                     <input type="hidden" name="id_lider" value="<?= $id_lider; ?>">
                                                                     <input type="hidden" name="ano" value="<?= $id_ano; ?>">
+                                                                    <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                                                                    <input type="hidden" name="routa" value="pg">
                                                                 </form>
                                                             </li>
                                                         </ul>

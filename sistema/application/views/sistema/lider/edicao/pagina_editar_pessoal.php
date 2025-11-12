@@ -11,8 +11,27 @@ if (!isset($_SESSION['usuario'])) {
 
   $CI = &get_instance();
   $CI->load->model('FConsultas_model');
+
+  $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
+  $dados_pessoal = $query['dados'];
+
+  $info_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '', '');
+
+  $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>
+  <!DOCTYPE html>
+  <html>
+  <!-- Head -->
+  <?php
+  $this->load->view('partes/head');
+  ?>
+
+
   <script>
+    $(document).ready(function() {
+      aparecer_select();
+    });
+
     function validar_edicao() {
 
       var dados = document.form_editar_foto.opc.value;
@@ -22,14 +41,36 @@ if (!isset($_SESSION['usuario'])) {
         return false;
       }
     }
-  </script>
 
-  <!DOCTYPE html>
-  <html>
-  <!-- Head -->
-  <?php
-  $this->load->view('partes/head');
-  ?>
+    function aparecer_select() {
+      var opc = document.getElementById('pais').value;
+
+      if (opc == "br") {
+        document.getElementById('estaods2').value = '';
+        document.getElementById('cidades2').value = '';
+        document.getElementById('consultar_endereco').style.display = "inline";
+        document.getElementById('escrever_endereco').style.display = "none";
+
+        document.getElementById('precisa_cpf').style.display = "inline";
+
+        document.getElementById('cpf').setAttribute('required', 'true');
+      } else {
+        document.getElementById('estados').value = '';
+        document.getElementById('cidades').value = '';
+        document.getElementById('escrever_endereco').style.display = "inline";
+        document.getElementById('consultar_endereco').style.display = "none";
+
+        document.getElementById('precisa_cpf').style.display = "none";
+        document.getElementById('cpf').value = '';
+        document.getElementById('cpf').removeAttribute('required');
+      }
+    }
+
+    function toggleSenha() {
+      const campo = document.getElementById("senha");
+      campo.type = campo.type === "password" ? "text" : "password";
+    }
+  </script>
 
   <style>
     #imgPhoto_usuario,
@@ -88,8 +129,6 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="box-body chat" id="chat-box">
                     <div class="box-footer">
                       <?php
-                      $dados_pessoal = $this->FConsultas_model->consultaDadosPaisId($id_usuario, 2);
-
                       $foto_original = $dados_pessoal['foto'];
                       //$foto_original = 'fotoU/pais/WhatsApp_Image_2022-12-05_at_08_30_33.jpeg';
 
@@ -97,6 +136,22 @@ if (!isset($_SESSION['usuario'])) {
                       ?>
 
                       <input class="form-control" id="exampleInputText1" type="hidden" name="id" aria-describedby="emailHelp" value="<?= $dados_pessoal['id_lider'] ?>">
+                      <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+
+                      <div class="col-lg-12">
+                        <center>
+                          <div class="form-group">
+                            <div class="form-group">
+                              <label for="nome">Editar Foto?</label>
+                              <div class="imageContainer">
+                                <img src="<?= $foto; ?>" alt="Imagem não encontrada" id="imgPhoto_usuario">
+                              </div>
+                              <input type="file" name="files[]" id="fileImage_usuario">
+                              <input type="hidden" name="foto_antiga" value="<?= $foto_original; ?>">
+                            </div>
+                          </div>
+                        </center>
+                      </div>
 
                       <script type="text/javascript">
                         $(document).ready(function() {
@@ -137,31 +192,70 @@ if (!isset($_SESSION['usuario'])) {
                         });
                       </script>
 
-                      <div class="col-lg-12">
-                        <center>
-                          <div class="form-group">
-                            <div class="form-group">
-                              <label for="nome">Editar Foto?</label>
-                              <div class="imageContainer">
-                                <img src="<?= $foto; ?>" alt="Imagem não encontrada" id="imgPhoto_usuario">
-                              </div>
-                              <input type="file" name="files[]" id="fileImage_usuario">
-                              <input type="hidden" name="foto_antiga" value="<?= $foto_original; ?>">
-                            </div>
-                          </div>
-                        </center>
+                      <div class="col-lg-4">
+                        <div class="form-group has-feedback">
+                          <label for="exampleInputPassword1">País</label>
+                          <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
+                            <?php
+                            if ($dados_pessoal['pais'] == '' || $dados_pessoal['pais'] == 'br') {
+                            ?>
+                              <option value="">País</option>
+                              <option value="br" selected>Brasil</option>
+                              <option value="Moçambique">Moçambique</option>
+                              <option value="outro">Outros</option>
+                            <?php } else if ($dados_pessoal['pais'] == 'Moçambique') { ?>
+                              <option value="">País</option>
+                              <option value="br">Brasil</option>
+                              <option value="Moçambique" selected>Moçambique</option>
+                              <option value="outro">Outros</option>
+                            <?php } else { ?>
+                              <option value="">País</option>
+                              <option value="br">Brasil</option>
+                              <option value="Moçambique">Moçambique</option>
+                              <option value="outro" selected>Outros</option>
+                            <?php } ?>
+                          </select>
+                        </div>
                       </div>
 
-                      <div class="col-lg-6">
+                      <div id="consultar_endereco">
+                        <div class="form-group col-lg-4" id="form-group">
+                          <label for="exampleInputPassword1">Estado</label>
+                          <select id="estados" name="estados" class="form-control">
+                            <option value=""></option>
+                          </select>
+                        </div>
+
+                        <div class="form-group col-lg-4" id="form-group">
+                          <label for="exampleInputPassword1">Cidade</label>
+                          <select id="cidades" name="cidades" class="form-control"></select>
+                        </div>
+                      </div>
+
+                      <div id="escrever_endereco">
+                        <div class="form-group col-lg-4">
+                          <label for="exampleInputPassword1">Estado/Província/Região</label>
+                          <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2" value="<?= $dados_pessoal['estado']; ?>">
+                        </div>
+
+                        <div class="form-group col-lg-4">
+                          <label for="exampleInputPassword1">Cidade/Município/Distrito</label>
+                          <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2" value="<?= $dados_pessoal['cidade']; ?>">
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Nome</label>
                           <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados_pessoal['nome_lider']; ?>" placeholder="Nome" required>
                           <input type="hidden" name="nome_antigo" value="<?= $dados_pessoal['nome_lider']; ?>">
                         </div>
+                      </div>
 
+                      <div class="col-lg-6" id="precisa_cpf">
                         <div class="form-group">
                           <label for="exampleInputEmail1">CPF</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" name="cpf" value="<?= $dados_pessoal['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required>
+                          <input type="text" class="form-control" name="cpf" id="cpf" value="<?= $dados_pessoal['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required>
                         </div>
                       </div>
 
@@ -170,6 +264,9 @@ if (!isset($_SESSION['usuario'])) {
                           <label for="exampleInputEmail1">E-mail</label>
                           <input type="email" class="form-control" id="exampleInputEmail1" name="email" value="<?= $dados_pessoal['email']; ?>" placeholder="E-mail" required>
                         </div>
+                      </div>
+
+                      <div class="col-lg-6">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Telefone</label>
                           <input type="text" class="form-control" id="exampleInputEmail1" name="telefone" value="<?= $dados_pessoal['telefone_whatsapp']; ?>" placeholder="Telefone" minlength="11" required>
@@ -181,23 +278,21 @@ if (!isset($_SESSION['usuario'])) {
                           <label for="exampleInputEmail1">Igreja</label>
                           <input type="text" class="form-control" id="exampleInputEmail1" name="igreja" value="<?= $dados_pessoal['igreja']; ?>" placeholder="Igreja" minlength="5" required>
                         </div>
+                      </div>
+
+                      <div class="col-lg-6">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Data de Nascimento</label>
                           <input type="text" class="form-control" id="exampleInputEmail1" name="nascimento" value="<?= $dados_pessoal['nascimento']; ?>" maxlength="10" minlength="10" placeholder="Data de Nascimento" required>
                         </div>
                       </div>
 
-                      <div class="col-lg-6">
-                        <div class="form-group" id="form-group">
-                          <label for="exampleInputPassword1">Estado</label>
-                          <select id="estados" name="estados" class="form-control">
-                            <option value=""></option>
-                          </select>
-                        </div>
 
-                        <div class="form-group" id="form-group">
-                          <label for="exampleInputPassword1">Cidade</label>
-                          <select id="cidades" name="cidades" class="form-control"></select>
+                      <div class="col-lg-6">
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">Senha</label>
+                          <input type="password" class="form-control" id="senha" name="senha" value="<?= $info_usuario['dados']['senha']; ?>" placeholder="Senha" required>
+                          <span onclick="toggleSenha()" style="position: absolute; right: 20px; top: 55%; transform: translateY(-50%); cursor: pointer;">👁️</span>
                         </div>
                       </div>
                     </div>
@@ -332,6 +427,7 @@ if (!isset($_SESSION['usuario'])) {
                   <input type="hidden" name="idColider" value="<?= $dados['id_colider']; ?>">
                   <input type="hidden" name="nomeColider" value="<?= $dados['nome_colider']; ?>">
                   <input type="hidden" name="idResponsavel" value="<?= $id_usuario; ?>">
+                  <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
                   <div class="form-group">
                     <label for="exampleInputEmail1">Deseja realmente desativar o colíder do projeto CAMP?</label>
@@ -362,6 +458,7 @@ if (!isset($_SESSION['usuario'])) {
               </div>
               <div class="box-body">
                 <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
                 <div class="col-lg-12">
                   <div class="form-group has-feedback">
@@ -410,43 +507,88 @@ if (!isset($_SESSION['usuario'])) {
         <!-- /.modal-dialog -->
       </div>
 
-      <div class="modal fade" id="colideres_desativados">
-        <div class="modal-dialog modal-warning">
-          <div class="modal-content">
-            <form action="colider/ativar" method="POST">
+      <?php
+      if ($colideres_desativados['row'] == 0) {
+      } else {
+      ?>
+        <div class="modal fade" id="colideres_desativados">
+          <div class="modal-dialog modal-warning">
+            <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Ativar | Colíder</h4>
+                <h4 class="modal-title">Ativar | Desativar | Colíder</h4>
               </div>
 
               <div class="box-body" style="height: 150px;">
 
-                <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                <input type="hidden" name="idLider" value="<?= $dados_pessoal['id_lider']; ?>">
+                <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
-                <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
-                  <div class="form-group">
-                    <label for="opc">Selecione o Colíder:</label>
-                    <select name="opc" class="form-control">
-                      <?php
-                      foreach ($colideres_desativados['dados'] as $key => $dadosColideres) {
-                      ?>
-                        <option value="<?= $dadosColideres['id_colider']; ?>"><?= $dadosColideres['nome_colider']; ?> </option>
-                      <?php } ?>
-                    </select>
+                <script>
+                  function trocar_id_colider_desativado() {
+                    var id_colider = document.getElementById('opc_id_colider').value;
+
+                    document.getElementById('id_colider_escolhido_1').value = id_colider;
+                    document.getElementById('id_colider_escolhido_2').value = id_colider;
+                  }
+                </script>
+
+                <div class="col-lg-12">
+
+                  <div class="col-lg-5">
+                    <div class="form-group">
+                      <label for="opc">Colíder:</label>
+                      <select name="opc" id="opc_id_colider" onchange="trocar_id_colider_desativado()" class="form-control">
+                        <?php
+                        foreach ($colideres_desativados['dados'] as $key => $dadosColiderDesativados) {
+                        ?>
+                          <option value="<?= $dadosColiderDesativados['id_colider']; ?>"><?= $dadosColiderDesativados['nome_colider']; ?> </option>
+                        <?php } ?>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-3">
+                    <div class="form-group">
+                      <form action="colider/ativar" method="POST">
+                        <input type="hidden" name="opc" id="id_colider_escolhido_1" value="<?= $colideres_desativados['dados'][0]['id_colider']; ?>">
+                        <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                        <input type="hidden" name="idLider" value="<?= $dados_pessoal['id_lider']; ?>">
+                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                        <center>
+                          <label for="opc">Opção 1:</label><br>
+                          <input type="submit" class="btn btn-success" value="Ativar">
+                        </center>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <div class="form-group">
+                      <form action="colider/exclusao/permanente" method="POST">
+                        <input type="hidden" name="opc" id="id_colider_escolhido_2" value="<?= $colideres_desativados['dados'][0]['id_colider']; ?>">
+                        <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                        <input type="hidden" name="idLider" value="<?= $dados_pessoal['id_lider']; ?>">
+                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                        <center>
+                          <label for="opc">Opção 2:</label><br>
+                          <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
+                        </center>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                <input type="submit" class="btn btn-default pull-right" value="Ativar">
               </div>
-            </form>
+            </div>
+            <!-- /.modal-content -->
           </div>
-          <!-- /.modal-content -->
+          <!-- /.modal-dialog -->
         </div>
-        <!-- /.modal-dialog -->
-      </div>
+      <?php } ?>
       <!-- /.content -->
     </div>
 

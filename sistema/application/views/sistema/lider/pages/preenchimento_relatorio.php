@@ -166,7 +166,8 @@ if (!isset($_SESSION['usuario'])) {
                 <!-- ><center><button class="btn btn-info" onclick="pesquisar_criancas()" id="b_modulo">Mostrar Crianças</button></center><br> -->
                 <form name="coder" action="preenchimento/salvar" method="post" autocomplete="off">
                   <input type="hidden" name="data_aula" value="<?= $data; ?>">
-                  <input type="hidden" name="nivel" value="2">
+                  <input type="hidden" name="red" value="<?= $red; ?>">
+                  <input type="hidden" name="routa" value="<?= $routa; ?>">
                   <div id=" conteudo">
                     <center>
                       <div class="card-body">

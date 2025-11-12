@@ -133,8 +133,9 @@ if (!isset($_SESSION['usuario'])) {
                 <br>
                 <form name="coder" action="preenchimento/edicao" method="post" autocomplete="off">
                   <input type="hidden" name="data_aula" value="<?= $data; ?>">
-                  <input type="hidden" name="nivel" value="2">
-                  <input type="hidden" name="red" value="<?= $routa; ?>">
+                  <input type="hidden" name="red" value="<?= $red; ?>">
+                  <input type="hidden" name="routa" value="<?= $routa; ?>">
+
                   <div id=" conteudo">
                     <center>
                       <div class="card-body">

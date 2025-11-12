@@ -362,12 +362,12 @@ class Criancas extends CI_Model
             $inserir['id_responsavel'] = $id_responsavel;
             $inserir['motivo'] = $motivo;
             $inserir['data_saida'] = $data;
-
-            if ($this->db3->insert('alcancado_crianca', $inserir)) {
+            $this->db3->insert('alcancado_crianca', $inserir);
+            /*if () {
                 return 'true';
-            }
+            }*/
         } else {
-            return 'false';
+            //return 'false';
         }
 
         $this->db->where('id_crianca', $id_crianca);

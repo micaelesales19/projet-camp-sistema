@@ -363,28 +363,40 @@ class Lider extends CI_Controller
 		$this->load->view('sistema/lider/pages/pagina_ver_pg');
 	}
 
+	// ok
 	public function pagina_licoes()
 	{
 
 		$id_pg = $this->input->post("id_pg");
 		$id_lider = $this->input->post("id_lider");
 		$ano = $this->input->post("ano");
+		$routa = $this->input->post('routa');
 
 		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
-		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg);
+		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
+
+		$pages = [];
+
+		$page1 = array(
+			"red" => "../pg",
+			"name" => "Meu PG",
+			"icon" => "fa fa-group",
+		);
+		array_push($pages, $page1);
 
 		$dados = array(
 			'id_lider' => $id_lider,
 			'id_pg' => $id_pg,
 			'modulos' => $modulos,
-			'ano_pg' => $ano,
 			'pg' => $dadosPg,
+			'pages' => $pages,
+			'routa' => $routa,
 		);
 
 		$this->load->view('sistema/lider/pages/pg/licaos', $dados);
 	}
 
-
+	// ok
 	public function pagina_visualizacao_relatorio_pg()
 	{
 		$id_pg = $this->input->post('id_pg');
@@ -395,32 +407,16 @@ class Lider extends CI_Controller
 		$licao = $this->input->post('licao');
 		$routa = $this->input->post('routa');
 
+		$red = $this->input->post('red');
+
 		$pages = [];
 
-		if ($routa == 'pg') {
-			$page1 = array(
-				"red" => "../pg",
-				"name" => "Meu PG",
-				"icon" => "fa fa-group",
-			);
-			array_push($pages, $page1);
-		} else {
-
-			$page1 = array(
-				"red" => "../lideres",
-				"name" => "Líderes",
-				"icon" => "fa fa-group",
-			);
-
-			$page2 = array(
-				"red" => "../lideres/detalhes/$id_lider",
-				"name" => "Informações",
-				"icon" => "fa fa-user",
-			);
-
-			array_push($pages, $page1);
-			array_push($pages, $page2);
-		}
+		$page1 = array(
+			"red" => "../pg",
+			"name" => "Meu PG",
+			"icon" => "fa fa-group",
+		);
+		array_push($pages, $page1);
 
 		$dados = array(
 			'id_lider' => $id_lider,
@@ -431,18 +427,45 @@ class Lider extends CI_Controller
 			'routa' => $routa,
 			'pages' => $pages,
 			'id_relatorio' => $id_relatorio,
+			'red' => $red,
 		);
 
 		$this->load->view('sistema/lider/pages/edicao_preenchimento_relatorio', $dados);
 	}
 
+	// ok
 	public function pagina_preenchimento_relatorio_pg()
 	{
-		$this->load->view('sistema/lider/pages/preenchimento_relatorio');
-	}
-	public function pagina_editar_relatorio_pg()
-	{
-		$this->load->view('sistema/lider/pages/edicao_relatorio');
+		$id_pg = $this->input->post('id_pg');
+		$id_lider = $this->input->post('id_lider');
+		$ano = $this->input->post('ano');
+		$id_modulo = $this->input->post('id_modulo');
+		$licao = $this->input->post('licao');
+
+		$red = $this->input->post('red');
+		$routa = $this->input->post('routa');
+
+		$pages = [];
+
+		$page1 = array(
+			"red" => "../pg",
+			"name" => "Meu PG",
+			"icon" => "fa fa-group",
+		);
+		array_push($pages, $page1);
+
+		$dados = array(
+			'id_lider' => $id_lider,
+			'id_pg' => $id_pg,
+			'ano' => $ano,
+			'id_modulo' => $id_modulo,
+			'licao' => $licao,
+			'routa' => $routa,
+			'pages' => $pages,
+			'red' => $red,
+		);
+
+		$this->load->view('sistema/lider/pages/preenchimento_relatorio', $dados);
 	}
 
 	public function consulta_criancas_relatorios()
@@ -495,6 +518,8 @@ class Lider extends CI_Controller
 			$this->load->view('sistema/lider/pages/pg/linha_geral', $dados);
 		}
 	}
+
+	// ok
 	public function atualizarDataPG()
 	{
 		$idPg = $this->input->post('id_pg');
@@ -551,99 +576,4 @@ class Lider extends CI_Controller
 		$this->load->view('sistema/lider/pages/download_material_modulo', $dados);
 	}
 	/* FIM LÍDER */
-
-	// Colíderes
-	public function cadastro_colider()
-	{
-		$idLider = $this->input->post('idLider');
-		$nomeColider = $this->input->post('nomeColider');
-		$emailColider = $this->input->post('emailColider');
-		$cpfColider = $this->input->post('cpfColider');
-		$telefoneColider = $this->input->post('telefoneColider');
-		$nascimentoColider = $this->input->post('nascimentoColider');
-
-		$consultarColider = $this->FConsultas_model->checkColider($nomeColider, $cpfColider, $emailColider, $telefoneColider);
-
-		if ($consultarColider) {
-			$cadastroColider = $this->FSistema_model->cadastrarColider($idLider, $nomeColider, $cpfColider, $emailColider, $telefoneColider, $nascimentoColider);
-
-			if ($cadastroColider) {
-				$data = [];
-				$funcao = $this->FConsultas_model->red('../../pagina_editar_pessoal', 0, $data);
-				echo $funcao;
-			} else {
-				echo '
-				<script>
-					if(window.confirm("ERRO!")) {
-						window.location="../../pagina_editar_pessoal";
-					}else{
-						window.location="../../pagina_editar_pessoal";
-					}
-				</script>
-			';
-			}
-		} else {
-			echo '
-				<script>
-					if(window.confirm("COLÍDER JÁ CADASTRADO, TENTE NOVAMENTE!")) {
-						window.location="../../pagina_editar_pessoal";
-					}else{
-						window.location="../../pagina_editar_pessoal";
-					}
-				</script>
-			';
-		}
-	}
-
-	public function desativar_colider()
-	{
-		$idLider = $this->input->post("idLider");
-		$idColider = $this->input->post("idColider");
-		$nomeColider = $this->input->post("nomeColider");
-
-		$idResponsavel = $this->input->post("idResponsavel");
-		$motivo = $this->input->post("motivo");
-
-		$reativar = $this->FSistema_model->excluirColider($idColider, $nomeColider, $idLider, $idResponsavel, $motivo);
-
-		if ($reativar) {
-			$data = [];
-			$funcao = $this->FConsultas_model->red('../pagina_editar_pessoal', 0, $data);
-			echo $funcao;
-		} else {
-			echo '
-			<script>
-				if(window.confirm("ERRO!")) {
-					window.location="../pagina_editar_pessoal";
-				}else{
-					window.location="../pagina_editar_pessoal";
-				}
-			</script>
-		';
-		}
-	}
-
-	public function ativar_colider()
-	{
-		$idLider = $this->input->post("idLider");
-		$idColider = $this->input->post("opc");
-
-		$reativar = $this->FSistema_model->reativarColider($idColider, $idLider);
-
-		if ($reativar) {
-			$data = [];
-			$funcao = $this->FConsultas_model->red('../pagina_editar_pessoal', 0, $data);
-			echo $funcao;
-		} else {
-			echo '
-			<script>
-				if(window.confirm("ERRO!")) {
-					window.location="../pagina_editar_pessoal";
-				}else{
-					window.location="../pagina_editar_pessoal";
-				}
-			</script>
-		';
-		}
-	}
 }
