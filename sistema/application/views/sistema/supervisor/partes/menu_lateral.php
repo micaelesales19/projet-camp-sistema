@@ -79,7 +79,7 @@ $color = "#605ca8";
     <!-- Sidebar user panel -->
     <div class="user-panel">
       <div class="pull-left image">
-        <img src="<?= $foto_usuario; ?>" class="img-circle" alt="User Image">
+        <img src="<?= $foto_usuario; ?>" class="img-circle" alt="User Image" style="width: 100px; height: 50px;">
       </div>
       <div class="pull-left info">
         <p><?= $nome_usuario; ?></p>

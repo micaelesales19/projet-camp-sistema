@@ -8,17 +8,17 @@ $route['coordenador/salvar_edicao'] = 'Coordenador/e_pessoal';
 // Fim Dados Pessoais
 
 $route['coordenador/page/lideres'] = 'Coordenador/pagina_ver_lideres';
-$route['coordenador/page/lideres/detalhes/:any'] = 'Coordenador/pagina_ver_detalhes_lideres';
-$route['coordenador/page/lideres/mostrar1'] = 'Coordenador/mostrar_table_parte_1';
-$route['coordenador/page/lideres/mostrar2'] = 'Coordenador/mostrar_table_parte_2';
+$route['coordenador/page/lideres/mostrar'] = 'Coordenador/mostrar_table_lider';
+
 $route['coordenador/page/lideres/gerar_excel'] = 'Coordenador/gerar_excel';
 
-$route['coordenador/page/lideres/salvar'] = 'Coordenador/editar_lideres';
-$route['coordenador/page/lideres/liberar'] = 'welcome/liberar_acesso';
+$route['coordenador/page/lider/salvar'] = 'Lider/e_pessoal'; // ok
+$route['coordenador/page/lider/desativar'] = 'welcome/desativar_lider'; // ok
+$route['coordenador/page/lider/reativar'] = 'welcome/ativar_lider'; // ok
+$route['coordenador/page/lider/excluir'] = 'welcome/excluir_lider_permanentemente'; // ok
+$route['coordenador/page/lider/trocar-liderenca'] = 'welcome/trocar_liderenca'; // ok
 
-$route['coordenador/page/lideres/desativar'] = 'welcome/desativar_lider';
-$route['coordenador/page/lideres/reativar'] = 'welcome/ativar_lider';
-$route['coordenador/page/lideres/excluir'] = 'welcome/excluir_lider_permanentemente';
+$route['coordenador/page/lider/:any'] = 'Coordenador/pagina_ver_detalhes_lider';
 
 // pg
 $route['coordenador/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg';

@@ -4,9 +4,10 @@
 
       <?php
       $pdo = new PDO("mysql:host=localhost;dbname=u301957058_campbrasil", "u301957058_camp_brasil", "campBr202@");
-      /** @var \$this */
+
       $id_pg = $this->input->get('id_pg');
       $id_lider = $this->input->get('id_lider');
+
       $ano = $this->input->get('ano');
       $modulo = $this->input->get('modulo');
       $licao = $this->input->get('licao');

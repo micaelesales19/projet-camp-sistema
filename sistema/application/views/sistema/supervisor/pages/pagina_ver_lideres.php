@@ -33,8 +33,6 @@ if (!isset($_SESSION['usuario'])) {
 
         function mostrarResultado() {
 
-            //document.getElementById('campoBusca').value = '';
-
             console.log('CHAMANDO A FUNÇÃO ONCLICK');
 
             var opc1 = $('input[name="opc"]:checked').val();

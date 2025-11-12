@@ -2,8 +2,12 @@
 
 $route['supervisor/home'] = 'Supervisor/home'; // ok
 
-// lideres
+// Dados Pessoais
+$route['supervisor/pagina_editar_pessoal'] = 'Supervisor/pagina_editar_pessoal';
+$route['supervisor/salvar_edicao'] = 'Supervisor/e_pessoal';
+// Fim Dados Pessoais
 
+// lideres
 $route['supervisor/page/lideres'] = 'Supervisor/pagina_ver_lideres'; // ok
 $route['supervisor/page/lideres/mostrar'] = 'Supervisor/mostrar_table_lider'; // ok
 

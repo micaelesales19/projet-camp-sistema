@@ -16,7 +16,6 @@ class Supervisor extends CI_Controller
         );
     }
 
-
     // ok
     public function criar_link($id_usuario)
     {
@@ -98,11 +97,243 @@ class Supervisor extends CI_Controller
     // ok
     public function home()
     {
-        $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
-        //$link = $this->Supervisores->criar_link($id_usuario);
-        //$dados = array('link' => $link);
         $this->load->view('sistema/supervisor/home');
     }
+
+    // Dados Pessoal
+    public function pagina_editar_pessoal()
+    {
+        $this->load->view('sistema/supervisor/edicao/pagina_editar_pessoal');
+    }
+
+    public function e_pessoal()
+    {
+        $id = $this->input->post("id");
+        $nome = $this->input->post("nome");
+        $cpf = $this->input->post("cpf");
+        $email = $this->input->post("email");
+        $telefone_digitado = $this->input->post("telefone");
+        $nascimento = $this->input->post("nascimento");
+
+        $id_usuario = $this->input->post("id_usuario");
+        $senha = $this->input->post("senha");
+
+        $pais = $this->input->post("pais");
+
+        $is_br = $pais == 'br' || '' ? true : false;
+        $estado1 = $this->input->post('estados');
+        $cidade1 = $this->input->post('cidades');
+        $estado2 = $this->input->post('estados2');
+        $cidade2 = $this->input->post('cidades2');
+
+        $estado = "";
+        $cidade = "";
+
+        if ($is_br) {
+            $estado = $estado1;
+            $cidade = $cidade1;
+        } else {
+            $estado = $estado2;
+            $cidade = $cidade2;
+        }
+
+        $foto_antiga = $this->input->post("foto_antiga");
+
+        $filesCount1 = count($_FILES['files']['name']);
+
+        $mensagem = [];
+
+        $telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
+
+        // editar coordenador brasileiro
+        if ($is_br) {
+            $cpfSoNumeros = preg_replace('/\D/', '', $cpf);
+            $total_numeros_cpf = strlen($cpfSoNumeros);
+
+            $dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento);
+            $total_numeros_data_nascimento = strlen($dataNascimentoSoNumeros);
+            if ($total_numeros_cpf == 11 && $total_numeros_data_nascimento == 8 && $this->FAlerta_model->valida_cpf($cpfSoNumeros)) {
+                $cpf_completo = $cpfSoNumeros[0] . $cpfSoNumeros[1] . $cpfSoNumeros[2] . "." . $cpfSoNumeros[3] . $cpfSoNumeros[4] . $cpfSoNumeros[5] . "." . $cpfSoNumeros[6] . $cpfSoNumeros[7] . $cpfSoNumeros[8] . "-" . $cpfSoNumeros[9] . $cpfSoNumeros[10];
+                $data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+                // EDIÇÃO
+                for ($i = 0; $i < $filesCount1; $i++) {
+                    $_FILES['file']['name']     = $_FILES['files']['name'][$i];
+                    $_FILES['file']['type']     = $_FILES['files']['type'][$i];
+                    $_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+                    $_FILES['file']['error']     = $_FILES['files']['error'][$i];
+                    $_FILES['file']['size']     = $_FILES['files']['size'][$i];
+
+                    $uploadPath = 'import/sistema/fotoU/supervisor/';
+                    $foto = 'fotoU/supervisor/' . $_FILES['files']['name'][$i];
+
+                    if ($_FILES['files']['name'][$i] == '') {
+                        $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                        $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+                        if ($edicao && $editar_usuario) {
+                            array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+                        } else {
+                            array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                        }
+                    } else {
+                        if ($foto_antiga == $foto) {
+                            $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                            $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+
+                            if ($edicao && $editar_usuario) {
+                                array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+                            } else {
+                                array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                            }
+                        } else {
+                            if (file_exists($foto)) {
+                                $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                                $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+
+                                if ($edicao && $editar_usuario) {
+                                    array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
+                                } else {
+                                    array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                                }
+                            } else {
+                                // File upload configuration
+                                $config['upload_path'] = $uploadPath;
+                                $config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+                                // Load and initialize upload library
+                                $this->load->library('upload', $config);
+                                $this->upload->initialize($config);
+
+                                // Upload file to server
+                                if ($this->upload->do_upload('file')) {
+                                    $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto);
+                                    $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+
+                                    if ($edicao && $editar_usuario) {
+                                        array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+                                    } else {
+                                        array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                                    }
+                                } else {
+                                    $erros = $this->upload->display_errors() + " - meus dados pessoais";
+                                    array_push($mensagem, $erros);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                array_push($mensagem, "Erro! Data de Nascimento e/ou CPF inválidos!");
+            }
+        } else {
+            $dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento);
+            $total_numeros_data_nascimento = strlen($dataNascimentoSoNumeros);
+            if ($total_numeros_data_nascimento == 8) {
+                $data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+                // EDIÇÃO
+                for ($i = 0; $i < $filesCount1; $i++) {
+                    $_FILES['file']['name']     = $_FILES['files']['name'][$i];
+                    $_FILES['file']['type']     = $_FILES['files']['type'][$i];
+                    $_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+                    $_FILES['file']['error']     = $_FILES['files']['error'][$i];
+                    $_FILES['file']['size']     = $_FILES['files']['size'][$i];
+
+                    $uploadPath = 'import/sistema/fotoU/supervisor/';
+                    $foto = 'fotoU/supervisor/' . $_FILES['files']['name'][$i];
+
+                    if ($_FILES['files']['name'][$i] == '') {
+                        $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                        $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+
+                        if ($edicao && $editar_usuario) {
+                            array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+                        } else {
+                            array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                        }
+                    } else {
+                        if ($foto_antiga == $foto) {
+                            $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                            $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+
+                            if ($edicao && $editar_usuario) {
+                                array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+                            } else {
+                                array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                            }
+                        } else {
+                            if (file_exists($foto)) {
+                                $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                                $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+
+                                if ($edicao && $editar_usuario) {
+                                    array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
+                                } else {
+                                    array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                                }
+                            } else {
+                                // File upload configuration
+                                $config['upload_path'] = $uploadPath;
+                                $config['allowed_types'] = 'jpg|jpeg|png|gif';
+
+                                // Load and initialize upload library
+                                $this->load->library('upload', $config);
+                                $this->upload->initialize($config);
+
+                                // Upload file to server
+                                if ($this->upload->do_upload('file')) {
+                                    $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto);
+                                    $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+
+                                    if ($edicao && $editar_usuario) {
+                                        array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
+                                    } else {
+                                        array_push($mensagem, "Erro! Seus dados estão inválidos!");
+                                    }
+                                } else {
+                                    $erros = $this->upload->display_errors() + " - meus dados pessoais";
+                                    array_push($mensagem, $erros);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                array_push($mensagem, "Erro! Data de Nascimento inválida!");
+            }
+        }
+
+        // atualizarCriancas
+        $nome_antigo = $this->input->post("nome_antigo");
+
+        $consultarCriancas = $this->Criancas->query_criancas_lider($id);
+
+        if ($consultarCriancas['row'] == 0) {
+        } else {
+            foreach ($consultarCriancas['dados'] as $key => $dadosCriancas) {
+                $id = $dadosCriancas['id_crianca'];
+                $nome_responsavel = $dadosCriancas['nome_responsavel'];
+
+                if ($nome_responsavel == $nome_antigo) {
+                    $this->Criancas->editar_nome_responsavel_crianca($id, $nome, $email, $telefone);
+                }
+            }
+        }
+
+        $red = $this->input->post('red');
+
+        //echo '<script>alert("' . implode("\\n", $mensagem) . '");</script>';
+        echo '
+			<script>
+				if(window.confirm("' . implode("\\n", $mensagem) . '")) {
+					window.location="' . $red . '";
+				}else{
+					window.location="' . $red . '";
+				}
+			</script>
+		';
+    }
+    // Fim Dados Pessoal
 
     // PG
     public function pagina_visualizacao_pg()
@@ -118,8 +349,6 @@ class Supervisor extends CI_Controller
         $ano = $this->input->post("ano");
         $routa = $this->input->post('routa');
 
-        $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
-        $id_coordenador = $dados_lider['dados']['id_coordenador'];
 
         $modulos = $this->FConsultas_model->consultarModuloAno($ano);
         $dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
@@ -134,6 +363,9 @@ class Supervisor extends CI_Controller
             );
             array_push($pages, $page1);
         } else if ($routa == 'super/coord') {
+            $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+            $id_coordenador = $dados_lider['dados']['id_coordenador'];
+
             $page1 = array(
                 "routa" => "../coordenadores",
                 "name" => "Coordenadores",
@@ -258,11 +490,7 @@ class Supervisor extends CI_Controller
         $id_modulo = $this->input->post('id_modulo');
         $licao = $this->input->post('licao');
 
-        $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
-        $id_coordenador = $dados_lider['dados']['id_coordenador'];
-
         $red = $this->input->post('red');
-
         $routa = $this->input->post('routa');
 
         $pages = [];
@@ -281,6 +509,10 @@ class Supervisor extends CI_Controller
             array_push($pages, $page1);
             array_push($pages, $page2);
         } else if ($routa == 'super/coord') {
+
+            $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+            $id_coordenador = $dados_lider['dados']['id_coordenador'];
+
             $page1 = array(
                 "routa" => "../coordenadores",
                 "name" => "Coordenadores",

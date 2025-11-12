@@ -2572,7 +2572,7 @@ class Welcome extends CI_Controller
 		$licao = $this->input->post('licao');
 		$data_aula = $this->input->post('data_aula');
 
-		$total = count($id_crianca);
+		$total = count($id_crianca) ?? 0;
 
 		if ($licao == 1 || $licao == 3 || $licao == 5 || $licao == 7 || $licao == 9) {
 			$isImpar = true;
@@ -2798,6 +2798,9 @@ class Welcome extends CI_Controller
 		if ($funcao_atiga == 'coordenador' && $funcao_nova == 'supervisor') {
 			$motivo = "O $nome_usuario pediu a solicitação de troca de função do coordenador $nome (id: $id_change) para supervisor. Coordenadores que passarão para essa supervisão: $ids";
 			$acao = "SOLICITACAO_TROCA_COORDENADOR_TO_SUPERVISOR";
+		} else if ($funcao_atiga == 'lider' && $funcao_nova == 'coordenador') {
+			$motivo = "O $nome_usuario pediu a solicitação de troca de função do líder $nome (id: $id_change) para coordenador. Líderes que passarão para essa coordenação: $ids";
+			$acao = "SOLICITACAO_TROCA_LIDER_TO_COORDENADOR";
 		}
 
 		$this->FAlerta_model->alerta_controle($id_usuario, $id_usuario, $motivo, $acao);
@@ -4763,7 +4766,8 @@ class Welcome extends CI_Controller
 
 		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
 
-		$id_pastor = $this->input->post('id_pastor');
+		$id_pastor = 2000;
+		//$id_pastor = $this->input->post('id_pastor');
 		$id_coordenador = $this->input->post('id_coordenador');
 		$id_slocal = $this->input->post('id_supervisor');
 		$id_sregional = $this->input->post('id_supervisor');

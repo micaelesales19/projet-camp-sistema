@@ -83,7 +83,7 @@ if (!isset($_SESSION['usuario'])) {
         window.location = "../../page/pg";
 
         if (routa == 'lideres/detalhes') {
-          window.location = "../lideres/detalhes/<?= $id_lider; ?>";
+          window.location = "../lider/<?= $id_lider; ?>";
         } else {}
       }
     </script>

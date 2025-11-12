@@ -11,13 +11,13 @@ if (!isset($_SESSION['usuario'])) {
 
   $CI = &get_instance();
   $CI->load->model('FConsultas_model');
+  $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 
-  $query = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
+  $query = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');
   $dados_pessoal = $query['dados'];
 
   $query_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '', '');
   $dados_usuario = $query_usuario['dados'];
-
 ?>
 
   <!DOCTYPE html>
@@ -109,7 +109,7 @@ if (!isset($_SESSION['usuario'])) {
     <div class="wrapper">
       <!-- Menu -->
       <?php
-      $this->load->view('sistema/coordenador/partes/menu_lateral', $array);
+      $this->load->view('sistema/supervisor/partes/menu_lateral', $array);
       ?>
 
       <!-- Content Wrapper. Contains page content -->
@@ -142,7 +142,6 @@ if (!isset($_SESSION['usuario'])) {
                     <div class="box-footer">
                       <?php
                       $foto_original = $dados_pessoal['foto'];
-                      //$foto_original = 'fotoU/pais/WhatsApp_Image_2022-12-05_at_08_30_33.jpeg';
 
                       $foto = base_url('import/sistema/' . $foto_original);
 
@@ -150,9 +149,8 @@ if (!isset($_SESSION['usuario'])) {
                       ?>
 
                       <input type="hidden" name="id_usuario" value="<?= $id_usuario_2; ?>">
-                      <input type="hidden" name="id" value="<?= $dados_pessoal['id_coordenador'] ?>">
-                      <input type="hidden" name="id_supervisor_local" value="<?= $dados_pessoal['id_supervisorR'] ?>">
-                      <input type="hidden" name="id_supervisor_regional" value="<?= $dados_pessoal['id_supervisorE'] ?>">
+                      <input type="hidden" name="id" value="<?= $dados_pessoal['id_supervisorR'] ?>">
+                      <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
                       <div class="col-lg-12">
                         <center>
@@ -168,7 +166,6 @@ if (!isset($_SESSION['usuario'])) {
                           </div>
                         </center>
                       </div>
-
 
                       <script type="text/javascript">
                         $(document).ready(function() {
@@ -264,8 +261,8 @@ if (!isset($_SESSION['usuario'])) {
                       <div class="col-lg-12">
                         <div class="form-group">
                           <label for="exampleInputEmail1">Nome</label>
-                          <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados_pessoal['nome_coordenador']; ?>" placeholder="Nome" required>
-                          <input type="hidden" name="nome_antigo" value="<?= $dados_pessoal['nome_coordenador']; ?>">
+                          <input type="text" class="form-control" id="exampleInputEmail1" name="nome" minlength="5" value="<?= $dados_pessoal['nome_supervisorR']; ?>" placeholder="Nome" required>
+                          <input type="hidden" name="nome_antigo" value="<?= $dados_pessoal['nome_supervisorR']; ?>">
                         </div>
                       </div>
 

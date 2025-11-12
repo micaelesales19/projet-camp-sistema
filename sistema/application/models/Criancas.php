@@ -92,7 +92,7 @@ class Criancas extends CI_Model
         return $total_criancas;
     }
 
-
+    // tá sendo usado
     public function query_criancas_id_lider_id_pg_order_by_nome_crianca_asc($id_usuario, $idPG)
     {
         $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG ORDER BY nome_crianca ASC");
@@ -121,6 +121,7 @@ class Criancas extends CI_Model
         return $dados;
     }
 
+    // tá sendo usar
     public function query_criancas_desativadas_id_lider_order_by_nome_asc($id_usuario)
     {
         $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND ativo = 0 ORDER BY nome_crianca ASC");

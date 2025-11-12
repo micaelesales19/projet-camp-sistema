@@ -50,4 +50,25 @@ class Supervisores extends CI_Model
             return $dados;
         }
     }
+
+    public function editar_supervisor($id, $nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $ativo, $foto)
+    {
+        $this->db->set('nome_supervisorR', $nome);
+        $this->db->set('cpf', $cpf);
+        $this->db->set('email', $email);
+        $this->db->set('telefone_whatsapp', $telefone);
+        $this->db->set('nascimento', $nascimento);
+        $this->db->set('pais', $pais);
+        $this->db->set('estado', $estado);
+        $this->db->set('cidade', $cidade);
+        $this->db->set('foto', $foto);
+        $this->db->set('ativo', $ativo);
+        $this->db->where('id_supervisorR', $id);
+
+        if ($this->db->update('supervisor_local')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

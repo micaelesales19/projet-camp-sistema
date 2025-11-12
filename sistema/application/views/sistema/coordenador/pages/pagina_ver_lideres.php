@@ -15,13 +15,9 @@ if (!isset($_SESSION['usuario'])) {
     $CI->load->model('FConsultas_model');
 
     $dados_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_usuario);
+    $id_supervisor = $dados_coordenador['dados']['id_supervisorR'];
 
-    $id_pastor = "2000";
-    $id_sr = $dados_coordenador['dados']['id_supervisorR'];
-    $id_se = $dados_coordenador['dados']['id_supervisorE'];
-
-    //$link = "http://campbrasil.com/sistema/php/cadastro_lider.php?um=$id_pastor&dois=$id_usuario&tres=$id_sr&quatro=$id_se";
-
+    $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>
     <!DOCTYPE html>
     <html>
@@ -32,114 +28,24 @@ if (!isset($_SESSION['usuario'])) {
 
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script>
-        function loader_1() {
-            var loader = document.getElementById("preloader");
-            var loader2 = document.getElementById("preloader2");
-            var message = document.getElementById("message");
-            var botao = document.getElementById("btn_gerar");
-
-            message.style.display = "inline";
-            loader.style.display = "none";
-            loader2.style.display = "none";
-            botao.disabled = true;
-
-            var dismissLoadingScreen = function() {
-                message.style.display = "none";
-                loader.style.display = "inline";
-                loader2.style.display = "inline";
-                botao.disabled = false;
-            };
-
-            setTimeout(dismissLoadingScreen, 3000);
-        }
-
-        let copiarTexto = (texto) => {
-            //O texto que será copiado
-            //const texto = "00020126470014br.gov.bcb.pix0125campbrasilemail@gmail.com27600016BR.COM.PAGSEGURO013659BAD104-74E5-4E29-8EE8-9738E5D5784A5204000053039865802BR5925CAMP - CENTRO DE APOIO MI6007Caucaia62290525PAGS0000000002404131224896304431F";
-            //Cria um elemento input (pode ser um textarea)
-            let inputTest = document.createElement("input");
-            inputTest.value = texto;
-            //Anexa o elemento ao body
-            document.body.appendChild(inputTest);
-            //seleciona todo o texto do elemento
-            inputTest.select();
-            //executa o comando copy
-            //aqui é feito o ato de copiar para a area de trabalho com base na seleção
-            document.execCommand('copy');
-            //remove o elemento
-            document.body.removeChild(inputTest);
-
-            document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
-
-            function msgEncerramento() {
-                document.getElementById('text_sucess').innerHTML = '';
-            }
-
-            setTimeout(msgEncerramento, 3000);
-        };
-
-        function aparecer_select() {
-            var opc = document.getElementById('pais').value;
-            if (opc == "br") {
-                document.getElementById('estaods2').value = '';
-                document.getElementById('cidades2').value = '';
-                document.getElementById('consultar_endereco').style.display = "inline";
-                document.getElementById('escrever_endereco').style.display = "none";
-
-                document.getElementById('precisa_cpf').style.display = "inline";
-                document.getElementById('precisa_cpf_colider').style.display = "inline";
-
-                document.getElementById('cpf').setAttribute('required', 'true');
-                document.getElementById('cpf_colider').setAttribute('required', 'true');
-            } else {
-                document.getElementById('estados').value = '';
-                document.getElementById('cidades').value = '';
-                document.getElementById('escrever_endereco').style.display = "inline";
-                document.getElementById('consultar_endereco').style.display = "none";
-
-                document.getElementById('precisa_cpf').style.display = "none";
-                document.getElementById('cpf').value = '';
-                document.getElementById('cpf').removeAttribute('required');
-
-                document.getElementById('precisa_cpf_colider').style.display = "none";
-                document.getElementById('cpf_colider').value = '';
-                document.getElementById('cpf_colider').removeAttribute('required');
-            }
-        }
-    </script>
-    <!-- Head -->
-
-    <script>
-        function AjaxF() {
-            var ajax;
-
-            try {
-                ajax = new XMLHttpRequest();
-            } catch (e) {
-                try {
-                    ajax = new ActiveXObject("Msxml2.XMLHTTP");
-                } catch (e) {
-                    try {
-                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
-                    } catch (e) {
-                        alert("Seu browser não da suporte à AJAX!");
-                        return false;
-                    }
-                }
-            }
-            return ajax;
-        }
-
         $(document).ready(function() {
-            mostrarResultado();
+            $('button[name="btn_link_cadastro"]').prop('disabled', true);
+            consultardb();
         });
 
         function mostrarResultado() {
 
-            loader_1();
+            console.log('CHAMANDO A FUNÇÃO ONCLICK');
+
             var opc1 = $('input[name="opc"]:checked').val();
 
+            sessionStorage.setItem("opc1", opc1);
+
             var dataIn = document.getElementById('datepicker_de').value;
+            var dataAte = document.getElementById('datepicker_ate').value;
+
+            sessionStorage.setItem('data_in', dataIn);
+            sessionStorage.setItem('data_final', dataAte);
 
             if (opc1 == 'opc1' || opc1 == 'opc2' || dataIn > '2018-02-01') {
                 document.getElementById('comparar_msm_ano').disabled = false;
@@ -148,13 +54,12 @@ if (!isset($_SESSION['usuario'])) {
                 document.getElementById('comparar_msm_ano').disabled = true;
             }
 
-            setTimeout(function() {
-                consultardb();
-            }, 3000);
-            /**/
+            exibirStatus();
         }
 
+        // excel
         function controler() {
+            loader_1();
             var column1 = $('input[name="columns[]"]:checked');
 
             var column2 = $('input[name="columns_lideres[]"]:checked');
@@ -173,14 +78,16 @@ if (!isset($_SESSION['usuario'])) {
         }
 
         function consultardb() {
-            var ajax = AjaxF();
+            console.log('consultar DB');
+
+            $('input[name="opc"]').prop('disabled', true);
 
             document.getElementById('_controller').value = 0;
 
-            var id_coordenador = '<?= $id_usuario; ?>';
+            var id_user = '<?= $id_usuario; ?>';
+            var ativo = '';
 
             var opc2 = '';
-
             var opc1 = $('input[name="opc"]:checked').val();
 
             if (opc1 == 'opc3') {
@@ -198,79 +105,75 @@ if (!isset($_SESSION['usuario'])) {
             document.getElementById('dataInicio_').value = dataIn;
             document.getElementById('dataAte_').value = dataFim;
 
-            ajax.onreadystatechange = function() {
-                if (ajax.readyState == 4) {
-                    document.getElementById('conteudos_table_informacoes_gerais').innerHTML = ajax.responseText;
+            // elementos do preloader
+            var loader = document.getElementById("preloader");
+            var message = document.getElementById("message");
+            var botao = document.getElementById("btn_gerar");
+
+            // exibe o preloader antes de iniciar as consultas
+            message.style.display = "inline";
+            loader.style.display = "none";
+            botao.disabled = true;
+
+            $('#conteudos_table_informacoes_lideres').empty();
+
+            sessionStorage.setItem('opc1', opc1);
+            sessionStorage.setItem('data_in', dataIn);
+            sessionStorage.setItem('data_final', dataFim);
+
+            // URL da requisição
+            var url = 'lideres/mostrar';
+            var params = {
+                id_user: id_user,
+            };
+
+            $.ajax({
+                url: url,
+                type: 'GET', // se quiser enviar via POST, troque para 'POST'
+                data: params,
+                dataType: 'html', // ou 'json' se o servidor retornar JSON
+                beforeSend: function() {
+                    console.log('🔄 Enviando requisição AJAX...');
+                },
+                success: function(data) {
+                    if (document.getElementById('_controller').value == 0) {
+                        console.log('✅ Dados recebidos com sucesso.');
+                        $('#conteudos_table_informacoes_lideres')
+                            .empty()
+                            .append(data);
+
+                        $('input[name="opc"]').prop('disabled', false);
+                        $('button[name="btn_link_cadastro"]').prop('disabled', false);
+                        document.getElementById('_controller').value = 1;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('❌ Erro na requisição AJAX:', error);
+                    alert('Ocorreu um erro ao buscar os dados. Tente novamente.');
+                    $('#conteudos_table_informacoes_lideres')
+                        .empty()
+                        .append('❌ Erro na Consulta! O sistema encontrou um problema ao carregar as informações, atualize a página e/ou entre em contato com o suporte!');
+                },
+                complete: function() {
+                    // independente de sucesso ou erro
+                    message.style.display = "none";
+                    loader.style.display = "inline";
+                    botao.disabled = false;
                 }
-            }
-
-            ajax.open("GET", "lideres/mostrar1?id_coordenador=" + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim, false);
-
-            ajax.setRequestHeader("Content-Type", "text/html");
-            ajax.send();
-
-            /*var url;
-            url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
-            jQuery.get(url, function(data) {
-                $('#conteudos_table_info_lideres').empty().append(data);
-            });*/
-
-            var control = document.getElementById('_controller').value;
-            if (control == 0) {
-                list_lideres();
-            } else {}
+            });
         }
 
-
-        function list_lideres() {
-
-            loader_1();
-            var id_coordenador = '<?= $id_usuario; ?>';
-
-            document.getElementById('_controller').value = 0;
-
-            var opc2 = '';
-
-            var opc1 = $('input[name="opc"]:checked').val();
-
-            if (opc1 == 'opc3') {
-                opc2 = 'nao';
+        function exibirStatus() {
+            const control_2 = document.getElementById('_controller_2');
+            if (control_2.value == 0) {
+                console.log('atualizou');
+                control_2.value = 1;
+                document.getElementById('_controller_2').value = control_2.value;
+                atualizar_session();
             } else {
-                opc2 = 'nao';
-                // opc2 = $('input[name="comparar_msm_ano"]:checked').val();
+                console.log('não precisa atualizar');
+                atualizar_session();
             }
-
-            var dataIn = document.getElementById('datepicker_de').value;
-            var dataFim = document.getElementById('datepicker_ate').value;
-
-            $('#conteudos_table_info_lideres').empty();
-
-            var url;
-            url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=''" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
-            jQuery.get(url, function(data) {
-                $('#conteudos_table_info_lideres').empty().append(data);
-            });
-        }
-
-        function list_lideres_ativos() {
-
-            loader_1();
-            var id_coordenador = '<?= $id_usuario; ?>';
-
-            document.getElementById('_controller').value = 1;
-
-            var opc1 = document.getElementById('opc1_').value;
-            var opc2 = document.getElementById('opc2_').value;
-            var dataIn = document.getElementById('dataInicio_').value;
-            var dataFim = document.getElementById('dataAte_').value;
-
-            $('#conteudos_table_info_lideres').empty();
-
-            var url;
-            url = 'lideres/mostrar2?id_coordenador=' + id_coordenador + "&opc1=" + opc1 + "&opc2=" + opc2 + "&opc3=lideres_ativos" + "&dataInicio=" + dataIn + "&dataAte=" + dataFim;
-            jQuery.get(url, function(data) {
-                $('#conteudos_table_info_lideres').empty().append(data);
-            });
         }
 
         function enviar_whatsapp(telefones) {
@@ -317,6 +220,83 @@ if (!isset($_SESSION['usuario'])) {
             var xx = document.getElementById('btn_enviar_c').value;
             window.open(xx);
         }
+
+        function loader_1() {
+            var loader = document.getElementById("preloader");
+            var message = document.getElementById("message");
+            var botao = document.getElementById("btn_gerar");
+
+            message.style.display = "inline";
+            loader.style.display = "none";
+            loader2.style.display = "none";
+            botao.disabled = true;
+
+            var dismissLoadingScreen = function() {
+                message.style.display = "none";
+                loader.style.display = "inline";
+                loader2.style.display = "inline";
+                botao.disabled = false;
+            };
+
+            setTimeout(dismissLoadingScreen, 3000);
+        }
+
+        function gerarELCopiarLink(id_usuario) {
+            fetch(`<?= base_url('Supervisor/criar_link/'); ?>${id_usuario}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.link) {
+                        copiarTexto(data.link);
+                    } else {
+                        alert('Erro ao gerar o link.');
+                    }
+                })
+                .catch(() => alert('Falha na requisição.'));
+        }
+
+        function copiarTexto(texto) {
+            let inputTest = document.createElement("input");
+            inputTest.value = texto;
+            document.body.appendChild(inputTest);
+            inputTest.select();
+            document.execCommand('copy');
+            document.body.removeChild(inputTest);
+
+            document.getElementById('text_sucess').innerHTML = 'Código Copiado!';
+
+            setTimeout(() => {
+                document.getElementById('text_sucess').innerHTML = '';
+            }, 3000);
+        }
+
+        function aparecer_select() {
+            var opc = document.getElementById('pais').value;
+            if (opc == "br") {
+                document.getElementById('estados2').value = '';
+                document.getElementById('cidades2').value = '';
+                document.getElementById('consultar_endereco').style.display = "inline";
+                document.getElementById('escrever_endereco').style.display = "none";
+
+                document.getElementById('precisa_cpf').style.display = "inline";
+                document.getElementById('precisa_cpf_colider').style.display = "inline";
+
+                document.getElementById('cpf').setAttribute('required', 'true');
+                document.getElementById('cpf_colider').setAttribute('required', 'true');
+            } else {
+                document.getElementById('estados').value = '';
+                document.getElementById('cidades').value = '';
+                document.getElementById('escrever_endereco').style.display = "inline";
+                document.getElementById('consultar_endereco').style.display = "none";
+
+                document.getElementById('precisa_cpf').style.display = "none";
+                document.getElementById('cpf').value = '';
+                document.getElementById('cpf').removeAttribute('required');
+
+                document.getElementById('precisa_cpf_colider').style.display = "none";
+                document.getElementById('cpf_colider').value = '';
+                document.getElementById('cpf_colider').removeAttribute('required');
+            }
+        }
     </script>
 
     <style>
@@ -339,7 +319,8 @@ if (!isset($_SESSION['usuario'])) {
             animation: spin 2s linear infinite;
         }
 
-        #clicar {
+        #clicar,
+        #clicar_2 {
             cursor: pointer;
         }
 
@@ -349,6 +330,19 @@ if (!isset($_SESSION['usuario'])) {
 
         #escrever_endereco {
             display: none;
+        }
+
+        .icon-circle {
+            background-color: #09ff00ff;
+            color: black;
+            padding: 8px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
         }
 
         #imgPhoto_usuario {
@@ -392,6 +386,7 @@ if (!isset($_SESSION['usuario'])) {
             ?>
 
             <input type="hidden" id="_controller" value="0">
+            <input type="hidden" id="_controller_2" value="0">
             <input type="hidden" id="btn_enviar_c" value="">
 
             <!-- Content Wrapper. Contains page content -->
@@ -417,9 +412,8 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box-header with-border">
                                 <h3 class="box-title"><i class="fa fa-table"></i> Seus Líderes</h3>
 
-                                <a href="#" onclick="copiarTexto('<?= $link; ?>')" style="color:white;" class="btn btn-success">
-                                    Copiar Link de Cadastro <i class="fa fa-link"></i>
-                                </a>
+                                <button type="button" name="btn_link_cadastro" class="btn btn-success" onclick="gerarELCopiarLink('<?= $id_usuario; ?>')" disabled>Copiar Link de Cadastro Líder<i class="fa fa-link"></i></button>
+
                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_lider">Cadastrar +</button>
 
                                 <p id="text_sucess"></p>
@@ -428,19 +422,18 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="modal-dialog modal-success">
                                         <div class="modal-content">
                                             <form action="../../lider/salvar" method="POST">
-                                                <input type="hidden" name="id_pastor" value="<?= $id_pastor; ?>">
+
                                                 <input type="hidden" name="id_coordenador" value="<?= $id_usuario; ?>">
-                                                <input type="hidden" name="id_supervisor" value="<?= $id_sr; ?>">
-                                                <input type="hidden" name="id_supervisor" value="<?= $id_se; ?>">
+                                                <input type="hidden" name="id_supervisor" value="<?= $id_supervisor; ?>">
+
                                                 <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+
                                                 <div class="modal-header">
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span></button>
                                                     <h4 class="modal-title">Cadastro | Líder</h4>
                                                 </div>
                                                 <div class="box-body">
-
-
                                                     <div class="col-lg-12">
                                                         <div class="col-lg-4">
                                                             <div class="form-group has-feedback">
@@ -456,7 +449,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <div id="escrever_endereco">
                                                             <div class="col-lg-4">
                                                                 <div class="form-group has-feedback">
-                                                                    <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
+                                                                    <input type="text" id="estados2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
@@ -578,23 +571,55 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="row">
                                         <div class="col-lg-12" style="padding: 10px; display: flex;">
                                             <h4>Período:</h4>
+
+
+
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    // Recupera o valor da sessão ou usa 'opc1' como padrão
+                                                    var session_opc1 = sessionStorage.getItem('opc1') || 'opc4';
+
+                                                    // Seleciona o radio com o mesmo value e marca como checked
+                                                    const radio = document.querySelector(`input[name="opc"][value="${session_opc1}"]`);
+                                                    if (radio) {
+                                                        radio.checked = true;
+                                                    }
+
+                                                    // Recupera as sessões ou define valores padrões
+                                                    var dataInicio = sessionStorage.getItem('data_in') || '2018-02-01';
+                                                    var dataFinal = sessionStorage.getItem('data_final') || '';
+
+                                                    // Atualiza os inputs se os elementos existirem
+                                                    const inputDe = document.getElementById('datepicker_de');
+                                                    const inputAte = document.getElementById('datepicker_ate');
+
+                                                    if (inputDe) {
+                                                        inputDe.value = dataInicio;
+                                                    }
+
+                                                    if (inputAte && dataFinal !== '') {
+                                                        inputAte.value = dataFinal;
+                                                    }
+                                                });
+                                            </script>
+
                                             <div class="input-group">
                                                 <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" value="opc1" class="radio1" onclick="mostrarResultado();">
+                                                    <input type="radio" id="opc" name="opc" value="opc1" class="radio1" onclick="mostrarResultado();" disabled>
                                                 </span>
                                                 <h5 id="label">Último mês</h5>
                                             </div>
                                             <!-- /input-group -->
                                             <div class="input-group">
                                                 <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" value="opc2" class="radio2" onclick="mostrarResultado();" checked>
+                                                    <input type="radio" id="opc" name="opc" value="opc2" class="radio2" onclick="mostrarResultado();" checked disabled>
                                                 </span>
                                                 <h5 id="label">Últimos 6 meses</h5>
                                             </div>
                                             <!-- /input-group -->
                                             <div class="input-group">
                                                 <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" value="opc3" class="radio3" onclick="mostrarResultado();">
+                                                    <input type="radio" id="opc" name="opc" value="opc3" class="radio3" onclick="mostrarResultado();" disabled>
                                                 </span>
                                                 <h5 id="label">Desde 2017</h5>
                                             </div>
@@ -602,18 +627,21 @@ if (!isset($_SESSION['usuario'])) {
 
                                             <div class="input-group">
                                                 <span class="input-group-addon">
-                                                    <input type="radio" id="opc" name="opc" class="radio4" value="opc4" onclick="mostrarResultado();">
+                                                    <input type="radio" id="opc" name="opc" class="radio4" value="opc4" onclick="mostrarResultado();" disabled>
                                                 </span>
-                                                <?php
-                                                date_default_timezone_set('America/Sao_Paulo');
-                                                $data = date('d-m-Y');
-                                                $data_2 = date('Y-m-d');
-                                                ?>
-                                                <h5 id="label">De: </h5>
-                                                <input id="datepicker_de" type="date" name="data_1" onchange="mudou();" value="2017-02-01" min="2017-02-01" max="<?= $data_2; ?>" />
-                                                <h5 id="label">Até: </h5>
-                                                <input id="datepicker_ate" type="date" name="data_2" onchange="mudou();" value="<?= $data_2; ?>" min="2017-02-01" max="<?= $data_2; ?>" />
                                             </div>
+                                            <!-- /input-group -->
+
+                                            <?php
+                                            date_default_timezone_set('America/Sao_Paulo');
+                                            $data = date('d-m-Y');
+                                            $data_2 = date('Y-m-d');
+                                            ?>
+
+                                            <h5 id="label">De: </h5>
+                                            <input id="datepicker_de" type="date" name="data_1" onchange="mudou();" value="2017-02-01" min="2017-02-01" max="<?= $data_2; ?>" />
+                                            <h5 id="label">Até: </h5>
+                                            <input id="datepicker_ate" type="date" name="data_2" onchange="mudou();" value="<?= $data_2; ?>" min="2017-02-01" max="<?= $data_2; ?>" />
 
                                             <script>
                                                 var hoje = new Date();
@@ -659,19 +687,16 @@ if (!isset($_SESSION['usuario'])) {
 
                                     <!-- fa-mouse-pointer -->
                                     <div class="table-responsive" id="preloader" style="display: none;">
-                                        <div id="conteudos_table_informacoes_gerais"></div>
-                                    </div>
-
-                                    <div class="table-responsive" id="preloader2" style="display: none;">
-                                        <div id="conteudos_table_info_lideres"></div>
+                                        <div id="conteudos_table_informacoes_lideres"></div>
                                     </div>
 
                                     <div class="box-body" id="message">
                                         <center>
                                             <div class="loader"></div>
-                                            <h5><i>Carregando as Informações...</i></h5>
+                                            <h5><i>Carregando as Informações... Isso pode demorar!</i></h5>
                                         </center>
                                     </div>
+
                                 </div>
                                 <!-- /.box-body -->
                             </div>

@@ -13,8 +13,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../../";
     $array = array('voltar' => $voltar);
 
-    $CI = &get_instance();
-    $CI->load->model('FConsultas_model');
+    $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>
 
     <!DOCTYPE html>
@@ -224,7 +223,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <ul class="nav nav-tabs">
                                                     <?php
 
-                                                    $checksCriancas = $this->FConsultas_model->checkCriancasPG($id_lider, $id_pg, 2);
+                                                    $checksCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
 
                                                     $comparador_modulo = 1;
 
@@ -350,7 +349,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                             $dados_licao = $this->FConsultas_model->consultarLicaoId($i, $i2);
                                                                             $nome_licao = $dados_licao['nome_licao'];
 
-                                                                            if ($pg['row'] == 0 || !$checksCriancas ||  $i > $id_modulo) {
+                                                                            if ($pg['row'] == 0 || $checksCriancas['row'] == 0 ||  $i > $id_modulo) {
                                                                     ?>
                                                                                 <tr>
                                                                                     <td><?= $i2; ?> - <?= $nome_licao; ?></td>
@@ -382,6 +381,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                         <input type="hidden" name="id_modulo" value="<?= $i; ?>">
                                                                                                         <input type="hidden" name="licao" value="<?= $i2; ?>">
                                                                                                         <input type="hidden" name="routa" value="<?= $routa; ?>">
+                                                                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                                                                     </form>
                                                                                                 </div>
                                                                                             </td>
@@ -404,6 +404,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                         <input type="hidden" name="id_modulo" value="<?= $i; ?>">
                                                                                                         <input type="hidden" name="licao" value="<?= $i2; ?>">
                                                                                                         <input type="hidden" name="routa" value="<?= $routa; ?>">
+                                                                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                                                                     </form>
                                                                                                 </div>
                                                                                             </td>

@@ -170,55 +170,6 @@ class Coordenadores extends CI_Model
         return $coordenador_ativo;
     }
 
-    public function criar_link($id_usuario)
-    {
-
-        $consultarLink = $this->db->select("*")
-            ->from("link_cadastro")
-            ->where("id_usuario", $id_usuario)
-            ->get();
-        $totalLink = $consultarLink->num_rows();
-        $info_codigo = $consultarLink->row_array();
-
-        if ($totalLink == 0) {
-            $dados_coordenador = $this->infos([$id_usuario], 'info_coordenador', '', '', '');
-            //$dados_supervisor = $this->infos([$id_usuario], 'info_coordenador', '', '', '');
-
-            $dados = "";
-            $nivel = "";
-
-            if ($dados_coordenador['row'] != 0) {
-                $dados = $dados_coordenador['dados']['id_supervisorR'];
-                $nivel = 3;
-            } /*else if ($dados_supervisor['row'] == 0) {
-            $nivel = 4;
-        }*/
-
-            $codigo = $this->FSistema_model->gerarLink();
-
-            $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
-
-            //return $codigo;
-            $data = date('Y-m-d');
-
-            $inserir['id_usuario'] = NULL;
-            $inserir['id_usuario'] = $id_usuario;
-            $inserir['nivel'] = $nivel;
-            $inserir['codigo'] = $codigo;
-            $inserir['link'] = $link;
-            $inserir['dados'] = $dados;
-            $inserir['data'] = $data;
-
-            if ($this->db->insert('link_cadastro', $inserir)) {
-                return $link;
-            } else {
-                return false;
-            }
-        } else {
-            return $info_codigo['link'];
-        }
-    }
-
     public function cadastro_coordenador($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_supervisor, $ativo)
     {
         date_default_timezone_set('America/Sao_Paulo');

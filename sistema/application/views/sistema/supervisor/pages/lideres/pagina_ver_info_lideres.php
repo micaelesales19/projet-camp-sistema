@@ -567,7 +567,18 @@ if (!isset($_SESSION['usuario'])) {
                                             if ($check_ativo) {
                                             ?>
                                                 <button type="button" class="btn btn-light pull-left mg_r_10" data-toggle="modal" data-target="#troca_de_coord_super">Solicitar Troca</button>
-                                                <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#desativar_lider">Desativar Líder</button>
+                                                <button type="button" class="btn btn-danger pull-left mg_r_10" data-toggle="modal" data-target="#desativar_lider">Desativar Líder</button>
+
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-success pull-left dropdown-toggle" data-toggle="dropdown">Mudar Função
+                                                        <span class="fa fa-caret-down"></span></button>
+                                                    <ul class="dropdown-menu">
+                                                        <li style="margin-bottom: 5px;">
+                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#tornar_coordenador">Tornar Coordenador</button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
                                             <?php } else {
                                             } ?>
                                         </div>
@@ -2308,6 +2319,61 @@ if (!isset($_SESSION['usuario'])) {
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
+
+                <div class="modal fade" id="tornar_coordenador">
+                    <div class="modal-dialog modal-default">
+                        <div class="modal-content">
+                            <form action="<?= $voltar; ?>../alerta/solicitar/trocar_de_funcao" method="POST" id="form_tornar_coordenador">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Solicitar Mudança Líder - Coordenador</h4>
+                                </div>
+                                <div class="box-body">
+                                    <input type="hidden" name="funcao_atiga" value="lider">
+                                    <input type="hidden" name="funcao_nova" value="coordenador">
+                                    <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
+                                    <input type="hidden" name="id_change" value="<?= $dados_lider['id_lider']; ?>">
+                                    <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                                    <input type="hidden" name="ids_lideres" id="idsLideres">
+
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <center>
+                                                <label for="id_troca_1">Deseja tornar <?= $dados_lider['nome_lider']; ?> coordenador?</label>
+                                                <br><i>* observação: para essa nova função, o lider tem que ter 3 novos líderes.</i>
+                                            </center>
+                                            <!-- Caixa de pesquisa -->
+                                            <input type="text" id="pesquisaLider_coord" class="form-control mb-3" placeholder="Pesquisar Lider...">
+
+                                            <!-- Lista de Lideres -->
+                                            <div id="listaLideres_coord" style="max-height: 300px; overflow-y: auto;">
+                                                <?php
+                                                // exemplo: buscando do banco
+                                                $lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider WHERE id_supervisorR = $id_usuario ORDER BY nome_lider ASC")->result_array();
+
+                                                foreach ($lideres as $c): ?>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input checkbox-lider_coord" type="checkbox" value="<?= $c['id_lider']; ?>" id="lider<?= $c['id_lider']; ?>">
+                                                        <label class="form-check-label" for="lider<?= $c['id_lider']; ?>">
+                                                            <?= htmlspecialchars($c['nome_lider']); ?>
+                                                        </label>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Não</button>
+                                    <input type="submit" id="btn_solicitar_1" class="btn btn-default pull-right" value="Solicitar">
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
             </div>
             <!-- Footer -->
             <?php
@@ -2391,6 +2457,58 @@ if (!isset($_SESSION['usuario'])) {
             });
 
             document.addEventListener("DOMContentLoaded", function() {
+                // modal - tornar coordenador
+                const pesquisarInput_coord = document.getElementById('pesquisaLider_coord');
+                if (pesquisarInput_coord) {
+                    pesquisarInput_coord.addEventListener('input', function() {
+                        const filtro = this.value.toLowerCase();
+                        document.querySelectorAll('#listaLideres_coord .form-check').forEach(div => {
+                            const texto = div.innerText.toLowerCase();
+                            div.style.display = texto.includes(filtro) ? '' : 'none';
+                        });
+                    });
+                }
+
+                const form_coord = document.querySelector('form#form_tornar_coordenador');
+                if (!form_coord) return; // evita erro se o formulário não existir
+
+                // Pega todos os checkboxes
+                const checkboxes_coord = document.querySelectorAll('.checkbox-lider_coord');
+                const inputHidden_coord = document.getElementById('idsLideres');
+
+                // Função para atualizar o campo hidden
+                function atualizarIdsSelecionados_coord() {
+                    const selecionados = Array.from(checkboxes_coord)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
+
+                    inputHidden_coord.value = selecionados.join(',');
+                    console.log('IDs atualizados:', inputHidden_coord.value);
+                }
+
+                // Adiciona o evento de mudança (check/uncheck) em cada checkbox
+                checkboxes_coord.forEach(cb => {
+                    cb.addEventListener('change', atualizarIdsSelecionados_coord);
+                });
+
+                // Validação antes do envio
+                form_coord.addEventListener('submit', function(e) {
+                    const selecionados = inputHidden_coord.value.split(',').filter(v => v !== '');
+                    if (selecionados.length < 3) {
+                        e.preventDefault(); // impede o envio
+                        Swal.fire({
+                            title: 'Atenção!',
+                            text: 'Você precisa selecionar pelo menos 3 líderes.',
+                            icon: 'warning',
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: '#198754', // cor do botão principal (verde bootstrap)
+                            background: '#fefefe', // cor de fundo
+                            color: '#333', // cor do texto
+                            iconColor: '#f39c12', // cor do ícone
+                        });
+                    }
+                });
+
                 // líderes 2
                 const pesquisarInput_3 = document.getElementById('pesquisarLider_2');
                 if (pesquisarInput_3) {

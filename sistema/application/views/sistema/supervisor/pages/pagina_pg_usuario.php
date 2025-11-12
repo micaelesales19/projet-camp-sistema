@@ -394,13 +394,14 @@ if (!isset($_SESSION['usuario'])) {
                                                             <th>Ação</th>
                                                             <th>Ação</th>
                                                             <th>Ação</th>
+                                                            <th>Ação</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php
                                                         $i = 0;
 
-                                                        $dados_criancas = $this->FConsultas_model->mostrarCriancasPais($id_usuario, 2);
+                                                        $dados_criancas = $this->Criancas->query_criancas_lider($id_usuario);
 
                                                         $disabled = $dados_criancas['row'] == 1 ? 'disabled' : '';
 
@@ -551,8 +552,67 @@ if (!isset($_SESSION['usuario'])) {
                                                                         <input type="hidden" name="id_pg" value="<?= $dadosPG['id_pg']; ?>">
                                                                         <input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
                                                                         <input type="hidden" name="ano" value="<?= $dadosPG['ano']; ?>">
+                                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                                         <input type="hidden" name="routa" value="pg">
                                                                     </form>
+                                                                </td>
+
+                                                                <td>
+                                                                    <button type="button" class="btn btn-light pull-left" data-toggle="modal" data-target="#<?= $dadosPG['id_pg']; ?>_troca_de_lider_pg">Troca Liderança</button>
+
+                                                                    <div class="modal fade" id="<?= $dadosPG['id_pg']; ?>_troca_de_lider_pg">
+                                                                        <div class="modal-dialog modal-light">
+                                                                            <form action="trocar-liderenca" method="POST" id="trocar_lider_de_pg">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                            <span aria-hidden="true">&times;</span></button>
+                                                                                        <h4 class="modal-title">Troca de Líder de PG</h4>
+                                                                                    </div>
+                                                                                    <div class="box-body">
+                                                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                                                                                        <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
+                                                                                        <input type="hidden" name="id_lider" value="<?= $id_usuario; ?>">
+                                                                                        <input type="hidden" name="id_pg" value="<?= $dadosPG['id_pg']; ?>">
+
+                                                                                        <input type="hidden" name="id_lider_novo" id="idLiderNovo">
+
+                                                                                        <label for="id_lider_troca">Selecione a nova liderança para esse PG:</label>
+
+                                                                                        <!-- Caixa de pesquisa -->
+                                                                                        <input type="text" id="pesquisarLider" class="form-control mb-3" placeholder="Pesquisar Líder..."><br>
+
+                                                                                        <!-- Lista de líderes -->
+                                                                                        <div id="listaLideres" style="max-height: 300px; overflow-y: auto;">
+                                                                                            <?php
+                                                                                            // exemplo: buscando do banco
+                                                                                            /*$lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider WHERE id_supervisorR = $id_usuario ORDER BY nome_lider ASC")->result_array();
+
+                                                                                            foreach ($lideres as $l) {*/
+
+                                                                                            $query = $this->db->query(" SELECT id_lider AS id, nome_lider AS nome, 'Líder' AS tipo FROM lider WHERE id_supervisorR = $id_usuario UNION SELECT id_coordenador AS id, nome_coordenador AS nome, 'Coordenador' AS tipo FROM coordenador WHERE id_supervisorR = $id_usuario ORDER BY nome ASC");
+                                                                                            $lista = $query->result_array();
+                                                                                            foreach ($lista as $l):
+                                                                                            ?>
+                                                                                                <div class="form-check">
+                                                                                                    <input class="form-check-input checkbox-lider" type="checkbox" value="<?= $l['id']; ?>" id="coord<?= $l['id']; ?>">
+                                                                                                    <label class="form-check-label" for="coord<?= $l['id']; ?>">
+                                                                                                        <?= htmlspecialchars($l['nome']); ?>
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            <?php
+                                                                                            endforeach; ?>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                                                        <input type="submit" id="btn_solicitar_2" class="btn btn-default pull-right" value="Solicitar">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                        <!-- /.modal-content -->
+                                                                    </div>
                                                                 </td>
                                                             </tr>
                                                         <?php
@@ -579,7 +639,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <div class="box-tools pull-right">
                                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_criancas">Cadastrar +</button>
                                                     <?php
-                                                    $criancas_desativadas = $this->FConsultas_model->mostrarCriancasDesativadas($id_usuario, 2);
+                                                    $criancas_desativadas = $this->Criancas->query_criancas_desativadas_id_lider_order_by_nome_asc($id_usuario);
                                                     if ($criancas_desativadas['row'] == 0) {
                                                     } else {
                                                     ?>
@@ -709,7 +769,7 @@ if (!isset($_SESSION['usuario'])) {
                                                             <?php
                                                             foreach ($pg['dados'] as $key => $dadosPG) {
 
-                                                                $consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $dadosPG['id_pg'], 2);
+                                                                $consultaCriancas = $this->Criancas->query_criancas_id_lider_id_pg_order_by_nome_crianca_asc($id_usuario, $dadosPG['id_pg']);
                                                                 $idPg = $dadosPG['id_pg'];
 
                                                                 $i = 0;
@@ -1360,6 +1420,71 @@ if (!isset($_SESSION['usuario'])) {
             <!-- Links JavaScript -->
 
             <div class="control-sidebar-bg"></div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // líderes
+                    const pesquisarInput = document.getElementById('pesquisarLider');
+                    if (pesquisarInput) {
+                        pesquisarInput.addEventListener('input', function() {
+                            const filtro = this.value.toLowerCase();
+                            document.querySelectorAll('#listaLideres .form-check').forEach(div => {
+                                const texto = div.innerText.toLowerCase();
+                                div.style.display = texto.includes(filtro) ? '' : 'none';
+                            });
+                        });
+                    }
+
+                    const form = document.querySelector('form#trocar_lider_de_pg');
+                    if (!form) return; // evita erro se o formulário não existir
+
+                    const checkboxes = document.querySelectorAll('.checkbox-lider');
+                    const inputHidden = document.getElementById('idLiderNovo');
+
+                    function atualizarSelecaoUnica(event) {
+                        checkboxes.forEach(cb => {
+                            if (cb !== event.target) cb.checked = false;
+                        });
+                        const selecionado = Array.from(checkboxes)
+                            .filter(cb => cb.checked)
+                            .map(cb => cb.value)
+                            .join(',');
+                        inputHidden.value = selecionado;
+                        console.log('Selecionado:', inputHidden.value);
+                    }
+
+                    checkboxes.forEach(cb => cb.addEventListener('change', atualizarSelecaoUnica));
+
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+
+                        if (!inputHidden.value) {
+                            Swal.fire({
+                                title: 'Atenção!',
+                                text: 'Você precisa selecionar 1 líder.',
+                                icon: 'warning',
+                                confirmButtonText: 'Ok',
+                                confirmButtonColor: '#198754',
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Cuidado!",
+                                text: "Essa alteração é irrevessível.",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "Continuar",
+                                cancelButtonText: "Cancelar",
+                                confirmButtonColor: "#d33",
+                                cancelButtonColor: "#3085d6"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    form.submit();
+                                }
+                            });
+                        }
+                    });
+                });
+            </script>
         </body>
 
         </html>
