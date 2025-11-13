@@ -5,7 +5,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * @property $input
  * @property FConsultas_model $FConsultas_model
- * @property FSistema_model $FSistema_model
  * @property $db
  * @property $upload
  * @property $email
@@ -85,8 +84,8 @@ class Lider extends CI_Controller
 
 		$cpf_colider = $cpf_colider == '' ? "" : $cpf_colider;
 
-		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
-		$telefone_colider = $this->FSistema_model->formatar_telefone($telefone_colider_digitado, $is_br);
+		$telefone = $this->FConsultas_model->formatar_telefone($telefone_digitado, $is_br);
+		$telefone_colider = $this->FConsultas_model->formatar_telefone($telefone_colider_digitado, $is_br);
 
 		$mensagem = [];
 
@@ -116,7 +115,7 @@ class Lider extends CI_Controller
 					if ($_FILES['files']['name'][$i] == '') {
 						$edicao = $this->Lideres->editar_lider($id, $nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto_antiga);
 
-						$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+						$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 						if ($edicao && $editar_usuario) {
 							array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -126,7 +125,7 @@ class Lider extends CI_Controller
 					} else {
 						if ($foto_antiga == $foto) {
 							$edicao = $this->Lideres->editar_lider($id, $nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto_antiga);
-							$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+							$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 							if ($edicao && $editar_usuario) {
 								array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -136,7 +135,7 @@ class Lider extends CI_Controller
 						} else {
 							if (file_exists($foto)) {
 								$edicao = $this->Lideres->editar_lider($id, $nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto_antiga);
-								$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+								$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 								if ($edicao && $editar_usuario) {
 									array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
@@ -156,7 +155,7 @@ class Lider extends CI_Controller
 								if ($this->upload->do_upload('file')) {
 									$edicao = $this->Lideres->editar_lider($id, $nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto);
 
-									$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+									$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 									if ($edicao && $editar_usuario) {
 										array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -194,7 +193,7 @@ class Lider extends CI_Controller
 					if ($_FILES['files']['name'][$i] == '') {
 						$edicao = $this->Lideres->editar_lider($id, $nome, "", $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto_antiga);
 
-						$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+						$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 						if ($edicao && $editar_usuario) {
 							array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -204,7 +203,7 @@ class Lider extends CI_Controller
 					} else {
 						if ($foto_antiga == $foto) {
 							$edicao = $this->Lideres->editar_lider($id, $nome, "", $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto_antiga);
-							$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+							$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 							if ($edicao && $editar_usuario) {
 								array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -214,7 +213,7 @@ class Lider extends CI_Controller
 						} else {
 							if (file_exists($foto)) {
 								$edicao = $this->Lideres->editar_lider($id, $nome, "", $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto_antiga);
-								$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+								$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 								if ($edicao && $editar_usuario) {
 									array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
@@ -234,7 +233,7 @@ class Lider extends CI_Controller
 								if ($this->upload->do_upload('file')) {
 									$edicao = $this->Lideres->editar_lider($id, $nome, "", $email, $telefone, $igreja, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_coordenador, $id_supervisor, $foto);
 
-									$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+									$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 									if ($edicao && $editar_usuario) {
 										array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -300,7 +299,7 @@ class Lider extends CI_Controller
 
 							// Upload file to server
 							if ($this->upload->do_upload('file')) {
-								$cadastro = $this->FSistema_model->editarColider($id_colider, $nome_colider, $cpf_colider, $email, $telefone_colider, $nascimento_colider, $foto);
+								$cadastro = $this->Lideres->editarColider($id_colider, $nome_colider, $cpf_colider, $email_colider, $telefone_colider, $nascimento_colider, $foto);
 								if ($cadastro) {
 									array_push($mensagem, "Sucesso! Dados do seu colíder foram Editados!");
 								} else {
@@ -528,7 +527,7 @@ class Lider extends CI_Controller
 
 			$dataE = '00';
 
-			$this->FSistema_model->editarData($idPg, $dataE, $dataE, $dataE, 2);
+			$this->PG->editar_data($idPg, $dataE, $dataE, $dataE);
 		} else if ($data == '') {
 		} else {
 			$dataE = $data;
@@ -540,7 +539,7 @@ class Lider extends CI_Controller
 
 			$data_fim = date('d/m/Y', strtotime('+2 months', strtotime($data_trocada)));
 
-			$this->FSistema_model->editarData($idPg, $data, $data_fim, $data, 2);
+			$this->PG->editar_data($idPg, $data, $data_fim, $data);
 		}
 
 		$data = [

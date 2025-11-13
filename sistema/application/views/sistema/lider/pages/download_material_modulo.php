@@ -34,9 +34,6 @@ if (!isset($_SESSION['usuario'])) {
   $id_pg = $this->input->post('id_pg');
   $id_lider = $this->input->post('id_lider');
   $id_modulo = $this->input->post('id_modulo');
-
-  $CI = &get_instance();
-  $CI->load->model('FConsultas_model');
 ?>
   <!DOCTYPE html>
   <html>
@@ -134,7 +131,7 @@ if (!isset($_SESSION['usuario'])) {
           <div class="row">
             <?php
 
-            $consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario, 2);
+            $consultarPG = $this->PG->query([$id_usuario], 2, 1);
 
             $color_h3 = 'black';
 
@@ -441,7 +438,8 @@ if (!isset($_SESSION['usuario'])) {
 
               $idPG = $consultarPG['dados']['id_pg'];
 
-              $consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG, 2);
+              $consultarCriancas = $this->Criancas->query_criancas_lider_pg($id_usuario, $idPG, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+
               $xChildren = $consultarCriancas['row'];
               if ($xChildren == 0) {
               ?>

@@ -19,9 +19,6 @@ if (!isset($_SESSION['usuario'])) {
   $ano = $this->input->post('ano');
   $id_modulo = $this->input->post('id_modulo');
   $licao = $this->input->post('licao');
-
-  $CI = &get_instance();
-  $CI->load->model('FConsultas_model');
 ?>
   <!DOCTYPE html>
   <html>

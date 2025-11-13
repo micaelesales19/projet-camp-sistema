@@ -11,10 +11,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $dados_usuario = $this->FConsultas_model->getInfoCoordenadorId($id_usuario);
-
-    $CI = &get_instance();
-    $CI->load->model('FConsultas_model');
+    $dados_usuario = $this->Coordenadores->infos([$id_usuario],'info_coordenador','','','');
 
     $carga_horaria = $_SESSION['carga_horaria'] ?? "";
     $data_treinamento = $_SESSION['data_treinamento'] ?? "";

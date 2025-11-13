@@ -5,7 +5,6 @@
  * @property $db3
  * @property $load
  * @property $uri
- * @property $FSistema_model
  * @property $FAlerta_model
  * @property $Criancas
  * @property $PG
@@ -511,6 +510,20 @@ class Lideres extends CI_Model
         }
     }
 
+    public function mostrar_colider_do_lider_desativados($id_usuario)
+    {
+        $consultar_colider = $this->db->query("SELECT * FROM colider WHERE id_lider LIKE $id_usuario AND ativo = 0 ORDER BY nome_colider ASC");
+        $row = $consultar_colider->num_rows();
+        $dados_consula_colider = $consultar_colider->result_array();
+
+        $dados = array(
+            'row' => $row,
+            'dados' => $dados_consula_colider,
+        );
+
+        return $dados;
+    }
+
     public function cadastro_lider($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, $confirmado)
     {
         date_default_timezone_set('America/Sao_Paulo');
@@ -618,7 +631,7 @@ class Lideres extends CI_Model
         date_default_timezone_set('America/Sao_Paulo');
         $data = date('d/m/Y');
 
-        $dados_lider = $this->FConsultas_model->getInfoLiderId($id_lider);
+        $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
 
         $consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_lider WHERE id_lider LIKE $id_lider");
         $row = $consultar_pg_desativado->num_rows();
@@ -800,5 +813,104 @@ class Lideres extends CI_Model
         $this->db->set('id_coordenador', $id_novo_coordenador);
         $this->db->where('id_coordenador', $id_coordenador);
         $this->db->update('lider');
+    }
+
+    // usuário
+    public function cadastrarUsuário($nome_usuario, $email, $cpf, $nivel, $senha)
+    {
+        $ativo = "0";
+
+        $inserir['id_usuario'] = NULL;
+        $inserir['nome'] = $nome_usuario;
+        $inserir['email'] = $email;
+        $inserir['cpf'] = $cpf;
+        $inserir['senha'] = $senha;
+        $inserir['nivel'] = $nivel;
+        $inserir['ativo'] = $ativo;
+
+        if ($this->db->insert('usuario', $inserir)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function editar_usuario($id_usuario, $nome_usuario, $email, $cpf, $senha)
+    {
+        $this->db->set('nome', $nome_usuario);
+        $this->db->set('cpf', $cpf);
+        $this->db->set('email', $email);
+        $this->db->set('senha', $senha);
+        $this->db->where('id_usuario', $id_usuario);
+
+        if ($this->db->update('usuario')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function excluirUsuário($email, $cpf)
+    {
+        $this->db->where('cpf', $cpf);
+        $this->db->where('email', $email);
+
+        if ($this->db->delete('usuario')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function excluirUsuarioPermanentemente($nome_usuario, $email, $cpf)
+    {
+        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '', '');
+        $this->db->where('id_usuario ', $user['dados']['id_usuario']);
+        if ($this->db->delete('usuario')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function ativarUsuario($nome_usuario, $email, $cpf)
+    {
+        $ativo = "1";
+
+        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '', '');
+        $row = $user['row'];
+
+        if ($row == 0) {
+            return false;
+        } else {
+            $this->db->set('ativo', $ativo);
+            $this->db->where('id_usuario ', $user['dados']['id_usuario']);
+
+            if ($this->db->update('usuario')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function desativarUsuário($nome_usuario, $email, $cpf)
+    {
+        $ativo = "0";
+
+        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '', '');
+        $row = $user['row'];
+
+        if ($row == 0) {
+            return false;
+        } else {
+            $this->db->set('ativo', $ativo);
+            $this->db->where('id_usuario ', $user['dados']['id_usuario']);
+            if ($this->db->update('usuario')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }

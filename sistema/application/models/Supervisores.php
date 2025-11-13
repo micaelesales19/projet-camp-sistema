@@ -2,7 +2,6 @@
 
 /**
  * @property $db
- * @property $FSistema_model
  */
 
 class Supervisores extends CI_Model

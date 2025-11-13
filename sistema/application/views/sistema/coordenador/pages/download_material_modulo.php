@@ -23,23 +23,11 @@ if (!isset($_SESSION['usuario'])) {
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-  $dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
-
-  if ($dados_coordenador['row'] == 0) {
-    $data = [];
-    $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-    $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
-    echo $funcao;
-  } else {
-
     date_default_timezone_set('America/Sao_Paulo');
     $data = date("d/m/Y");
 
     $id_lider = $this->input->post('id_lider');
     $id_modulo = $this->input->post('id_modulo');
-
-    $CI = &get_instance();
-    $CI->load->model('FConsultas_model');
 
     $dadosModulos = $this->FConsultas_model->consultarModuloId($id_modulo);
 
@@ -506,5 +494,5 @@ if (!isset($_SESSION['usuario'])) {
     </body>
 
     </html>
-<?php }
+<?php
 } ?>

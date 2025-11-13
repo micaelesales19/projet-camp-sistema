@@ -13,9 +13,6 @@ if (!isset($_SESSION['usuario'])) {
 
   date_default_timezone_set('America/Sao_Paulo');
   $data = date("d/m/Y");
-
-  $CI = &get_instance();
-  $CI->load->model('FConsultas_model');
 ?>
   <!DOCTYPE html>
   <html>

@@ -11,10 +11,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $CI = &get_instance();
-    $CI->load->model('FConsultas_model');
-
-    $dados_coordenador = $this->FConsultas_model->getInfoCoordenadorId($id_usuario);
+    $dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
     $id_supervisor = $dados_coordenador['dados']['id_supervisorR'];
 
     $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');

@@ -26,6 +26,9 @@ if (!isset($_SESSION['usuario'])) {
 
     if ($dados_do_lider['row'] == 0) {
         // escrever uma mensagem
+        $this->FConsultas_model->mensagem('danger', 'Erro!', ['Os dados do líder não foi encontrado, tente novamente!']);
+        $funcao = $this->FConsultas_model->red("../lideres", 2000, []);
+        echo $funcao;
     } else {
         // id lider // opc // ativo
         $check_ativo = true;
@@ -591,8 +594,8 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="box-header with-border">
                                                 <h3 class="box-title">Colíder</h3>
                                                 <?php
-                                                $colideres_desativados = $this->FConsultas_model->mostrarColiderDoLiderDesativados($dados_lider['id_lider']);
-                                                $dados = $this->FConsultas_model->mostrarColiderDoLider($dados_lider['id_lider']);
+                                                $colideres_desativados = $this->Lideres->mostrar_colider_do_lider_desativados($dados_lider['id_lider']);
+                                                $dados = $this->Lideres->mostrar_colider_do_lider($dados_lider['id_lider']);
                                                 if ($check_ativo) {
                                                 ?>
                                                     <?php
@@ -1950,7 +1953,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <option value="0" selected>Selecione uma opção</option>
                                                 <?php
                                                 $id_sr = $dados_lider['id_supervisorR'];
-                                                $info_sLocal = $this->FConsultas_model->getInfoSLocalId($id_sr);
+                                                $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '', '');
                                                 ?>
                                                 <option value="super <?= $id_sr; ?>">Supervisor: <?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
                                             </select>

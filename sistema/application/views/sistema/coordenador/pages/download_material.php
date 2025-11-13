@@ -13,14 +13,6 @@ if (!isset($_SESSION['usuario'])) {
 
   date_default_timezone_set('America/Sao_Paulo');
   $data = date("d/m/Y");
-  $dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
-
-  if ($dados_coordenador['row'] == 0) {
-    $data = [];
-    $this->FConsultas_model->mensagem('danger', 'Erro!', ['O sistema dectou algum erro em seu cadastro! Entre em contato com o suporte!']);
-    $funcao = $this->FConsultas_model->red("../$voltar/index", 2000, $data);
-    echo $funcao;
-  } else {
 ?>
     <!DOCTYPE html>
     <html>
@@ -300,5 +292,5 @@ if (!isset($_SESSION['usuario'])) {
     </body>
 
     </html>
-<?php }
+<?php
 } ?>

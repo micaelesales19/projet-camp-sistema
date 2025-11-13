@@ -9,8 +9,6 @@ if (!isset($_SESSION['usuario'])) {
   $voltar = "";
   $array = array('voltar' => $voltar);
 
-  $CI = &get_instance();
-  $CI->load->model('FConsultas_model');
   $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 
   $query = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');

@@ -5,7 +5,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * @property $input
  * @property FConsultas_model $FConsultas_model
- * @property FSistema_model $FSistema_model
  * @property Coordenadores $Coordenadores
  * @property $db
  * @property $upload
@@ -46,7 +45,7 @@ class Coordenador extends CI_Controller
 				$nivel = 4;
 			}*/
 
-			$codigo = $this->FSistema_model->gerarLink();
+			$codigo = $this->FConsultas_model->gerarLink();
 			$link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
 			$data = date('Y-m-d');
 
@@ -67,43 +66,6 @@ class Coordenador extends CI_Controller
 		} else {
 			echo json_encode(['link' => $info_codigo['link']]);
 		}
-
-		/*if ($totalLink == 0) {
-            $dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
-
-            $dados = "";
-            $nivel = "";
-
-            if ($dados_coordenador['row'] != 0) {
-                $dados = $dados_coordenador['dados']['id_supervisorR'];
-                $nivel = 3;
-            } /*else if ($dados_supervisor['row'] == 0) {
-            $nivel = 4;
-        	}
-
-            $codigo = $this->FSistema_model->gerarLink();
-
-            $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
-
-            //return $codigo;
-            $data = date('Y-m-d');
-
-            $inserir['id_usuario'] = NULL;
-            $inserir['id_usuario'] = $id_usuario;
-            $inserir['nivel'] = $nivel;
-            $inserir['codigo'] = $codigo;
-            $inserir['link'] = $link;
-            $inserir['dados'] = $dados;
-            $inserir['data'] = $data;
-
-            if ($this->db->insert('link_cadastro', $inserir)) {
-                return $link;
-            } else {
-                return false;
-            }
-        } else {
-            return $info_codigo['link'];
-        }*/
 	}
 
 	/* COORDENADOR */
@@ -157,7 +119,7 @@ class Coordenador extends CI_Controller
 
 		$mensagem = [];
 
-		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
+		$telefone = $this->FConsultas_model->formatar_telefone($telefone_digitado, $is_br);
 
 		// editar coordenador brasileiro
 		if ($is_br) {
@@ -183,7 +145,7 @@ class Coordenador extends CI_Controller
 
 					if ($_FILES['files']['name'][$i] == '') {
 						$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
-						$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+						$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 						if ($edicao && $editar_usuario) {
 							array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
 						} else {
@@ -192,7 +154,7 @@ class Coordenador extends CI_Controller
 					} else {
 						if ($foto_antiga == $foto) {
 							$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
-							$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+							$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 							if ($edicao && $editar_usuario) {
 								array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -202,7 +164,7 @@ class Coordenador extends CI_Controller
 						} else {
 							if (file_exists($foto)) {
 								$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
-								$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+								$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 								if ($edicao && $editar_usuario) {
 									array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
@@ -221,7 +183,7 @@ class Coordenador extends CI_Controller
 								// Upload file to server
 								if ($this->upload->do_upload('file')) {
 									$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto);
-									$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+									$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 									if ($edicao && $editar_usuario) {
 										array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -258,7 +220,7 @@ class Coordenador extends CI_Controller
 
 					if ($_FILES['files']['name'][$i] == '') {
 						$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
-						$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+						$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 						if ($edicao && $editar_usuario) {
 							array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -268,7 +230,7 @@ class Coordenador extends CI_Controller
 					} else {
 						if ($foto_antiga == $foto) {
 							$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
-							$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+							$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 							if ($edicao && $editar_usuario) {
 								array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -278,7 +240,7 @@ class Coordenador extends CI_Controller
 						} else {
 							if (file_exists($foto)) {
 								$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
-								$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+								$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 								if ($edicao && $editar_usuario) {
 									array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
@@ -297,7 +259,7 @@ class Coordenador extends CI_Controller
 								// Upload file to server
 								if ($this->upload->do_upload('file')) {
 									$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto);
-									$editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+									$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 									if ($edicao && $editar_usuario) {
 										array_push($mensagem, "Sucesso! Seus Dados foram Editados!");

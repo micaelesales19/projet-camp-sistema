@@ -9,9 +9,6 @@ if (!isset($_SESSION['usuario'])) {
   $voltar = "";
   $array = array('voltar' => $voltar);
 
-  $CI = &get_instance();
-  $CI->load->model('FConsultas_model');
-
   $query = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
   $dados_pessoal = $query['dados'];
 
@@ -19,7 +16,6 @@ if (!isset($_SESSION['usuario'])) {
   $dados_usuario = $query_usuario['dados'];
 
   $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
-
 ?>
 
   <!DOCTYPE html>

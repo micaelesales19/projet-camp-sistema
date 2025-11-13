@@ -571,7 +571,8 @@ if (!isset($_SESSION['usuario'])) {
 
 						$idPG = $dados_pg['dados']['id_pg'];
 
-						$consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG, 2);
+						$consultarCriancas = $this->Criancas->query_criancas_lider_pg($id_usuario, $idPG, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+
 
 						if ($consultarCriancas['row'] == 0) {
 

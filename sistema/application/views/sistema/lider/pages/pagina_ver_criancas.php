@@ -14,18 +14,12 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $CI = &get_instance();
-    $CI->load->model('FConsultas_model');
-
     $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 
     // id lider // opc // opc2 // ordem // datas
     $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
     $dados_lider = $query['dados'];
 
-    if ($query['row'] == 0) {
-        // escrever uma mensagem
-    } else {
         // id lider // opc // ativo
         $consultarPG = $this->PG->query([$id_usuario], 'query_lider_ativo_order_by_nome_pg_asc', 1);
 
@@ -1002,5 +996,5 @@ if (!isset($_SESSION['usuario'])) {
         </body>
 
         </html>
-<?php }
+<?php
 } ?>

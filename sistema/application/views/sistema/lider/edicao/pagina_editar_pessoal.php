@@ -9,9 +9,6 @@ if (!isset($_SESSION['usuario'])) {
   $voltar = "";
   $array = array('voltar' => $voltar);
 
-  $CI = &get_instance();
-  $CI->load->model('FConsultas_model');
-
   $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
   $dados_pessoal = $query['dados'];
 
@@ -308,8 +305,8 @@ if (!isset($_SESSION['usuario'])) {
 
                     <?php
 
-                    $colideres_desativados = $this->FConsultas_model->mostrarColiderDoLiderDesativados($id_usuario);
-                    $dados = $this->FConsultas_model->mostrarColiderDoLider($id_usuario);
+                    $colideres_desativados = $this->Lideres->mostrar_colider_do_lider_desativados($id_usuario);
+                    $dados = $this->Lideres->mostrar_colider_do_lider($id_usuario);
 
                     if ($colideres_desativados['row'] == 0) {
                     } else {

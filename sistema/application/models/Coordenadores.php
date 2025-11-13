@@ -4,7 +4,6 @@
  * @property $db
  * @property $db3
  * @property Lideres $Lideres
- * @property FSistema_model $FSistema_model
  */
 
 class Coordenadores extends CI_Model

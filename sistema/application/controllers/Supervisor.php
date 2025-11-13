@@ -29,7 +29,7 @@ class Supervisor extends CI_Controller
         if ($totalLink == 0) {
             $dados = "";
             $nivel = "4";
-            $codigo = $this->FSistema_model->gerarLink();
+            $codigo = $this->FConsultas_model->gerarLink();
             $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
             $data = date('Y-m-d');
 
@@ -67,7 +67,7 @@ class Supervisor extends CI_Controller
             $dados = $id_usuario;
             $nivel = "3";
 
-            $codigo = $this->FSistema_model->gerarLink();
+            $codigo = $this->FConsultas_model->gerarLink();
 
             $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
 
@@ -144,7 +144,7 @@ class Supervisor extends CI_Controller
 
         $mensagem = [];
 
-        $telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
+        $telefone = $this->FConsultas_model->formatar_telefone($telefone_digitado, $is_br);
 
         // editar coordenador brasileiro
         if ($is_br) {
@@ -170,7 +170,7 @@ class Supervisor extends CI_Controller
 
                     if ($_FILES['files']['name'][$i] == '') {
                         $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
-                        $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+                        $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
                         if ($edicao && $editar_usuario) {
                             array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
                         } else {
@@ -179,7 +179,7 @@ class Supervisor extends CI_Controller
                     } else {
                         if ($foto_antiga == $foto) {
                             $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
-                            $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+                            $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
                             if ($edicao && $editar_usuario) {
                                 array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -189,7 +189,7 @@ class Supervisor extends CI_Controller
                         } else {
                             if (file_exists($foto)) {
                                 $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
-                                $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+                                $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
                                 if ($edicao && $editar_usuario) {
                                     array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
@@ -208,7 +208,7 @@ class Supervisor extends CI_Controller
                                 // Upload file to server
                                 if ($this->upload->do_upload('file')) {
                                     $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto);
-                                    $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
+                                    $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
                                     if ($edicao && $editar_usuario) {
                                         array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -245,7 +245,7 @@ class Supervisor extends CI_Controller
 
                     if ($_FILES['files']['name'][$i] == '') {
                         $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
-                        $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+                        $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                         if ($edicao && $editar_usuario) {
                             array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -255,7 +255,7 @@ class Supervisor extends CI_Controller
                     } else {
                         if ($foto_antiga == $foto) {
                             $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
-                            $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+                            $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                             if ($edicao && $editar_usuario) {
                                 array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -265,7 +265,7 @@ class Supervisor extends CI_Controller
                         } else {
                             if (file_exists($foto)) {
                                 $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
-                                $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+                                $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                                 if ($edicao && $editar_usuario) {
                                     array_push($mensagem, "Sua foto já existe em nosso servidor, tente com outra foto com nome diferente!");
@@ -284,7 +284,7 @@ class Supervisor extends CI_Controller
                                 // Upload file to server
                                 if ($this->upload->do_upload('file')) {
                                     $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto);
-                                    $editar_usuario = $this->FSistema_model->editar_usuario($id_usuario, $nome, $email, "", $senha);
+                                    $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                                     if ($edicao && $editar_usuario) {
                                         array_push($mensagem, "Sucesso! Seus Dados foram Editados!");

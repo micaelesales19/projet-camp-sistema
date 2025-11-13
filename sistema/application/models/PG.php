@@ -5,7 +5,6 @@
  * @property $db3
  * @property $load
  * @property $uri
- * @property $FSistema_model
  * @property $FAlerta_model
  * @property $FConsultas_model
  */
@@ -110,6 +109,20 @@ class PG extends CI_Model
         $this->db->where('id_lider', $id_lider_antigo);
         $this->db->update('pg');
     }
+
+	public function editar_ativo($id_pg, $idlider, $x)
+	{
+
+		$this->db->set('ativo', "1");
+		$this->db->where('id_pg', $id_pg);
+		$this->db->where('id_lider', $idlider);
+
+		if ($this->db->update('pg')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
     public function mostrarPGId($id_usuario, $idPG)
     {
@@ -283,6 +296,37 @@ class PG extends CI_Model
             return false;
         }
     }
+
+    public function editar_data($id, $data1, $data2, $data3)
+    {
+        $this->db->set('data_inicio', $data1);
+        $this->db->set('data_previsao_termino', $data2);
+        $this->db->set('data_semana', $data3);
+        $this->db->where('id_pg ', $id);
+
+        if ($this->db->update('pg')) {
+            //if ($this->db->update('pg_pais')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function editar_progresso_data($id, $ano, $modulo, $licao, $data)
+    {
+        $this->db->set('data_semana', $data);
+        $this->db->set('ano_devocional', $ano);
+        $this->db->set('modulo_devocional', $modulo);
+        $this->db->set('licao_devocional', $licao);
+        $this->db->where('id_pg ', $id);
+
+        if ($this->db->update('pg')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function excluir_pg($id_pg, $id_lider, $id_responsavel, $motivo)
     {
         $ativo = "0";
@@ -309,13 +353,25 @@ class PG extends CI_Model
         $this->db->where('id_pg', $id_pg);
 
         if ($this->db->update('pg')) {
-            $this->FSistema_model->excluirPgAlcancado($id_pg);
+            $this->excluirPgAlcancado($id_pg);
             $this->FAlerta_model->alerta_controle($id_responsavel, $id_pg, $motivo, $acao);
             return true;
         } else {
             return false;
         }
     }
+
+    public function excluirPgAlcancado($id_pg)
+    {
+        $this->db3->where('id_pg', $id_pg);
+
+        if ($this->db3->delete('alcancado_pg')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function excluir_pg_permanentemente($id_pg, $id_lider, $id_responsavel)
     {
         $acao = "EX_PG_1";

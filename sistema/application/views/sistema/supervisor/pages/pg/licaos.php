@@ -342,7 +342,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                         for ($i2 = 1; $i2 <= $n_licao; $i2++) {
 
-                                                                            $consultar_progresso = $this->FConsultas_model->consultarProgressoPG($id_pg, $id_lider, $i, $i2, 2);
+                                                                            $consultar_progresso = $this->PG->consultar_progresso('query_id_pg_id_lider_id_modulo_licao', [$id_pg, $id_lider, $i, $i2]);
                                                                             $x = $consultar_progresso['row'];
                                                                             $dados_licao = $this->FConsultas_model->consultarLicaoId($i, $i2);
                                                                             $nome_licao = $dados_licao['nome_licao'];

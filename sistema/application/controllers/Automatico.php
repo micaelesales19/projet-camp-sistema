@@ -285,7 +285,7 @@ class Automatico extends CI_Controller
                                         $this->email->attach($dadosDevocionais['file'] ?? "");
                                         if ($this->email->send()) {
                                             $controller = $controller + 1;
-                                            $this->FSistema_model->controlerDevocionais($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional, 1);
+                                            $this->Funcoes->controlerDevocionais($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional, 1);
                                         } else {
                                         }
                                     } else {
@@ -345,7 +345,7 @@ class Automatico extends CI_Controller
 
                             $anoNovo = ($moduloNovo == 11 ? 3 : ($moduloNovo == 6 ? 2 : 1));
 
-                            $this->FSistema_model->editarPGProgressoData($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio, 1);
+                            $this->PG->editar_progresso_data($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio);
                         } else {
                         }
                     }
@@ -379,7 +379,7 @@ class Automatico extends CI_Controller
                     } else {
                         if ($id_modulo_1 != $id_modulo_2) {
                             if (strtotime($data_fim) >= strtotime($dataHj)) {
-                                $this->FSistema_model->editarAtivo($id_pg, $id, 1);
+                                $this->PG->editar_ativo($id_pg, $id, 1);
                             } else {
                             }
                         } else {

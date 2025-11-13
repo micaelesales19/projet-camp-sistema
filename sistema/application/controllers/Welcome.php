@@ -5,8 +5,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property $input
  * @property FAlerta_model $FAlerta_model
  * @property FConsultas_model $FConsultas_model
- * @property FSistema_model $FSistema_model
  * @property Criancas $Criancas
+ * @property Automatico $Automatico
  * @property Lideres $Lideres
  * @property Coordenadores $Coordenadores
  * @property Supervisores $Supervisores
@@ -406,6 +406,25 @@ class Welcome extends CI_Controller
 		$this->load->view('sistema/termos', $dados);
 	}
 
+	public function aceitarTermos($idUsuario, $confirmacao)
+	{
+		date_default_timezone_set('America/Sao_Paulo');
+		$data = date('d/m/Y');
+		$hora = date('h:i');
+
+		$inserir['id_termo'] = NULL;
+		$inserir['id_usuario'] = $idUsuario;
+		$inserir['confirmacao'] = $confirmacao;
+		$inserir['data'] = $data;
+		$inserir['hora'] = $hora;
+
+		if ($this->db->insert('termos', $inserir)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	// ok
 	public function PrimeiroAcesso()
 	{
@@ -423,7 +442,7 @@ class Welcome extends CI_Controller
 
 			if ($termos == 0) {
 				$confimacao = 1;
-				$this->FSistema_model->aceitarTermos($id_usuario, $confimacao);
+				$this->aceitarTermos($id_usuario, $confimacao);
 			}
 		}
 
@@ -515,7 +534,7 @@ class Welcome extends CI_Controller
 			$this->load->view('partes/mensagem', $dados);
 		} else {
 
-			$check = $this->FSistema_model->check_codigo($codigo);
+			$check = $this->FConsultas_model->check_codigo($codigo);
 
 			if ($check) {
 				$dados = array(
@@ -555,7 +574,7 @@ class Welcome extends CI_Controller
 
 		$is_br = $pais == 'br' || '' ? true : false;
 
-		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
+		$telefone = $this->FConsultas_model->formatar_telefone($telefone_digitado, $is_br);
 
 		$codigo = $this->input->post('codigo');
 
@@ -578,7 +597,7 @@ class Welcome extends CI_Controller
 			$cidade = $cidade1;
 		}
 
-		$infocodigo = $this->FSistema_model->infos_codigo($codigo);
+		$infocodigo = $this->FConsultas_model->infos_codigo($codigo);
 
 		// cadastro líder pais = brasil
 		if ($is_br) {
@@ -629,7 +648,7 @@ class Welcome extends CI_Controller
 					if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 						$nivel = 1;
 						$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
-						$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
+						$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
 						if ($cadastro && $cadastroUsuario) {
 							$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '', '');
 							$id_lider = $consultarDados['dados']['id_lider'];
@@ -651,7 +670,7 @@ class Welcome extends CI_Controller
 
 									$data_nascimento_colider_completo = $dataNascimentoColiderSoNumeros[0] . $dataNascimentoColiderSoNumeros[1] . "/" . $dataNascimentoColiderSoNumeros[2] . $dataNascimentoColiderSoNumeros[3] . "/" . $dataNascimentoColiderSoNumeros[4] . $dataNascimentoColiderSoNumeros[5] . $dataNascimentoColiderSoNumeros[6] . $dataNascimentoColiderSoNumeros[7];
 
-									$telefoneColider = $this->FSistema_model->formatar_telefone($telefoneColider_digitado, $is_br);
+									$telefoneColider = $this->FConsultas_model->formatar_telefone($telefoneColider_digitado, $is_br);
 
 									$this->Lideres->cadastrarColider($id_lider, $nomeColider, $cpf_completo_colider, $emailColider, $telefoneColider, $data_nascimento_colider_completo);
 								} else {
@@ -758,7 +777,7 @@ class Welcome extends CI_Controller
 					if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 						$nivel = 1;
 						$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
-						$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, '', $nivel, $senha);
+						$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, '', $nivel, $senha);
 						if ($cadastro && $cadastroUsuario) {
 							$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '', '');
 							$id_lider = $consultarDados['dados']['id_lider'];
@@ -774,7 +793,7 @@ class Welcome extends CI_Controller
 								if ($total_numeros_data_nascimento_colider == 8) {
 									$data_nascimento_colider_completo = $dataNascimentoColiderSoNumeros[0] . $dataNascimentoColiderSoNumeros[1] . "/" . $dataNascimentoColiderSoNumeros[2] . $dataNascimentoColiderSoNumeros[3] . "/" . $dataNascimentoColiderSoNumeros[4] . $dataNascimentoColiderSoNumeros[5] . $dataNascimentoColiderSoNumeros[6] . $dataNascimentoColiderSoNumeros[7];
 
-									$telefoneColider = $this->FSistema_model->formatar_telefone($telefoneColider_digitado, $is_br);
+									$telefoneColider = $this->FConsultas_model->formatar_telefone($telefoneColider_digitado, $is_br);
 
 									$this->Lideres->cadastrarColider($id_lider, $nomeColider, "", $emailColider, $telefoneColider, $data_nascimento_colider_completo);
 								} else {
@@ -929,7 +948,7 @@ class Welcome extends CI_Controller
 		$info_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
 		$is_br = $info_lider['dados']['pais'] == 'br' || '' ? true : false;
 
-		$telefone = $this->FSistema_model->formatar_telefone($info_lider['dados']['telefone_whatsapp'], $is_br);
+		$telefone = $this->FConsultas_model->formatar_telefone($info_lider['dados']['telefone_whatsapp'], $is_br);
 		$mensagem = "Bem-Vindo ao sistema do CAMP Brasil!";
 
 		$routa = $this->input->post('routa');
@@ -1080,10 +1099,10 @@ class Welcome extends CI_Controller
 				$telefonePai = $dadosPais['telefone_whatsapp'] ?? "";
 			}
 
-			$checkCriancas = $this->FConsultas_model->consultarCriancasNomeEIdade($nome2, $lider2, $id_pg2, $nascimento2, $opcao2, $obs2, $nomePai);
+			$checkCriancas = $this->Criancas->check_criancas_cadastrada('check_criancas_id_lider_id_pg_nome_crianca_nascimento_obs_responsavel_cristao', [$lider2, $id_pg2, $nome2, $nascimento2, $obs2, $nomePai, $opcao2]);
 
 			if ($checkCriancas) {
-				$this->FSistema_model->cadastro_crianca($nome2, $nascimento2, $lider2, $id_pg2, $obs2, $opcao2, $nomePai, $emailPai, $telefonePai);
+				$this->Criancas->cadastro_crianca($nome2, $nascimento2, $lider2, $id_pg2, $obs2, $opcao2, $nomePai, $emailPai, $telefonePai);
 			} else {
 			}
 		}
@@ -2323,7 +2342,7 @@ class Welcome extends CI_Controller
 
 		if ($modulos) {
 
-			$consultaCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_lider, $id_pg);
+			$consultaCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
 
 			$qtdPresenca = 0;
 			$qtdVersiculo = 0;
@@ -2361,11 +2380,11 @@ class Welcome extends CI_Controller
 				if ($consultaCriancas['row'] == 0) {
 				} else {
 					foreach ($consultaCriancas['dados'] as $key => $linha) {
-						$consultarProgresso1 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[0]);
-						$consultarProgresso2 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[1]);
-						$consultarProgresso3 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[2]);
-						$consultarProgresso4 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[3]);
-						$consultarProgresso5 = $this->FConsultas_model->consultarProgressoCriancaIndividual($id_pg, $id_lider, $linha['id_crianca'], $id_modulos[4]);
+						$consultarProgresso1 = $this->PG->consultar_progresso([$id_pg, $id_lider, $linha['id_crianca'], $id_modulos[0]], 'query_id_pg_id_lider_id_crianca_id_modulo');
+						$consultarProgresso2 = $this->PG->consultar_progresso([$id_pg, $id_lider, $linha['id_crianca'], $id_modulos[1]], 'query_id_pg_id_lider_id_crianca_id_modulo');
+						$consultarProgresso3 = $this->PG->consultar_progresso([$id_pg, $id_lider, $linha['id_crianca'], $id_modulos[2]], 'query_id_pg_id_lider_id_crianca_id_modulo');
+						$consultarProgresso4 = $this->PG->consultar_progresso([$id_pg, $id_lider, $linha['id_crianca'], $id_modulos[3]], 'query_id_pg_id_lider_id_crianca_id_modulo');
+						$consultarProgresso5 = $this->PG->consultar_progresso([$id_pg, $id_lider, $linha['id_crianca'], $id_modulos[4]], 'query_id_pg_id_lider_id_crianca_id_modulo');
 						//$consultarProgresso = array_merge($consultarProgresso1['dados'], $consultarProgresso2['dados'], $consultarProgresso3['dados'], $consultarProgresso4['dados'], $consultarProgresso5['dados'],);
 					}
 				}
@@ -2530,716 +2549,6 @@ class Welcome extends CI_Controller
 		}
 	}
 
-	// sregional
-	/*public function cadastro_sregional()
-	{
-		$nome = $this->input->post('nome');
-		$cpf = $this->input->post('cpf');
-		$email = $this->input->post('email');
-		$telefone = $this->input->post('telefone');
-		$pais = $this->input->post('pais');
-		$estado1 = $this->input->post('estados');
-		$estado2 = $this->input->post('estados2');
-		$nascimento = $this->input->post('nascimento');
-
-		$nome_digitado_pais = $this->input->post('nome_pais');
-
-		$nome_pais = "";
-		$estado = "";
-
-		if ($pais == "br") {
-			$nome_pais = "br";
-		} else {
-			$nome_pais = $nome_digitado_pais;
-		}
-
-		if ($estado1 == "") {
-			$estado .= $estado2;
-		} else {
-			$estado .= $estado1;
-		}
-
-		$ponto1 = $cpf[3];
-
-		$cpf_completo = "";
-
-		if ($ponto1 == ".") {
-			$cpf_completo .= $cpf;
-		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
-		}
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		if ($this->FAlerta_model->ValidaData($nascimento)) {
-			$jatacadastrado = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
-			$jatacadastrado2 = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
-
-			if ($jatacadastrado || $jatacadastrado2) {
-				$nivel = 1;
-				$cadastro = $this->FSistema_model->cadastro_sregional($nome, $cpf_completo, $email, $telefone, $nascimento, $nome_pais, $estado);
-				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
-				if ($cadastro && $cadastroUsuario) {
-					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Cadastrado com Sucesso!"]);
-				} else {
-					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
-				}
-			} else {
-				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Supervisor Regional já Cadastrado!"]);
-			}
-		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
-		}
-
-		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
-		echo $funcao;
-	}
-
-	public function editar_info_sregional()
-	{
-		$id = $this->input->post("id");
-		$nome = $this->input->post("nome");
-		$cpf = $this->input->post("cpf");
-		$email = $this->input->post("email");
-		$telefone = $this->input->post("telefone");
-		$nascimento = $this->input->post("nascimento");
-		$pais = $this->input->post("pais");
-
-		$estados = $this->input->post("estados");
-		$estados2 = $this->input->post("estados2");
-
-		$nome_pais_digitado = $this->input->post("nome_pais");
-
-		$nome_pais = "";
-		$estado = "";
-
-		if ($pais == 'br') {
-			$nome_pais = $pais;
-			$estado = $estados;
-		} else {
-			$nome_pais = $nome_pais_digitado;
-			$estado = $estados2;
-		}
-
-		$foto_antiga = $this->input->post("foto_antiga");
-
-		$filesCount1 = count($_FILES['files']['name']);
-
-		$mensagem = [];
-
-		// Pais
-		for ($i = 0; $i < $filesCount1; $i++) {
-			$_FILES['file']['name']     = $_FILES['files']['name'][$i];
-			$_FILES['file']['type']     = $_FILES['files']['type'][$i];
-			$_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
-			$_FILES['file']['error']     = $_FILES['files']['error'][$i];
-			$_FILES['file']['size']     = $_FILES['files']['size'][$i];
-
-			$uploadPath = 'import/sistema/fotoU/se/';
-			$foto = 'fotoU/se/' . $_FILES['files']['name'][$i];
-
-			if ($_FILES['files']['name'][$i] == '') {
-				$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto_antiga);
-				if ($cadastro) {
-					array_push($mensagem, "Sucesso!");
-				} else {
-					array_push($mensagem, "Erro! Dados inválidos!");
-				}
-			} else {
-				if ($foto_antiga == $foto) {
-					$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto_antiga);
-					if ($cadastro) {
-						array_push($mensagem, "Sucesso!");
-					} else {
-						array_push($mensagem, "Erro! Dados inválidos!");
-					}
-				} else {
-					if (file_exists($foto)) {
-						$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto_antiga);
-						if ($cadastro) {
-							array_push($mensagem, "A foto já existe em nosso servidor, tente com outra foto com nome diferente!");
-						} else {
-							array_push($mensagem, "Erro! Dados inválidos!");
-						}
-					} else {
-						// File upload configuration
-						$config['upload_path'] = $uploadPath;
-						$config['allowed_types'] = 'jpg|jpeg|png|gif';
-
-						// Load and initialize upload library
-						$this->load->library('upload', $config);
-						$this->upload->initialize($config);
-
-						// Upload file to server
-						if ($this->upload->do_upload('file')) {
-							$cadastro = $this->FSistema_model->editarSRegional($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $foto);
-							if ($cadastro) {
-								array_push($mensagem, "Sucesso!");
-							} else {
-								array_push($mensagem, "Erro! Dados inválidos!");
-							}
-						} else {
-							$erros = $this->upload->display_errors() + " - meus dados pessoais";
-							array_push($mensagem, $erros);
-						}
-					}
-				}
-			}
-		}
-
-		// atualizarCriancas
-		$nome_antigo = $this->input->post("nome_antigo");
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id);
-
-		if ($consultarCriancas['row'] == 0) {
-		} else {
-			foreach ($consultarCriancas['dados'] as $key => $dadosCriancas) {
-				$id = $dadosCriancas['id_crianca'];
-				$nome_responsavel = $dadosCriancas['nome_responsavel'];
-
-				if ($nome_responsavel == $nome_antigo) {
-					$this->FSistema_model->editaCriancaResponsavel($id, $nome, $email, $telefone, 2);
-				}
-			}
-		}
-
-		echo '
-			<script>
-				if(window.confirm("' . implode("\\n", $mensagem) . '")) {
-					window.location="../../../' . $url . '";
-				}else{
-					window.location="../../../' . $url . '";
-				}
-			</script>
-		';
-	}
-
-	public function desativar_sregional()
-	{
-		$id_sregional = $this->input->post("id_sregional");
-		$id_usuario = $this->input->post("id_usuario");
-		$motivo = "O usuário (ID: " . $id_usuario . ") desativou seu supervisor regional (ID: " . $id_sregional . ")";
-
-		$infos = $this->FConsultas_model->getInfoUserId($id_sregional);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_sregional);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_sregional, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->excluirPG($pg['id_pg'], $pg['nome_pg'], $id_sregional, $id_usuario, $motivo, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_sregional);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->excluirCrianca($criancas['id_crianca'], $criancas['nome_crianca'], $id_sregional, $id_usuario, $motivo, 2);
-			}
-		}
-
-		// mudar o ativo do sregional
-		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->desativar_sregional($id_sregional);
-
-		$this->FAlerta_model->alerta_controle($id_usuario, $id_sregional, $motivo, "DESATIVACAO_SREGIONAL");
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional desativado!"]);
-		$funcao = $this->FConsultas_model->red("../../../$url", 2000, []);
-		echo $funcao;
-	}
-
-	public function ativar_sregional()
-	{
-		$id_sregional = $this->input->post("opc");
-		$id_usuario = $this->input->post("idUsuario");
-		$infos = $this->FConsultas_model->getInfoUserId($id_sregional);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_sregional);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_sregional, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->reativarPg($pg['id_pg'], $id_usuario, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_sregional);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->reativarCrianca($criancas['id_crianca'], 2);
-			}
-		}
-
-		// mudar o ativo do sregional
-		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->ativar_sregional($id_sregional);
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Ativado!"]);
-		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
-		echo $funcao;
-	}
-
-	public function excluir_sregional_permanentemente()
-	{
-		$id_sregional = $this->input->post("opc");
-		$id_usuario = $this->input->post("idUsuario");
-
-		$infos = $this->FConsultas_model->getInfoUserId($id_sregional);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_sregional);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_sregional, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->excluirPgPermanentemente($pg['id_pg'], $id_sregional, $id_usuario, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_sregional);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->excluirCriancaPermanentemente($criancas['id_crianca'], $id_sregional, $id_usuario, 2);
-			}
-		}
-
-		$dados_colider = $this->FConsultas_model->mostrarColiderDoLider($id_sregional);
-
-		if ($dados_colider) {
-			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_sregional, $id_usuario);
-		} else {
-		}
-
-		$dados_lider = $this->FConsultas_model->getLideres([$id_sregional], 2, 1, []);
-
-		if ($dados_lider['row'] == 0) {
-		} else {
-			foreach ($dados_lider['dados'] as $key => $lider) {
-				$this->FSistema_model->editar_lider_exclusao_sregional($lider['id_lider'], $id_sregional, $id_usuario);
-			}
-		}
-
-		$dados_coordenadores = $this->FConsultas_model->getCoordenador([$id_sregional], 2, 1, []);
-
-		if ($dados_coordenadores['row'] == 0) {
-		} else {
-			foreach ($dados_coordenadores['dados'] as $key => $lider) {
-				$this->FSistema_model->editar_lider_exclusao_sregional($lider['id_coordenador'], $id_sregional, $id_usuario);
-			}
-		}
-
-		$dados_sregional = $this->FConsultas_model->getSLocal([$id_sregional], 2, 1, []);
-
-		if ($dados_sregional['row'] == 0) {
-		} else {
-			foreach ($dados_sregional['dados'] as $key => $lider) {
-				$this->FSistema_model->editar_lider_exclusao_sregional($lider['id_supervisorR'], $id_sregional, $id_usuario);
-			}
-		}
-
-		// excluir sregional
-		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->excluirSRegionalPermanentemente($id_sregional, $id_usuario);
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/page/equipe" : $this->input->post('url');
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Desativado Permanentemente!"]);
-		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
-		echo $funcao;
-	}*/
-
-	// slocal
-	/*public function cadastro_slocal()
-	{
-		$nome = $this->input->post('nome');
-		$cpf = $this->input->post('cpf');
-		$email = $this->input->post('email');
-		$telefone = $this->input->post('telefone');
-		$pais = $this->input->post('pais');
-		$nascimento = $this->input->post('nascimento');
-		$id_sregional = $this->input->post('id_sregional');
-
-		$nome_digitado_pais = $this->input->post('nome_pais');
-
-		$estado1 = $this->input->post('estados');
-		$cidade1 = $this->input->post('cidades');
-		$estado2 = $this->input->post('estados2');
-		$cidade2 = $this->input->post('cidades2');
-
-		$nome_pais = "";
-		$estado = "";
-		$cidade = "";
-
-		if ($pais == "br") {
-			$nome_pais = "br";
-		} else {
-			$nome_pais = $nome_digitado_pais;
-		}
-
-		if ($estado1 == "" and $cidade1 == "") {
-			$estado .= $estado2;
-			$cidade .= $cidade2;
-		} else {
-			$estado .= $estado1;
-			$cidade .= $cidade1;
-		}
-
-		$ponto1 = $cpf[3];
-
-		$cpf_completo = "";
-
-		if ($ponto1 == ".") {
-			$cpf_completo .= $cpf;
-		} else {
-			$cpf_completo .= $cpf[0] . $cpf[1] . $cpf[2] . "." . $cpf[3] . $cpf[4] . $cpf[5] . "." . $cpf[6] . $cpf[7] . $cpf[8] . "-" . $cpf[9] . $cpf[10];
-		}
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		if ($this->FAlerta_model->ValidaData($nascimento)) {
-			$jatacadastrado = $this->FConsultas_model->consultarLiderJaCadastrado($nome, $cpf, $cpf_completo, $email);
-			$jatacadastrado2 = $this->FConsultas_model->consultarUsuarioCadastrado($nome, $cpf,  $cpf_completo, $email);
-
-			if ($jatacadastrado || $jatacadastrado2) {
-				$nivel = 1;
-				$cadastro = $this->FSistema_model->cadastro_slocal($nome, $cpf_completo, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional);
-				$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel);
-				if ($cadastro && $cadastroUsuario) {
-					$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Cadastrado com Sucesso!"]);
-				} else {
-					$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
-				}
-			} else {
-				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Supervisor Local já Cadastrado!"]);
-			}
-		} else {
-			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
-		}
-
-		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
-		echo $funcao;
-	}
-	public function editar_info_slocal()
-	{
-		$id = $this->input->post("id");
-		$nome = $this->input->post("nome");
-		$cpf = $this->input->post("cpf");
-		$email = $this->input->post("email");
-		$telefone = $this->input->post("telefone");
-		$nascimento = $this->input->post("nascimento");
-		$id_sregional = $this->input->post("id_sregional");
-
-		$pais = $this->input->post("pais");
-		$nome_pais_digitado = $this->input->post("nome_pais");
-
-		$estado1 = $this->input->post('estados');
-		$cidade1 = $this->input->post('cidades');
-		$estado2 = $this->input->post('estados2');
-		$cidade2 = $this->input->post('cidades2');
-
-		$estado = "";
-		$cidade = "";
-
-		$nome_pais = "";
-
-		if ($pais == 'br') {
-			$nome_pais = $pais;
-			$estado .= $estado1;
-			$cidade .= $cidade1;
-		} else {
-			$nome_pais = $nome_pais_digitado;
-			$estado .= $estado2;
-			$cidade .= $cidade2;
-		}
-
-		if ($estado1 == "" and $cidade1 == "") {
-		} else {
-		}
-
-		$foto_antiga = $this->input->post("foto_antiga");
-
-		$filesCount1 = count($_FILES['files']['name']);
-
-		$mensagem = [];
-
-		// Pais
-		for ($i = 0; $i < $filesCount1; $i++) {
-			$_FILES['file']['name']     = $_FILES['files']['name'][$i];
-			$_FILES['file']['type']     = $_FILES['files']['type'][$i];
-			$_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
-			$_FILES['file']['error']     = $_FILES['files']['error'][$i];
-			$_FILES['file']['size']     = $_FILES['files']['size'][$i];
-
-			$uploadPath = 'import/sistema/fotoU/sr/';
-			$foto = 'fotoU/se/' . $_FILES['files']['name'][$i];
-
-			if ($_FILES['files']['name'][$i] == '') {
-				$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto_antiga);
-				if ($cadastro) {
-					array_push($mensagem, "Sucesso!");
-				} else {
-					array_push($mensagem, "Erro! Dados inválidos!");
-				}
-			} else {
-				if ($foto_antiga == $foto) {
-					$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto_antiga);
-					if ($cadastro) {
-						array_push($mensagem, "Sucesso!");
-					} else {
-						array_push($mensagem, "Erro! Dados inválidos!");
-					}
-				} else {
-					if (file_exists($foto)) {
-						$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto_antiga);
-						if ($cadastro) {
-							array_push($mensagem, "A foto já existe em nosso servidor, tente com outra foto com nome diferente!");
-						} else {
-							array_push($mensagem, "Erro! Dados inválidos!");
-						}
-					} else {
-						// File upload configuration
-						$config['upload_path'] = $uploadPath;
-						$config['allowed_types'] = 'jpg|jpeg|png|gif';
-
-						// Load and initialize upload library
-						$this->load->library('upload', $config);
-						$this->upload->initialize($config);
-
-						// Upload file to server
-						if ($this->upload->do_upload('file')) {
-							$cadastro = $this->FSistema_model->editarSLocal($id, $nome, $cpf, $email, $telefone, $nascimento, $nome_pais, $estado, $cidade, $id_sregional, $foto);
-							if ($cadastro) {
-								array_push($mensagem, "Sucesso!");
-							} else {
-								array_push($mensagem, "Erro! Dados inválidos!");
-							}
-						} else {
-							$erros = $this->upload->display_errors() + " - meus dados pessoais";
-							array_push($mensagem, $erros);
-						}
-					}
-				}
-			}
-		}
-
-		// atualizarCriancas
-		$nome_antigo = $this->input->post("nome_antigo");
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		$consultarCriancas = $this->FConsultas_model->mostrarCriancasPais($id);
-
-		if ($consultarCriancas['row'] == 0) {
-		} else {
-			foreach ($consultarCriancas['dados'] as $key => $dadosCriancas) {
-				$id = $dadosCriancas['id_crianca'];
-				$nome_responsavel = $dadosCriancas['nome_responsavel'];
-
-				if ($nome_responsavel == $nome_antigo) {
-					$this->FSistema_model->editaCriancaResponsavel($id, $nome, $email, $telefone, 2);
-				}
-			}
-		}
-
-		echo '
-			<script>
-				if(window.confirm("' . implode("\\n", $mensagem) . '")) {
-					window.location="../../../' . $url . '";
-				}else{
-					window.location="../../../' . $url . '";
-				}
-			</script>
-		';
-	}
-	public function desativar_slocal()
-	{
-		$id_slocal = $this->input->post("id_slocal");
-		$id_usuario = $this->input->post("id_usuario");
-		$motivo = "O usuário (ID: " . $id_usuario . ") desativou seu supervisor local (ID: " . $id_slocal . ")";
-
-		$infos = $this->FConsultas_model->getInfoUserId($id_slocal);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_slocal);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_slocal, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->excluirPG($pg['id_pg'], $pg['nome_pg'], $id_slocal, $id_usuario, $motivo, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_slocal);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->excluirCrianca($criancas['id_crianca'], $criancas['nome_crianca'], $id_slocal, $id_usuario, $motivo, 2);
-			}
-		}
-
-		// mudar o ativo do slocal
-		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->desativar_slocal($id_slocal);
-
-		$this->FAlerta_model->alerta_controle($id_usuario, $id_slocal, $motivo, "DESATIVACAO_SLOCAL");
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local desativado!"]);
-		$funcao = $this->FConsultas_model->red("../../../$url", 2000, []);
-		echo $funcao;
-	}
-
-	public function ativar_slocal()
-	{
-		$id_slocal = $this->input->post("opc");
-		$id_usuario = $this->input->post("idUsuario");
-		$infos = $this->FConsultas_model->getInfoUserId($id_slocal);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_slocal);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_slocal, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->reativarPg($pg['id_pg'], $id_usuario, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_slocal);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->reativarCrianca($criancas['id_crianca'], 2);
-			}
-		}
-
-		// mudar o ativo do slocal
-		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		$this->FSistema_model->ativar_slocal($id_slocal);
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/home" : $this->input->post('url');
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Ativado!"]);
-		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
-		echo $funcao;
-	}
-
-	public function excluir_slocal_permanentemente()
-	{
-		$id_slocal = $this->input->post("opc");
-		$id_usuario = $this->input->post("idUsuario");
-
-		$infos = $this->FConsultas_model->getInfoUserId($id_slocal);
-		$infonome = $this->FConsultas_model->getNomeUserId($id_slocal);
-
-		// desativar pg
-		$consultaPG = $this->FConsultas_model->mostrarPG($id_slocal, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->excluirPgPermanentemente($pg['id_pg'], $id_slocal, $id_usuario, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_slocal);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->excluirCriancaPermanentemente($criancas['id_crianca'], $id_slocal, $id_usuario, 2);
-			}
-		}
-
-		$dados_colider = $this->FConsultas_model->mostrarColiderDoLider($id_slocal);
-
-		if ($dados_colider) {
-			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_slocal, $id_usuario);
-		} else {
-		}
-
-		$dados_lider = $this->FConsultas_model->getLideres([$id_slocal], 2, 1, []);
-
-		if ($dados_lider['row'] == 0) {
-		} else {
-			foreach ($dados_lider['dados'] as $key => $lider) {
-				$this->FSistema_model->editar_lider_exclusao_slocal($lider['id_lider'], $id_slocal, $id_usuario);
-			}
-		}
-
-		$dados_coordenadores = $this->FConsultas_model->getCoordenador([$id_slocal], 2, 1, []);
-
-		if ($dados_coordenadores['row'] == 0) {
-		} else {
-			foreach ($dados_coordenadores['dados'] as $key => $lider) {
-				$this->FSistema_model->editar_lider_exclusao_slocal($lider['id_coordenador'], $id_slocal, $id_usuario);
-			}
-		}
-
-		// excluindo o slocal
-		//$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
-		//$this->FSistema_model->excluirSLocalPermanentemente($id_slocal, $id_usuario);
-
-		$nivel = $this->input->post('nivel') == '' ? 'direcao' : $this->input->post('nivel');
-		$url = $this->input->post('url') == '' ? "$nivel/page/slocal" : $this->input->post('url');
-
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Local Excluido Permanentemente!"]);
-		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
-
-		echo $funcao;
-	}*/
-
 	// coordenador
 	// cadastro coordenador na plataforma (ok)
 	public function cadastro_coordenador()
@@ -3259,7 +2568,7 @@ class Welcome extends CI_Controller
 
 		$is_br = $pais == 'br' || '' ? true : false;
 
-		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
+		$telefone = $this->FConsultas_model->formatar_telefone($telefone_digitado, $is_br);
 
 		$nome_digitado_pais = $this->input->post('nome_pais');
 
@@ -3303,7 +2612,7 @@ class Welcome extends CI_Controller
 					$nivel = 3;
 
 					$cadastro = $this->Coordenadores->cadastro_coordenador($nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, $id_supervisor, 2);
-					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
+					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
 
 					if ($cadastro && $cadastroUsuario) {
 
@@ -3334,7 +2643,7 @@ class Welcome extends CI_Controller
 				if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 					$nivel = 3;
 					$cadastro = $this->Coordenadores->cadastro_coordenador($nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, $id_supervisor, 2);
-					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, "", $nivel, $senha);
+					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, "", $nivel, $senha);
 
 					if ($cadastro && $cadastroUsuario) {
 
@@ -3424,47 +2733,6 @@ class Welcome extends CI_Controller
 		$id_coordenador_novo = $this->input->post("id_novo_coordenador");
 		$id_usuario = $this->input->post("idUsuario");
 
-		//$infos = $this->FConsultas_model->getInfoUserId($id_coordenador);
-		//$infonome = $this->FConsultas_model->getNomeUserId($id_coordenador);
-
-		// desativar pg
-		/*$consultaPG = $this->FConsultas_model->mostrarPG($id_coordenador, 5);
-		$dadosPG = $consultaPG['dados'];
-
-		if ($consultaPG['row'] == 0) {
-		} else {
-			foreach ($dadosPG as $key => $pg) {
-				$this->FSistema_model->excluirPgPermanentemente($pg['id_pg'], $id_coordenador, $id_usuario, 2);
-			}
-		}
-
-		// desativar crianças
-		$consultaCriancas = $this->FConsultas_model->mostrarCriancasPais($id_coordenador);
-		$dadosCriancas = $consultaCriancas['dados'];
-
-		if ($consultaCriancas['row'] == 0) {
-		} else {
-			foreach ($dadosCriancas as $key => $criancas) {
-				$this->FSistema_model->excluirCriancaPermanentemente($criancas['id_crianca'], $id_coordenador, $id_usuario, 2);
-			}
-		}
-
-		$dados_colider = $this->FConsultas_model->mostrarColiderDoLider($id_coordenador);
-
-		if ($dados_colider) {
-			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_coordenador, $id_usuario);
-		} else {
-		}
-
-		$dados_lider = $this->FConsultas_model->getLideres([$id_coordenador], 1, 2, []);
-
-		if ($dados_lider['row'] == 0) {
-		} else {
-			foreach ($dados_lider['dados'] as $key => $lider) {
-				$this->FSistema_model->editar_lider_exclusao_coord($lider['id_lider'], $id_coordenador, $id_usuario);
-			}
-		}*/
-
 		if ($id_coordenador_novo == 0) {
 		} else {
 			$this->Lideres->trocar_coordenacao_do_lider($id_coordenador, $id_coordenador_novo);
@@ -3500,7 +2768,7 @@ class Welcome extends CI_Controller
 
 		$is_br = $pais == 'br' || '' ? true : false;
 
-		$telefone = $this->FSistema_model->formatar_telefone($telefone_digitado, $is_br);
+		$telefone = $this->FConsultas_model->formatar_telefone($telefone_digitado, $is_br);
 
 		$id_pastor = 2000;
 		//$id_pastor = $this->input->post('id_pastor');
@@ -3541,7 +2809,7 @@ class Welcome extends CI_Controller
 				if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 					$nivel = 1;
 					$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, 2);
-					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
+					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
 					if ($cadastro && $cadastroUsuario) {
 						$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '', '');
 						$id_lider = $consultarDados['dados']['id_lider'];
@@ -3570,7 +2838,7 @@ class Welcome extends CI_Controller
 				if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 					$nivel = 1;
 					$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, 2);
-					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, "", $nivel, $senha);
+					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, "", $nivel, $senha);
 					if ($cadastro && $cadastroUsuario) {
 						$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '', '');
 						$id_lider = $consultarDados['dados']['id_lider'];
@@ -3644,7 +2912,7 @@ class Welcome extends CI_Controller
 		}
 
 		// mudar o ativo do líder
-		$this->FSistema_model->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->Lideres->desativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 		$this->FAlerta_model->alerta_controle($id_usuario, $id_lider, $motivo, $acao);
 	}
 	public function ativar_lider(): void
@@ -3689,7 +2957,7 @@ class Welcome extends CI_Controller
 			}
 		}
 		// mudar o ativo do líder
-		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->Lideres->ativarUsuario($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 	}
 	public function excluir_lider_permanentemente()
 	{
@@ -3753,12 +3021,12 @@ class Welcome extends CI_Controller
 		$dados_colider = $this->Lideres->mostrar_colider_do_lider($id_lider);
 
 		if ($dados_colider) {
-			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_lider, $id_usuario);
+			$this->Lideres->excluirColiderPermanentemente($dados_colider['id_colider'], $id_lider, $id_usuario);
 		} else {
 		}
 
 		// mudar o ativo do líder
-		$this->FSistema_model->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
+		$this->Lideres->excluirUsuarioPermanentemente($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 	}
 
 	// Colíderes
@@ -3895,7 +3163,7 @@ class Welcome extends CI_Controller
 				$data_trocada = $mes . "/" . $dia . "/" . $ano;
 				$data_fim = date('d/m/Y', strtotime('+2 months', strtotime($data_trocada)));
 
-				$this->FSistema_model->editarData($idPg, $dataEscolhida, $data_fim, $dataEscolhida, $nivel);
+				$this->PG->editar_data($idPg, $dataEscolhida, $data_fim, $dataEscolhida);
 			}
 		}
 

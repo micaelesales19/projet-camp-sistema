@@ -13,9 +13,6 @@ if (!isset($_SESSION['usuario'])) {
 
   date_default_timezone_set('America/Sao_Paulo');
   $data = date("d/m/Y");
-
-  $CI = &get_instance();
-  $CI->load->model('FConsultas_model');
 ?>
   <!DOCTYPE html>
   <html>
@@ -100,8 +97,8 @@ if (!isset($_SESSION['usuario'])) {
             </div>
 
             <?php
+            $consultarPG = $this->PG->query([$id_usuario], 2, 1);
 
-            $consultarPG = $this->FConsultas_model->mostrarPGDownload($id_usuario, 2);
             $modulos = $this->FConsultas_model->consultarModulo();
 
             if ($consultarPG['row'] == 0) {
@@ -210,7 +207,7 @@ if (!isset($_SESSION['usuario'])) {
 
               $idPG = $consultarPG['dados']['id_pg'];
 
-              $consultarCriancas = $this->FConsultas_model->mostrarCriancasPaisPg($id_usuario, $idPG, 2);
+              $consultarCriancas = $this->Criancas->query_criancas_lider_pg($id_usuario, $idPG, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
 
               if ($consultarCriancas['row'] == 0) {
 
