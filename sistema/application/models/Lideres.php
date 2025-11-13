@@ -83,6 +83,20 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'info_usuario_and_email_cpf_nome') {
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $nome = $id_usuario[2];
+            $consultar_usuario = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf' AND nome LIKE '$nome'");
+            $dados_usuario = $consultar_usuario->row_array();
+            $total_usuario = $consultar_usuario->num_rows();
+
+            $dados = array(
+                'row' => $total_usuario,
+                'dados' => $dados_usuario,
+            );
+
+            return $dados;
         } else if ($opc == 'info_usuario_or_email_cpf_nome') {
             $email = $id_usuario[0];
             $cpf = $id_usuario[1];
@@ -207,6 +221,9 @@ class Lideres extends CI_Model
                 'dados' => $dados_consulta_coordenador,
             );
 
+            return $dados;
+        } else if ($opc == 'query_all_lider_br') {
+            $dados = $this->db->query("SELECT * FROM lider WHERE confirmado LIKE 2 AND pais LIKE 'br'")->result_array();
             return $dados;
         }
     }
@@ -479,6 +496,19 @@ class Lideres extends CI_Model
         $consultar_colider = $this->db->query("SELECT * FROM colider WHERE nome_colider LIKE '$nome' OR email LIKE '$email' OR cpf LIKE '$cpf' OR telefone_whatsapp LIKE '$telefone'");
         $row = $consultar_colider->num_rows();
         return $row;
+    }
+
+    public function mostrar_colider_do_lider($id_usuario)
+    {
+        $consultar_colider = $this->db->query("SELECT * FROM colider WHERE id_lider LIKE $id_usuario AND ativo = 1 ORDER BY nome_colider ASC");
+        $row = $consultar_colider->num_rows();
+        $dados_consula_colider = $consultar_colider->row_array();
+
+        if ($row == 0) {
+            return false;
+        } else {
+            return $dados_consula_colider;
+        }
     }
 
     public function cadastro_lider($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, $confirmado)

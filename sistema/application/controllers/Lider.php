@@ -27,12 +27,13 @@ class Lider extends CI_Controller
 	{
 		$this->load->view('sistema/lider/home');
 	}
-	// Dados Pessoal
+	// Dados Pessoal ok
 	public function pagina_editar_pessoal()
 	{
 		$this->load->view('sistema/lider/edicao/pagina_editar_pessoal');
 	}
 
+	// ok
 	public function e_pessoal()
 	{
 		$id = $this->input->post("id");
@@ -345,19 +346,14 @@ class Lider extends CI_Controller
 	}
 	// Fim Dados Pessoal
 
-	// Crianças
+	// Crianças ok
 	public function pagina_visualizacao_criancas()
 	{
 		$this->load->view('sistema/lider/pages/pagina_ver_criancas');
 	}
-
-	public function pagina_cadastro_criancas()
-	{
-		$this->load->view('sistema/lider/cadastro/pagina_cadastro_crianca');
-	}
 	// Fim Crianças
 
-	// PG
+	// PG ok
 	public function pagina_visualizacao_pg()
 	{
 		$this->load->view('sistema/lider/pages/pagina_ver_pg');
@@ -373,7 +369,7 @@ class Lider extends CI_Controller
 		$routa = $this->input->post('routa');
 
 		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
-		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
+		$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
 
 		$pages = [];
 
@@ -478,6 +474,7 @@ class Lider extends CI_Controller
 		$this->load->view('sistema/lider/pages/consultas/retornar_infomacoes_relatorio_pg');
 	}
 
+	// ok
 	public function consulta_progresso_pg()
 	{
 		$id_lider = $this->input->get("id_lider");

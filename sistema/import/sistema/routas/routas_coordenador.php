@@ -3,39 +3,38 @@
 $route['coordenador/home'] = 'Coordenador/home';
 
 // Dados Pessoais
-$route['coordenador/pagina_editar_pessoal'] = 'Coordenador/pagina_editar_pessoal'; // ok
-$route['coordenador/salvar_edicao'] = 'Coordenador/e_pessoal'; // ok
+$route['coordenador/pagina_editar_pessoal'] = 'Coordenador/pagina_editar_pessoal'; // ok // ok
+$route['coordenador/salvar_edicao'] = 'Coordenador/e_pessoal'; // ok // ok
 // Fim Dados Pessoais
 
-$route['coordenador/page/lideres'] = 'Coordenador/pagina_ver_lideres'; // ok
-$route['coordenador/page/lideres/mostrar'] = 'Coordenador/mostrar_table_lider'; // ok
+$route['coordenador/page/lideres'] = 'Coordenador/pagina_ver_lideres'; // ok // ok
+$route['coordenador/page/lideres/mostrar'] = 'Coordenador/mostrar_table_lider'; // ok // ok
 
 $route['coordenador/page/lideres/gerar_excel'] = 'Coordenador/gerar_excel';
 
-$route['coordenador/page/lider/salvar'] = 'Lider/e_pessoal'; // ok
+$route['coordenador/page/lider/salvar'] = 'Lider/e_pessoal'; // ok // ok
 $route['coordenador/page/lider/desativar'] = 'welcome/desativar_lider'; // ok
 $route['coordenador/page/lider/reativar'] = 'welcome/ativar_lider'; // ok
 $route['coordenador/page/lider/excluir'] = 'welcome/excluir_lider_permanentemente'; // ok
 $route['coordenador/page/lider/trocar-liderenca'] = 'welcome/trocar_liderenca'; // ok
 
-$route['coordenador/page/lider/:any'] = 'Coordenador/pagina_ver_detalhes_lider';
+$route['coordenador/page/lider/:any'] = 'Coordenador/pagina_ver_detalhes_lider'; // ok // ok
 
 // PG
-$route['coordenador/page/pg'] = 'Coordenador/pagina_visualizacao_pg'; // ok
-
+$route['coordenador/page/pg'] = 'Coordenador/pagina_visualizacao_pg'; // ok // ok
 $route['coordenador/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg'; // ok
 $route['coordenador/page/pg/edicao/salvar'] = 'welcome/editar_pg'; // ok
 $route['coordenador/page/pg/exclusao/desativar'] = 'welcome/desativar_pg'; // ok
 $route['coordenador/page/pg/exclusao/ativar'] = 'welcome/ativar_pg'; // ok
 $route['coordenador/page/pg/exclusao/permanente'] = 'welcome/excluir_pg_permanentemente'; // ok
 
-$route['coordenador/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg'; // ok
+$route['coordenador/page/pg/consultarProgresso'] = 'Lider/consulta_progresso_pg'; // ok // ok
 
-$route['coordenador/page/pg/licoes'] = 'Coordenador/pagina_licoes'; // ok
-$route['coordenador/page/pg/preenchimento'] = 'Coordenador/pagina_preenchimento_relatorio_pg'; // ok
-$route['coordenador/page/pg/visualizar'] = 'Coordenador/pagina_visualizacao_relatorio_pg'; // ok
-$route['coordenador/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Coordenador/consulta_criancas_relatorios'; // ok
-$route['coordenador/page/pg/consultas/retornar_informacoes_relatorio_pg'] = 'Coordenador/consulta_relatorio_pg'; // ok
+$route['coordenador/page/pg/licoes'] = 'Coordenador/pagina_licoes'; // ok // ok
+$route['coordenador/page/pg/preenchimento'] = 'Coordenador/pagina_preenchimento_relatorio_pg'; // ok // ok
+$route['coordenador/page/pg/visualizar'] = 'Coordenador/pagina_visualizacao_relatorio_pg'; // ok // ok
+$route['coordenador/page/pg/consultas/retornar_informacoes_criancas_pg'] = 'Coordenador/consulta_criancas_relatorios'; // ok // ok
+$route['coordenador/page/pg/consultas/retornar_informacoes_relatorio_pg'] = 'Coordenador/consulta_relatorio_pg'; // ok // ok
 $route['coordenador/page/pg/preenchimento/salvar'] = 'welcome/salvar_relatorio'; // ok
 $route['coordenador/page/pg/preenchimento/edicao'] = 'welcome/edicao_relatorio'; // ok
 
@@ -54,10 +53,10 @@ $route['coordenador/colider/exclusao/permanente'] = 'welcome/excluir_colider_per
 // Colíderes
 
 // Material de Apoio Treinamento
-$route['coordenador/page/material-apoio-treinamento'] = 'Coordenador/pagina_material_apoio_treinamento'; // ok
+$route['coordenador/page/material-apoio-treinamento'] = 'Coordenador/pagina_material_apoio_treinamento'; // ok // ok
 
 // Download de Material
-$route['coordenador/page/download'] = 'Coordenador/pagina_download_material'; // ok
-$route['coordenador/page/modulo'] = 'Coordenador/pagina_download_material_modulo'; // ok
+$route['coordenador/page/download'] = 'Coordenador/pagina_download_material'; // ok // ok
+$route['coordenador/page/modulo'] = 'Coordenador/pagina_download_material_modulo'; // ok // ok
 
 return $route;

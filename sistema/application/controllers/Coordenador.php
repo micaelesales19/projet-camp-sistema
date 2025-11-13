@@ -111,12 +111,13 @@ class Coordenador extends CI_Controller
 	{
 		$this->load->view('sistema/coordenador/home');
 	}
-	// Dados Pessoal
+	// Dados Pessoal ok
 	public function pagina_editar_pessoal()
 	{
 		$this->load->view('sistema/coordenador/edicao/pagina_editar_pessoal');
 	}
 
+	// ok
 	public function e_pessoal()
 	{
 		$id = $this->input->post("id");
@@ -348,7 +349,7 @@ class Coordenador extends CI_Controller
 	}
 	// Fim Dados Pessoal
 
-	// PG
+	// PG // ok
 	public function pagina_visualizacao_pg()
 	{
 		$this->load->view('sistema/coordenador/pages/pagina_pg_usuario');
@@ -363,7 +364,7 @@ class Coordenador extends CI_Controller
 		$routa = $this->input->post('routa');
 
 		$modulos = $this->FConsultas_model->consultarModuloAno($ano);
-		$dadosPg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg, 2);
+		$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
 
 		$pages = [];
 
@@ -507,40 +508,6 @@ class Coordenador extends CI_Controller
 		$this->load->view('sistema/coordenador/pages/preenchimento_relatorio', $dados);
 	}
 
-	public function consulta_progresso_pg()
-	{
-		$id_lider = $this->input->get("id_lider");
-		$id_pg = $this->input->get("id_pg");
-		$id_modulo = $this->input->get("id_modulo");
-		$ano = $this->input->get("ano");
-		$total = $this->input->get("total"); // total de botões dos módulos escolhidos
-
-		$id_crianca = $this->input->get("id_crianca");
-
-		$page = $this->input->get('page') == '' ? 'inicial' : $this->input->get('page');
-
-		// id_lider // id_pg
-		$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
-
-		$dados = array(
-			'id_lider' => $id_lider,
-			'id_pg' => $id_pg,
-			'id_modulo' => $id_modulo,
-			'total' => $total,
-			'ano' => $ano,
-			'page' => $page,
-			'id_crianca' => $id_crianca,
-			'pg' => $dadosPg['dados'],
-		);
-
-
-		if ($page == '' || $page == 'individual') {
-			$this->load->view('sistema/lider/pages/pg/linha', $dados);
-		} else {
-			$this->load->view('sistema/lider/pages/pg/linha_geral', $dados);
-		}
-	}
-
 	public function consulta_criancas_relatorios()
 	{
 		$this->load->view('sistema/coordenador/pages/consultas/retornar_infomacoes');
@@ -574,7 +541,7 @@ class Coordenador extends CI_Controller
 		$this->load->view('sistema/coordenador/pages/pagina_ver_lideres');
 	}
 
-	public function mostrar_table_lider(): void // ok
+	public function mostrar_table_lider() // ok
 	{
 		$id_user = $this->input->get("id_user");
 

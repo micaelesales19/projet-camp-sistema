@@ -135,8 +135,11 @@ if (!isset($_SESSION['usuario'])) {
                       $foto = base_url('import/sistema/' . $foto_original);
                       ?>
 
-                      <input class="form-control" id="exampleInputText1" type="hidden" name="id" aria-describedby="emailHelp" value="<?= $dados_pessoal['id_lider'] ?>">
+                      <input class="form-control" type="hidden" name="id" value="<?= $dados_pessoal['id_lider'] ?>">
+                      <input class="form-control" type="hidden" name="id_coordenador" value="<?= $dados_pessoal['id_coordenador'] ?>">
+                      <input class="form-control" type="hidden" name="id_supervisor" value="<?= $dados_pessoal['id_supervisorR'] ?>">
                       <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                      <input type="hidden" name="id_usuario" value="<?= $id_usuario_2; ?>">
 
                       <div class="col-lg-12">
                         <center>

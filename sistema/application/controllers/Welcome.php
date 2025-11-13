@@ -14,7 +14,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property $db
  * @property $email
  * @property $upload
- * @property $image_lib
  * @property $uri
  */
 
@@ -86,7 +85,7 @@ class Welcome extends CI_Controller
 		$this->load->view('sistema/page_login_back', $dados);
 	}
 
-	public function migrar()
+	/*public function migrar()
 	{
 		$consultar_criancas = $this->db->query("SELECT * FROM crianca");
 		$row = $consultar_criancas->num_rows();
@@ -137,7 +136,7 @@ class Welcome extends CI_Controller
 			} else {
 			}
 		}
-	}
+	}*/
 
 	public function login()
 	{
@@ -396,6 +395,8 @@ class Welcome extends CI_Controller
 			}
 		}
 	}
+
+	// ok
 	public function PaginaDosTermos()
 	{
 		$x = $this->input->post('x');
@@ -404,6 +405,8 @@ class Welcome extends CI_Controller
 
 		$this->load->view('sistema/termos', $dados);
 	}
+
+	// ok
 	public function PrimeiroAcesso()
 	{
 		$id_usuario = $this->input->post('id_usuario');
@@ -477,6 +480,7 @@ class Welcome extends CI_Controller
 			//$this->load->view('sistema/slocal/home');
 		}
 	}
+
 	public function sair()
 	{
 		$id_usuario = $this->input->post("id_usuario");
@@ -654,8 +658,8 @@ class Welcome extends CI_Controller
 								}
 							}
 
-							$this->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
-							$this->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
+							$this->Automatico->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
+							$this->Automatico->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
 
 							$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
 							echo '
@@ -777,8 +781,8 @@ class Welcome extends CI_Controller
 								}
 							}
 
-							$this->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
-							$this->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
+							$this->Automatico->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
+							$this->Automatico->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
 
 							$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
 							echo '
@@ -861,7 +865,7 @@ class Welcome extends CI_Controller
 				$cpf = $info_lider['dados']['cpf'];
 				$nome = $this->FConsultas_model->getNomeUserId($id_lider)['nome'];
 
-				$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+				$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
 
 				if ($info_usuario['row'] == 0) {
 					$mensagem = "Link Inválido!\nDados não Encontrado";
@@ -871,7 +875,7 @@ class Welcome extends CI_Controller
 					$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
 
 					$this->Lideres->editar_autorizacao_lider($id_lider, 2);
-					$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+					$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 				}
 			}
 
@@ -886,7 +890,7 @@ class Welcome extends CI_Controller
 					$email = $dados_coordenador['dados']['email'];
 					$cpf = $dados_coordenador['dados']['cpf'];
 					$nome = $dados_coordenador['dados']['nome_coordenador'];
-					$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+					$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
 					$senha = $info_usuario['dados']['senha'];
 					$link = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
 				}
@@ -894,7 +898,7 @@ class Welcome extends CI_Controller
 				$email = $dados_coordenador['dados']['email'];
 				$cpf = $dados_coordenador['dados']['cpf'];
 				$nome = $dados_coordenador['dados']['nome_coordenador'];
-				$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+				$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
 				$senha = $info_usuario['dados']['senha'];
 				$link = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
 			}
@@ -935,11 +939,11 @@ class Welcome extends CI_Controller
 		$email = $info_lider['dados']['email'];
 		$cpf = $info_lider['dados']['cpf'];
 		$nome = $info_lider['dados']['nome_lider'];
-		$info_usuario = $this->FConsultas_model->getUsuario($nome, $email, $cpf);
+		$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
 		$senha = $info_usuario['dados']['senha'];
 
 		$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
-		$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+		$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 
 		if ($mudar) {
 			$this->FAlerta_model->alerta_controle($id_usuario, $id_lider, "autorizou com sucesso seu lider", 'coord_autoriza_lider');
@@ -955,392 +959,6 @@ class Welcome extends CI_Controller
 				newTab.location.href = "https://api.whatsapp.com/send?phone=' . $telefone . '&text=' . $mensagem . '";
 				}, 0);
 			</script>';
-		}
-	}
-
-	public function enviar_email_lider_liberacao_sistema($id_lider, $link): void
-	{
-		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
-		if ($dados_lider['row'] == 0) {
-			// enviar alerta p direção
-		} else {
-			$lider = $dados_lider['dados'];
-			$email = $lider['email'];
-			// Suucesso
-			$assunto = "Bem-Vindo(a) " . $lider['nome_lider'] . " ao nosso sistema de discipulado infantil!";
-
-			$dados = array(
-				'dados_lider' => $lider,
-				'link' => $link,
-			);
-
-			$page = $this->load->view('email/bem-vindo-sistema', $dados, TRUE);
-			//$this->load->view('email/bem-vindo-sistema', $dados);
-
-			$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-			$this->email->subject($assunto);
-			$this->email->to($email);
-			$this->email->message($page);
-
-			if ($this->email->send()) {
-				//echo "\nsucesso";
-			} else {
-				//echo "\nerro\n";
-				//echo $this->email->print_debugger();
-			}
-		}
-	}
-
-	public function enviar_email_coordenador_liberacao_sistema($id_coordenador, $link): void
-	{
-		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
-		if ($dados_coordenador['row'] == 0) {
-			// enviar alerta p direção
-		} else {
-			$coordenador = $dados_coordenador['dados'];
-			$email = $coordenador['email'];
-			// Suucesso
-			$assunto = "Bem-Vindo(a) " . $coordenador['nome_coordenador'] . " ao nosso sistema de discipulado infantil!";
-
-			$dados = array(
-				'dados_coordenador' => $coordenador,
-				'link' => $link,
-			);
-
-			$page = $this->load->view('email/bem-vindo-sistema-coordenador', $dados, TRUE);
-			//$this->load->view('email/bem-vindo-sistema', $dados);
-
-			$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-			$this->email->subject($assunto);
-			$this->email->to($email);
-			$this->email->message($page);
-
-			if ($this->email->send()) {
-				//echo "\nsucesso";
-			} else {
-				//echo "\nerro\n";
-				//echo $this->email->print_debugger();
-			}
-		}
-	}
-
-	public function enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider)
-	{
-		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
-		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
-		$data_hoje = date('d/m/Y');
-
-		if ($dados_lider['row'] == 0) {
-		} else {
-
-			$lider = $dados_lider['dados'];
-			$assunto = "Alerta de novo cadastrado no sistema - $data_hoje";
-
-			if ($dados_coordenador['row'] == 0) {
-				$dados = array(
-					'dados_lider' => $lider,
-					'nome' => 'Micaele Sales Ribeiro',
-					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_coordenador&id_usuario=$id_usuario&id_lider=$id_lider",
-				);
-
-				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
-				//$this->load->view('email/alerta_c-novo-lider', $dados);
-
-				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-				$this->email->subject($assunto);
-				$this->email->to("sales.micaele1911@gmail.com");
-				$this->email->message($page);
-
-				if ($this->email->send()) {
-					//echo "\nsucesso";
-				} else {
-					//echo "\nerro\n";
-					//echo $this->email->print_debugger();
-				}
-			} else {
-				$nome_coordenador = $dados_coordenador['dados']['nome_coordenador'];
-				$email = $dados_coordenador['dados']['email'];
-				// Suucesso
-
-				$dados = array(
-					'dados_lider' => $lider,
-					'nome' => $nome_coordenador,
-					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_coordenador&id_usuario=$id_usuario&id_lider=$id_lider",
-				);
-
-				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
-				//$this->load->view('email/alerta_c-novo-lider', $dados);
-
-				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-				$this->email->subject($assunto);
-				$this->email->to($email);
-				$this->email->message($page);
-
-				if ($this->email->send()) {
-					//echo "\nsucesso";
-				} else {
-					//echo "\nerro\n";
-					//echo $this->email->print_debugger();
-				}
-			}
-		}
-	}
-
-	public function enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider)
-	{
-		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
-		$dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '', '');
-		$data_hoje = date('d/m/Y');
-
-		if ($dados_lider['row'] == 0) {
-		} else {
-
-			$lider = $dados_lider['dados'];
-			$assunto = "Alerta de novo cadastrado no sistema - $data_hoje";
-
-			if ($dados_supervisor['row'] == 0) {
-				$dados = array(
-					'dados_lider' => $lider,
-					'nome' => 'Micaele Sales Ribeiro',
-					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_supervisor&id_usuario=$id_usuario&id_lider=$id_lider",
-				);
-
-				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
-				//$this->load->view('email/alerta_c-novo-lider', $dados);
-
-				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-				$this->email->subject($assunto);
-				$this->email->to("sales.micaele1911@gmail.com");
-				$this->email->message($page);
-
-				if ($this->email->send()) {
-					//echo "\nsucesso";
-				} else {
-					//echo "\nerro\n";
-					//echo $this->email->print_debugger();
-				}
-			} else {
-				$nome_coordenador = $dados_supervisor['dados']['nome_supervisorR'];
-				$email = $dados_supervisor['dados']['email'];
-				// Suucesso
-
-				$dados = array(
-					'dados_lider' => $lider,
-					'nome' => $nome_coordenador,
-					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_supervisor&id_usuario=$id_usuario&id_lider=$id_lider",
-				);
-
-				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
-				//$this->load->view('email/alerta_c-novo-lider', $dados);
-
-				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-				$this->email->subject($assunto);
-				$this->email->to($email);
-				$this->email->message($page);
-
-				if ($this->email->send()) {
-					//echo "\nsucesso";
-				} else {
-					//echo "\nerro\n";
-					//echo $this->email->print_debugger();
-				}
-			}
-		}
-	}
-
-	public function enviarEmailDevocionalDiario()
-
-	{
-		$todosPais = $this->FConsultas_model->mostrarTodosLideres();
-
-		$dataHj = date('m/d/Y');
-
-		$hora = date('H');
-
-		if ($hora >= 7 && $hora <= 21) {
-			$controller = 0;
-			foreach ($todosPais as $key => $pais) {
-
-				$id = $pais['id'];
-				$email = $pais['email'];
-				$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
-
-				if ($controller < 10) {
-					foreach ($todosPG['dados'] as $key => $pg) {
-
-						$idPg = $pg['id_pg'];
-
-						$checks = $pg['autorizacao'];
-						$ativoPG = $pg['ativo'];
-						$nivelPg = $pg['nivel'];
-
-						$anoPg = $pg['ano'];
-						$modulo = $pg['modulo_devocional'];
-						$licao = $pg['licao_devocional'];
-						$diaComecou = $pg['data_semana'];
-
-						if ($checks == 0 || $ativoPG == 0 || $diaComecou == '' || $nivelPg == 2) {
-						} else {
-
-							$dia = $diaComecou[0] . $diaComecou[1];
-							$mes = $diaComecou[3] . $diaComecou[4];
-							$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
-							$data_trocada = $mes . "/" . $dia . "/" . $ano;
-
-							$dia1 = date('m/d/Y', strtotime('+1 day', strtotime($data_trocada)));
-							$dia2 = date('m/d/Y', strtotime('+2 day', strtotime($data_trocada)));
-							$dia3 = date('m/d/Y', strtotime('+3 day', strtotime($data_trocada)));
-							$dia4 = date('m/d/Y', strtotime('+4 day', strtotime($data_trocada)));
-							$dia5 = date('m/d/Y', strtotime('+5 day', strtotime($data_trocada)));
-							$dia6 = date('m/d/Y', strtotime('+6 day', strtotime($data_trocada)));
-
-							$check_day_1 = strtotime($dia1) == strtotime($dataHj) ? true : false;
-							$check_day_2 = strtotime($dia2) == strtotime($dataHj) ? true : false;
-							$check_day_3 = strtotime($dia3) == strtotime($dataHj) ? true : false;
-							$check_day_4 = strtotime($dia4) == strtotime($dataHj) ? true : false;
-							$check_day_5 = strtotime($dia5) == strtotime($dataHj) ? true : false;
-							$check_day_6 = strtotime($dia6) == strtotime($dataHj) ? true : false;
-
-							if ($check_day_1) {
-								$diaDevocional = 1;
-							} else if ($check_day_2) {
-								$diaDevocional = 2;
-							} else if ($check_day_3) {
-								$diaDevocional = 3;
-							} else if ($check_day_4) {
-								$diaDevocional = 4;
-							} else if ($check_day_5) {
-								$diaDevocional = 5;
-							} else if ($check_day_6) {
-								$diaDevocional = 6;
-							}
-
-							if (strtotime($data_trocada) == strtotime($dataHj)) {
-							} else {
-								$check = $this->FConsultas_model->checkControler($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional);
-
-								if ($check == 0) {
-									$dadosDevocionais = $this->FConsultas_model->consultarDevocionalModuloLicaoDia($anoPg, $modulo, $licao, $diaDevocional);
-									if ($dadosDevocionais) {
-
-										// Suucesso
-										$assunto = "Devocional Dia " . $dadosDevocionais['dia'] . " - " . $dadosDevocionais['titulo'];
-
-										$dados = array(
-											'devocionais' => $dadosDevocionais,
-											'nome' => $pais['nome'],
-										);
-
-										$page = $this->load->view('sistema/pais/partes/corpo-mensagem-devocional', $dados, TRUE);
-										$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
-										$this->email->subject($assunto);
-										$this->email->to($email);
-										$this->email->message($page);
-										$this->email->attach($dadosDevocionais['file'] ?? "");
-										if ($this->email->send()) {
-											$controller = $controller + 1;
-											$this->FSistema_model->controlerDevocionais($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional, 1);
-										} else {
-										}
-									} else {
-									}
-								} else {
-									// enviar um email de erro p administração, com os dados p reenviar
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	public function atualizarProgressoDevocional()
-	{
-		$todosPais = $this->FConsultas_model->mostrarTodosLideres();
-
-		$dataHj = date('m/d/Y');
-
-		foreach ($todosPais as $key => $pais) {
-			$id = $pais['id'];
-
-			$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
-
-			if ($todosPG['row'] == 0) {
-			} else {
-				foreach ($todosPG['dados'] as $key => $pg) {
-
-					$id_pg = $pg['id_pg'];
-					$data_inicio = $pg['data_inicio'];
-					$diaComecou = $pg['data_semana'];
-					$modulo = $pg['modulo_devocional'];
-					$licao = $pg['licao_devocional'];
-
-					$n_modulo = $modulo + 1;
-
-					$consultaMO = $this->FConsultas_model->consultarModuloId($modulo);
-
-					if ($data_inicio == '' or $diaComecou == '') {
-					} else {
-						$dia = $diaComecou[0] . $diaComecou[1];
-						$mes = $diaComecou[3] . $diaComecou[4];
-						$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
-						$data_trocada = $mes . "/" . $dia . "/" . $ano;
-
-						$data_troca = date('m/d/Y', strtotime('+7 day', strtotime($data_trocada)));
-						$data_envio = date('d/m/Y', strtotime('+7 day', strtotime($data_trocada)));
-
-						if (strtotime($dataHj) == strtotime($data_troca)) {
-
-							$licao_nova = $licao + 1;
-
-							$moduloNovo = $licao == $consultaMO['n_licao'] ? $n_modulo : $modulo;
-
-							$licaoNova = $licao == $consultaMO['n_licao'] ? 1 : $licao_nova;
-
-							$anoNovo = ($moduloNovo == 11 ? 3 : ($moduloNovo == 6 ? 2 : 1));
-
-							$this->FSistema_model->editarPGProgressoData($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio, 1);
-						} else {
-						}
-					}
-				}
-			}
-		}
-	}
-	public function atualizarModuloMensal()
-	{
-		$todosPais = $this->FConsultas_model->mostrarTodosLideres();
-
-		$dataHj = date('m/d/Y');
-
-		foreach ($todosPais as $key => $pais) {
-			$id = $pais['id'];
-
-			$todosPG = $this->FConsultas_model->mostrarPG($id, 1);
-
-			if ($todosPG['row'] == 0) {
-			} else {
-				foreach ($todosPG['dados'] as $key => $pg) {
-
-					$id_pg = $pg['id_pg'];
-
-					$id_modulo_1 = $pg['id_modulo'];
-					$id_modulo_2 = $pg['modulo_devocional'];
-
-					$data_fim = $pg['data_previsao_termino'];
-
-					if ($data_fim == '') {
-					} else {
-						if ($id_modulo_1 != $id_modulo_2) {
-							if (strtotime($data_fim) >= strtotime($dataHj)) {
-								$this->FSistema_model->editarAtivo($id_pg, $id, 1);
-							} else {
-							}
-						} else {
-						}
-					}
-				}
-			}
 		}
 	}
 
@@ -2179,23 +1797,6 @@ class Welcome extends CI_Controller
 		$pdf->Output('I', $pdf->textoUTF8($nomeCertificado));
 	}
 
-	public function get_informacoes_pg()
-	{
-
-		$id_usuario = $this->input->get('id_usuario');
-		$nivel = $this->input->get('nivel');
-
-		$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, $nivel);
-
-		$dados = array();
-
-		foreach ($consultarPG['dados'] as $key => $pg) {
-			$dados[] = $pg['id_pg'];
-		}
-
-		echo $dados;
-	}
-
 	// ok
 	public function cadastro_pg_inicial_pular()
 	{
@@ -2389,23 +1990,6 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red');
 		$data = [];
-
-		/*$nivel_routa = $this->input->post("nivel_routa") ?? 'lider';
-		$id_coord = $this->input->post("id_coord");
-
-		$routa = "";
-
-		if ($red == 'page_pg_individual') {
-			$routa = "pg";
-		} /*else if ($red == 'lideres/detalhes') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "lideres/detalhes/$idLider";
-		}  else {
-			$routa = "pg";
-		}*/
 
 		if ($excluir) {
 			$this->FConsultas_model->mensagem('success', 'Sucesso!', ["PG Excluido Permanentemente!"]);
@@ -2645,91 +2229,9 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red');
 		$data = [];
 
-		/*$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
-		$id_coord = $this->input->post('id_coord');
-
-		$routa = "";
-		if ($red == 'coordenador') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "coordenador/page/lideres/detalhes/$id_lider";
-		} else if ($red == 'slocal') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "slocal/page/lideres/detalhes/$id_lider";
-		} else if ($red == 'slocal/coord') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "slocal/page/coordenadores/detalhes/$id_lider";
-		} else if ($red == 'sregional') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "sregional/page/lideres/detalhes/$id_lider";
-		} else {
-			$data = [
-				"<input type='hidden' name='id_lider' value='$id_lider'>",
-			];
-			$routa = "lideres/detalhes/$id_lider";
-		}*/
-
 		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
 
 		$funcao = $this->FConsultas_model->red("$red", 3000, $data);
-		echo $funcao;
-	}
-
-	public function enviando_alerta_troca_de_lider_pg()
-	{
-		$id_usuario = $this->input->post('id_usuario');
-		$id_lider = $this->input->post('id_lider');
-		$id_pg = $this->input->post('id_pg');
-		$id_lider_troca = $this->input->post('id_lider_troca');
-
-		$dados = $this->FConsultas_model->getNomeUserId($id_usuario);
-
-		$nome = $dados['nome'];
-
-		$motivo = "O $nome pediu a solicitação de troca de líderes entre o PG ($id_pg) (id líder 1: $id_lider para $id_lider_troca";
-		$acao = "SOLICITACAO_TROCA_LIDER_PG";
-
-		$this->FAlerta_model->alerta_controle($id_usuario, $id_usuario, $motivo, $acao);
-
-		$red = $this->input->post('red') ?? 'coordenador';
-
-		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
-		$id_coord = $this->input->post('id_coord');
-
-		$routa = "";
-		if ($red == 'coordenador') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "coordenador/page/lideres/detalhes/$id_lider";
-		} else if ($red == 'slocal') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_coord'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "slocal/page/lideres/detalhes/$id_lider";
-		} else {
-			$data = [
-				"<input type='hidden' name='id_lider' value='$id_lider'>",
-			];
-			$routa = "coordenador/page/lideres/detalhes/$id_lider";
-		}
-
-		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
-
-		$funcao = $this->FConsultas_model->red("../../$routa", 3000, $data);
 		echo $funcao;
 	}
 
@@ -2786,6 +2288,7 @@ class Welcome extends CI_Controller
 		echo $funcao;
 	}
 
+	// ok
 	public function _trocar_lideranca($id_usuario, $id_lider, $id_lider_novo, $id_pg)
 	{
 		// trocar PG
@@ -2800,9 +2303,10 @@ class Welcome extends CI_Controller
 		$this->FAlerta_model->alerta_controle($id_usuario, 6003, $motivo, "TROCAR_LIDERANCA_DE_PG");
 	}
 
+	// ok
 	public function gerar_pontuacao($id_lider, $id_pg)
 	{
-		$dados_pg = $this->FConsultas_model->mostrarPGId($id_lider, $id_pg);
+		$dados_pg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
 
 		$ano = $dados_pg['id'];
 
@@ -3026,732 +2530,8 @@ class Welcome extends CI_Controller
 		}
 	}
 
-	public function mostrar_table_parte_1()
-	{
-		$id_user = $this->input->get("id_user");
-		$opc1 = $this->input->get("opc1");
-		$opc2 = $this->input->get("opc2");
-
-		$dataInicio = $this->input->get("dataInicio");
-		$dataFim = $this->input->get("dataAte");
-
-		$nivel = $this->input->get("nivel") ?? "lideres";
-		$check_is_coord_query = $this->input->get("check_is_coord_query") ?? false;
-
-		$dados = $this->consultasBD($id_user, $opc1, $opc2, '', $dataInicio, $dataFim, $nivel, $check_is_coord_query);
-		$dados_new = [];
-
-		if ($nivel == 'direcao') {
-			$array = array(
-				'id_user' => $id_user,
-				'dados_sregional' => $dados['dados_sregional']['row'],
-				'dados_sregional_ativos' => $dados['dados_sregional_ativos']['row'],
-				'dados_slocal_gerais' => $dados['dados_slocal_gerais']['row'],
-				'dados_slocal_ativos' => $dados['dados_slocal_ativos']['row'],
-				'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
-				'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
-				'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
-				'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
-				'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
-				'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $dados['comparacao'],
-				'comparacao_ativos' => $dados['comparacao_ativos'],
-			);
-			$dados_new = $array;
-			$this->load->view('sistema/direcao/pages/equipe/mostrar_tabela_equipe_1', $dados_new);
-		} else if ($nivel == 'direcao/sregional') {
-			$array = array(
-				'id_user' => $id_user,
-				'dados_slocal_gerais' => $dados['dados_slocal_gerais']['row'],
-				'dados_slocal_ativos' => $dados['dados_slocal_ativos']['row'],
-				'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
-				'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
-				'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
-				'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
-				'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
-				'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $dados['comparacao'],
-				'comparacao_ativos' => $dados['comparacao_ativos'],
-			);
-			$dados_new = $array;
-			$this->load->view('sistema/direcao/pages/sregional/mostrar_tabela_sregional_1', $dados_new);
-		} else if ($nivel == 'direcao/slocal-tudo') {
-			$array = array(
-				'id_user' => $id_user,
-				'dados_slocal_gerais' => $dados['dados_slocal_gerais']['row'],
-				'dados_slocal_ativos' => $dados['dados_slocal_ativos']['row'],
-				'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
-				'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
-				'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
-				'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
-				'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
-				'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $dados['comparacao'],
-				'comparacao_ativos' => $dados['comparacao_ativos'],
-			);
-			$dados_new = $array;
-			$this->load->view('sistema/direcao/pages/slocal/mostrar_tabela_slocal_1', $dados_new);
-		} else if ($nivel == 'direcao/coordenador' || $nivel == 'slocal/coordenador') {
-			$array = array(
-				'id_user' => $id_user,
-				'dados_coordenadores_gerais' => $dados['dados_coordenadores_gerais']['row'],
-				'dados_coordenadores_ativos' => $dados['dados_coordenadores_ativos']['row'],
-				'dados_lideres_gerais' => $dados['dados_lideres_gerais']['row'],
-				'dados_lideres_ativos' => $dados['dados_lideres_ativos']['row'],
-				'dados_criancas_gerais' => $dados['dados_criancas_gerais'],
-				'dados_criancas_ativos' => $dados['dados_criancas_ativos'],
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $dados['comparacao'],
-				'comparacao_ativos' => $dados['comparacao_ativos'],
-			);
-			$dados_new = $array;
-			$this->load->view('sistema/direcao/pages/coordenadores/mostrar_tabela_coord_1', $dados_new);
-		}
-	}
-
-	public function mostrar_table_parte_2()
-	{
-		$id_user = $this->input->get("id_user");
-		$opc1 = $this->input->get("opc1");
-		$opc2 = $this->input->get("opc2");
-		$opc3 = $this->input->get("opc3");
-
-		//echo 'OPC 1 - ' . $opc1 . ' OPC 2 - ' . $opc2;
-
-		$dataInicio = $this->input->get("dataInicio");
-		$dataFim = $this->input->get("dataAte");
-
-		$nivel = $this->input->get("nivel") ?? "lideres";
-		$check_is_coord_query = $this->input->get("check_is_coord_query") ?? false;
-
-		$dados = $this->consultasBD($id_user, $opc1, $opc2, $opc3, $dataInicio, $dataFim, $nivel, $check_is_coord_query);
-
-		$dados_new = array(
-			'id_user' => $id_user,
-			'lista' => $dados['lista'],
-			'opc1' => $opc1,
-			'opc2' => $opc2,
-			'dataInicio' => $dataInicio,
-			'dataFim' => $dataFim,
-		);
-
-		if ($nivel == 'direcao') {
-			$this->load->view('sistema/direcao/pages/equipe/mostrar_tabela_equipe_2', $dados_new);
-		} else if ($nivel == 'direcao/sregional') {
-			$this->load->view('sistema/direcao/pages/sregional/mostrar_tabela_sregional_2', $dados_new);
-		} else if ($nivel == 'direcao/slocal-tudo') {
-			$this->load->view('sistema/direcao/pages/slocal/mostrar_tabela_slocal_2', $dados_new);
-		} else if ($nivel == 'direcao/coordenador' || $nivel == 'slocal/coordenador') {
-			$this->load->view('sistema/direcao/pages/coordenadores/mostrar_tabela_coordenador_2', $dados_new);
-		}
-	}
-
-	public function consultasBD($id_user, $opc1, $opc2, $opc3, $dataInicio, $dataFim, $nivel, $check_is_coord_query)
-	{
-
-		$datas = $this->FSistema_model->format_dates($opc1, $opc2, $dataInicio, $dataFim);
-
-		//echo "NIVEL - " . $nivel . " OPC 1 - " . $opc1 . " OPC 2 - " . $opc2 . " OPC 3 - " . $opc3;
-		/*if ($nivel == 'lideres') {
-
-			$consultarLideres = $this->FConsultas_model->getLideres([$id_user], $opc1, $opc2, $datas);
-			$consultarLideresAtivos = $this->FConsultas_model->lideresAtivos($consultarLideres);
-
-			$total_criancas_geral = $this->FConsultas_model->getNumerosCriancas([$id_user], $consultarLideres, 'criancas_coord_1');
-			$total_criancas_ativos = $this->FConsultas_model->getNumerosCriancas([$id_user], $consultarLideresAtivos, 'criancas_coord_1');
-
-			if ($opc3 == 'lideres_ativos') {
-				$dados = array(
-					'id_user' => $id_user,
-					'dados_lideres_gerais' => $consultarLideresAtivos,
-					'dados_lideres_ativos' => $consultarLideresAtivos,
-					'dados_criancas_gerais' => $total_criancas_geral,
-					'dados_criancas_ativos' => $total_criancas_ativos,
-					'mostrar_comparacao' => $opc2,
-					'check_is_coord_query' => $check_is_coord_query,
-				);
-
-				return $dados;
-			} else {
-				$dados = array(
-					'id_user' => $id_user,
-					'dados_lideres_gerais' => $consultarLideres,
-					'dados_lideres_ativos' => $consultarLideresAtivos,
-					'dados_criancas_gerais' => $total_criancas_geral,
-					'dados_criancas_ativos' => $total_criancas_ativos,
-					'mostrar_comparacao' => $opc2,
-					'check_is_coord_query' => $check_is_coord_query,
-				);
-
-				return $dados;
-			}
-		} else if ($nivel == 'coordenadores') {
-
-			$consultarCoordenadores = $this->FConsultas_model->getCoordenador([$id_user], $opc1, $opc2, $datas);
-			$consultarCoordenadoresAtivos = $this->FConsultas_model->coordenadoresAtivos($consultarCoordenadores);
-
-			$consultarLideres = $consultarCoordenadores['lideres'];
-			$consultarLideresAtivos = $consultarCoordenadores['lideres_ativos'];
-
-			$total_criancas_geral = $this->FConsultas_model->getNumerosCriancas([$id_user], $consultarLideres, 'criancas_coord_1');
-			$total_criancas_ativos = $this->FConsultas_model->getNumerosCriancas([$id_user], $consultarLideresAtivos, 'criancas_coord_1');
-
-			if ($opc3 == 'coordenadores_ativos') {
-				$dados = array(
-					'id_user' => $id_user,
-					'dados_coordenadores_gerais' => $consultarCoordenadores,
-					'dados_coordenadores_ativos' => $consultarCoordenadoresAtivos,
-					'dados_lideres_gerais' => $consultarLideresAtivos,
-					'dados_lideres_ativos' => $consultarLideresAtivos,
-					'dados_criancas_gerais' => $total_criancas_geral,
-					'dados_criancas_ativos' => $total_criancas_ativos,
-					'mostrar_comparacao' => $opc2,
-					'check_is_coord_query' => $check_is_coord_query,
-				);
-
-				return $dados;
-			} else {
-				$dados = array(
-					'id_user' => $id_user,
-					'dados_coordenadores_gerais' => $consultarCoordenadores,
-					'dados_coordenadores_ativos' => $consultarCoordenadoresAtivos,
-					'dados_lideres_gerais' => $consultarLideres,
-					'dados_lideres_ativos' => $consultarLideresAtivos,
-					'dados_criancas_gerais' => $total_criancas_geral,
-					'dados_criancas_ativos' => $total_criancas_ativos,
-					'mostrar_comparacao' => $opc2,
-					'check_is_coord_query' => $check_is_coord_query,
-				);
-
-				return $dados;
-			}
-		} else */
-		if ($nivel == 'direcao') {
-			$dados_sregional = $this->FConsultas_model->getSRegional(['direcao'], $opc1, $opc2, $datas);
-
-			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao'], $opc1, $opc2, $datas);
-			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao'], $opc1, $opc2, $datas);
-			$dados_lideres = $this->FConsultas_model->getLideres(['direcao'], $opc1, $opc2, $datas);
-			$total_criancas_lider = $dados_lideres[1];
-			$total_criancas_lider_ativos = $dados_lideres[2];
-
-			$comparacao = [];
-			$comparacao_ativos = [];
-
-			// criando a comparação
-			if ($opc2 == 'sim') {
-				$comparacao_sregional = $dados_sregional[1];
-				$comparacao_sregional_ativos = $dados_sregional[2];
-
-				array_push($comparacao, $comparacao_sregional);
-				array_push($comparacao_ativos, $comparacao_sregional_ativos);
-
-				$comparacao_slocal = $dados_slocal[1];
-				$comparacao_slocal_ativos = $dados_slocal[2];
-
-				array_push($comparacao, $comparacao_slocal);
-				array_push($comparacao_ativos, $comparacao_slocal_ativos);
-
-				$comparacao_coordenadores = $dados_coordenadores[1];
-				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
-
-				array_push($comparacao, $comparacao_coordenadores);
-				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
-
-				$comparacao_lideres = $dados_lideres[3];
-				$comparacao_lideres_ativos = $dados_lideres[4];
-
-				array_push($comparacao, $comparacao_lideres);
-				array_push($comparacao_ativos, $comparacao_lideres_ativos);
-
-				$total_criancas_lider_comparacao = $dados_lideres[5];
-				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
-
-				$lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_supervisorEs', $comparacao_sregional['dados']);
-				$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal['dados']);
-				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
-
-				$id_gerais_comparacao = array_merge($lista_de_id_1, $lista_de_id_2, $lista_de_id_3);
-
-				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
-
-				array_push($comparacao, $total_criancas_geral_comparacao);
-
-				$lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_supervisorEs', $comparacao_sregional_ativos['dados']);
-				$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal_ativos['dados']);
-				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
-
-				$id_ativos_comparacao = array_merge($lista_de_id_1_ativos, $lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
-
-				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
-			}
-
-			$lista = $opc3 == 'sregionais_ativos' ? $dados_sregional[0]['dados'] : $dados_sregional['dados'];
-			$dados_mostrar = $opc3 == 'sregionais_ativos' ? $dados_sregional[0] : $dados_sregional;
-
-			$lista_de_id_1 = $this->FSistema_model->retornando_so_id('id_supervisorEs', $dados_sregional['dados']);
-			$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal['dados']);
-			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
-
-			$id_gerais = array_merge($lista_de_id_1, $lista_de_id_2, $lista_de_id_3);
-
-			$total_criancas_geral = $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
-
-			$lista_de_id_1_ativos = $this->FSistema_model->retornando_so_id('id_supervisorEs', $dados_sregional[0]['dados']);
-			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
-			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
-
-			$id_ativos = array_merge($lista_de_id_1_ativos, $lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-			$total_criancas_geral_ativos = $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
-
-			$dados = array(
-				'id_user' => $id_user,
-				'lista' => $lista,
-				'dados_sregional' => $dados_mostrar,
-				'dados_sregional_ativos' => $dados_sregional[0],
-				'dados_slocal_gerais' => $dados_slocal,
-				'dados_slocal_ativos' => $dados_slocal[0],
-				'dados_coordenadores_gerais' => $dados_coordenadores,
-				'dados_coordenadores_ativos' => $dados_coordenadores[0],
-				'dados_lideres_gerais' => $dados_lideres,
-				'dados_lideres_ativos' => $dados_lideres[0],
-				'dados_criancas_gerais' => $total_criancas_geral,
-				'dados_criancas_ativos' => $total_criancas_geral_ativos,
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $comparacao,
-				'comparacao_ativos' => $comparacao_ativos,
-			);
-			return $dados;
-		} else if ($nivel == 'direcao/sregional') {
-			$dados_slocal = $this->FConsultas_model->getSLocal(['', '', $id_user], $opc1, $opc2, $datas);
-			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['sregional', '', $id_user], $opc1, $opc2, $datas);
-			$dados_lideres = $this->FConsultas_model->getLideres(['sregional', '', $id_user], $opc1, $opc2, $datas);
-			$total_criancas_lider = $dados_lideres[1];
-			$total_criancas_lider_ativos = $dados_lideres[2];
-
-			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user);
-
-			$comparacao = [];
-			$comparacao_ativos = [];
-
-			// criando a comparação
-			if ($opc2 == 'sim') {
-				$comparacao_slocal = $dados_slocal[1];
-				$comparacao_slocal_ativos = $dados_slocal[2];
-
-				array_push($comparacao, $comparacao_slocal);
-				array_push($comparacao_ativos, $comparacao_slocal_ativos);
-
-				$comparacao_coordenadores = $dados_coordenadores[1];
-				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
-
-				array_push($comparacao, $comparacao_coordenadores);
-				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
-
-				$comparacao_lideres = $dados_lideres[3];
-				$comparacao_lideres_ativos = $dados_lideres[4];
-
-				array_push($comparacao, $comparacao_lideres);
-				array_push($comparacao_ativos, $comparacao_lideres_ativos);
-
-				$total_criancas_lider_comparacao = $dados_lideres[5];
-				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
-
-				$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal['dados']);
-				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
-
-				$id_gerais_comparacao = array_merge($lista_de_id_2, $lista_de_id_3);
-
-				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
-
-				array_push($comparacao, $total_criancas_geral_comparacao);
-
-				$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal_ativos['dados']);
-				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
-
-				$id_ativos_comparacao = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
-
-				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
-			}
-
-			$lista = $opc3 == 'sregionais_ativos' ? $dados_slocal[0]['dados'] : $dados_slocal['dados'];
-			$dados_mostrar = $opc3 == 'sregionais_ativos' ? $dados_slocal[0] : $dados_slocal;
-
-			$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal['dados']);
-			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
-
-			$id_gerais = array_merge($lista_de_id_2, $lista_de_id_3);
-
-			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
-
-			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
-			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
-
-			$id_ativos = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
-
-			$dados = array(
-				'id_user' => $id_user,
-				'lista' => $lista,
-				'dados_slocal_gerais' => $dados_mostrar,
-				'dados_slocal_ativos' => $dados_slocal[0],
-				'dados_coordenadores_gerais' => $dados_coordenadores,
-				'dados_coordenadores_ativos' => $dados_coordenadores[0],
-				'dados_lideres_gerais' => $dados_lideres,
-				'dados_lideres_ativos' => $dados_lideres[0],
-				'dados_criancas_gerais' => $total_criancas_geral,
-				'dados_criancas_ativos' => $total_criancas_geral_ativos,
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $comparacao,
-				'comparacao_ativos' => $comparacao_ativos,
-			);
-			return $dados;
-		} else if ($nivel == 'direcao/slocal-tudo') {
-			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$dados_lideres = $this->FConsultas_model->getLideres(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$total_criancas_lider = $dados_lideres[1];
-			$total_criancas_lider_ativos = $dados_lideres[2];
-
-			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user);
-
-			$comparacao = [];
-			$comparacao_ativos = [];
-
-			// criando a comparação
-			if ($opc2 == 'sim') {
-				$comparacao_slocal = $dados_slocal[1];
-				$comparacao_slocal_ativos = $dados_slocal[2];
-
-				array_push($comparacao, $comparacao_slocal);
-				array_push($comparacao_ativos, $comparacao_slocal_ativos);
-
-				$comparacao_coordenadores = $dados_coordenadores[1];
-				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
-
-				array_push($comparacao, $comparacao_coordenadores);
-				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
-
-				$comparacao_lideres = $dados_lideres[3];
-				$comparacao_lideres_ativos = $dados_lideres[4];
-
-				array_push($comparacao, $comparacao_lideres);
-				array_push($comparacao_ativos, $comparacao_lideres_ativos);
-
-				$total_criancas_lider_comparacao = $dados_lideres[5];
-				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
-
-				$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal['dados']);
-				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
-
-				$id_gerais_comparacao = array_merge($lista_de_id_2, $lista_de_id_3);
-
-				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
-
-				array_push($comparacao, $total_criancas_geral_comparacao);
-
-				$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal_ativos['dados']);
-				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
-
-				$id_ativos_comparacao = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
-
-				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
-			}
-
-			$lista = $opc3 == 'sregionais_ativos' ? $dados_slocal[0]['dados'] : $dados_slocal['dados'];
-			$dados_mostrar = $opc3 == 'sregionais_ativos' ? $dados_slocal[0] : $dados_slocal;
-
-			$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal['dados']);
-			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
-
-			$id_gerais = array_merge($lista_de_id_2, $lista_de_id_3);
-
-			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
-
-			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
-			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
-
-			$id_ativos = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
-
-			$dados = array(
-				'id_user' => $id_user,
-				'lista' => $lista,
-				'dados_slocal_gerais' => $dados_mostrar,
-				'dados_slocal_ativos' => $dados_slocal[0],
-				'dados_coordenadores_gerais' => $dados_coordenadores,
-				'dados_coordenadores_ativos' => $dados_coordenadores[0],
-				'dados_lideres_gerais' => $dados_lideres,
-				'dados_lideres_ativos' => $dados_lideres[0],
-				'dados_criancas_gerais' => $total_criancas_geral,
-				'dados_criancas_ativos' => $total_criancas_geral_ativos,
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $comparacao,
-				'comparacao_ativos' => $comparacao_ativos,
-			);
-			return $dados;
-		} else if ($nivel == 'direcao/slocal-tudo') {
-			$dados_slocal = $this->FConsultas_model->getSLocal(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$dados_lideres = $this->FConsultas_model->getLideres(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$total_criancas_lider = $dados_lideres[1];
-			$total_criancas_lider_ativos = $dados_lideres[2];
-
-			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user);
-
-			$comparacao = [];
-			$comparacao_ativos = [];
-
-			// criando a comparação
-			if ($opc2 == 'sim') {
-				$comparacao_slocal = $dados_slocal[1];
-				$comparacao_slocal_ativos = $dados_slocal[2];
-
-				array_push($comparacao, $comparacao_slocal);
-				array_push($comparacao_ativos, $comparacao_slocal_ativos);
-
-				$comparacao_coordenadores = $dados_coordenadores[1];
-				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
-
-				array_push($comparacao, $comparacao_coordenadores);
-				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
-
-				$comparacao_lideres = $dados_lideres[3];
-				$comparacao_lideres_ativos = $dados_lideres[4];
-
-				array_push($comparacao, $comparacao_lideres);
-				array_push($comparacao_ativos, $comparacao_lideres_ativos);
-
-				$total_criancas_lider_comparacao = $dados_lideres[5];
-				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
-
-				$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal['dados']);
-				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
-
-				$id_gerais_comparacao = array_merge($lista_de_id_2, $lista_de_id_3);
-
-				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
-
-				array_push($comparacao, $total_criancas_geral_comparacao);
-
-				$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $comparacao_slocal_ativos['dados']);
-				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
-
-				$id_ativos_comparacao = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
-
-				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
-			}
-
-			$lista = $opc3 == 'sregionais_ativos' ? $dados_slocal[0]['dados'] : $dados_slocal['dados'];
-			$dados_mostrar = $opc3 == 'sregionais_ativos' ? $dados_slocal[0] : $dados_slocal;
-
-			$lista_de_id_2 = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal['dados']);
-			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
-
-			$id_gerais = array_merge($lista_de_id_2, $lista_de_id_3);
-
-			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
-
-			$lista_de_id_2_ativos = $this->FSistema_model->retornando_so_id('id_supervisorR', $dados_slocal[0]['dados']);
-			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
-
-			$id_ativos = array_merge($lista_de_id_2_ativos, $lista_de_id_3_ativos);
-
-			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
-
-			$dados = array(
-				'id_user' => $id_user,
-				'lista' => $lista,
-				'dados_slocal_gerais' => $dados_mostrar,
-				'dados_slocal_ativos' => $dados_slocal[0],
-				'dados_coordenadores_gerais' => $dados_coordenadores,
-				'dados_coordenadores_ativos' => $dados_coordenadores[0],
-				'dados_lideres_gerais' => $dados_lideres,
-				'dados_lideres_ativos' => $dados_lideres[0],
-				'dados_criancas_gerais' => $total_criancas_geral,
-				'dados_criancas_ativos' => $total_criancas_geral_ativos,
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $comparacao,
-				'comparacao_ativos' => $comparacao_ativos,
-			);
-			return $dados;
-		} else if ($nivel == 'direcao/coordenador') {
-			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$dados_lideres = $this->FConsultas_model->getLideres(['direcao', '', $id_user], $opc1, $opc2, $datas);
-			$total_criancas_lider = $dados_lideres[1];
-			$total_criancas_lider_ativos = $dados_lideres[2];
-
-			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user);
-
-			$comparacao = [];
-			$comparacao_ativos = [];
-
-			// criando a comparação
-			if ($opc2 == 'sim') {
-				$comparacao_coordenadores = $dados_coordenadores[1];
-				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
-
-				array_push($comparacao, $comparacao_coordenadores);
-				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
-
-				$comparacao_lideres = $dados_lideres[3];
-				$comparacao_lideres_ativos = $dados_lideres[4];
-
-				array_push($comparacao, $comparacao_lideres);
-				array_push($comparacao_ativos, $comparacao_lideres_ativos);
-
-				$total_criancas_lider_comparacao = $dados_lideres[5];
-				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
-
-				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
-
-				$id_gerais_comparacao = $lista_de_id_3;
-
-				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
-
-				array_push($comparacao, $total_criancas_geral_comparacao);
-
-				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
-
-				$id_ativos_comparacao =  $lista_de_id_3_ativos;
-
-				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
-
-				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
-			}
-
-			$lista = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0]['dados'] : $dados_coordenadores['dados'];
-			$dados_mostrar = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0] : $dados_coordenadores;
-
-			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
-
-			$id_gerais =  $lista_de_id_3;
-
-			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
-
-			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
-
-			$id_ativos = $lista_de_id_3_ativos;
-
-			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
-
-			$dados = array(
-				'id_user' => $id_user,
-				'lista' => $lista,
-				'dados_coordenadores_gerais' => $dados_coordenadores,
-				'dados_coordenadores_ativos' => $dados_coordenadores[0],
-				'dados_lideres_gerais' => $dados_lideres,
-				'dados_lideres_ativos' => $dados_lideres[0],
-				'dados_criancas_gerais' => $total_criancas_geral,
-				'dados_criancas_ativos' => $total_criancas_geral_ativos,
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $comparacao,
-				'comparacao_ativos' => $comparacao_ativos,
-			);
-			return $dados;
-		} else if ($nivel == 'slocal/coordenador') {
-			$dados_coordenadores = $this->FConsultas_model->getCoordenador(['slocal', '', $id_user], $opc1, $opc2, $datas);
-			$dados_lideres = $this->FConsultas_model->getLideres(['slocal', '', $id_user], $opc1, $opc2, $datas);
-			$total_criancas_lider = $dados_lideres[1];
-			$total_criancas_lider_ativos = $dados_lideres[2];
-
-			$suas_criancas = $this->FConsultas_model->mostrarCriancasPais($id_user);
-
-			$comparacao = [];
-			$comparacao_ativos = [];
-
-			// criando a comparação
-			if ($opc2 == 'sim') {
-				$comparacao_coordenadores = $dados_coordenadores[1];
-				$comparacao_coordenadores_ativos = $dados_coordenadores[2];
-
-				array_push($comparacao, $comparacao_coordenadores);
-				array_push($comparacao_ativos, $comparacao_coordenadores_ativos);
-
-				$comparacao_lideres = $dados_lideres[3];
-				$comparacao_lideres_ativos = $dados_lideres[4];
-
-				array_push($comparacao, $comparacao_lideres);
-				array_push($comparacao_ativos, $comparacao_lideres_ativos);
-
-				$total_criancas_lider_comparacao = $dados_lideres[5];
-				$total_criancas_lider_ativos_comparacao = $dados_lideres[6];
-
-				$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores['dados']);
-
-				$id_gerais_comparacao = $lista_de_id_3;
-
-				$total_criancas_geral_comparacao = $total_criancas_lider_comparacao + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais_comparacao, 'direcao');
-
-				array_push($comparacao, $total_criancas_geral_comparacao);
-
-				$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $comparacao_coordenadores_ativos['dados']);
-
-				$id_ativos_comparacao =  $lista_de_id_3_ativos;
-
-				$total_criancas_geral_ativos_comparacao = $total_criancas_lider_ativos_comparacao +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos_comparacao, 'direcao');
-
-				array_push($comparacao_ativos, $total_criancas_geral_ativos_comparacao);
-			}
-
-			$lista = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0]['dados'] : $dados_coordenadores['dados'];
-			$dados_mostrar = $opc3 == 'coordenadores_ativos' ? $dados_coordenadores[0] : $dados_coordenadores;
-
-			$lista_de_id_3 = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores['dados']);
-
-			$id_gerais =  $lista_de_id_3;
-
-			$total_criancas_geral = $suas_criancas['row'] + $total_criancas_lider + $this->FConsultas_model->getNumerosCriancas($id_user, $id_gerais, 'direcao');
-
-			$lista_de_id_3_ativos = $this->FSistema_model->retornando_so_id('id_coordenador', $dados_coordenadores[0]['dados']);
-
-			$id_ativos = $lista_de_id_3_ativos;
-
-			$total_criancas_geral_ativos = $suas_criancas['row'] + $total_criancas_lider_ativos +  $this->FConsultas_model->getNumerosCriancas($id_user, $id_ativos, 'direcao');
-
-			$dados = array(
-				'id_user' => $id_user,
-				'lista' => $lista,
-				'dados_coordenadores_gerais' => $dados_coordenadores,
-				'dados_coordenadores_ativos' => $dados_coordenadores[0],
-				'dados_lideres_gerais' => $dados_lideres,
-				'dados_lideres_ativos' => $dados_lideres[0],
-				'dados_criancas_gerais' => $total_criancas_geral,
-				'dados_criancas_ativos' => $total_criancas_geral_ativos,
-				'mostrar_comparacao' => $opc2,
-				'check_is_coord_query' => $check_is_coord_query,
-				'comparacao' => $comparacao,
-				'comparacao_ativos' => $comparacao_ativos,
-			);
-			return $dados;
-		}
-	}
-
 	// sregional
-	public function cadastro_sregional()
+	/*public function cadastro_sregional()
 	{
 		$nome = $this->input->post('nome');
 		$cpf = $this->input->post('cpf');
@@ -4099,10 +2879,10 @@ class Welcome extends CI_Controller
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Supervisor Regional Desativado Permanentemente!"]);
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
 		echo $funcao;
-	}
+	}*/
 
 	// slocal
-	public function cadastro_slocal()
+	/*public function cadastro_slocal()
 	{
 		$nome = $this->input->post('nome');
 		$cpf = $this->input->post('cpf');
@@ -4458,7 +3238,7 @@ class Welcome extends CI_Controller
 		$funcao = $this->FConsultas_model->red("../../../../$url", 2000, []);
 
 		echo $funcao;
-	}
+	}*/
 
 	// coordenador
 	// cadastro coordenador na plataforma (ok)
@@ -4531,7 +3311,7 @@ class Welcome extends CI_Controller
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
-						$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
+						$this->Automatico->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Coordenador cadastrado com Sucesso!"]);
 					} else {
@@ -4554,7 +3334,7 @@ class Welcome extends CI_Controller
 				if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 					$nivel = 3;
 					$cadastro = $this->Coordenadores->cadastro_coordenador($nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, $id_supervisor, 2);
-					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, "", $nivel);
+					$cadastroUsuario = $this->FSistema_model->cadastrarUsuário($nome, $email, "", $nivel, $senha);
 
 					if ($cadastro && $cadastroUsuario) {
 
@@ -4563,7 +3343,7 @@ class Welcome extends CI_Controller
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=&nome=$nome&senha=$senha&x_ir=1&opc=2";
-						$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
+						$this->Automatico->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Coordenador cadastrado com Sucesso!"]);
 					} else {
@@ -4767,7 +3547,7 @@ class Welcome extends CI_Controller
 						$id_lider = $consultarDados['dados']['id_lider'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
-						$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+						$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
 					} else {
@@ -4796,7 +3576,7 @@ class Welcome extends CI_Controller
 						$id_lider = $consultarDados['dados']['id_lider'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=&nome=$nome&senha=$senha&x_ir=1&opc=2";
-						$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+						$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
 					} else {
@@ -4827,22 +3607,6 @@ class Welcome extends CI_Controller
 
 		$red = $this->input->post('red');
 		$data = [];
-
-		/*$routa = "";
-		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
-		$id_coord = $this->input->post('id_coord');
-		if ($red == 'coordenador') {
-			$data = [
-				"<input type='hidden' name='id_coord' value='$id_usuario'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "page/lideres/detalhes/$id_lider";
-		} else {
-			$data = [
-				"<input type='hidden' name='id_user' value='$id_coord'>",
-			];
-			$routa = "coordenador/page/lideres";
-		}*/
 
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder desativado!"]);
 		$funcao = $this->FConsultas_model->red("$red", 2000, $data);
@@ -4891,25 +3655,8 @@ class Welcome extends CI_Controller
 		$this->_ativar($id_lider, $id_usuario);
 		$this->Lideres->ativar_lider($id_lider);
 
-		//$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
-		//$id_coord = $this->input->post('id_coord');
-		//$routa = "";
-
 		$red = $this->input->post('red');
 		$data = [];
-
-		/*if ($red == 'coordenador') {
-			/*$data = [
-				"<input type='hidden' name='id_coord' value='$id_usuario'>",
-				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
-			];
-			$routa = "page/lideres/detalhes/$id_lider";
-		} else {
-			/*$data = [
-				"<input type='hidden' name='id_user' value='$id_coord'>",
-			];
-			$routa = "coordenador/page/lideres";
-		}*/
 
 		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Ativado!"]);
 		$funcao = $this->FConsultas_model->red("$red", 2000, $data);
@@ -4944,7 +3691,6 @@ class Welcome extends CI_Controller
 		// mudar o ativo do líder
 		$this->FSistema_model->ativarUsuário($infonome['nome'], $infos['dados']['email'], $infos['dados']['cpf']);
 	}
-
 	public function excluir_lider_permanentemente()
 	{
 		$id_lider = $this->input->post("id_lider");
@@ -5004,7 +3750,7 @@ class Welcome extends CI_Controller
 			}
 		}
 
-		$dados_colider = $this->FConsultas_model->mostrarColiderDoLider($id_lider);
+		$dados_colider = $this->Lideres->mostrar_colider_do_lider($id_lider);
 
 		if ($dados_colider) {
 			$this->FSistema_model->excluirColiderPermanentemente($dados_colider['id_colider'], $id_lider, $id_usuario);
@@ -5133,7 +3879,7 @@ class Welcome extends CI_Controller
 		if ($nivel == '2') {
 		} else {
 			$dataEscolhida = $this->input->post("data");
-			$dadosPg = $this->FConsultas_model->mostrarPGId($idLider, $idPg);
+			$dadosPg = $this->PG->query([$idLider, $idPg], 'query_id_lider_id_pg_ativo', 1);
 
 			$data = $dadosPg['dados']['data_inicio'];
 			$dataHj = date('d/m/Y');
@@ -5279,8 +4025,19 @@ class Welcome extends CI_Controller
 		$pdf->Output('D', $nome_arquivo);
 	}
 
+	public function offline()
+	{
+		$dados = array(
+			'heading' => 'Você está Offline',
+			'message' => 'Conect a internet e tente novamente',
+		);
+
+		$this->load->view('errors/html/error_404', $dados);
+	}
+
+
 	// funções
-	public function atualizar_data()
+	/*public function atualizar_data()
 	{
 		// coordenadores
 		$coordenadores = $this->FConsultas_model->mostrar_all_coordenador();
@@ -5350,46 +4107,9 @@ class Welcome extends CI_Controller
 			$this->db->where('id_coordenador  ', $coord['id_coordenador']);
 			$this->db->update('coordenador');
 		}
-	}
+	}*/
 
-	public function offline()
-	{
-		$dados = array(
-			'heading' => 'Você está Offline',
-			'message' => 'Conect a internet e tente novamente',
-		);
-
-		$this->load->view('errors/html/error_404', $dados);
-	}
-
-	public function red_lideres_coord()
-	{
-
-		$id_coord = $this->uri->segment(4);
-
-		$data = [
-			"<input type='hidden' name='id_user' value='$id_coord'>"
-		];
-
-		$funcao = $this->FConsultas_model->red('../lideres', 0, $data);
-		echo $funcao;
-	}
-
-	public function red_lideres_info_licao()
-	{
-
-		$id_coord = $this->uri->segment(4);
-		$id_lider = $this->uri->segment(5);
-
-		$data = [
-			"<input type='hidden' name='id_coord' value='$id_coord'>"
-		];
-
-		$funcao = $this->FConsultas_model->red("../../lideres/detalhes/$id_lider", 0, $data);
-		echo $funcao;
-	}
-
-	public function atualizar_session()
+	/*	public function atualizar_session()
 	{
 		$dados = json_decode(file_get_contents('php://input'), true);
 
@@ -5410,7 +4130,73 @@ class Welcome extends CI_Controller
 		echo json_encode([
 			'valor' => $this->session->userdata('is_ativo') ?? 'não definido'
 		]);
-	}
+	}*/
+
+	/*public function get_informacoes_pg()
+	{
+
+		$id_usuario = $this->input->get('id_usuario');
+		$nivel = $this->input->get('nivel');
+
+		$consultarPG = $this->FConsultas_model->mostrarPG($id_usuario, $nivel);
+
+		$dados = array();
+
+		foreach ($consultarPG['dados'] as $key => $pg) {
+			$dados[] = $pg['id_pg'];
+		}
+
+		echo $dados;
+	}*/
+
+
+
+	/*public function enviando_alerta_troca_de_lider_pg()
+	{
+		$id_usuario = $this->input->post('id_usuario');
+		$id_lider = $this->input->post('id_lider');
+		$id_pg = $this->input->post('id_pg');
+		$id_lider_troca = $this->input->post('id_lider_troca');
+
+		$dados = $this->FConsultas_model->getNomeUserId($id_usuario);
+
+		$nome = $dados['nome'];
+
+		$motivo = "O $nome pediu a solicitação de troca de líderes entre o PG ($id_pg) (id líder 1: $id_lider para $id_lider_troca";
+		$acao = "SOLICITACAO_TROCA_LIDER_PG";
+
+		$this->FAlerta_model->alerta_controle($id_usuario, $id_usuario, $motivo, $acao);
+
+		$red = $this->input->post('red') ?? 'coordenador';
+
+		$nivel_routa = $this->input->post('nivel_routa') ?? 'lider';
+		$id_coord = $this->input->post('id_coord');
+
+		$routa = "";
+		if ($red == 'coordenador') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
+			];
+			$routa = "coordenador/page/lideres/detalhes/$id_lider";
+		} else if ($red == 'slocal') {
+			$data = [
+				"<input type='hidden' name='id_coord' value='$id_coord'>",
+				"<input type='hidden' name='nivel_routa' value='$nivel_routa'>"
+			];
+			$routa = "slocal/page/lideres/detalhes/$id_lider";
+		} else {
+			$data = [
+				"<input type='hidden' name='id_lider' value='$id_lider'>",
+			];
+			$routa = "coordenador/page/lideres/detalhes/$id_lider";
+		}
+
+		$this->FConsultas_model->mensagem('success', 'Solicitação Enviada com Sucesso', ['Aguarde, em breve entraremos em contato!']);
+
+		$funcao = $this->FConsultas_model->red("../../$routa", 3000, $data);
+		echo $funcao;
+	}*/
 
 	public function ir_modulo()
 	{

@@ -44,7 +44,7 @@ class FConsultas_model extends CI_Model
 		$this->load->view('mensagem', $dados);
 	}
 
-	public function mostrar_info_user($id_usuario)
+	/*public function mostrar_info_user($id_usuario)
 	{
 		$consultar_pg = $this->db->query("SELECT * FROM usuario WHERE id_usuario LIKE $id_usuario");
 		$row = $consultar_pg->num_rows();
@@ -55,7 +55,7 @@ class FConsultas_model extends CI_Model
 			'dados' => $dados_consulta_pg,
 		);
 		return $dados;
-	}
+	}*/
 
 	public function converterData($data)
 	{
@@ -317,13 +317,13 @@ class FConsultas_model extends CI_Model
 		}
 	}
 
-	function Ordena_Array($array, $campo)
+	/*function Ordena_Array($array, $campo)
 	{
 		usort($array, function ($a, $b) use ($campo) {
 			return $a[$campo] > $b[$campo];
 		});
 		return $array;
-	}
+	}*/
 
 	function red($route, $time, $data)
 	{
@@ -354,7 +354,23 @@ class FConsultas_model extends CI_Model
 		return $funcao;
 	}
 
-	public function get_url()
+	public function checkControler($idLider, $idPg, $anoPg, $modulo, $licao, $diaDevocional)
+	{
+		$controller = $this->db->select("*")
+			->from("controle_envio_email_devocional")
+			->where("idLider", $idLider)
+			->where("idPG", $idPg)
+			->where("anoController", $anoPg)
+			->where("moduloController", $modulo)
+			->where("licaoController", $licao)
+			->where("dia", $diaDevocional)
+			->where("sucesso", 1)
+			->get();
+		$rowController = $controller->num_rows();
+		return $rowController;
+	}
+
+	/*public function get_url()
 	{
 		$url_1 = $this->uri->segment(1);
 		$url_2 = $this->uri->segment(2);
@@ -379,7 +395,7 @@ class FConsultas_model extends CI_Model
 		}
 
 		return $url;
-	}
+	}*/
 
 	public function consultarModuloAno($id_ano)
 	{
@@ -401,9 +417,7 @@ class FConsultas_model extends CI_Model
 		return $dados;
 	}
 
-	////////////////////////////////////////
-
-	public function list_modulos_informacoes($ciclo, $idModulo)
+	/*public function list_modulos_informacoes($ciclo, $idModulo)
 	{
 		$consultar = $this->db->query("SELECT * FROM modulo WHERE ano LIKE '$ciclo' AND id_modulo LIKE '$idModulo'");
 		$row = $consultar->num_rows();
@@ -414,9 +428,9 @@ class FConsultas_model extends CI_Model
 		} else {
 			return $dados;
 		}
-	}
+	}*/
 
-	public function consultaraisJaTerminouOTreinamento($nome, $email, $nascimento)
+	/*public function consultaraisJaTerminouOTreinamento($nome, $email, $nascimento)
 	{
 		$consultar = $this->db2->query("SELECT * FROM aluno WHERE nome LIKE '$nome' AND email = '$email' AND nascimento = '$nascimento'");
 		$row = $consultar->num_rows();
@@ -442,7 +456,7 @@ class FConsultas_model extends CI_Model
 				}
 			}
 		}
-	}
+	}*/
 
 	/*public function consultarLiderJaCadastrado($nome, $cpf, $cpf2, $email)
 	{
@@ -478,7 +492,7 @@ class FConsultas_model extends CI_Model
 	// já revisou
 
 	// mostrar pais
-	public function mostrar_pais($id_usuario)
+	/*public function mostrar_pais($id_usuario)
 	{
 		$consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_lider LIKE $id_usuario");
 		$dados_consultar_lider = $consultar_lider->row_array();
@@ -489,10 +503,10 @@ class FConsultas_model extends CI_Model
 		} else {
 			return false;
 		}
-	}
+	}*/
 
 	// mostrar_usuario
-	public function mostrar_registro_tabela($email, $cpf)
+	/*public function mostrar_registro_tabela($email, $cpf)
 	{
 		$query_rementente_colider = $this->db->select('*')
 			->from('colider')
@@ -555,9 +569,9 @@ class FConsultas_model extends CI_Model
 		} else {
 			return false;
 		}
-	}
+	}*/
 
-	public function mostrar_pastor($id_pastor)
+	/*public function mostrar_pastor($id_pastor)
 	{
 		$consultar_pastor = $this->db->query("SELECT * FROM pastor WHERE id_pastor LIKE $id_pastor ORDER BY nome_pastor ASC");
 		$row = $consultar_pastor->num_rows();
@@ -570,9 +584,9 @@ class FConsultas_model extends CI_Model
 				echo '<option value="' . $dados_pastor['id_pastor'] . '" selected>' . $dados_pastor['nome_pastor'] . '</option>';
 			}
 		}
-	}
+	}*/
 
-	public function mostrar_coordenador($id_coordenador)
+	/*public function mostrar_coordenador($id_coordenador)
 	{
 		$consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador LIKE $id_coordenador ORDER BY nome_coordenador ASC");
 		$row = $consultar_coordenador->num_rows();
@@ -585,9 +599,9 @@ class FConsultas_model extends CI_Model
 				echo '<option value="' . $dados_coord['id_coordenador'] . '" selected>' . $dados_coord['nome_coordenador'] . '</option>';
 			}
 		}
-	}
+	}*/
 
-	public function mostrar_all_coordenador()
+	/*public function mostrar_all_coordenador()
 	{
 		$consultar_coordenador = $this->db->query("SELECT * FROM coordenador");
 		$row = $consultar_coordenador->num_rows();
@@ -599,9 +613,9 @@ class FConsultas_model extends CI_Model
 		);
 
 		return $dados;
-	}
+	}*/
 
-	public function mostrar_sr($id_sr)
+	/*public function mostrar_sr($id_sr)
 	{
 		$consultar_sr = $this->db->query("SELECT * FROM supervisor_local WHERE id_supervisorR LIKE $id_sr ORDER BY nome_supervisorR ASC");
 		$row = $consultar_sr->num_rows();
@@ -614,9 +628,9 @@ class FConsultas_model extends CI_Model
 				echo '<option value="' . $dados_sr['id_supervisorR'] . '" selected>' . $dados_sr['nome_supervisorR'] . '</option>';
 			}
 		}
-	}
+	}*/
 
-	public function mostrar_se($id_se)
+	/*public function mostrar_se($id_se)
 	{
 		$consultar_se = $this->db->query("SELECT * FROM supervisor_regional WHERE id_supervisorEs LIKE $id_se ORDER BY nome_supervisorE ASC");
 		$row = $consultar_se->num_rows();
@@ -629,10 +643,10 @@ class FConsultas_model extends CI_Model
 				echo '<option value="' . $dados_se['id_supervisorEs'] . '" selected>' . $dados_se['nome_supervisorE'] . '</option>';
 			}
 		}
-	}
+	}*/
 
 	/*Colíder*/
-	public function checkColider($nome, $cpf, $email, $telefone)
+	/*public function checkColider($nome, $cpf, $email, $telefone)
 	{
 		$consultar_colider = $this->db->query("SELECT * FROM colider WHERE nome_colider LIKE '$nome' OR email LIKE '$email' OR cpf LIKE '$cpf' OR telefone_whatsapp LIKE '$telefone'");
 		$row = $consultar_colider->num_rows();
@@ -642,9 +656,9 @@ class FConsultas_model extends CI_Model
 		} else {
 			return false;
 		}
-	}
+	}*/
 
-	public function mostrarColider($id_colider)
+	/*public function mostrarColider($id_colider)
 	{
 		$consultar_colider = $this->db->query("SELECT * FROM colider WHERE id_colider LIKE $id_colider");
 		$row = $consultar_colider->num_rows();
@@ -655,9 +669,9 @@ class FConsultas_model extends CI_Model
 		} else {
 			return $dados_consula_colider;
 		}
-	}
+	}*/
 
-	public function mostrarColiderDoLider($id_usuario)
+	/*public function mostrarColiderDoLider($id_usuario)
 	{
 		$consultar_colider = $this->db->query("SELECT * FROM colider WHERE id_lider LIKE $id_usuario AND ativo = 1 ORDER BY nome_colider ASC");
 		$row = $consultar_colider->num_rows();
@@ -668,9 +682,9 @@ class FConsultas_model extends CI_Model
 		} else {
 			return $dados_consula_colider;
 		}
-	}
+	}*/
 
-	public function mostrarColiderDoLiderDesativados($id_usuario)
+	/*public function mostrarColiderDoLiderDesativados($id_usuario)
 	{
 		$consultar_colider = $this->db->query("SELECT * FROM colider WHERE id_lider LIKE $id_usuario AND ativo = 0 ORDER BY nome_colider ASC");
 		$row = $consultar_colider->num_rows();
@@ -682,53 +696,23 @@ class FConsultas_model extends CI_Model
 		);
 
 		return $dados;
-	}
+	}*/
 
-	public function mostrarTodosLideres()
+	/*public function mostrarTodosLideres()
 	{
 		// adicionar outros níveis
 		$dados = $this->db->query("SELECT * FROM lider WHERE confirmado LIKE 2 AND pais LIKE 'br'")->result_array();
 		return $dados;
-	}
+	}*/
 
-	public function checkControler($idLider, $idPg, $anoPg, $modulo, $licao, $diaDevocional)
-	{
-		$controller = $this->db->select("*")
-			->from("controle_envio_email_devocional")
-			->where("idLider", $idLider)
-			->where("idPG", $idPg)
-			->where("anoController", $anoPg)
-			->where("moduloController", $modulo)
-			->where("licaoController", $licao)
-			->where("dia", $diaDevocional)
-			->where("sucesso", 1)
-			->get();
-		$rowController = $controller->num_rows();
-		return $rowController;
-	}
-
-	public function consultaDadosLiderNomeCPFEMail($nome, $cpf, $cpf2, $email)
+	/*public function consultaDadosLiderNomeCPFEMail($nome, $cpf, $cpf2, $email)
 	{
 		$consultar = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
 		$dados = $consultar->row_array();
 		return $dados;
-	}
+	}*/
 
-	// PG
-	public function mostrarPGId($id_usuario, $idPG)
-	{
-		$consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1");
-		$row = $consultar_pg->num_rows();
-		$dados_consulta_pg = $consultar_pg->row_array();
-
-		$dados = array(
-			'row' => $row,
-			'dados' => $dados_consulta_pg,
-		);
-		return $dados;
-	}
-
-	public function consultaraisJaCadastrado($nome, $cpf, $cpf2, $email)
+	/*public function consultaraisJaCadastrado($nome, $cpf, $cpf2, $email)
 	{
 		$consultar = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' OR cpf = '$cpf' OR cpf = '$cpf2' OR email = '$email'");
 		$row = $consultar->num_rows();
@@ -737,9 +721,9 @@ class FConsultas_model extends CI_Model
 		} else {
 			return false;
 		}
-	}
+	}*/
 
-	public function mostrarPG($id_usuario, $x)
+	/*public function mostrarPG($id_usuario, $x)
 	{
 		if ($x == 2) {
 			$consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = 1 ORDER BY nome_pg ASC");
@@ -773,7 +757,7 @@ class FConsultas_model extends CI_Model
 			);
 			return $dados;
 		}
-	}
+	}*/
 
 	public function mostrarPGDesativados($id_usuario)
 	{
@@ -1687,7 +1671,7 @@ class FConsultas_model extends CI_Model
 		);
 		return $dados;
 	}
-	public function getCoordenadoresDesativados($id_usuario)
+	/*public function getCoordenadoresDesativados($id_usuario)
 	{
 		$consultar_coordenadores_1 = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR LIKE $id_usuario AND ativo = 0 ORDER BY nome_coordenador ASC");
 		$row_1 = $consultar_coordenadores_1->num_rows();
@@ -1715,9 +1699,9 @@ class FConsultas_model extends CI_Model
 		);
 
 		return $dados;
-	}
+	}*/
 
-	public function getLideres($id_usuario, $opc, $opc2, $datas)
+	/*public function getLideres($id_usuario, $opc, $opc2, $datas)
 	{
 		if ($opc == 1 && $opc2 == 1) {
 			// Consulta na tabela de líderes ordenando pelo nome
@@ -1919,9 +1903,9 @@ class FConsultas_model extends CI_Model
 
 			return $dados;
 		}
-	}
+	}*/
 
-	public function lideresAtivos($list)
+	/*public function lideresAtivos($list)
 	{
 		$lista = $list['dados'];
 		$total_ativos = 0;
@@ -1950,9 +1934,9 @@ class FConsultas_model extends CI_Model
 			'dados' => $dados_lider,
 		);
 		return $dados;
-	}
+	}*/
 
-	public function check_lider_is_ativo($id_lider, $data_cadastro, $ativo)
+	/*public function check_lider_is_ativo($id_lider, $data_cadastro, $ativo)
 	{
 		$data = date('Y-m-d');
 		$data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
@@ -2005,9 +1989,9 @@ class FConsultas_model extends CI_Model
 				}
 			}
 		}
-	}
+	}*/
 
-	public function getLideresDesativados($id_usuario)
+	/*public function getLideresDesativados($id_usuario)
 	{
 		$consultar_lideres_1 = $this->db->query("SELECT * FROM lider WHERE id_coordenador LIKE $id_usuario AND confirmado = 3 ORDER BY nome_lider ASC");
 		$row_1 = $consultar_lideres_1->num_rows();
@@ -2045,9 +2029,9 @@ class FConsultas_model extends CI_Model
 		);
 
 		return $dados;
-	}
+	}*/
 
-	public function getUsuario($nome, $email, $cpf)
+	/*public function getUsuario($nome, $email, $cpf)
 	{
 		$consultar_usuario = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf' AND nome LIKE '$nome'");
 		$dados_usuario = $consultar_usuario->row_array();
@@ -2059,8 +2043,8 @@ class FConsultas_model extends CI_Model
 		);
 
 		return $dados;
-	}
-	public function getNumerosCriancas($id_usuario, $users, $opc)
+	}*/
+	/*public function getNumerosCriancas($id_usuario, $users, $opc)
 	{
 
 		$total_criancas = 0;
@@ -2078,5 +2062,5 @@ class FConsultas_model extends CI_Model
 		}
 
 		return $total_criancas;
-	}
+	}*/
 }

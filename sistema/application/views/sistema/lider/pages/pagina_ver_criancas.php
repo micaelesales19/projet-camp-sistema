@@ -205,22 +205,18 @@ if (!isset($_SESSION['usuario'])) {
 
                                 <div class="box-body chat" id="chat-box">
                                     <?php
-
                                     $consultarPG = $this->PG->query([$id_usuario], 1, 1);
-
                                     if ($consultarPG['row'] == 0) {
                                     ?>
-
                                         <script>
-                                            function alerta() {
+                                            //function alerta() {
                                                 if (window.confirm("Você ainda não cadastrou seu PG! Cadastre Agora!")) {
                                                     window.location = "pg";
                                                 } else {
                                                     window.location = "pg";
                                                 }
-                                            }
+                                            //}
                                         </script>
-
                                     <?php
                                     } else {
                                     ?>

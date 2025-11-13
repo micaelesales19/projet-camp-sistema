@@ -18,6 +18,8 @@ if (!isset($_SESSION['usuario'])) {
   $query_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '', '');
   $dados_usuario = $query_usuario['dados'];
 
+  $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
+
 ?>
 
   <!DOCTYPE html>
@@ -153,6 +155,7 @@ if (!isset($_SESSION['usuario'])) {
                       <input type="hidden" name="id" value="<?= $dados_pessoal['id_coordenador'] ?>">
                       <input type="hidden" name="id_supervisor_local" value="<?= $dados_pessoal['id_supervisorR'] ?>">
                       <input type="hidden" name="id_supervisor_regional" value="<?= $dados_pessoal['id_supervisorE'] ?>">
+                      <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
                       <div class="col-lg-12">
                         <center>
