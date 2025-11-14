@@ -515,6 +515,8 @@ class Coordenador extends CI_Controller
 			'info' => $dados_usuario,
 		);
 
+		//print_r($dados_lideres);
+
 		$this->load->view('sistema/coordenador/pages/lideres/mostrar_tabela_lider', $dados);
 	}
 
@@ -534,9 +536,10 @@ class Coordenador extends CI_Controller
 
 		// 🔹 1. Coleta todos os IDs de líderes de uma vez
 		$ids = array_column($lideres, 'id_lider');
-		if (empty($ids)) {
+
+		/*if (empty($ids)) {
 			return ['row' => 0, 'dados' => []];
-		}
+		}*/
 
 		// 🔹 2. Busca todas as crianças desses líderes de uma vez
 		$criacas_por_lider = $this->Criancas->criacasPorLideres($ids);

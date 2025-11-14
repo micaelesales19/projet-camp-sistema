@@ -74,7 +74,6 @@ $route['sair'] = 'welcome/sair';
 $route['login'] = 'welcome/login';
 $route['acesso'] = 'welcome/autenticacao_login';
 
-
 $route['termos'] = 'welcome/PaginaDosTermos'; // ok
 $route['primeiro_acesso'] = 'welcome/PrimeiroAcesso'; // ok
 
@@ -89,13 +88,14 @@ $route['pg/pular'] = 'welcome/cadastro_pg_inicial_pular'; // ok
 $route['criancas/cadastro/salvar'] = 'welcome/cadastro_crianca_inicial'; // ok
 
 // CronJobs
-$route['controller/devocionalDiario'] = 'Automatico/enviarEmailDevocionalDiario'; // ok
-$route['controller/atualizacaoModuloMensal'] = 'Automatico/atualizarModuloMensal'; // ok
-$route['controller/page/pg/progresso/atualizar'] = 'Automatico/atualizarProgressoDevocional'; // ok
+$route['controller/devocionalDiario'] = 'welcom/enviarEmailDevocionalDiario'; // ok
+$route['controller/atualizacaoModuloMensal'] = 'welcom/atualizarModuloMensal'; // ok
+$route['controller/page/pg/progresso/atualizar'] = 'welcom/atualizarProgressoDevocional'; // ok
 
 // CADASTRO
 $route['aprovar'] = 'welcome/aprovar_acesso_lider';
-$route['cadastro/salvar'] = 'welcome/salvar_cadastro';
+$route['cadastro/salvar'] = 'welcome/salvar_cadastro'; // salvar cadastro lider via link
+$route['coordenador/salvar'] = 'welcome/cadastro_coordenador_via_link'; // salvar cadastro coordenador via link ok
 $route['cadastro'] = 'welcome/cadastro';
 $route['cadastro/:any'] = 'welcome/cadastro';
 

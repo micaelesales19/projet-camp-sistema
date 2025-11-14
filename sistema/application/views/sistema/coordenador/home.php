@@ -171,9 +171,9 @@ if (!isset($_SESSION['usuario'])) {
           <!-- /.row -->
 
           <?php
-          $check_situacao_cadastro = $this->Lideres->infos([$id_usuario, 1], 'check_lider_situacao_cadastro_id_coordenador', '', '', '');
+          $check_situacao_cadastro_lider = $this->Lideres->infos([$id_usuario, 1], 'check_lider_situacao_cadastro_id_coordenador', '', '', '');
 
-          if ($check_situacao_cadastro['row'] == 0) {
+          if ($check_situacao_cadastro_lider['row'] == 0) {
           } else {
           ?>
 
@@ -191,13 +191,13 @@ if (!isset($_SESSION['usuario'])) {
                     <input type="hidden" id="btn_enviar_c" value="">
 
                     <?php
-                    if ($check_situacao_cadastro['row'] == 0) {
+                    if ($check_situacao_cadastro_lider['row'] == 0) {
                     } else {
                     ?>
                       <div class="alert alert-info alert-dismissible">
                         <h4><i class="icon fa fa-info"></i> Novo líder cadastrado</h4>
                         <?php
-                        foreach ($check_situacao_cadastro['dados'] as $key => $dados_l) {
+                        foreach ($check_situacao_cadastro_lider['dados'] as $key => $dados_l) {
                         ?>
                           <?= $dados_l['nome_lider']; ?>, se cadastrou no sistema
                           <a href="#" style="text-decoration: none;" data-toggle="modal" data-target="#modal-default-<?= $dados_l['id_lider'] ?>">
@@ -292,7 +292,7 @@ if (!isset($_SESSION['usuario'])) {
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                  <form action="page/lideres/liberar" method="post">
+                                  <form action="page/lider/liberar" method="post">
                                     <input type="hidden" name="id_lider" value="<?= $dados_l['id_lider']; ?>">
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="routa" value="home">
@@ -308,6 +308,7 @@ if (!isset($_SESSION['usuario'])) {
                         <?php } ?>
                       </div>
                     <?php } ?>
+
                     <!-- <div class="alert alert-warning alert-dismissible">
                         <h4><i class="icon fa fa-warning"></i> Alert!</h4>
                         Warning alert preview. This alert is dismissable.

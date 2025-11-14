@@ -392,6 +392,7 @@ if (!isset($_SESSION['usuario'])) {
 					$materialCapa = array();
 					$materialCards = array();
 					$materialLicao = array();
+					$materialExtra = array();
 
 					array_push($materialCapa, $materialCapaTrilha);
 					array_push($materialCapa, $materialContraCapaTrilha);
@@ -401,6 +402,7 @@ if (!isset($_SESSION['usuario'])) {
 					array_push($materialLicao, $materialLicaoTrilha);
 					array_push($materialLicao, $materialLicaoVisuaisTrilha2);
 					array_push($materialLicao, $materialLicaoVisuaisTrilha1);
+					array_push($materialExtra, $materialChequinhoTrilha);
 
 					if ($dados_pg['row'] == 0) {
 				?>
@@ -566,13 +568,42 @@ if (!isset($_SESSION['usuario'])) {
 					<?php } else {
 						} ?>
 
+					<?php
+						if ($materialExtra) {
+					?>
+						<div class="col-md-6">
+							<div class="small-box bg-info">
+								<div class="box-header with-border">
+									<h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+									<div class="box-tools pull-right">
+										<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+										</button>
+									</div>
+								</div>
+								<div class="box-body chat" id="linha">
+									<?php
+									foreach ($materialExtra as $key => $extra) {
+									?>
+										<div class="succ not-active">
+											<div class="img-center">
+												<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+											</div>
+											<label for=""><?= $extra['nome']; ?></label>
+										</div>
+									<?php } ?>
+								</div>
+							</div>
+							<!-- /.box-body -->
+						</div>
+					<?php } else {
+						} ?>
+
 				<?php } else { ?>
 					<?php
 
 						$idPG = $dados_pg['dados']['id_pg'];
 
 						$consultarCriancas = $this->Criancas->query_criancas_lider_pg($id_usuario, $idPG, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
-
 
 						if ($consultarCriancas['row'] == 0) {
 
@@ -739,6 +770,36 @@ if (!isset($_SESSION['usuario'])) {
 							} ?>
 
 						<?php
+							if ($materialExtra) {
+						?>
+							<div class="col-md-6">
+								<div class="small-box bg-info">
+									<div class="box-header with-border">
+										<h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+										<div class="box-tools pull-right">
+											<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+											</button>
+										</div>
+									</div>
+									<div class="box-body chat" id="linha">
+										<?php
+										foreach ($materialExtra as $key => $extra) {
+										?>
+											<div class="succ not-active">
+												<div class="img-center">
+													<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+												</div>
+												<label for=""><?= $extra['nome']; ?></label>
+											</div>
+										<?php } ?>
+									</div>
+								</div>
+								<!-- /.box-body -->
+							</div>
+						<?php } else {
+							} ?>
+
+						<?php
 						} else {
 
 							$idModuloPG = $dados_pg['dados']['id_modulo'];
@@ -884,6 +945,37 @@ if (!isset($_SESSION['usuario'])) {
 														<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
 													</div>
 													<label for=""><?= $cards['nome']; ?></label>
+												</div>
+											<?php } ?>
+										</div>
+									</div>
+									<!-- /.box-body -->
+								</div>
+							<?php } else {
+								} ?>
+
+
+							<?php
+								if ($materialExtra) {
+							?>
+								<div class="col-md-6">
+									<div class="small-box bg-info">
+										<div class="box-header with-border">
+											<h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+											<div class="box-tools pull-right">
+												<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+												</button>
+											</div>
+										</div>
+										<div class="box-body chat" id="linha">
+											<?php
+											foreach ($materialExtra as $key => $extra) {
+											?>
+												<div class="succ not-active">
+													<div class="img-center">
+														<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+													</div>
+													<label for=""><?= $extra['nome']; ?></label>
 												</div>
 											<?php } ?>
 										</div>
@@ -1113,6 +1205,42 @@ if (!isset($_SESSION['usuario'])) {
 								</div>
 							<?php } else {
 								} ?>
+
+
+
+							<?php
+								if ($materialExtra) {
+							?>
+								<div class="col-md-6">
+									<div class="small-box bg-info">
+										<div class="box-header with-border">
+											<h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+											<div class="box-tools pull-right">
+												<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+												</button>
+											</div>
+										</div>
+										<div class="box-body chat" id="linha">
+											<?php
+											foreach ($materialExtra as $key => $extra) {
+											?>
+												<div class="succ">
+													<a href="<?php echo base_url($extra['arquivo']); ?>" target="_blank" download>
+														<div class="img-center">
+															<img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+														</div>
+														<label for=""><?= $extra['nome']; ?></label>
+													</a>
+												</div>
+											<?php } ?>
+										</div>
+									</div>
+									<!-- /.box-body -->
+								</div>
+							<?php } else {
+								} ?>
+
+
 						<?php } ?>
 
 					<?php } ?>

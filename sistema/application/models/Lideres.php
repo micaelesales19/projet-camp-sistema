@@ -191,6 +191,20 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'check_lider_situacao_cadastro_id_supervisor') {
+            // Consulta na tabela de líderes se tem lider esperando autorização pelo ID COORDENADOR
+            $id_supervisor = $id_usuario[0];
+            $situacao = $id_usuario[1];
+            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_supervisorR = '$id_supervisor' AND confirmado = $situacao ORDER BY nome_lider ASC");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
         } else if ($opc == 'query_coordenador_supervisor_inicial') {
             // retornando todos os coordenadores de acordo com uma data específica
             $id_usuario = $id_usuario[0];
@@ -263,8 +277,8 @@ class Lideres extends CI_Model
         $data = date('Y-m-d');
         $data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
 
-        $qtd_criancas = $this->FConsultas_model->mostrarCriancasPais($id_lider);
-        $qtd_criancas_ativas = $this->FConsultas_model->mostrarCriancasPais($id_lider);
+        $qtd_criancas = $this->Criancas->query_criancas_lider($id_lider);
+        $qtd_criancas_ativas = $this->Criancas->query_criancas_lider($id_lider);
 
         $pgs = $this->PG->query([$id_lider], 1, 1);
 

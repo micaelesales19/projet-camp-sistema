@@ -17,6 +17,7 @@ $route['coordenador/page/lider/desativar'] = 'welcome/desativar_lider'; // ok
 $route['coordenador/page/lider/reativar'] = 'welcome/ativar_lider'; // ok
 $route['coordenador/page/lider/excluir'] = 'welcome/excluir_lider_permanentemente'; // ok
 $route['coordenador/page/lider/trocar-liderenca'] = 'welcome/trocar_liderenca'; // ok
+$route['coordenador/page/lider/liberar'] = 'welcome/liberar_acesso'; // ok
 
 $route['coordenador/page/lider/:any'] = 'Coordenador/pagina_ver_detalhes_lider'; // ok // ok
 

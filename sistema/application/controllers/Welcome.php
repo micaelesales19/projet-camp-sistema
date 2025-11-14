@@ -6,7 +6,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @property FAlerta_model $FAlerta_model
  * @property FConsultas_model $FConsultas_model
  * @property Criancas $Criancas
- * @property Automatico $Automatico
  * @property Lideres $Lideres
  * @property Coordenadores $Coordenadores
  * @property Supervisores $Supervisores
@@ -537,8 +536,13 @@ class Welcome extends CI_Controller
 			$check = $this->FConsultas_model->check_codigo($codigo);
 
 			if ($check) {
+
+				$consultar_codigo = $this->db->query("SELECT * FROM link_cadastro WHERE codigo = '$codigo'");
+				$dados_codigo = $consultar_codigo->row_array();
+
 				$dados = array(
 					'codigo' => $codigo,
+					'dados' => $dados_codigo,
 				);
 
 				$this->load->view('sistema/cadastro', $dados);
@@ -677,8 +681,8 @@ class Welcome extends CI_Controller
 								}
 							}
 
-							$this->Automatico->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
-							$this->Automatico->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
+							$this->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
+							$this->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
 
 							$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
 							echo '
@@ -800,8 +804,8 @@ class Welcome extends CI_Controller
 								}
 							}
 
-							$this->Automatico->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
-							$this->Automatico->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
+							$this->enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider);
+							$this->enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider);
 
 							$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
 							echo '
@@ -894,7 +898,7 @@ class Welcome extends CI_Controller
 					$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
 
 					$this->Lideres->editar_autorizacao_lider($id_lider, 2);
-					$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+					$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 				}
 			}
 
@@ -961,14 +965,20 @@ class Welcome extends CI_Controller
 		$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
 		$senha = $info_usuario['dados']['senha'];
 
-		$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
-		$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+		if ($is_br) {
+			$opc = 1;
+		} else {
+			$opc = 2;
+		}
+
+		$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=$opc";
+		$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 
 		if ($mudar) {
 			$this->FAlerta_model->alerta_controle($id_usuario, $id_lider, "autorizou com sucesso seu lider", 'coord_autoriza_lider');
 
 			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Sucesso!']);
-			$funcao = $this->FConsultas_model->red("../../$routa", 2000, []);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, []);
 
 			echo $funcao;
 
@@ -2550,6 +2560,205 @@ class Welcome extends CI_Controller
 	}
 
 	// coordenador
+	// cadastro coordenador via link
+	public function cadastro_coordenador_via_link()
+	{
+		$nome = $this->input->post('nome');
+		$cpf = $this->input->post('cpf');
+		$email = $this->input->post('email');
+		$telefone_digitado = $this->input->post('telefone');
+		$pais = $this->input->post('pais');
+		$estado1 = $this->input->post('estados');
+		$cidade1 = $this->input->post('cidades');
+		$estado2 = $this->input->post('estados2');
+		$cidade2 = $this->input->post('cidades2');
+		$nascimento = $this->input->post('nascimento');
+
+		$senha = $this->input->post('senha');
+
+		$is_br = $pais == 'br' || '' ? true : false;
+
+		$telefone = $this->FConsultas_model->formatar_telefone($telefone_digitado, $is_br);
+
+		$nome_digitado_pais = $this->input->post('nome_pais');
+
+		$nome_pais = "";
+		$estado = "";
+		$cidade = "";
+
+		if ($pais == "br") {
+			$nome_pais = "br";
+		} else {
+			$nome_pais = $nome_digitado_pais;
+		}
+
+		if ($estado1 == "" and $cidade1 == "") {
+			$estado = $estado2;
+			$cidade = $cidade2;
+		} else {
+			$estado = $estado1;
+			$cidade = $cidade1;
+		}
+
+		$dataNascimentoSoNumeros = preg_replace('/\D/', '', $nascimento);
+		$total_numeros_data_nascimento = strlen($dataNascimentoSoNumeros);
+
+		$codigo = $this->input->post('codigo');
+		$infocodigo = $this->FConsultas_model->infos_codigo($codigo);
+		$link_codigo = $infocodigo['link'];
+
+		$codigo_id_c = $infocodigo['dados'];
+		if ($codigo_id_c == '') {
+			$id_supervisor = 4000;
+		} else {
+			$id_supervisor = $infocodigo['id_usuario'];
+		}
+
+		echo $link_codigo;
+
+		// cadastrando coordenador pais = brasil
+		if ($is_br) {
+			$cpfSoNumeros = preg_replace('/\D/', '', $cpf);
+			$total_numeros_cpf = strlen($cpfSoNumeros);
+			if ($total_numeros_cpf == 11 && $total_numeros_data_nascimento == 8 && $this->FAlerta_model->valida_cpf($cpfSoNumeros)) {
+
+				$cpf_completo = $cpfSoNumeros[0] . $cpfSoNumeros[1] . $cpfSoNumeros[2] . "." . $cpfSoNumeros[3] . $cpfSoNumeros[4] . $cpfSoNumeros[5] . "." . $cpfSoNumeros[6] . $cpfSoNumeros[7] . $cpfSoNumeros[8] . "-" . $cpfSoNumeros[9] . $cpfSoNumeros[10];
+
+				$data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+				$coordenadorjacadastrado = $this->Lideres->check_cadastro('consultar_por_2_cpf_email_nome', [$nome, $cpfSoNumeros, $cpf_completo, $email]);
+				$usuariojatacadastrado = $this->Lideres->check_cadastro_usuario('check_nome_2_cpf_email', [$nome, $cpfSoNumeros, $cpf_completo, $email]);
+
+				if ($coordenadorjacadastrado == 0 && $usuariojatacadastrado == 0) {
+					$nivel = 3;
+
+					$cadastro = $this->Coordenadores->cadastro_coordenador($nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, $id_supervisor, 3);
+					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
+
+					if ($cadastro && $cadastroUsuario) {
+
+						$consultarDados = $this->Coordenadores->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_coordenador_or_email_cpf_nome', '', '', '');
+						$id_coordenador = $consultarDados['dados']['id_coordenador'];
+
+						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
+						$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
+
+						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
+						echo '
+							<script>
+								setTimeout(function(){ window.location="https://site.campbrasil.com/" }, 3000);
+							</script>
+						';
+					} else {
+						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+						echo '
+							<script>
+								setTimeout(function(){ window.location="' . $link_codigo . '" }, 3000);
+							</script>
+						';
+					}
+				} else {
+					$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_or_email_cpf_nome', '', '', '');
+
+					if ($info_usuario['row'] == 0) {
+						$mensagem = "Link Inválido!\nDados não Encontrado";
+						$link = "https://sistemas.campbrasil.com";
+					} else {
+						$nome_usuario = $info_usuario['dados']['nome'];
+						$email_usuario = $info_usuario['dados']['email'];
+						$cpf_usuario = $info_usuario['dados']['cpf'];
+						$senha = $info_usuario['dados']['senha'];
+						$mensagem = "Sucesso!\nLíder Liberado!";
+						$link = "https://sistemas.campbrasil.com/sistema/acesso?email=$email_usuario&cpf=$cpf_usuario&nome=$nome_usuario&senha=$senha&x_ir=1&opc=1";
+					}
+
+					$this->FConsultas_model->mensagem('danger', 'Você já está cadastrado! Você será redirecionado!', [$mensagem]);
+					echo '
+						<script>
+							setTimeout(function(){ window.location="' . $link . '" }, 3000);
+						</script>
+					';
+				}
+			} else {
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
+				echo '
+				<script>
+					setTimeout(function(){ window.location="' . $link_codigo . '" }, 3000);
+				</script>
+			';
+			}
+		} else {
+			// cadastro coordenador outro pais
+			if ($total_numeros_data_nascimento == 8) {
+				$data_nascimento_completo = $dataNascimentoSoNumeros[0] . $dataNascimentoSoNumeros[1] . "/" . $dataNascimentoSoNumeros[2] . $dataNascimentoSoNumeros[3] . "/" . $dataNascimentoSoNumeros[4] . $dataNascimentoSoNumeros[5] . $dataNascimentoSoNumeros[6] . $dataNascimentoSoNumeros[7];
+
+				$liderjacadastrado = $this->Lideres->check_cadastro('consultar_por_email_nome_data_nascimento', [$nome, $email, $data_nascimento_completo]);
+				$usuariojatacadastrado = $this->Lideres->check_cadastro_usuario('check_nome_email', [$nome, $email]);
+
+				if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
+					$nivel = 3;
+					$cadastro = $this->Coordenadores->cadastro_coordenador($nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, $id_supervisor, 3);
+					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, "", $nivel, $senha);
+
+					if ($cadastro && $cadastroUsuario) {
+						$consultarDados = $this->Coordenadores->infos([$email, $nome, $data_nascimento_completo], 'info_coordenador_nome_email_data_nascimento', '', '', '');
+
+						$id_coordenador = $consultarDados['dados']['id_coordenador'];
+
+						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=&nome=$nome&senha=$senha&x_ir=1&opc=2";
+						$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
+
+						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Cadastro Realizado com Sucesso! Aguarde! Em breve retornaremos com mais Informações"]);
+						echo '
+							<script>
+								setTimeout(function(){ window.location="https://site.campbrasil.com/" }, 3000);
+							</script>
+						';
+					} else {
+						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente Novamente!"]);
+						echo '
+							<script>
+								setTimeout(function(){ window.location="' . $link_codigo . '" }, 3000);
+							</script>
+						';
+					}
+				} else {
+					$info_usuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '', '');
+
+					if ($info_usuario['row'] == 0) {
+						$mensagem = "Link Inválido!\nDados não Encontrado";
+						$link = $link_codigo;
+					} else {
+						$nome_usuario = $info_usuario['dados']['nome'];
+						$email_usuario = $info_usuario['dados']['email'];
+						$cpf_usuario = $info_usuario['dados']['cpf'];
+						$senha = $info_usuario['dados']['senha'];
+						$mensagem = "Sucesso!\nLíder Liberado!";
+						$link = "https://sistemas.campbrasil.com/sistema/acesso?email=$email_usuario&cpf=$cpf_usuario&nome=$nome_usuario&senha=$senha&x_ir=1&opc=2";
+					}
+
+					$this->FConsultas_model->mensagem('danger', 'Você já está cadastrado! Você será redirecionado!', [$mensagem]);
+					echo '
+						<script>
+							setTimeout(function(){ window.location="' . $link . '" }, 3000);
+						</script>
+					';
+				}
+			} else {
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Data de Nascimento Inválida!"]);
+				echo '
+					<script>
+						setTimeout(function(){ window.location="' . $link_codigo . '" }, 3000);
+					</script>
+				';
+			}
+		}
+
+		/*$red = $this->input->post('red');
+		$funcao = $this->FConsultas_model->red("$red", 2000, []);
+		echo $funcao;*/
+	}
+
 	// cadastro coordenador na plataforma (ok)
 	public function cadastro_coordenador()
 	{
@@ -2620,7 +2829,7 @@ class Welcome extends CI_Controller
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
-						$this->Automatico->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
+						$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Coordenador cadastrado com Sucesso!"]);
 					} else {
@@ -2652,7 +2861,7 @@ class Welcome extends CI_Controller
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=&nome=$nome&senha=$senha&x_ir=1&opc=2";
-						$this->Automatico->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
+						$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Coordenador cadastrado com Sucesso!"]);
 					} else {
@@ -2667,6 +2876,58 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red');
 		$funcao = $this->FConsultas_model->red("$red", 2000, []);
 		echo $funcao;
+	}
+
+
+	// liberar acesso via plataforma sem ser no link do email
+	public function liberar_acesso_coordenador()
+	{
+		$id_coordenador = $this->input->post('id_coordenador');
+		$id_usuario = $this->input->post('id_usuario');
+
+		$info_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+		$is_br = $info_coordenador['dados']['pais'] == 'br' || '' ? true : false;
+
+		$telefone = $this->FConsultas_model->formatar_telefone($info_coordenador['dados']['telefone_whatsapp'], $is_br);
+		$mensagem = "Bem-Vindo ao sistema do CAMP Brasil!";
+
+		$routa = $this->input->post('routa');
+
+		$mudar = $this->Coordenadores->editar_autorizacao_coordenador($id_coordenador, 1);
+
+		$email = $info_coordenador['dados']['email'];
+		$cpf = $info_coordenador['dados']['cpf'];
+		$nome = $info_coordenador['dados']['nome_coordenador'];
+		$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
+		$senha = $info_usuario['dados']['senha'];
+
+		if ($is_br) {
+			$opc = 1;
+		} else {
+			$opc = 2;
+		}
+
+		$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=$opc";
+
+		$this->enviar_email_coordenador_liberacao_sistema($id_coordenador, $link_lider);
+
+		if ($mudar) {
+			$this->FAlerta_model->alerta_controle($id_usuario, $id_coordenador, "autorizou com sucesso seu lider", 'coord_autoriza_lider');
+
+			$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Sucesso!']);
+			$funcao = $this->FConsultas_model->red("$routa", 2000, []);
+
+			//echo "LINK: $link_lider";
+
+			echo $funcao;
+
+			echo '<script>
+				const newTab = window.open("about:blank");
+				setTimeout(function() {
+				newTab.location.href = "https://api.whatsapp.com/send?phone=' . $telefone . '&text=' . $mensagem . '";
+				}, 0);
+			</script>';
+		}
 	}
 
 	// ok
@@ -2815,7 +3076,7 @@ class Welcome extends CI_Controller
 						$id_lider = $consultarDados['dados']['id_lider'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
-						$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+						$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
 					} else {
@@ -2844,7 +3105,7 @@ class Welcome extends CI_Controller
 						$id_lider = $consultarDados['dados']['id_lider'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=&nome=$nome&senha=$senha&x_ir=1&opc=2";
-						$this->Automatico->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
+						$this->enviar_email_lider_liberacao_sistema($id_lider, $link_lider);
 
 						$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder cadastrado com Sucesso!"]);
 					} else {
@@ -3469,5 +3730,391 @@ class Welcome extends CI_Controller
 	public function ir_modulo()
 	{
 		$this->load->view('import/sistema/arquivos/01/Arco/Arco.php');
+	}
+
+	public function enviar_email_lider_liberacao_sistema($id_lider, $link)
+	{
+		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		if ($dados_lider['row'] == 0) {
+			// enviar alerta p direção
+		} else {
+			$lider = $dados_lider['dados'];
+			$email = $lider['email'];
+			// Suucesso
+			$assunto = "Bem-Vindo(a) " . $lider['nome_lider'] . " ao nosso sistema de discipulado infantil!";
+
+			$dados = array(
+				'dados_lider' => $lider,
+				'link' => $link,
+			);
+
+			$page = $this->load->view('email/bem-vindo-sistema', $dados, TRUE);
+			//$this->load->view('email/bem-vindo-sistema', $dados);
+
+			$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+			$this->email->subject($assunto);
+			$this->email->to($email);
+			$this->email->message($page);
+
+			if ($this->email->send()) {
+				//echo "\nsucesso";
+			} else {
+				//echo "\nerro\n";
+				//echo $this->email->print_debugger();
+			}
+		}
+	}
+
+	public function enviar_email_coordenador_liberacao_sistema($id_coordenador, $link)
+	{
+		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+		if ($dados_coordenador['row'] == 0) {
+			// enviar alerta p direção
+		} else {
+			$coordenador = $dados_coordenador['dados'];
+			$email = $coordenador['email'];
+			// Suucesso
+			$assunto = "Bem-Vindo(a) " . $coordenador['nome_coordenador'] . " ao nosso sistema de discipulado infantil!";
+
+			$dados = array(
+				'dados_coordenador' => $coordenador,
+				'link' => $link,
+			);
+
+			$page = $this->load->view('email/bem-vindo-sistema-coordenador', $dados, TRUE);
+			//$this->load->view('email/bem-vindo-sistema', $dados);
+
+			$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+			$this->email->subject($assunto);
+			$this->email->to($email);
+			$this->email->message($page);
+
+			if ($this->email->send()) {
+				//echo "\nsucesso";
+			} else {
+				//echo "\nerro\n";
+				//echo $this->email->print_debugger();
+			}
+		}
+	}
+
+	public function enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider)
+	{
+		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+		$data_hoje = date('d/m/Y');
+
+		if ($dados_lider['row'] == 0) {
+		} else {
+
+			$lider = $dados_lider['dados'];
+			$assunto = "Alerta de novo cadastrado no sistema - $data_hoje";
+
+			if ($dados_coordenador['row'] == 0) {
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => 'Micaele Sales Ribeiro',
+					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_coordenador&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
+
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
+
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to("sales.micaele1911@gmail.com");
+				$this->email->message($page);
+
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
+			} else {
+				$nome_coordenador = $dados_coordenador['dados']['nome_coordenador'];
+				$email = $dados_coordenador['dados']['email'];
+				// Suucesso
+
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => $nome_coordenador,
+					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_coordenador&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
+
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
+
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to($email);
+				$this->email->message($page);
+
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
+			}
+		}
+	}
+
+	public function enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider)
+	{
+		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		$dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '', '');
+		$data_hoje = date('d/m/Y');
+
+		if ($dados_lider['row'] == 0) {
+		} else {
+
+			$lider = $dados_lider['dados'];
+			$assunto = "Alerta de novo cadastrado no sistema - $data_hoje";
+
+			if ($dados_supervisor['row'] == 0) {
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => 'Micaele Sales Ribeiro',
+					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_supervisor&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
+
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
+
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to("sales.micaele1911@gmail.com");
+				$this->email->message($page);
+
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
+			} else {
+				$nome_coordenador = $dados_supervisor['dados']['nome_supervisorR'];
+				$email = $dados_supervisor['dados']['email'];
+				// Suucesso
+
+				$dados = array(
+					'dados_lider' => $lider,
+					'nome' => $nome_coordenador,
+					'link' => "https://sistemas.campbrasil.com/sistema/aprovar?id_operador=$id_supervisor&id_usuario=$id_usuario&id_lider=$id_lider",
+				);
+
+				$page = $this->load->view('email/alerta_c-novo-lider', $dados, TRUE);
+				//$this->load->view('email/alerta_c-novo-lider', $dados);
+
+				$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+				$this->email->subject($assunto);
+				$this->email->to($email);
+				$this->email->message($page);
+
+				if ($this->email->send()) {
+					//echo "\nsucesso";
+				} else {
+					//echo "\nerro\n";
+					//echo $this->email->print_debugger();
+				}
+			}
+		}
+	}
+
+	public function enviarEmailDevocionalDiario()
+
+	{
+		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '', '');
+
+		$dataHj = date('m/d/Y');
+
+		$hora = date('H');
+
+		if ($hora >= 7 && $hora <= 21) {
+			$controller = 0;
+			foreach ($todosPais as $key => $pais) {
+
+				$id = $pais['id'];
+				$email = $pais['email'];
+				$todosPG = $this->PG->query([$id], 'query_pg_id_lider_all', '');
+
+				if ($controller < 10) {
+					foreach ($todosPG['dados'] as $key => $pg) {
+
+						$idPg = $pg['id_pg'];
+
+						$checks = $pg['autorizacao'];
+						$ativoPG = $pg['ativo'];
+						$nivelPg = $pg['nivel'];
+
+						$anoPg = $pg['ano'];
+						$modulo = $pg['modulo_devocional'];
+						$licao = $pg['licao_devocional'];
+						$diaComecou = $pg['data_semana'];
+
+						if ($checks == 0 || $ativoPG == 0 || $diaComecou == '' || $nivelPg == 2) {
+						} else {
+
+							$dia = $diaComecou[0] . $diaComecou[1];
+							$mes = $diaComecou[3] . $diaComecou[4];
+							$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
+							$data_trocada = $mes . "/" . $dia . "/" . $ano;
+
+							$dia1 = date('m/d/Y', strtotime('+1 day', strtotime($data_trocada)));
+							$dia2 = date('m/d/Y', strtotime('+2 day', strtotime($data_trocada)));
+							$dia3 = date('m/d/Y', strtotime('+3 day', strtotime($data_trocada)));
+							$dia4 = date('m/d/Y', strtotime('+4 day', strtotime($data_trocada)));
+							$dia5 = date('m/d/Y', strtotime('+5 day', strtotime($data_trocada)));
+							$dia6 = date('m/d/Y', strtotime('+6 day', strtotime($data_trocada)));
+
+							$check_day_1 = strtotime($dia1) == strtotime($dataHj) ? true : false;
+							$check_day_2 = strtotime($dia2) == strtotime($dataHj) ? true : false;
+							$check_day_3 = strtotime($dia3) == strtotime($dataHj) ? true : false;
+							$check_day_4 = strtotime($dia4) == strtotime($dataHj) ? true : false;
+							$check_day_5 = strtotime($dia5) == strtotime($dataHj) ? true : false;
+							$check_day_6 = strtotime($dia6) == strtotime($dataHj) ? true : false;
+
+							if ($check_day_1) {
+								$diaDevocional = 1;
+							} else if ($check_day_2) {
+								$diaDevocional = 2;
+							} else if ($check_day_3) {
+								$diaDevocional = 3;
+							} else if ($check_day_4) {
+								$diaDevocional = 4;
+							} else if ($check_day_5) {
+								$diaDevocional = 5;
+							} else if ($check_day_6) {
+								$diaDevocional = 6;
+							}
+
+							if (strtotime($data_trocada) == strtotime($dataHj)) {
+							} else {
+								$check = $this->FConsultas_model->checkControler($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional);
+
+								if ($check == 0) {
+									$dadosDevocionais = $this->FConsultas_model->consultarDevocionalModuloLicaoDia($anoPg, $modulo, $licao, $diaDevocional);
+									if ($dadosDevocionais) {
+
+										// Suucesso
+										$assunto = "Devocional Dia " . $dadosDevocionais['dia'] . " - " . $dadosDevocionais['titulo'];
+
+										$dados = array(
+											'devocionais' => $dadosDevocionais,
+											'nome' => $pais['nome'],
+										);
+
+										$page = $this->load->view('sistema/pais/partes/corpo-mensagem-devocional', $dados, TRUE);
+										$this->email->from("camp@campbrasil.com", 'CAMP Brasil');
+										$this->email->subject($assunto);
+										$this->email->to($email);
+										$this->email->message($page);
+										$this->email->attach($dadosDevocionais['file'] ?? "");
+										if ($this->email->send()) {
+											$controller = $controller + 1;
+											$this->Funcoes->controlerDevocionais($id, $idPg, $anoPg, $modulo, $licao, $diaDevocional, 1);
+										} else {
+										}
+									} else {
+									}
+								} else {
+									// enviar um email de erro p administração, com os dados p reenviar
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	public function atualizarProgressoDevocional()
+	{
+		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '', '');
+
+		$dataHj = date('m/d/Y');
+
+		foreach ($todosPais as $key => $pais) {
+			$id = $pais['id'];
+
+			$todosPG = $this->PG->query([$id], 'query_pg_id_lider_all', '');
+
+			if ($todosPG['row'] == 0) {
+			} else {
+				foreach ($todosPG['dados'] as $key => $pg) {
+
+					$id_pg = $pg['id_pg'];
+					$data_inicio = $pg['data_inicio'];
+					$diaComecou = $pg['data_semana'];
+					$modulo = $pg['modulo_devocional'];
+					$licao = $pg['licao_devocional'];
+
+					$n_modulo = $modulo + 1;
+
+					$consultaMO = $this->FConsultas_model->consultarModuloId($modulo);
+
+					if ($data_inicio == '' or $diaComecou == '') {
+					} else {
+						$dia = $diaComecou[0] . $diaComecou[1];
+						$mes = $diaComecou[3] . $diaComecou[4];
+						$ano = $diaComecou[6] . $diaComecou[7] . $diaComecou[8] . $diaComecou[9];
+						$data_trocada = $mes . "/" . $dia . "/" . $ano;
+
+						$data_troca = date('m/d/Y', strtotime('+7 day', strtotime($data_trocada)));
+						$data_envio = date('d/m/Y', strtotime('+7 day', strtotime($data_trocada)));
+
+						if (strtotime($dataHj) == strtotime($data_troca)) {
+
+							$licao_nova = $licao + 1;
+
+							$moduloNovo = $licao == $consultaMO['n_licao'] ? $n_modulo : $modulo;
+
+							$licaoNova = $licao == $consultaMO['n_licao'] ? 1 : $licao_nova;
+
+							$anoNovo = ($moduloNovo == 11 ? 3 : ($moduloNovo == 6 ? 2 : 1));
+
+							$this->PG->editar_progresso_data($id_pg, $anoNovo, $moduloNovo, $licaoNova, $data_envio);
+						} else {
+						}
+					}
+				}
+			}
+		}
+	}
+	public function atualizarModuloMensal()
+	{
+		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '', '');
+
+		$dataHj = date('m/d/Y');
+
+		foreach ($todosPais as $key => $pais) {
+			$id = $pais['id'];
+
+			$todosPG = $this->PG->query([$id], 'query_pg_id_lider_all', '');
+
+			if ($todosPG['row'] == 0) {
+			} else {
+				foreach ($todosPG['dados'] as $key => $pg) {
+
+					$id_pg = $pg['id_pg'];
+
+					$id_modulo_1 = $pg['id_modulo'];
+					$id_modulo_2 = $pg['modulo_devocional'];
+
+					$data_fim = $pg['data_previsao_termino'];
+
+					if ($data_fim == '') {
+					} else {
+						if ($id_modulo_1 != $id_modulo_2) {
+							if (strtotime($data_fim) >= strtotime($dataHj)) {
+								$this->PG->editar_ativo($id_pg, $id, 1);
+							} else {
+							}
+						} else {
+						}
+					}
+				}
+			}
+		}
 	}
 }

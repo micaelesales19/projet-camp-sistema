@@ -819,7 +819,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-body">
                                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="opc" value="<?= $dados_coordenador['id_coordenador']; ?>">
-                                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/coordenadores/">
+                                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/coordenadores">
                                     <input type="hidden" name="id_novo_coordenador" id="idCoordenadorNovoTroca" value="0">
 
                                     <div class="col-lg-12">
@@ -840,7 +840,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <label for="id_coordenador_troca">Selecione um novo coordenador para os líderes:</label>
 
                                             <!-- Caixa de pesquisa -->
-                                            <input type="text" id="pesquisarCoordenador" class="form-control mb-3" placeholder="Pesquisar Líder...">
+                                            <input type="text" id="pesquisarCoordenador" class="form-control mb-3" placeholder="Pesquisar Líder..."><br>
 
                                             <!-- Lista de líderes -->
                                             <div id="listaCoordenadores_3" style="max-height: 300px; overflow-y: auto;">

@@ -351,12 +351,10 @@ class Supervisor extends CI_Controller
         $ano = $this->input->post("ano");
         $routa = $this->input->post('routa');
 
-
         $modulos = $this->FConsultas_model->consultarModuloAno($ano);
         $dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
 
         $pages = [];
-
         if ($routa == 'pg') {
             $page1 = array(
                 "routa" => "../pg",
@@ -895,9 +893,9 @@ class Supervisor extends CI_Controller
 
         // 🔹 1. Coleta todos os IDs de líderes de uma vez
         $ids = array_column($lideres, 'id_lider');
-        if (empty($ids)) {
+        /*if (empty($ids)) {
             return ['row' => 0, 'dados' => []];
-        }
+        }*/
 
         // 🔹 2. Busca todas as crianças desses líderes de uma vez
         $criacas_por_lider = $this->Criancas->criacasPorLideres($ids);

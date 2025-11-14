@@ -92,6 +92,33 @@ class Coordenadores extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'check_coordenador_situacao_cadastro_id_supervisor') {
+            // Consulta na tabela de coordenadores se tem coordenador esperando autorização pelo ID SUPERVISOR
+            $id_supervisor = $id_usuario[0];
+            $ativo = $id_usuario[1];
+            $consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR = '$id_supervisor' AND ativo = $ativo ORDER BY nome_coordenador ASC");
+            $row = $consultar_coordenadores->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenadores->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        }
+    }
+
+
+    public function editar_autorizacao_coordenador($id_coordenador, $x)
+    {
+        $this->db->set('ativo', $x);
+        $this->db->where('id_coordenador', $id_coordenador);
+
+        if ($this->db->update('coordenador')) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -253,7 +280,7 @@ class Coordenadores extends CI_Model
         date_default_timezone_set('America/Sao_Paulo');
         $data = date('d/m/Y');
 
-        $dados_lider = $this->FConsultas_model->getInfoCoordenadorId($id_coordenador);
+        $dados_lider = $this->infos([$id_coordenador], 'info_coordenador', '', '', '');
 
         $consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_coordenador WHERE id_pastor LIKE '$id_coordenador'");
         $row = $consultar_pg_desativado->num_rows();

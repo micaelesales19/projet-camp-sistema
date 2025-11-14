@@ -52,7 +52,7 @@ class FAlerta_model extends CI_Model
 	}
 
 	// ALERTA - COORDENADOR
-	/*public function alerta_para_coordenador($id_responsavel, $id_remetente, $id, $motivo, $acao)
+	public function alerta_para_coordenador($id_responsavel, $id_remetente, $id, $motivo, $acao)
 	{
 
 		date_default_timezone_set('America/Sao_Paulo');
@@ -92,7 +92,7 @@ class FAlerta_model extends CI_Model
 		$inserir['data'] = $data;
 		$inserir['hora'] = $hora;
 		$this->db->insert('alerta', $inserir);
-	}*/
+	}
 
 	// Alerta
 	/*public function excluir_alerta($id_alerta)

@@ -521,7 +521,7 @@ class FConsultas_model extends CI_Model
 	}
 
 
-	function infos_codigo($codigo)
+	function infos_codigo($codigo): mixed
 	{
 		$consultarLink = $this->db->select("*")
 			->from("link_cadastro")

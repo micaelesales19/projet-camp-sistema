@@ -53,6 +53,28 @@ $this->load->view('partes/head');
             document.getElementById('cpf_colider').removeAttribute('required');
         }
     }
+
+    function aparecer_select_2() {
+        var opc = document.getElementById('pais').value;
+        if (opc == "br") {
+            document.getElementById('estaods2').value = '';
+            document.getElementById('cidades2').value = '';
+            document.getElementById('consultar_endereco').style.display = "inline";
+            document.getElementById('escrever_endereco').style.display = "none";
+
+            document.getElementById('precisa_cpf').style.display = "inline";
+            document.getElementById('cpf').setAttribute('required', 'true');
+        } else {
+            document.getElementById('estados').value = '';
+            document.getElementById('cidades').value = '';
+            document.getElementById('escrever_endereco').style.display = "inline";
+            document.getElementById('consultar_endereco').style.display = "none";
+
+            document.getElementById('precisa_cpf').style.display = "none";
+            document.getElementById('cpf').value = '';
+            document.getElementById('cpf').removeAttribute('required');
+        }
+    }
 </script>
 
 <style type="text/css" media="screen">
@@ -161,171 +183,291 @@ $this->load->view('partes/head');
         </div>
 
         <div class="register-box-body">
-            <h4>Formulário de Cadastro</h4>
-            <p class="login-box-msg">Preencha com todos os dados e informações válidas.</p>
-            <form action="../cadastro/salvar" method="post" name="form_cadastro_lider">
+            <?php
+            if ($dados['nivel'] == 3) {
+            ?>
+                <h4>Formulário de Cadastro - Líder</h4>
+                <p class="login-box-msg">Preencha com todos os dados e informações válidas.</p>
+                <form action="../cadastro/salvar" method="post" name="form_cadastro_lider">
 
-                <input type="hidden" name="codigo" value="<?= $codigo; ?>">
-
-                <div class="form-group has-feedback">
-                    <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
-                        <option value="" selected>País</option>
-                        <option value="br">Brasil</option>
-                        <option value="Moçambique">Moçambique</option>
-                        <option value="outro">Outros</option>
-                    </select>
-                    <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
-                </div>
-
-                <div id="escrever_endereco">
-                    <div class="form-group has-feedback">
-                        <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
-                        <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
-                    </div>
+                    <input type="hidden" name="codigo" value="<?= $codigo; ?>">
 
                     <div class="form-group has-feedback">
-                        <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
-                        <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
-                    </div>
-                </div>
-
-                <div id="consultar_endereco">
-                    <div class="form-group has-feedback">
-                        <select id="estados" name="estados" class="form-control">
-                            <option value=""></option>
+                        <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
+                            <option value="" selected>País</option>
+                            <option value="br">Brasil</option>
+                            <option value="Moçambique">Moçambique</option>
+                            <option value="outro">Outros</option>
                         </select>
                         <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                     </div>
 
-                    <div class="form-group has-feedback">
-                        <select id="cidades" name="cidades" class="form-control">
-                        </select>
-                        <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                    <div id="escrever_endereco">
+                        <div class="form-group has-feedback">
+                            <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
+                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
+                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" name="nome" minlength="5" placeholder="Seu nome" required>
-                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                </div>
+                    <div id="consultar_endereco">
+                        <div class="form-group has-feedback">
+                            <select id="estados" name="estados" class="form-control">
+                                <option value=""></option>
+                            </select>
+                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
 
-                <div class="form-group has-feedback">
-                    <input type="email" class="form-control" placeholder="Email" name="email" required>
-                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                </div>
+                        <div class="form-group has-feedback">
+                            <select id="cidades" name="cidades" class="form-control">
+                            </select>
+                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+                    </div>
 
-                <div class="form-group has-feedback" id="precisa_cpf">
-                    <input type="text" class="form-control" id="cpf" placeholder="CPF" minlength="11" maxlength="14" name="cpf">
-                    <span class="glyphicon glyphicon-lock form-control-feedback cpf-icon"></span>
-                </div>
-
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Telefone (DDD + Telefone)" minlength="11" name="telefone" required>
-                    <span class="glyphicon glyphicon-phone form-control-feedback"></span>
-                </div>
-
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" minlength="5" placeholder="Igreja" name="igreja">
-                    <span class="glyphicon glyphicon-home form-control-feedback"></span>
-                </div>
-
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
-                    <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
-                </div>
-
-                <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="Senha" name="senha" required>
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                </div>
-
-                <div class="form-group has-feedback" id="linha">
-                    Você tem colíder?
-                    <label class="switch">
-                        <input type="checkbox" name="checkColider" id="check" value="true" onclick="mostrar_form_colider();">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-
-                <script>
-                    function mostrar_form_colider() {
-                        const checked = document.querySelector('#check:checked') !== null;
-
-                        if (checked) {
-                            document.getElementById('form_colider').style.display = "inline";
-                            document.getElementById('isColider').value = "1";
-                        } else {
-                            document.getElementById('form_colider').style.display = "none";
-                            document.getElementById('isColider').value = "";
-                        }
-                    }
-                </script>
-
-                <input type="hidden" id="isColider" name="isColider" value="">
-                <div id="form_colider" style="display: none;">
-                    <p class="login-box-msg">Preencha com as informações do seu colíder</p>
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" name="nomeColider" minlength="5" placeholder="Nome do Colíder">
+                        <input type="text" class="form-control" name="nome" minlength="5" placeholder="Seu nome" required>
                         <span class="glyphicon glyphicon-user form-control-feedback"></span>
                     </div>
 
                     <div class="form-group has-feedback">
-                        <input type="email" class="form-control" placeholder="Email do Colíder" name="emailColider">
+                        <input type="email" class="form-control" placeholder="Email" name="email" required>
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                     </div>
 
-                    <div class="form-group has-feedback" id="precisa_cpf_colider">
-                        <input type="text" class="form-control" placeholder="CPF do Colíder" minlength="11" maxlength="14" id="cpf_colider" name="cpfColider">
+                    <div class="form-group has-feedback" id="precisa_cpf">
+                        <input type="text" class="form-control" id="cpf" placeholder="CPF" minlength="11" maxlength="14" name="cpf">
                         <span class="glyphicon glyphicon-lock form-control-feedback cpf-icon"></span>
                     </div>
 
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefoneColider">
+                        <input type="text" class="form-control" placeholder="Telefone (DDD + Telefone)" minlength="11" name="telefone" required>
                         <span class="glyphicon glyphicon-phone form-control-feedback"></span>
                     </div>
 
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" placeholder="Data de Nascimento do Colíder (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimentoColider">
+                        <input type="text" class="form-control" minlength="5" placeholder="Igreja" name="igreja">
+                        <span class="glyphicon glyphicon-home form-control-feedback"></span>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
                         <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
                     </div>
-                </div>
 
-                <div class="row" style="margin: 10px;">
-                    <div class="col-xs-8" id="colxs8">
-                        <div class="checkbox icheck">
-                            <label>
-                                <input type="checkbox" id="opc" value="confirmado"> Eu li e aceito os <a data-toggle="modal" data-target="#termos">termos</a>
-                                <div class="modal fade" id="termos">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span></button>
-                                                <h4 class="modal-title">TERMO DE ADESÃO A SERVIÇO VOLUNTÁRIO E RESPONSABILIDADE PESSOAL</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="box-body">
-                                                    <p style="text-align: justify;">Eu, assumo mediante o Camp Brasil (Centro de Apoio Missional e Pastoral), nos termos da lei No. 9.608 de 18 de fevereiro de 1998 – “Lei do Voluntariado” - firmar o presente TERMO DE ADESÃO E RESPONSABILIDADE PESSOAL, com as seguintes cláusulas e condições: 1a) A adesão de uso deste material é uma decisão pessoal minha para a realização de encontros semanais com crianças em Pequenos Grupos ou células, em uma casa ou em uma igreja, pelo período de uma hora semanal, em um dia da semana que eu mesmo escolhi. 2a) Que estes encontros serão realizados objetivando ajudar crianças por meio de amizade, companheirismo e do ensino de valores éticos, orientação moral e ensinos espirituais para a vida das mesmas. E que ele será́ realizado com crianças da minha comunidade e com a permissão de seus responsáveis legais. 3a) Que a participação do CAMP Brasil neste trabalho é referente somente a ceder-me o material didático disponível para este fim, o qual se encontra em um site por meio de um sistema (plataforma). E ajudar-me com respeito a melhor forma de realizar estes encontros com transparência e na busca do bem-estar para as crianças. 4a) Como signatário tenho conhecimento que este serviço não gera vinculo empregatício, nem obrigação de natureza trabalhista, previdenciária ou afim com ou para o Camp Brasil. 5a) Eventuais despesas com este meu uso serão ressarcidas por mim mesmo, ou pela igreja na qual sirvo como membro, caso esta tenha assumido tal compromisso. 6a) O presente termo vigora por prazo indeterminado, podendo qualquer das partes rescindi-lo a qualquer tempo, sem qualquer ônus e independentemente de prévia comunicação.</p>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                            </div>
-                                        </div>
-                                        <!-- /.modal-content -->
-                                    </div>
-                                    <!-- /.modal-dialog -->
-                                </div>
-                            </label>
+                    <div class="form-group has-feedback">
+                        <input type="password" class="form-control" placeholder="Senha" name="senha" required>
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
+
+                    <div class="form-group has-feedback" id="linha">
+                        Você tem colíder?
+                        <label class="switch">
+                            <input type="checkbox" name="checkColider" id="check" value="true" onclick="mostrar_form_colider();">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <script>
+                        function mostrar_form_colider() {
+                            const checked = document.querySelector('#check:checked') !== null;
+
+                            if (checked) {
+                                document.getElementById('form_colider').style.display = "inline";
+                                document.getElementById('isColider').value = "1";
+                            } else {
+                                document.getElementById('form_colider').style.display = "none";
+                                document.getElementById('isColider').value = "";
+                            }
+                        }
+                    </script>
+
+                    <input type="hidden" id="isColider" name="isColider" value="">
+                    <div id="form_colider" style="display: none;">
+                        <p class="login-box-msg">Preencha com as informações do seu colíder</p>
+                        <div class="form-group has-feedback">
+                            <input type="text" class="form-control" name="nomeColider" minlength="5" placeholder="Nome do Colíder">
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="email" class="form-control" placeholder="Email do Colíder" name="emailColider">
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback" id="precisa_cpf_colider">
+                            <input type="text" class="form-control" placeholder="CPF do Colíder" minlength="11" maxlength="14" id="cpf_colider" name="cpfColider">
+                            <span class="glyphicon glyphicon-lock form-control-feedback cpf-icon"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefoneColider">
+                            <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="text" class="form-control" placeholder="Data de Nascimento do Colíder (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimentoColider">
+                            <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
                         </div>
                     </div>
-                    <!-- /.col -->
-                    <div class="col-xs-4" id="colxs4">
-                        <input type="submit" class="btn btn-primary btn-block btn-flat" value="Registar" id="msg-submit" onclick="return validar_form()">
+
+                    <div class="row" style="margin: 10px;">
+                        <div class="col-xs-8" id="colxs8">
+                            <div class="checkbox icheck">
+                                <label>
+                                    <input type="checkbox" id="opc" value="confirmado"> Eu li e aceito os <a data-toggle="modal" data-target="#termos">termos</a>
+                                    <div class="modal fade" id="termos">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title">TERMO DE ADESÃO A SERVIÇO VOLUNTÁRIO E RESPONSABILIDADE PESSOAL</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="box-body">
+                                                        <p style="text-align: justify;">Eu, assumo mediante o Camp Brasil (Centro de Apoio Missional e Pastoral), nos termos da lei No. 9.608 de 18 de fevereiro de 1998 – “Lei do Voluntariado” - firmar o presente TERMO DE ADESÃO E RESPONSABILIDADE PESSOAL, com as seguintes cláusulas e condições: 1a) A adesão de uso deste material é uma decisão pessoal minha para a realização de encontros semanais com crianças em Pequenos Grupos ou células, em uma casa ou em uma igreja, pelo período de uma hora semanal, em um dia da semana que eu mesmo escolhi. 2a) Que estes encontros serão realizados objetivando ajudar crianças por meio de amizade, companheirismo e do ensino de valores éticos, orientação moral e ensinos espirituais para a vida das mesmas. E que ele será́ realizado com crianças da minha comunidade e com a permissão de seus responsáveis legais. 3a) Que a participação do CAMP Brasil neste trabalho é referente somente a ceder-me o material didático disponível para este fim, o qual se encontra em um site por meio de um sistema (plataforma). E ajudar-me com respeito a melhor forma de realizar estes encontros com transparência e na busca do bem-estar para as crianças. 4a) Como signatário tenho conhecimento que este serviço não gera vinculo empregatício, nem obrigação de natureza trabalhista, previdenciária ou afim com ou para o Camp Brasil. 5a) Eventuais despesas com este meu uso serão ressarcidas por mim mesmo, ou pela igreja na qual sirvo como membro, caso esta tenha assumido tal compromisso. 6a) O presente termo vigora por prazo indeterminado, podendo qualquer das partes rescindi-lo a qualquer tempo, sem qualquer ônus e independentemente de prévia comunicação.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-xs-4" id="colxs4">
+                            <input type="submit" class="btn btn-primary btn-block btn-flat" value="Registar" id="msg-submit" onclick="return validar_form()">
+                        </div>
+                        <!-- /.col -->
                     </div>
-                    <!-- /.col -->
-                </div>
-            </form>
+                </form>
+            <?php } else { ?>
+                <h4>Formulário de Cadastro - Coordenador</h4>
+                <p class="login-box-msg">Preencha com todos os dados e informações válidas.</p>
+                <form action="../coordenador/salvar" method="post" name="form_cadastro_lider">
+
+                    <input type="hidden" name="codigo" value="<?= $codigo; ?>">
+
+                    <div class="form-group has-feedback">
+                        <select id="pais" name="pais" class="form-control" onchange="aparecer_select_2(this)">
+                            <option value="" selected>País</option>
+                            <option value="br">Brasil</option>
+                            <option value="Moçambique">Moçambique</option>
+                            <option value="outro">Outros</option>
+                        </select>
+                        <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                    </div>
+
+                    <div id="escrever_endereco">
+
+                        <div class="form-group has-feedback">
+                            <input type="text" id="nomepais2" class="form-control" placeholder="Pais" name="nome_pais">
+                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
+                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
+                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+                    </div>
+
+                    <div id="consultar_endereco">
+                        <div class="form-group has-feedback">
+                            <select id="estados" name="estados" class="form-control">
+                                <option value=""></option>
+                            </select>
+                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <select id="cidades" name="cidades" class="form-control">
+                            </select>
+                            <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" name="nome" minlength="5" placeholder="Seu nome" required>
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <input type="email" class="form-control" placeholder="Email" name="email" required>
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    </div>
+
+                    <div class="form-group has-feedback" id="precisa_cpf">
+                        <input type="text" class="form-control" id="cpf" placeholder="CPF" minlength="11" maxlength="14" name="cpf">
+                        <span class="glyphicon glyphicon-lock form-control-feedback cpf-icon"></span>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" placeholder="Telefone (DDD + Telefone)" minlength="11" name="telefone" required>
+                        <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" required>
+                        <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <input type="password" class="form-control" placeholder="Senha" name="senha" required>
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    </div>
+
+                    <div class="row" style="margin: 10px;">
+                        <div class="col-xs-8" id="colxs8">
+                            <div class="checkbox icheck">
+                                <label>
+                                    <input type="checkbox" id="opc" value="confirmado"> Eu li e aceito os <a data-toggle="modal" data-target="#termos">termos</a>
+                                    <div class="modal fade" id="termos">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title">TERMO DE ADESÃO A SERVIÇO VOLUNTÁRIO E RESPONSABILIDADE PESSOAL</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="box-body">
+                                                        <p style="text-align: justify;">Eu, assumo mediante o Camp Brasil (Centro de Apoio Missional e Pastoral), nos termos da lei No. 9.608 de 18 de fevereiro de 1998 – “Lei do Voluntariado” - firmar o presente TERMO DE ADESÃO E RESPONSABILIDADE PESSOAL, com as seguintes cláusulas e condições: 1a) A adesão de uso deste material é uma decisão pessoal minha para a realização de encontros semanais com crianças em Pequenos Grupos ou células, em uma casa ou em uma igreja, pelo período de uma hora semanal, em um dia da semana que eu mesmo escolhi. 2a) Que estes encontros serão realizados objetivando ajudar crianças por meio de amizade, companheirismo e do ensino de valores éticos, orientação moral e ensinos espirituais para a vida das mesmas. E que ele será́ realizado com crianças da minha comunidade e com a permissão de seus responsáveis legais. 3a) Que a participação do CAMP Brasil neste trabalho é referente somente a ceder-me o material didático disponível para este fim, o qual se encontra em um site por meio de um sistema (plataforma). E ajudar-me com respeito a melhor forma de realizar estes encontros com transparência e na busca do bem-estar para as crianças. 4a) Como signatário tenho conhecimento que este serviço não gera vinculo empregatício, nem obrigação de natureza trabalhista, previdenciária ou afim com ou para o Camp Brasil. 5a) Eventuais despesas com este meu uso serão ressarcidas por mim mesmo, ou pela igreja na qual sirvo como membro, caso esta tenha assumido tal compromisso. 6a) O presente termo vigora por prazo indeterminado, podendo qualquer das partes rescindi-lo a qualquer tempo, sem qualquer ônus e independentemente de prévia comunicação.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-xs-4" id="colxs4">
+                            <input type="submit" class="btn btn-primary btn-block btn-flat" value="Registar" id="msg-submit" onclick="return validar_form()">
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+            <?php } ?>
         </div>
         <!-- /.form-box -->
     </div>

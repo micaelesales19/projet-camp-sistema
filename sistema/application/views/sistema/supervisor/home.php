@@ -12,6 +12,7 @@ if (!isset($_SESSION['usuario'])) {
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
   $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');
+  $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>
 
   <!DOCTYPE html>
@@ -189,9 +190,10 @@ if (!isset($_SESSION['usuario'])) {
           <!-- /.row -->
 
           <?php
-          $check_situacao_cadastro = $this->Lideres->infos([$id_usuario, 1], 'check_lider_situacao_cadastro_id_coordenador', '', '', '');
+          $check_situacao_cadastro = $this->Lideres->infos([$id_usuario, 1], 'check_lider_situacao_cadastro_id_supervisor', '', '', '');
+          $check_situacao_cadastro_coordenador = $this->Coordenadores->infos([$id_usuario, 3], 'check_coordenador_situacao_cadastro_id_supervisor', '', '', '');
 
-          if ($check_situacao_cadastro['row'] == 0) {
+          if ($check_situacao_cadastro['row'] == 0 && $check_situacao_cadastro_coordenador['row'] == 0) {
           } else {
           ?>
 
@@ -310,10 +312,10 @@ if (!isset($_SESSION['usuario'])) {
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                  <form action="page/lideres/liberar" method="post">
+                                  <form action="page/lider/liberar" method="post">
                                     <input type="hidden" name="id_lider" value="<?= $dados_l['id_lider']; ?>">
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
-                                    <input type="hidden" name="routa" value="home">
+                                    <input type="hidden" name="routa" value="<?= $url_redirecionamento; ?>">
                                     <input type="submit" class="btn btn-success" value="Autorizar">
                                   </form>
                                 </div>
@@ -326,6 +328,119 @@ if (!isset($_SESSION['usuario'])) {
                         <?php } ?>
                       </div>
                     <?php } ?>
+
+                    <?php
+                    if ($check_situacao_cadastro_coordenador['row'] == 0) {
+                    } else {
+                    ?>
+                      <div class="alert alert-info alert-dismissible">
+                        <h4><i class="icon fa fa-info"></i> Novo coordenador cadastrado</h4>
+                        <?php
+                        foreach ($check_situacao_cadastro_coordenador['dados'] as $key => $dados_coord) {
+                        ?>
+                          <?= $dados_coord['nome_coordenador']; ?>, se cadastrou no sistema
+                          <a href="#" style="text-decoration: none;" data-toggle="modal" data-target="#modal-default-<?= $dados_coord['id_coordenador'] ?>">
+                            <span class="label label-default">Liberar</span>
+                          </a>
+                          <div class="modal fade" id="modal-default-<?= $dados_coord['id_coordenador'] ?>">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span></button>
+                                  <?php
+                                  $date1 = date('d/m/Y', strtotime($dados_coord['data_cadastro']));
+                                  ?>
+                                  <h4 class="modal-title" style="color: black;">Autorizar Coordenador (Data de Cadastro <?= $date1; ?>)</h4>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="box-body">
+                                    <div class="col-lg-12">
+                                      <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" name="nome" minlength="5" placeholder="Nome" value="<?= $dados_coord['nome_coordenador']; ?>" disabled>
+                                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                      <div class="form-group has-feedback">
+                                        <input type="email" class="form-control" placeholder="Email" name="email" value="<?= $dados_coord['email']; ?>" disabled>
+                                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                      <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" minlength="11" value="<?= $dados_coord['cpf']; ?>" disabled>
+                                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                      <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" placeholder="Telefone do Colíder (DDD + Telefone)" minlength="11" name="telefone" value="<?= $dados_l['telefone_whatsapp']; ?>" disabled>
+                                        <span class="glyphicon glyphicon-phone form-control-feedback"></span>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                      <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" placeholder="Data de Nascimento (DD/MM/YYYY)" minlength="10" maxlength="10" name="nascimento" value="<?= $dados_coord['nascimento']; ?>" disabled>
+                                        <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                      <div class="col-lg-4">
+                                        <div class="form-group has-feedback">
+                                          <?php
+                                          $p = $dados_coord['pais'];
+                                          $nome_pais = "";
+                                          if ($p == 'br' ||  $p == '') {
+                                            $nome_pais = "Brasil";
+                                          } else {
+                                            $nome_pais = $p;
+                                          }
+                                          ?>
+                                          <input type="text" id="estaods2" class="form-control" placeholder="Pais" name="pais" value="<?= $nome_pais; ?>" disabled>
+                                          <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                        </div>
+                                      </div>
+                                      <div class="col-lg-4">
+                                        <div class="form-group has-feedback">
+                                          <input type="text" id="estaods2" class="form-control" placeholder="Estado" name="estados2" value="<?= $dados_coord['estado']; ?>" disabled>
+                                          <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                        </div>
+                                      </div>
+                                      <div class="col-lg-4">
+                                        <div class="form-group has-feedback">
+                                          <input type="text" id="cidades2" class="form-control" placeholder="Cidade" name="cidades2" value="<?= $dados_coord['cidade']; ?>" disabled>
+                                          <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                  <form action="page/coordenadores/liberar" method="post">
+                                    <input type="hidden" name="id_coordenador" value="<?= $dados_coord['id_coordenador']; ?>">
+                                    <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
+                                    <input type="hidden" name="routa" value="<?= $url_redirecionamento; ?>">
+                                    <input type="submit" class="btn btn-success" value="Autorizar">
+                                  </form>
+                                </div>
+                              </div>
+                              <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                          </div>
+                          <br>
+                        <?php } ?>
+                      </div>
+                    <?php } ?>
+
+
                     <!-- <div class="alert alert-warning alert-dismissible">
                         <h4><i class="icon fa fa-warning"></i> Alert!</h4>
                         Warning alert preview. This alert is dismissable.

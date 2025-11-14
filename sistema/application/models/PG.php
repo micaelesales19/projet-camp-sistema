@@ -64,7 +64,7 @@ class PG extends CI_Model
             );
         } else if ($opc == 'query_id_lider_id_pg_ativo') {
             $id_usuario = $dados[0];
-            $idPG = $id_usuario[1];
+            $idPG = $dados[1];
 
             $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $idPG AND ativo = $ativo");
             $row = $consultar_pg->num_rows();
@@ -110,19 +110,19 @@ class PG extends CI_Model
         $this->db->update('pg');
     }
 
-	public function editar_ativo($id_pg, $idlider, $x)
-	{
+    public function editar_ativo($id_pg, $idlider, $x)
+    {
 
-		$this->db->set('ativo', "1");
-		$this->db->where('id_pg', $id_pg);
-		$this->db->where('id_lider', $idlider);
+        $this->db->set('ativo', "1");
+        $this->db->where('id_pg', $id_pg);
+        $this->db->where('id_lider', $idlider);
 
-		if ($this->db->update('pg')) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+        if ($this->db->update('pg')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function mostrarPGId($id_usuario, $idPG)
     {

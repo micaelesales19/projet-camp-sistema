@@ -200,83 +200,83 @@ if (!isset($_SESSION['usuario'])) {
                         <center>
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_pg">Cadastrar +</button>
                             <button type="button" style="margin-left: 5px;" class="btn btn-light pull-rigth" data-toggle="modal" data-target="#pg_desativados">PG Desativados</button>
-                        </center>
 
+                            <div class="modal fade" id="pg_desativados">
+                                <div class="modal-dialog modal-success">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">Ativar | Desativar | PG</h4>
+                                        </div>
+                                        <div class="box-body">
 
-                        <div class="modal fade" id="pg_desativados">
-                            <div class="modal-dialog modal-success">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title">Ativar | Desativar | PG</h4>
-                                    </div>
-                                    <div class="box-body">
+                                            <script>
+                                                function trocar_id_pg() {
+                                                    var id_pg = document.getElementById('opc_id_pg').value;
 
-                                        <script>
-                                            function trocar_id_pg() {
-                                                var id_pg = document.getElementById('opc_id_pg').value;
+                                                    document.getElementById('id_pg_escolhido_1').value = id_pg;
+                                                    document.getElementById('id_pg_escolhido_2').value = id_pg;
+                                                }
+                                            </script>
 
-                                                document.getElementById('id_pg_escolhido_1').value = id_pg;
-                                                document.getElementById('id_pg_escolhido_2').value = id_pg;
-                                            }
-                                        </script>
+                                            <div class="col-lg-12">
 
-                                        <div class="col-lg-12">
-
-                                            <div class="col-lg-5">
-                                                <div class="form-group">
-                                                    <label for="opc">PG:</label>
-                                                    <select name="opc" id="opc_id_pg" onchange="trocar_id_pg()" class="form-control">
-                                                        <?php
-                                                        foreach ($pg_desativados['dados'] as $key => $dadosPGDesativados) {
-                                                        ?>
-                                                            <option value="<?= $dadosPGDesativados['id_pg']; ?>"><?= $dadosPGDesativados['nome_pg']; ?> </option>
-                                                        <?php } ?>
-                                                    </select>
+                                                <div class="col-lg-5">
+                                                    <div class="form-group">
+                                                        <label for="opc">PG:</label>
+                                                        <select name="opc" id="opc_id_pg" onchange="trocar_id_pg()" class="form-control">
+                                                            <?php
+                                                            foreach ($pg_desativados['dados'] as $key => $dadosPGDesativados) {
+                                                            ?>
+                                                                <option value="<?= $dadosPGDesativados['id_pg']; ?>"><?= $dadosPGDesativados['nome_pg']; ?> </option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-lg-3">
-                                                <div class="form-group">
-                                                    <form action="pg/exclusao/ativar" method="POST">
-                                                        <input type="hidden" name="id_pg" id="id_pg_escolhido_1" value="<?= $pg_desativados['dados'][0]['id_pg']; ?>">
-                                                        <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                        <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
-                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-                                                        <center>
-                                                            <label for="opc">Opção 1:</label><br>
-                                                            <input type="submit" class="btn btn-success" value="Ativar">
-                                                        </center>
-                                                    </form>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <form action="pg/exclusao/ativar" method="POST">
+                                                            <input type="hidden" name="id_pg" id="id_pg_escolhido_1" value="<?= $pg_desativados['dados'][0]['id_pg']; ?>">
+                                                            <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                                                            <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                                                            <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                                                            <center>
+                                                                <label for="opc">Opção 1:</label><br>
+                                                                <input type="submit" class="btn btn-success" value="Ativar">
+                                                            </center>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="col-lg-4">
-                                                <div class="form-group">
-                                                    <form action="pg/exclusao/permanente" method="POST">
-                                                        <input type="hidden" name="id_pg" id="id_pg_escolhido_2" value="<?= $pg_desativados['dados'][0]['id_pg']; ?>">
-                                                        <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                        <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
-                                                        <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-                                                        <center>
-                                                            <label for="opc">Opção 2:</label><br>
-                                                            <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
-                                                        </center>
-                                                    </form>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <form action="pg/exclusao/permanente" method="POST">
+                                                            <input type="hidden" name="id_pg" id="id_pg_escolhido_2" value="<?= $pg_desativados['dados'][0]['id_pg']; ?>">
+                                                            <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                                                            <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                                                            <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                                                            <center>
+                                                                <label for="opc">Opção 2:</label><br>
+                                                                <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
+                                                            </center>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                            </div>
 
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                    </div>
+                                    <!-- /.modal-content -->
                                 </div>
-                                <!-- /.modal-content -->
+                                <!-- /.modal-dialog -->
                             </div>
-                            <!-- /.modal-dialog -->
-                        </div>
+
+                        </center>
                     </div>
                 <?php
                 } else {
@@ -498,6 +498,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     </div>
                                                                     <!-- /.modal-dialog -->
                                                                 </div>
+
                                                             </td>
                                                             <td>
                                                                 <button type="button" class="btn btn-danger pull-left" <?= $disabled; ?> style="margin-left: 10px;" data-toggle="modal" data-target="<?= "#" . $dadosPG['id_pg']; ?>desativar_pg">
@@ -536,7 +537,9 @@ if (!isset($_SESSION['usuario'])) {
                                                                     </div>
                                                                     <!-- /.modal-dialog -->
                                                                 </div>
+
                                                             </td>
+
                                                             <td>
                                                                 <a href="#" class="btn btn-info pull-left" onclick="document.getElementById('form_preencher_relatorio<?= $i; ?>').submit();">Preencher Relatório </a>
 
@@ -551,6 +554,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                             <td>
                                                                 <button type="button" class="btn btn-light pull-left" data-toggle="modal" data-target="#<?= $dadosPG['id_pg']; ?>_troca_de_lider_pg">Troca Liderança</button>
+
 
                                                                 <div class="modal fade" id="<?= $dadosPG['id_pg']; ?>_troca_de_lider_pg">
                                                                     <div class="modal-dialog modal-light">
@@ -578,10 +582,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                                     <div id="listaLideres" style="max-height: 300px; overflow-y: auto;">
                                                                                         <?php
                                                                                         // exemplo: buscando do banco
-                                                                                        /*$lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider WHERE id_supervisorR = $id_usuario ORDER BY nome_lider ASC")->result_array();
-
-                                                                                            foreach ($lideres as $l) {*/
-
                                                                                         $query = $this->db->query(" SELECT id_lider, nome_lider FROM lider WHERE id_coordenador = $id_usuario");
                                                                                         $lista = $query->result_array();
                                                                                         foreach ($lista as $l):
@@ -886,7 +886,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                 <select name="isResponsavel" id="isResponsavel_<?= $i; ?>" class="form-control" onchange="habilitar('<?= $i; ?>');">
                                                                                                     <?php
                                                                                                     $nome_responsavel = $linha['nome_responsavel'];
-                                                                                                    $nome_pai = $dados_coordenador['dados']['nome_coordenador'];
+                                                                                                    $nome_pai = $dados_lider['dados']['nome_lider'];
 
                                                                                                     if ($nome_responsavel == $nome_pai) {
                                                                                                         $disabled = "disabled";
@@ -922,13 +922,13 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                             input_2.disabled = false;
                                                                                                             input_3.disabled = false;
                                                                                                         } else if (i == 2) {
-                                                                                                            input_1.value = "<?php echo $dados_coordenador['dados']['nome_coordenador']; ?>";
-                                                                                                            input_2.value = "<?php echo $dados_coordenador['dados']['email']; ?>";
-                                                                                                            input_3.value = "<?php echo $dados_coordenador['dados']['telefone_whatsapp']; ?>";
+                                                                                                            input_1.value = "<?php echo $dados_lider['dados']['nome_lider']; ?>";
+                                                                                                            input_2.value = "<?php echo $dados_lider['dados']['email']; ?>";
+                                                                                                            input_3.value = "<?php echo $dados_lider['dados']['telefone_whatsapp']; ?>";
 
-                                                                                                            input_1_desativados.value = "<?php echo $dados_coordenador['dados']['nome_coordenador']; ?>";
-                                                                                                            input_2_desativados.value = "<?php echo $dados_coordenador['dados']['email']; ?>";
-                                                                                                            input_3_desativados.value = "<?php echo $dados_coordenador['dados']['telefone_whatsapp']; ?>";
+                                                                                                            input_1_desativados.value = "<?php echo $dados_lider['dados']['nome_lider']; ?>";
+                                                                                                            input_2_desativados.value = "<?php echo $dados_lider['dados']['email']; ?>";
+                                                                                                            input_3_desativados.value = "<?php echo $dados_lider['dados']['telefone_whatsapp']; ?>";
 
                                                                                                             input_1.disabled = true;
                                                                                                             input_2.disabled = true;
@@ -1154,61 +1154,15 @@ if (!isset($_SESSION['usuario'])) {
                         </div>
                         <!-- /.box -->
                     </section>
+
                 <?php } ?>
             </div>
             <?php
             $this->load->view('partes/footer');
             ?>
         </div>
-
         <!-- /.content -->
 
-        <!-- Footer -->
-        <div class="modal fade" id="cadastro_pg">
-            <div class="modal-dialog modal-success">
-                <div class="modal-content">
-                    <form action="pg/cadastro/salvar" method="POST">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Cadastro | PG</h4>
-                        </div>
-                        <div class="box-body">
-                            <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
-                            <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Nome para o PG</label>
-                                    <input class="form-control" type="text" name="nome_pg" aria-describedby="emailHelp" placeholder="Informe o nome para o PG" required>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Data de Início</label>
-                                    <p style="color: black;"><input type="text" autocomplete="off" minlength="10" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker_cadastro_pg" required></p>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="autorizacao" value="1"> Desejo receber notificações por e-mail
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                            <input type="submit" class="btn btn-success pull-right" value="Salvar">
-                        </div>
-                    </form>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
 
         <div class="modal fade" id="cadastro_criancas">
             <div class="modal-dialog modal-success">
@@ -1236,7 +1190,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <select name="id_pg" id="id_pg" class="form-control">
                                         <optgroup label="Seu PG">
                                             <?php
-                                            $consultarPG = $this->PG->mostrarPG([$id_usuario], 'query_pg_id_lider_all', '');
+                                            $consultarPG = $this->PG->query([$id_usuario], 'query_pg_id_lider_all', '');
 
                                             foreach ($consultarPG['dados'] as $key => $val) {
                                             ?>
@@ -1245,6 +1199,7 @@ if (!isset($_SESSION['usuario'])) {
                                     </select>
                                 </div>
                             </div>
+
 
                             <div class="col-lg-6">
                                 <div class="form-group">
@@ -1268,7 +1223,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Responsável da Criança:</label>
                                         <select name="responsavel_crianca[]" id="isRespon_1" onchange="mostrarCamposPais(1);" class="form-control" required>
-                                            <option value="<?= $dados_coordenador['dados']['nome_coordenador'] ?>" selected><?= $dados_coordenador['dados']['nome_coordenador'] ?></option>
+                                            <option value="<?= $dados_lider['dados']['nome_lider']; ?>" selected><?= $dados_lider['dados']['nome_lider']; ?></option>
                                             <option value="outro">Outro</option>
                                         </select>
                                     </div>
@@ -1337,6 +1292,57 @@ if (!isset($_SESSION['usuario'])) {
             <!-- /.modal-dialog -->
         </div>
 
+        <div class="modal fade" id="cadastro_pg">
+            <div class="modal-dialog modal-success">
+                <div class="modal-content">
+                    <form action="pg/cadastro/salvar" method="POST">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Cadastro | PG</h4>
+                        </div>
+                        <div class="box-body">
+                            <input type="hidden" name="idLider" value="<?= $id_usuario; ?>">
+                            <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Nome para o PG</label>
+                                    <input class="form-control" type="text" name="nome_pg" aria-describedby="emailHelp" placeholder="Informe o nome para o PG" required>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Data de Início</label>
+                                    <p style="color: black;"><input type="text" autocomplete="off" minlength="10" name="data_inicio" placeholder="DD/MM/AAAA" class="form-control" id="datepicker_cadastro_pg" required></p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="autorizacao" value="1"> Desejo receber notificações por e-mail
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                            <input type="submit" class="btn btn-success pull-right" value="Salvar">
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+        <!-- Links JavaScript -->
+        <?php
+        $this->load->view('partes/scripts2');
+        ?>
+
         <script>
             $(document).ready(function() {
                 var i = 1;
@@ -1359,7 +1365,7 @@ if (!isset($_SESSION['usuario'])) {
 
                     $("#conteudo_cri").append('<div id="' + conteudo2 + '"></div>');
 
-                    $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-12"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-12"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="2">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCamposPais(' + i + ');" class="form-control" required><option value="<?= $dados_coordenador['dados']['nome_coordenador'] ?>" selected><?= $dados_coordenador['dados']['nome_coordenador'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total_cri" name="total[]">');
+                    $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-12"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-12"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="2">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCamposPais(' + i + ');" class="form-control" required><option value="<?= $dados_lider['dados']['nome_lider'] ?>" selected><?= $dados_lider['dados']['nome_lider'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total_cri" name="total[]">');
                     return false;
                 });
 
@@ -1403,7 +1409,6 @@ if (!isset($_SESSION['usuario'])) {
                     minDate: 0,
                 });
             });
-
 
             document.addEventListener("DOMContentLoaded", function() {
                 // líderes
@@ -1468,11 +1473,6 @@ if (!isset($_SESSION['usuario'])) {
                 });
             });
         </script>
-
-        <?php
-        $this->load->view('partes/scripts2');
-        ?>
-        <!-- Links JavaScript -->
 
         <div class="control-sidebar-bg"></div>
     </body>

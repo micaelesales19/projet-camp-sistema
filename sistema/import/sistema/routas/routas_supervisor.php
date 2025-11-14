@@ -18,6 +18,7 @@ $route['supervisor/page/lider/desativar'] = 'welcome/desativar_lider'; // ok
 $route['supervisor/page/lider/reativar'] = 'welcome/ativar_lider'; // ok
 $route['supervisor/page/lider/excluir'] = 'welcome/excluir_lider_permanentemente'; // ok
 $route['supervisor/page/lider/trocar-liderenca'] = 'welcome/trocar_liderenca'; // ok
+$route['supervisor/page/lider/liberar'] = 'welcome/liberar_acesso'; // ok
 
 // coordenador - líder
 $route['supervisor/page/coordenadores/lider/salvar'] = 'Lider/e_pessoal'; // ok
@@ -37,6 +38,7 @@ $route['supervisor/page/coordenadores/salvar'] = 'welcome/cadastro_coordenador';
 $route['supervisor/page/coordenadores/desativar'] = 'welcome/desativar_coordenador'; // ok
 $route['supervisor/page/coordenadores/exclusao/ativar'] = 'welcome/ativar_coordenador'; // ok
 $route['supervisor/page/coordenadores/exclusao/permanente'] = 'welcome/excluir_coordenador_permanentemente'; // ok
+$route['supervisor/page/coordenadores/liberar'] = 'welcome/liberar_acesso_coordenador'; // ok
 
 $route['supervisor/page/coordenadores/mostrar'] = 'Supervisor/mostrar_table_coordenador'; // ok // ok
 $route['supervisor/page/coordenadores/lideres/mostrar'] = 'Supervisor/mostrar_table_lideres_coordenador'; // ok // ok
