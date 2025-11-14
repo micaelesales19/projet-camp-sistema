@@ -236,19 +236,6 @@ if (!isset($_SESSION['usuario'])) {
             setTimeout(dismissLoadingScreen, 3000);
         }
 
-        function gerarELCopiarLink(id_usuario) {
-            fetch(`<?= base_url('Supervisor/criar_link/'); ?>${id_usuario}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.link) {
-                        copiarTexto(data.link);
-                    } else {
-                        alert('Erro ao gerar o link.');
-                    }
-                })
-                .catch(() => alert('Falha na requisição.'));
-        }
-
         function copiarTexto(texto) {
             let inputTest = document.createElement("input");
             inputTest.value = texto;
@@ -408,7 +395,64 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box-header with-border">
                                 <h3 class="box-title"><i class="fa fa-table"></i> Seus Líderes</h3>
 
-                                <button type="button" name="btn_link_cadastro" class="btn btn-success" onclick="gerarELCopiarLink('<?= $id_usuario; ?>')" disabled>Copiar Link de Cadastro Líder<i class="fa fa-link"></i></button>
+                                <button type="button" name="btn_link_cadastro" class="btn btn-success" data-toggle="modal" data-target="#selecionar_coordenador" disabled>Copiar Link de Cadastro Líder<i class="fa fa-link"></i></button>
+
+                                <div class="modal fade" id="selecionar_coordenador">
+                                    <div class="modal-dialog modal-success">
+                                        <div class="modal-content">
+                                            <form action="#" id="form_gerar_link_cadastro" method="POST">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title">Gerar Link Coordenador</h4>
+                                                </div>
+                                                <div class="box-body">
+                                                    <input type="hidden" name="idUsuario" id="idUsuario" value="<?= $id_usuario; ?>">
+                                                    <input type="hidden" name="id_coordenador" id="idCoordenadorDoLink" value="0">
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group txt_center">
+                                                            <label for="exampleInputEmail1">Cada coordenador tem um link especifico, selecione:</label>
+
+                                                            <!-- Caixa de pesquisa -->
+                                                            <input type="text" id="pesquisarCoordenador" class="form-control mb-3" placeholder="Pesquisar Líder..."><br>
+
+                                                            <!-- Lista de líderes -->
+                                                            <div id="listaCoordenadores" style="max-height: 300px; overflow-y: auto;">
+
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input checkbox-coordenador" type="checkbox" value="3000" id="coord0">
+                                                                    <label class="form-check-label" for="coord0">
+                                                                        Sem coordenador
+                                                                    </label>
+                                                                </div>
+
+                                                                <?php
+                                                                // exemplo: buscando do banco
+                                                                $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador WHERE id_supervisorR = $id_usuario ORDER BY nome_coordenador ASC")->result_array();
+                                                                foreach ($coordenadores as $c) {
+                                                                ?>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input checkbox-coordenador" type="checkbox" value="<?= $c['id_coordenador']; ?>" id="coord<?= $c['id_coordenador']; ?>">
+                                                                        <label class="form-check-label" for="coord<?= $c['id_coordenador']; ?>">
+                                                                            <?= htmlspecialchars($c['nome_coordenador']); ?>
+                                                                        </label>
+                                                                    </div>
+                                                                <?php
+                                                                } ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
+                                                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal" onclick="gerarELCopiarLink();">Gerar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!-- /.modal-content -->
+                                    </div>
+                                    <!-- /.modal-dialog -->
+                                </div>
 
                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_coordenador">Cadastrar Líder +</button>
 
@@ -417,14 +461,14 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="modal fade" id="cadastro_coordenador">
                                     <div class="modal-dialog modal-success">
                                         <div class="modal-content">
-                                            <form action="coordenadores/salvar" method="POST">
+                                            <form action="../../lider/salvar" method="POST">
                                                 <input type="hidden" name="id_pastor" value="2000">
                                                 <input type="hidden" name="id_supervisor" value="<?= $id_usuario; ?>">
                                                 <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                 <div class="modal-header">
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title">Cadastro | Coordenador</h4>
+                                                    <h4 class="modal-title">Cadastro | Líder</h4>
                                                 </div>
                                                 <div class="box-body">
 
@@ -504,8 +548,33 @@ if (!isset($_SESSION['usuario'])) {
 
                                                     <div class="col-lg-6">
                                                         <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" minlength="5" placeholder="Igreja" name="igreja">
+                                                            <span class="glyphicon glyphicon-home form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
                                                             <input type="password" class="form-control" placeholder="Senha" name="senha" required>
                                                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group has-feedback">
+                                                            <select class="form-control" name="id_coordenador">
+                                                                <?php
+                                                                $lista_coordenadores = $this->Coordenadores->infos([$id_usuario], 'info_coordenador_id_supervisor', '', '', '');
+                                                                if ($lista_coordenadores['row'] == 0) {
+                                                                ?>
+                                                                    <option value="3000">Nenhum Coordenador</option>
+                                                                    <?php } else {
+                                                                    foreach ($lista_coordenadores['dados'] as $key => $c) {
+                                                                    ?>
+                                                                        <option value="<?= $c['id_coordenador']; ?>"><?= $c['nome_coordenador']; ?></option>
+                                                                <?php }
+                                                                } ?>
+                                                            </select>
                                                         </div>
                                                     </div>
 
@@ -893,6 +962,87 @@ if (!isset($_SESSION['usuario'])) {
                         }).change();
                     });
                 });
+
+
+                document.addEventListener("DOMContentLoaded", function() {
+
+                    // modal - tornar líder
+                    const pesquisarInput_2 = document.getElementById('pesquisarCoordenador');
+                    if (pesquisarInput_2) {
+                        pesquisarInput_2.addEventListener('input', function() {
+                            const filtro = this.value.toLowerCase();
+                            document.querySelectorAll('#listaCoordenadores .form-check').forEach(div => {
+                                const texto = div.innerText.toLowerCase();
+                                div.style.display = texto.includes(filtro) ? '' : 'none';
+                            });
+                        });
+                    }
+
+                    const form_2 = document.querySelector('form#form_gerar_link_cadastro');
+                    if (!form_2) return; // evita erro se o formulário não existir
+
+                    // Pega todos os checkboxes
+                    const checkboxes_2 = document.querySelectorAll('.checkbox-coordenador');
+                    const inputHidden_2 = document.getElementById('idCoordenadorDoLink');
+
+                    // Função para atualizar o campo hidden
+                    function atualizarIdsSelecionados_2() {
+                        // deixa apenas o clicado marcado
+                        checkboxes_2.forEach(cb => {
+                            if (cb !== event.target) cb.checked = false;
+                        });
+
+                        const selecionados = Array.from(checkboxes_2)
+                            .filter(cb => cb.checked)
+                            .map(cb => cb.value);
+
+                        inputHidden_2.value = selecionados.join(',');
+                        console.log('ID atualizado:', inputHidden_2.value);
+                    }
+
+                    // Adiciona o evento de mudança (check/uncheck) em cada checkbox
+                    checkboxes_2.forEach(cb => {
+                        cb.addEventListener('change', atualizarIdsSelecionados_2);
+                    });
+                });
+
+                function gerarELCopiarLink() {
+                    var id_supervisor = document.getElementById('idUsuario').value;
+                    var id_coordenador = document.getElementById('idCoordenadorDoLink').value;
+
+                    if (id_coordenador == '0') {
+                        Swal.fire({
+                            title: 'Atenção!',
+                            text: 'Você precisa selecionar 1 coordenador.',
+                            icon: 'warning',
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: '#198754', // cor do botão principal (verde bootstrap)
+                            background: '#fefefe', // cor de fundo
+                            color: '#333', // cor do texto
+                            iconColor: '#f39c12', // cor do ícone
+                        });
+                    } else {
+                        fetch(`<?= base_url('Supervisor/criar_link_coordenador/'); ?>${id_supervisor}/${id_coordenador}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.link) {
+                                    copiarTexto(data.link);
+                                } else {
+                                    Swal.fire({
+                                        title: 'Atenção!',
+                                        text: 'Erro ao gerar o link, tente novamente!',
+                                        icon: 'warning',
+                                        confirmButtonText: 'Ok',
+                                        confirmButtonColor: '#198754', // cor do botão principal (verde bootstrap)
+                                        background: '#fefefe', // cor de fundo
+                                        color: '#333', // cor do texto
+                                        iconColor: '#f39c12', // cor do ícone
+                                    });
+                                }
+                            })
+                            .catch(() => alert('Falha na requisição.'));
+                    }
+                }
             </script>
     </body>
 

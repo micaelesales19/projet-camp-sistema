@@ -158,7 +158,7 @@ class Welcome extends CI_Controller
 		$opc = $this->input->post('opc') ?? $this->input->get('opc');
 
 		if ($email == '' && $cpf == '' && $nome == '' && $senha == '') {
-			echo "Dados Vazios";
+			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Dados Vazios"]);
 			$data = [
 				"<input type='hidden' name='x' value='$x'>"
 			];
@@ -177,7 +177,7 @@ class Welcome extends CI_Controller
 				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND (cpf = '$cpf' OR cpf = '$cpf_completo') LIMIT 1");
 				$dados = $consultar->row_array();
 				$total = $consultar->num_rows();
-			} else if ($opc == 2 || $opc == 4) {
+			} else if ($opc == 2) {
 				$consultar = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND senha = '$senha'  LIMIT 1");
 				$dados = $consultar->row_array();
 				$total = $consultar->num_rows();
@@ -189,7 +189,7 @@ class Welcome extends CI_Controller
 			}
 
 			if ($total == 0) {
-				echo "Dados Inválidos";
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ["Dados Inválidos"]);
 				$data = [
 					"<input type='hidden' name='x' value='$x'>"
 				];
@@ -232,14 +232,15 @@ class Welcome extends CI_Controller
 
 				if ($nivel == 1) {
 					if ($total_lider == 0) {
-						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com"]);
 						$data = [
 							"<input type='hidden' name='x' value='$x'>"
 						];
 						$funcao = $this->FConsultas_model->red('index', 2000, $data);
 						echo $funcao;
 					} else {
-						echo "Bem Vindo - " . $dados['nome'];
+						$nome = $dados['nome'];
+						$this->FConsultas_model->mensagem('success', 'Olá!', ["Bem Vindo $nome"]);
 
 						$_SESSION['id_usuario'] .= $dados_lider['id_lider'];
 						$_SESSION['id_usuario_2'] .= $id_usuario;
@@ -258,7 +259,6 @@ class Welcome extends CI_Controller
 							echo $funcao;
 						} else {
 							if ($x == 1) {
-
 								$data = [];
 								$funcao = $this->FConsultas_model->red('lider/home', 2000, $data);
 								echo $funcao;
@@ -286,14 +286,15 @@ class Welcome extends CI_Controller
 					}
 				} */ else if ($nivel == 3) { // coordenador
 					if ($total_coordenador == 0) {
-						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com"]);
 						$data = [
 							"<input type='hidden' name='x' value='$x'>"
 						];
 						$funcao = $this->FConsultas_model->red('index', 2000, $data);
 						echo $funcao;
 					} else {
-						echo "Bem Vindo - " . $dados['nome'];
+						$nome = $dados['nome'];
+						$this->FConsultas_model->mensagem('success', 'Olá!', ["Bem Vindo $nome"]);
 						$_SESSION['id_usuario'] .= $dados_coordenador['id_coordenador'];
 						$_SESSION['id_usuario_2'] .= $id_usuario;
 
@@ -319,14 +320,15 @@ class Welcome extends CI_Controller
 					}
 				} else if ($nivel == 4) { // slocal
 					if ($total_slocal == 0) {
-						echo "Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com";
+						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com"]);
 						$data = [
 							"<input type='hidden' name='x' value='$x'>"
 						];
 						$funcao = $this->FConsultas_model->red('index', 2000, $data);
 						echo $funcao;
 					} else {
-						echo "Bem Vindo - " . $dados['nome'];
+						$nome = $dados['nome'];
+						$this->FConsultas_model->mensagem('success', 'Olá!', ["Bem Vindo $nome"]);
 						$_SESSION['id_usuario'] .= $dados_slocal['id_supervisorR'];
 						$_SESSION['id_usuario_2'] .= $id_usuario;
 
@@ -560,7 +562,7 @@ class Welcome extends CI_Controller
 	}
 
 	// cadastro lider via link
-	public function salvar_cadastro()
+	public function salvar_cadastro(): void
 	{
 		$nome = $this->input->post('nome');
 		$cpf = $this->input->post('cpf');
