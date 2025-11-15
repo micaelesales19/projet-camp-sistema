@@ -909,7 +909,7 @@ class Welcome extends CI_Controller
 
 			if ($dados_coordenador['row'] == 0) {
 
-				$dados_supervisor = $this->Supervisores->infos([$id_operador], 'info_supervisor', '', '', '');
+				$dados_supervisor = $this->Supervisores->infos([$id_operador], 'info_supervisor', '', '');
 				if ($dados_supervisor['row'] == 0) {
 				} else {
 					$email = $dados_coordenador['dados']['email'];
@@ -3865,7 +3865,7 @@ class Welcome extends CI_Controller
 	public function enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider)
 	{
 		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '');
-		$dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '', '');
+		$dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '');
 		$data_hoje = date('d/m/Y');
 
 		if ($dados_lider['row'] == 0) {

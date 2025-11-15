@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $dados_usuario = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');
+    $dados_usuario = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '');
 
     $carga_horaria = $_SESSION['carga_horaria'] ?? "";
     $data_treinamento = $_SESSION['data_treinamento'] ?? "";

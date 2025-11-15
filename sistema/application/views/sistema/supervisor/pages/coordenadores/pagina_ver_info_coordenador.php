@@ -566,7 +566,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <label for="exampleInputPassword1">Supervisor</label>
                                                     <?php
                                                     $id_sr = $dados_coordenador['id_supervisorR'];
-                                                    $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '', '');
+                                                    $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '');
                                                     ?>
                                                     <select name="id_supervisor" class="form-control" <?= $check_desativado; ?>>
                                                         <option value="<?= $id_sr; ?>" selected><?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
@@ -643,7 +643,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <option value="0" selected>Selecione uma opção</option>
                                                 <?php
                                                 $id_sr = $dados_coordenador['id_supervisorR'];
-                                                $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '', '');
+                                                $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '');
                                                 ?>
                                                 <option value="sl <?= $id_sr; ?>">Supervisor: <?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
                                             </select>

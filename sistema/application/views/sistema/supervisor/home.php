@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario'])) {
 
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
-  $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');
+  $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '');
   $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>
 

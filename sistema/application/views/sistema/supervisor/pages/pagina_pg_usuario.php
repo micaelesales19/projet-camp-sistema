@@ -22,7 +22,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');
+    $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '');
 
     // id lider // opc // ativo
     $consultarPG = $this->PG->query([$id_usuario], 'query_lider_ativo_order_by_nome_pg_asc', 1);

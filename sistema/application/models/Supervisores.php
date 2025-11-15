@@ -6,35 +6,9 @@
 
 class Supervisores extends CI_Model
 {
-    public function infos($id_usuario, $opc, $opc2, $order, $datas)
+    public function infos($id_usuario, $opc, $order, $datas)
     {
-        if ($opc == 1 && $opc2 == 1 && $order[0] == true) {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR ordenado
-            $id_usuario = $id_usuario[0];
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario ORDER BY nome_lider $order[1]");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 1 && $opc2 == 1 && $order[0] == false) {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR
-            $id_usuario = $id_usuario[0];
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_supervisor') {
+        if ($opc == 'info_supervisor') {
             // Consulta na tabela de líderes de acordo com o ID SUPERVISOR
             $id_usuario = $id_usuario[0];
             $consultar_coordenador = $this->db->query("SELECT * FROM supervisor_local WHERE id_supervisorR = '$id_usuario'");

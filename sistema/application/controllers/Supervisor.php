@@ -620,7 +620,7 @@ class Supervisor extends CI_Controller
     {
         $id_user = $this->input->get("id_user");
 
-        $dados_usuario = $this->Supervisores->infos([$id_user], 'info_supervisor', '', '', '');
+        $dados_usuario = $this->Supervisores->infos([$id_user], 'info_supervisor', '', '');
         $dados_coordenador = $this->consultasBDCoordenador($id_user);
 
         $dados = array(
@@ -859,7 +859,7 @@ class Supervisor extends CI_Controller
     {
         $id_user = $this->input->get("id_user");
 
-        $dados_usuario = $this->Supervisores->infos([$id_user], 'info_supervisor', '', '', '');
+        $dados_usuario = $this->Supervisores->infos([$id_user], 'info_supervisor', '', '');
         $dados_lideres = $this->consultasBDLider($id_user);
 
         $dados = array(
