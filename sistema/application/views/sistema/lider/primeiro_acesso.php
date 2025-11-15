@@ -130,7 +130,7 @@ if (!isset($_SESSION['usuario'])) {
 					$check_se_tem_crianca = $this->Criancas->check_criancas_cadastrada('check_criancas_id_lider', [$id_usuario]);
 
 					if ($check_se_tem_crianca && $x_ir != 3) {
-						$consultarPG = $this->PG->query([$id_usuario], 1, 1);
+						$consultarPG = $this->PG->query([$id_usuario], 'query_pg_id_lider_all_ativo_or_no', 1);
 
 		?>
 			<section class="content-header">
@@ -603,10 +603,9 @@ if (!isset($_SESSION['usuario'])) {
 
 						$idPG = $dados_pg['dados']['id_pg'];
 
-						$consultarCriancas = $this->Criancas->query_criancas_lider_pg($id_usuario, $idPG, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+						$consultarCriancas = $this->Criancas->query([$id_usuario, $idPG, 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
 						if ($consultarCriancas['row'] == 0) {
-
 					?>
 						<div class="col-md-12">
 							<div class="box box-danger">

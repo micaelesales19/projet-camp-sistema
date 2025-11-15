@@ -72,7 +72,7 @@ if (!isset($_SESSION['usuario'])) {
             <!-- PG -->
             <?php
 
-            $dados = $this->PG->query([$id_usuario], 1, 1);
+            $dados = $this->PG->query([$id_usuario], 'query_pg_id_lider_all_ativo_or_no', 1);
 
             foreach ($dados['dados'] as $key => $dados_pg) {
 
@@ -337,7 +337,7 @@ if (!isset($_SESSION['usuario'])) {
         </section>
 
         <?php
-        $dados = $this->PG->query([$id_usuario], 2, 1);
+        $dados = $this->PG->query([$id_usuario], 'query_id_lider_ativo_order_by_modulo_asc_limit_1_download_material', 1);
 
         foreach ($dados['dados'] as $key => $pg) {
           $diaComecou = $pg['data_semana'];

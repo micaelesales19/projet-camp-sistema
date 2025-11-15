@@ -13,17 +13,7 @@ class PG extends CI_Model
 {
     public function query($dados, $opc, $ativo)
     {
-        if ($opc == 'query_pg_id_lider_id_pg') {
-            $id_usuario = $dados[0];
-            $id_pg = $dados[1];
-            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $id_pg");
-            $row = $query_consulta_pg->num_rows();
-            $consultar_pg = $query_consulta_pg->row_array();
-            $dados = array(
-                'row' => $row,
-                'dados' => $consultar_pg,
-            );
-        } else if ($opc == 'query_pg_id_lider_all') {
+        if ($opc == 'query_pg_id_lider_all') { // ok
             $id_usuario = $dados[0];
             $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario");
             $row = $query_consulta_pg->num_rows();
@@ -32,7 +22,7 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $consultar_pg,
             );
-        } else if ($opc == 1) {
+        } else if ($opc == 'query_pg_id_lider_all_ativo_or_no') { // ok
             $id_usuario = $dados[0];
             $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo");
             $row = $query_consulta_pg->num_rows();
@@ -42,17 +32,17 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $consultar_pg,
             );
-        } else if ($opc == 2) {
+        } else if ($opc == 'query_pg_id_lider_id_pg') { // ok
             $id_usuario = $dados[0];
-            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo ORDER BY id_modulo ASC LIMIT 1");
+            $id_pg = $dados[1];
+            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $id_pg");
             $row = $query_consulta_pg->num_rows();
-            $consultar_pg = $query_consulta_pg->result_array();
-
+            $consultar_pg = $query_consulta_pg->row_array();
             $dados = array(
                 'row' => $row,
                 'dados' => $consultar_pg,
             );
-        } else if ($opc == 'query_lider_ativo_order_by_nome_pg_asc') {
+        } else if ($opc == 'query_lider_ativo_order_by_nome_pg_asc') { // ok
             $id_usuario = $dados[0];
             $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo ORDER BY nome_pg ASC");
             $row = $consultar_pg->num_rows();
@@ -62,7 +52,19 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $dados_consulta_pg,
             );
-        } else if ($opc == 'query_id_lider_id_pg_ativo') {
+        } else if ($opc == 'query_id_lider_id_pg') { // ok
+            $id_usuario = $dados[0];
+            $idPG = $dados[1];
+
+            $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $idPG");
+            $row = $consultar_pg->num_rows();
+            $dados_consulta_pg = $consultar_pg->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_pg,
+            );
+        } else if ($opc == 'query_id_lider_id_pg_ativo') { // ok
             $id_usuario = $dados[0];
             $idPG = $dados[1];
 
@@ -74,18 +76,17 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $dados_consulta_pg,
             );
-        } else if ($opc == 'query_id_lider_row') {
+        } else if ($opc == 'query_id_lider_ativo_order_by_modulo_asc_limit_1_download_material') { // ok // antigo 2
             $id_usuario = $dados[0];
-
-            $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario");
-            $row = $consultar_pg->num_rows();
-            $dados_consulta_pg = $consultar_pg->row_array();
+            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo ORDER BY id_modulo ASC LIMIT 1");
+            $row = $query_consulta_pg->num_rows();
+            $consultar_pg = $query_consulta_pg->result_array();
 
             $dados = array(
                 'row' => $row,
-                'dados' => $dados_consulta_pg,
+                'dados' => $consultar_pg,
             );
-        } else if ($opc == 'query_id_lider_ativo_order_by_modulo_desc_limit_1_download_material') {
+        } else if ($opc == 'query_id_lider_ativo_order_by_modulo_desc_limit_1_download_material') { // ok
             $id_usuario = $dados[0];
 
             $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo ORDER BY id_modulo DESC LIMIT 1");
@@ -101,7 +102,7 @@ class PG extends CI_Model
         return $dados;
     }
 
-    public function trocar_lideranca_pg($id_pg, $id_lider_antigo, $id_novo_lider)
+    public function trocar_lideranca_pg($id_pg, $id_lider_antigo, $id_novo_lider) // ok
     {
         $this->db->set('id_lider', $id_novo_lider);
         $this->db->set('ativo', 1);
@@ -110,7 +111,7 @@ class PG extends CI_Model
         $this->db->update('pg');
     }
 
-    public function editar_ativo($id_pg, $idlider, $x)
+    public function editar_ativo($id_pg, $idlider) // ok
     {
 
         $this->db->set('ativo', "1");
@@ -124,22 +125,9 @@ class PG extends CI_Model
         }
     }
 
-    public function mostrarPGId($id_usuario, $idPG)
-    {
-        $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND id_pg = $idPG");
-        $row = $consultar_pg->num_rows();
-        $dados_consulta_pg = $consultar_pg->row_array();
-
-        $dados = array(
-            'row' => $row,
-            'dados' => $dados_consulta_pg,
-        );
-        return $dados;
-    }
-
     public function check_cadastro_pg($opc, $dados)
     {
-        if ($opc == 'check_id_lider_nome') {
+        if ($opc == 'check_id_lider_nome') { // ok
             $idLider = $dados[0];
             $nomePg = $dados[1];
             $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider = $idLider AND nome_pg LIKE '$nomePg'");
@@ -150,19 +138,9 @@ class PG extends CI_Model
             } else {
                 return false;
             }
-        } else if ($opc == 'check_id_lider') {
+        } else if ($opc == 'check_id_lider') { // ok
             $idLider = $dados[0];
             $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_lider = $idLider");
-            $row = $consultar_pg->num_rows();
-
-            if ($row == 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } else if ($opc == 'check_id_pg') {
-            $idPG = $dados[0];
-            $consultar_pg = $this->db->query("SELECT * FROM pg WHERE id_pg = $idPG");
             $row = $consultar_pg->num_rows();
 
             if ($row == 0) {
@@ -254,7 +232,7 @@ class PG extends CI_Model
         $this->db->insert("pg", $inserir);
     }
 
-    public function cadastro_pg_c_infos($id_pg, $idLider, $nome, $ano_pg, $id_modulo, $n_licao, $data_cadastro, $data_inicio, $data_fim, $ativo, $foto, $bonus)
+    /*public function cadastro_pg_c_infos($id_pg, $idLider, $nome, $ano_pg, $id_modulo, $n_licao, $data_cadastro, $data_inicio, $data_fim, $ativo, $foto, $bonus)
     {
         $autorizacao = "0"; // autorização envio de emails
 
@@ -281,7 +259,8 @@ class PG extends CI_Model
         } else {
             return false;
         }
-    }
+    }*/
+
     public function editar_pg($id_lider, $id, $nomePg, $foto, $autorizacao)
     {
         $this->db->set('id_lider', $id_lider);
@@ -380,7 +359,7 @@ class PG extends CI_Model
         date_default_timezone_set('America/Sao_Paulo');
         $data = date('d/m/Y');
 
-        $dadosPG = $this->mostrarPGId($id_lider, $id_pg);
+        $dadosPG = $this->query([$id_lider, $id_pg], 'query_id_lider_id_pg', '');
 
         $consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_pg WHERE id_pg LIKE $id_pg");
         $row = $consultar_pg_desativado->num_rows();
@@ -411,7 +390,7 @@ class PG extends CI_Model
     }
 
     // progresso
-    public function consultarProgressoGeral($id_lider)
+    /*public function consultarProgressoGeral($id_lider)
     {
         $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_lider = $id_lider");
         $row = $consultar->num_rows();
@@ -423,11 +402,21 @@ class PG extends CI_Model
         );
 
         return $array;
-    }
+    }*/
 
     public function consultar_progresso($opc, $dados)
     {
-        if ($opc == 'query_id_pg_id_lider_id_crianca_id_modulo') {
+        if ($opc == 'query_id_lider') { // ok
+            $id_lider = $dados[0];
+            $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_lider = $id_lider");
+            $row = $consultar->num_rows();
+            $dados = $consultar->result_array();
+
+            $array = array(
+                'row' => $row,
+                'dados' => $dados,
+            );
+        } else if ($opc == 'query_id_pg_id_lider_id_crianca_id_modulo') { // ok
             $id_pg = $dados[0];
             $id_lider = $dados[1];
             $id_crianca = $dados[2];
@@ -442,7 +431,7 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $dados,
             );
-        } else if ($opc == 'query_id_pg_id_lider_id_modulo') {
+        } else if ($opc == 'query_id_pg_id_lider_id_modulo') { // ok
             $id_pg = $dados[0];
             $id_lider = $dados[1];
             $id_modulo = $dados[2];
@@ -456,7 +445,7 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $dados,
             );
-        } else if ($opc == 'query_id_pg_id_lider_id_modulo_licao') {
+        } else if ($opc == 'query_id_pg_id_lider_id_modulo_licao') { // ok
 
             $id_pg = $dados[0];
             $id_lider = $dados[1];
@@ -471,7 +460,7 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $dados,
             );
-        } else if ($opc == 'query_id_relatorio') {
+        } /*else if ($opc == 'query_id_relatorio') {
             $id_relatorio = $dados[0];
             $consultar = $this->db->query("SELECT * FROM progresso_pg WHERE id_relatorio = $id_relatorio");
             $row = $consultar->num_rows();
@@ -481,9 +470,7 @@ class PG extends CI_Model
                 'row' => $row,
                 'dados' => $dados,
             );
-        }
-
-
+        }*/
         return $array;
     }
 
@@ -494,7 +481,7 @@ class PG extends CI_Model
         $consulta = $this->consultar_progresso('query_id_pg_id_lider_id_modulo_licao', [$id_pg, $id_lider, $modulo, $licao]);
         $resultados = $consulta['row'];
 
-        $consulta_pg = $this->mostrarPGId($id_lider, $id_pg);
+        $consulta_pg = $this->query([$id_lider, $id_pg], 'query_id_lider_id_pg', '');
 
         $dadosP = $consulta_pg['dados'];
         $modulo_atual_pg = $dadosP['id_modulo'];
@@ -722,7 +709,6 @@ class PG extends CI_Model
 
     public function excluir_progresso($id_pg, $id_lider)
     {
-
         $this->db->where('id_pg', $id_pg);
         $this->db->where('id_lider', $id_lider);
         $this->db->delete('progresso_pg');

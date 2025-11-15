@@ -277,10 +277,10 @@ class Lideres extends CI_Model
         $data = date('Y-m-d');
         $data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
 
-        $qtd_criancas = $this->Criancas->query_criancas_lider($id_lider);
-        $qtd_criancas_ativas = $this->Criancas->query_criancas_lider($id_lider);
+        $qtd_criancas = $this->Criancas->query([$id_lider], 'query_id_lider');
+        $qtd_criancas_ativas = $this->Criancas->query([$id_lider, 1], 'query_id_lider_ativo');
 
-        $pgs = $this->PG->query([$id_lider], 1, 1);
+        $pgs = $this->PG->query([$id_lider], 'query_pg_id_lider_all_ativo_or_no', 1);
 
         if ($ativo == 0 || $ativo == 1 || $ativo == 3) {
             return 0;
@@ -295,7 +295,7 @@ class Lideres extends CI_Model
                     $id_modulo = $pgs['dados']['id_modulo'] ?? 1;
                     $numero_licao = $pgs['dados']['n_licao'] ?? 1;
                     $modulo = $this->FConsultas_model->consultarModuloId($id_modulo);
-                    $progresso = $this->PG->consultarProgressoGeral($id_lider);
+                    $progresso = $this->PG->consultar_progresso('query_id_lider', [$id_lider]);
                     $data_ultimo_relatorio = "";
                     $i = 0;
                     foreach ($progresso['dados'] as $key => $p) {

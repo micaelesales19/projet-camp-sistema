@@ -56,7 +56,7 @@ if (!isset($_SESSION['usuario'])) {
                   <i class="fa fa-child"></i>
                 </div>
                 <?php
-                $consultarPG = $this->PG->query([$id_usuario], 1, 1);
+                $consultarPG = $this->PG->query([$id_usuario], 'query_pg_id_lider_all_ativo_or_no', 1);
 
                 if ($consultarPG['row'] == 0) {
                 ?>

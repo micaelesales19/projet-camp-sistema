@@ -172,8 +172,8 @@ if (!isset($_SESSION['usuario'])) {
                 </section>
                 <?php
 
-                $pg = $this->PG->query([$id_usuario], 'query_lider_ativo_order_by_nome_pg_asc', '1');
-                $pg_desativados = $this->PG->query([$id_usuario], 1, '0');
+                $pg = $this->PG->query([$id_usuario], 'query_lider_ativo_order_by_nome_pg_asc', 1);
+                $pg_desativados = $this->PG->query([$id_usuario], 'query_pg_id_lider_all_ativo_or_no', 0);
 
                 if ($pg['row'] == 0 && $pg_desativados['row'] == 0) {
                 ?>
@@ -394,7 +394,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <?php
                                                     $i = 0;
 
-                                                    $dados_criancas = $this->Criancas->query_criancas_lider($id_usuario);
+                                                    $dados_criancas = $this->Criancas->query([$id_usuario], 'query_id_lider');
 
                                                     $disabled = $dados_criancas['row'] == 1 ? 'disabled' : '';
 
@@ -631,7 +631,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="box-tools pull-right">
                                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_criancas">Cadastrar +</button>
                                                 <?php
-                                                $criancas_desativadas = $this->Criancas->query_criancas_desativadas_id_lider_order_by_nome_asc($id_usuario);
+                                                $criancas_desativadas = $this->Criancas->query([$id_usuario, 0, 'asc'], 'query_id_lider_ativo_order_by_nome_crianca');
                                                 if ($criancas_desativadas['row'] == 0) {
                                                 } else {
                                                 ?>
@@ -760,7 +760,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <?php
                                                         foreach ($pg['dados'] as $key => $dadosPG) {
 
-                                                            $consultaCriancas = $this->Criancas->query_criancas_id_lider_id_pg_order_by_nome_crianca_asc($id_usuario, $dadosPG['id_pg']);
+                                                            $consultaCriancas = $this->Criancas->query([$id_usuario, $dadosPG['id_pg'], 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
                                                             $idPg = $dadosPG['id_pg'];
 
                                                             $i = 0;
@@ -1139,7 +1139,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                 <div class="box-body chat" id="chat-box">
                                     <?php
-                                    $total_crianca = $this->Criancas->query_criancas_lider_pg($id_usuario, 0, 2);
+                                    $total_crianca = $this->Criancas->query([$id_usuario, 1, 'asc'], 'query_id_lider_ativo_order_by_nome_crianca');
                                     ?>
                                     <div class="item">
                                         <h4 style="text-align: center; font-weight: bold;"> PG - <?= $dadosPG['nome_pg']; ?></h4>

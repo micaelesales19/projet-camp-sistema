@@ -97,7 +97,7 @@ if (!isset($_SESSION['usuario'])) {
             </div>
 
             <?php
-            $consultarPG = $this->PG->query([$id_usuario], 2, 1);
+            $consultarPG = $this->PG->query([$id_usuario], 'query_id_lider_ativo_order_by_modulo_asc_limit_1_download_material', 1);
 
             $modulos = $this->FConsultas_model->consultarModulo();
 
@@ -207,7 +207,7 @@ if (!isset($_SESSION['usuario'])) {
 
               $idPG = $consultarPG['dados']['id_pg'];
 
-              $consultarCriancas = $this->Criancas->query_criancas_lider_pg($id_usuario, $idPG, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+              $consultarCriancas = $this->Criancas->query([$id_usuario, $idPG, 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
               if ($consultarCriancas['row'] == 0) {
 

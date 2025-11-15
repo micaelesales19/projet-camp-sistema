@@ -1227,7 +1227,7 @@ class Welcome extends CI_Controller
 
 		$id_cri = $this->input->post("opc");
 
-		$info_criancas = $this->Criancas->query_crianca_id_crianca($id_cri);
+		$info_criancas = $this->Criancas->query([$id_cri], 'query_id_crianca');
 		$nomeCrianca = $info_criancas['dados']['nome_crianca'];
 
 		$this->Criancas->excluir_crianca_permanentemente($id_cri, $nomeCrianca, $idLider, $idUsuario);
@@ -1287,7 +1287,7 @@ class Welcome extends CI_Controller
 					$pdf->SetFont('arial', 'I', 12);
 					$pdf->Cell(0, 50, $pdf->textoUTF8("Sem PG Cadastrado"), 0, 1, "C");
 				} else {
-					$consultaCriancas = $this->Criancas->query_criancas_id_lider_id_pg_order_by_nome_crianca_asc($idLider, $dadosPG['id_pg']);
+					$consultaCriancas = $this->Criancas->query([$idLider, $dadosPG['id_pg'], 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
 
 					if ($consultaCriancas) {
 						if ($consultaCriancas['row'] == 0) {
@@ -1416,7 +1416,7 @@ class Welcome extends CI_Controller
 					$id_modulo = $dadosPG['id_modulo'];
 					$nome_pg = $dadosPG['nome_pg'];
 
-					$consultaCriancas = $this->Criancas->query_criancas_lider_pg($idLider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+					$consultaCriancas = $this->Criancas->query([$idLider, $id_pg, 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
 					if ($consultaCriancas) {
 						if ($consultaCriancas['row'] == 0) {
@@ -1543,7 +1543,7 @@ class Welcome extends CI_Controller
 					$id_modulo = $dadosPG['id_modulo'];
 					$nome_pg = $dadosPG['nome_pg'];
 
-					$consultaCriancas = $this->Criancas->query_criancas_desativadas_id_lider_id_pg_order_by_nome_asc($idLider, $dadosPG['id_pg']);
+					$consultaCriancas = $this->Criancas->query([$idLider, $dadosPG['id_pg'], 0, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
 					if ($consultaCriancas) {
 
@@ -1623,7 +1623,7 @@ class Welcome extends CI_Controller
 				$id_modulo = $dadosPG['id_modulo'];
 				$nome_pg = $dadosPG['nome_pg'];
 
-				$consultaCriancas = $this->Criancas->query_criancas_lider_pg($idLider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+				$consultaCriancas = $this->Criancas->query([$idLider, $id_pg, 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
 				if ($consultaCriancas) {
 					if ($consultaCriancas['row'] == 0) {
@@ -1751,7 +1751,7 @@ class Welcome extends CI_Controller
 				$id_modulo = $dadosPG['id_modulo'];
 				$nome_pg = $dadosPG['nome_pg'];
 
-				$consultaCriancas = $this->Criancas->query_criancas_id_lider_id_pg_order_by_nome_crianca_asc($idLider, $dadosPG['id_pg']);
+				$consultaCriancas = $this->Criancas->query([$idLider, $dadosPG['id_pg'], 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
 
 				$pontuacao = 0;
 
@@ -2354,7 +2354,7 @@ class Welcome extends CI_Controller
 
 		if ($modulos) {
 
-			$consultaCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+			$consultaCriancas = $this->Criancas->query([$id_lider, $id_pg, 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
 			$qtdPresenca = 0;
 			$qtdVersiculo = 0;
@@ -3164,7 +3164,7 @@ class Welcome extends CI_Controller
 		}
 
 		// desativar crianças
-		$consultaCriancas = $this->Criancas->query_criancas_lider($id_lider);
+		$consultaCriancas = $this->Criancas->query([$id_lider], 'query_id_lider');
 		$dadosCriancas = $consultaCriancas['dados'];
 
 		if ($consultaCriancas['row'] == 0) {
@@ -3210,7 +3210,7 @@ class Welcome extends CI_Controller
 		}
 
 		// desativar crianças
-		$consultaCriancas = $this->Criancas->query_criancas_lider($id_lider);
+		$consultaCriancas = $this->Criancas->query([$id_lider], 'query_id_lider');
 		$dadosCriancas = $consultaCriancas['dados'];
 
 		if ($consultaCriancas['row'] == 0) {
@@ -3271,7 +3271,7 @@ class Welcome extends CI_Controller
 		}
 
 		// desativar crianças
-		$consultaCriancas = $this->Criancas->query_criancas_lider($id_lider);
+		$consultaCriancas = $this->Criancas->query([$id_lider], 'query_id_lider');
 		$dadosCriancas = $consultaCriancas['dados'];
 
 		if ($consultaCriancas['row'] == 0) {
@@ -4109,7 +4109,7 @@ class Welcome extends CI_Controller
 					} else {
 						if ($id_modulo_1 != $id_modulo_2) {
 							if (strtotime($data_fim) >= strtotime($dataHj)) {
-								$this->PG->editar_ativo($id_pg, $id, 1);
+								$this->PG->editar_ativo($id_pg, $id);
 							} else {
 							}
 						} else {

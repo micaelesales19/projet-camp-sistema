@@ -692,8 +692,8 @@ if (!isset($_SESSION['usuario'])) {
                 <?php
 
                 $pg = $this->PG->query([$dados_lider['id_lider']], 'query_pg_id_lider_all', '');
-                $pg_ativos =  $this->PG->query([$dados_lider['id_lider']], 1, 1);
-                $pg_desativados =  $this->PG->query([$dados_lider['id_lider']], 1, 0);
+                $pg_ativos =  $this->PG->query([$dados_lider['id_lider']], 'query_pg_id_lider_all_ativo_or_no', 1);
+                $pg_desativados =  $this->PG->query([$dados_lider['id_lider']], 'query_pg_id_lider_all_ativo_or_no', 0);
 
                 if ($pg['row'] == 0) {
                 ?>
@@ -1120,7 +1120,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <div class="box-tools pull-right">
                                                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_criancas">Cadastrar +</button>
                                                     <?php
-                                                    $criancas_desativadas = $this->Criancas->query_criancas_desativadas_id_lider_order_by_nome_asc($dados_lider['id_lider']);
+                                                    $criancas_desativadas = $this->Criancas->query([$dados_lider['id_lider'], 0, 'asc'], 'query_id_lider_ativo_order_by_nome_crianca');
                                                     if ($criancas_desativadas['row'] == 0) {
                                                     } else {
                                                     ?>
@@ -1215,7 +1215,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
 
                                                 <?php
-                                                $dados_criancas = $this->Criancas->query_criancas_lider_pg($dados_lider['id_lider'], '', 2);
+                                                $dados_criancas = $this->Criancas->query([$dados_lider['id_lider'], 1, 'asc'], 'query_id_lider_ativo_order_by_nome_crianca');
 
                                                 if ($dados_criancas['row'] == 0) {
                                                 ?>
@@ -1249,7 +1249,7 @@ if (!isset($_SESSION['usuario'])) {
                                                             <?php
                                                             foreach ($pg['dados'] as $key => $dadosPG) {
 
-                                                                $consultaCriancas = $this->Criancas->query_criancas_lider_pg($dados_lider['id_lider'], $dadosPG['id_pg'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+                                                                $consultaCriancas = $this->Criancas->query([$dados_lider['id_lider'], $dadosPG['id_pg'], 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
                                                                 $idPg = $dadosPG['id_pg'];
 
                                                                 $i = 0;
@@ -1602,7 +1602,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <?php
                                                         foreach ($pg['dados'] as $key => $dadosPG) {
 
-                                                            $consultaCriancas = $this->Criancas->query_criancas_lider($dados_lider['id_lider']);
+                                                            $consultaCriancas = $this->Criancas->query([$dados_lider['id_lider']], 'query_id_lider');
                                                             $idPg = $dadosPG['id_pg'];
 
                                                             $i = 0;
@@ -1705,7 +1705,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <?php
 
                                     foreach ($pg['dados'] as $key => $dados_pg_progresso) {
-                                        $total_crianca_pg = $this->Criancas->query_criancas_id_lider_id_pg_order_by_nome_crianca_asc($dados_lider['id_lider'], $dados_pg_progresso['id_pg']);
+                                        $total_crianca_pg = $this->Criancas->query([$dados_lider['id_lider'], $dados_pg_progresso['id_pg'], 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
 
                                         $id_pgsss = $dados_pg_progresso['id_pg'];
                                     ?>

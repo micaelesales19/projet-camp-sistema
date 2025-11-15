@@ -33,7 +33,7 @@
 
             if ($modulos) {
 
-                $consultaCriancas = $this->Criancas->query_crianca_id_crianca_id_pg_id_lider_ativo($id_lider, $id_pg, $id_crianca);
+                $consultaCriancas = $this->Criancas->query([$id_lider, $id_pg, $id_crianca, 1], 'query_id_lider_id_pg_id_crianca_ativo');
 
                 $qtdPresenca = 0;
                 $qtdVersiculo = 0;

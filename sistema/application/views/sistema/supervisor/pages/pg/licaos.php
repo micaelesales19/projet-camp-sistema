@@ -221,7 +221,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                 <ul class="nav nav-tabs">
                                                     <?php
-                                                    $checksCriancas = $this->Criancas->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc');
+                                                    $checksCriancas = $this->Criancas->query([$id_lider, $id_pg, 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
                                                     $comparador_modulo = 1;
 

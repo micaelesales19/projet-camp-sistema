@@ -5,38 +5,22 @@
  */
 class Criancas extends CI_Model
 {
-    public function query_criancas_lider($id_usuario)
+
+    public function query($dados, $opc)
     {
-        $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE '$id_usuario'");
-        $row = $consultar_criancas->num_rows();
-        $dados_consulta_criancas = $consultar_criancas->result_array();
+        if ($opc == 'query_id_crianca') { // ok
+            $id_crianca = $dados[0];
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE id_crianca LIKE '$id_crianca'");
+            $row = $consultar_criancas->num_rows();
+            $dados_consulta_criancas = $consultar_criancas->row_array();
 
-        $dados = array(
-            'row' => $row,
-            'dados' => $dados_consulta_criancas,
-        );
-
-        return $dados;
-    }
-
-    public function query_crianca_id_crianca($id_crianca)
-    {
-        $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE id_crianca LIKE '$id_crianca'");
-        $row = $consultar_criancas->num_rows();
-        $dados_consulta_criancas = $consultar_criancas->row_array();
-
-        $dados = array(
-            'row' => $row,
-            'dados' => $dados_consulta_criancas,
-        );
-
-        return $dados;
-    }
-
-    public function query_criancas_lider_pg($id_usuario, $idPG, $x)
-    {
-        if ($x == 'query_id_lider_id_pg_ativo_order_by_nome_crianca_asc') {
-            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1 ORDER BY nome_crianca ASC");
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_criancas,
+            );
+        } else if ($opc == 'query_id_lider') { // ok
+            $id_usuario = $dados[0];
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE '$id_usuario'");
             $row = $consultar_criancas->num_rows();
             $dados_consulta_criancas = $consultar_criancas->result_array();
 
@@ -44,10 +28,10 @@ class Criancas extends CI_Model
                 'row' => $row,
                 'dados' => $dados_consulta_criancas,
             );
-
-            return $dados;
-        } else if ($x == 'query_id_lider_id_pg_geral_order_by_nome_crianca_asc') {
-            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG ORDER BY nome_crianca ASC");
+        } else if ($opc == 'query_id_lider_ativo') { // ok
+            $id_usuario = $dados[0];
+            $ativo = $dados[1];
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE '$id_usuario' AND ativo = $ativo");
             $row = $consultar_criancas->num_rows();
             $dados_consulta_criancas = $consultar_criancas->result_array();
 
@@ -55,10 +39,11 @@ class Criancas extends CI_Model
                 'row' => $row,
                 'dados' => $dados_consulta_criancas,
             );
-
-            return $dados;
-        } else if ($x == 2) {
-            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND ativo = 1 ORDER BY nome_crianca ASC");
+        } else if ($opc == 'query_id_lider_id_pg_geral_order_by_nome_crianca') { // ok
+            $id_usuario = $dados[0];
+            $idPG = $dados[1];
+            $order_by = $dados[2];
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG ORDER BY nome_crianca $order_by");
             $row = $consultar_criancas->num_rows();
             $dados_consulta_criancas = $consultar_criancas->result_array();
 
@@ -66,87 +51,47 @@ class Criancas extends CI_Model
                 'row' => $row,
                 'dados' => $dados_consulta_criancas,
             );
+        } else  if ($opc == 'query_id_lider_id_pg_ativo_order_by_nome_crianca') { // ok
+            $id_usuario = $dados[0];
+            $idPG = $dados[1];
+            $ativo = $dados[2];
+            $order_by = $dados[3];
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = $ativo ORDER BY nome_crianca $order_by");
+            $row = $consultar_criancas->num_rows();
+            $dados_consulta_criancas = $consultar_criancas->result_array();
 
-            return $dados;
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_criancas,
+            );
+        } else if ($opc == 'query_id_lider_ativo_order_by_nome_crianca') { // ok
+            $id_usuario = $dados[0];
+            $ativo = $dados[1];
+            $order_by = $dados[2];
+
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND ativo = $ativo ORDER BY nome_crianca $order_by");
+            $row = $consultar_criancas->num_rows();
+            $dados_consulta_criancas = $consultar_criancas->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_criancas,
+            );
+        } else if ($opc == 'query_id_lider_id_pg_id_crianca_ativo') { // ok
+            $id_usuario = $dados[0];
+            $idPG = $dados[1];
+            $id_crianca = $dados[2];
+            $ativo = $dados[3];
+
+            $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = $ativo AND id_crianca = $id_crianca");
+            $row = $consultar_criancas->num_rows();
+            $dados_consulta_criancas = $consultar_criancas->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_criancas,
+            );
         }
-    }
-
-    public function list_criancas($id_usuario, $users, $opc)
-    {
-
-        $total_criancas = 0;
-
-        $total = count($users);
-
-        if ($total == 0) {
-        } else {
-            foreach ($users as $key => $dados) {
-                $id_lider = $dados['id_lider'];
-                $consultar_criancas_lider = $this->db->query("SELECT * FROM criancas WHERE lider = $id_lider");
-                $row_lider = $consultar_criancas_lider->num_rows();
-
-                $total_criancas = $total_criancas + $row_lider;
-            }
-        }
-
-        return $total_criancas;
-    }
-
-    // tá sendo usado
-    public function query_criancas_id_lider_id_pg_order_by_nome_crianca_asc($id_usuario, $idPG)
-    {
-        $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG ORDER BY nome_crianca ASC");
-        $row = $consultar_criancas->num_rows();
-        $dados_consulta_criancas = $consultar_criancas->result_array();
-
-        $dados = array(
-            'row' => $row,
-            'dados' => $dados_consulta_criancas,
-        );
-
-        return $dados;
-    }
-
-    public function query_crianca_id_crianca_id_pg_id_lider_ativo($id_usuario, $idPG, $id_crianca)
-    {
-        $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = 1 AND id_crianca = $id_crianca");
-        $row = $consultar_criancas->num_rows();
-        $dados_consulta_criancas = $consultar_criancas->row_array();
-
-        $dados = array(
-            'row' => $row,
-            'dados' => $dados_consulta_criancas,
-        );
-
-        return $dados;
-    }
-
-    // tá sendo usar
-    public function query_criancas_desativadas_id_lider_order_by_nome_asc($id_usuario)
-    {
-        $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND ativo = 0 ORDER BY nome_crianca ASC");
-        $row = $consultar_criancas->num_rows();
-        $dados_consulta_criancas = $consultar_criancas->result_array();
-
-        $dados = array(
-            'row' => $row,
-            'dados' => $dados_consulta_criancas,
-        );
-
-        return $dados;
-    }
-
-    public function query_criancas_desativadas_id_lider_id_pg_order_by_nome_asc($id_usuario, $id_pg)
-    {
-        $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $id_pg AND ativo = 0 ORDER BY nome_crianca ASC");
-        $row = $consultar_criancas->num_rows();
-        $dados_consulta_criancas = $consultar_criancas->result_array();
-
-        $dados = array(
-            'row' => $row,
-            'dados' => $dados_consulta_criancas,
-        );
-
         return $dados;
     }
 
@@ -331,7 +276,7 @@ class Criancas extends CI_Model
     public function excluir_criancas_do_pg($id_pg, $id_lider, $id_usuario)
     {
 
-        $lista_de_criancas = $this->query_criancas_lider_pg($id_lider, $id_pg, 'query_id_lider_id_pg_geral_order_by_nome_crianca_asc');
+        $lista_de_criancas = $this->query([$id_lider, $id_pg], 'query_id_lider_id_pg_geral_order_by_nome_crianca_asc');
 
         if ($lista_de_criancas['row'] == 0) {
         } else {

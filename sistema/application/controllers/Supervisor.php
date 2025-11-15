@@ -307,7 +307,7 @@ class Supervisor extends CI_Controller
         // atualizarCriancas
         $nome_antigo = $this->input->post("nome_antigo");
 
-        $consultarCriancas = $this->Criancas->query_criancas_lider($id);
+        $consultarCriancas = $this->Criancas->query([$id], 'query_id_lider');
 
         if ($consultarCriancas['row'] == 0) {
         } else {
