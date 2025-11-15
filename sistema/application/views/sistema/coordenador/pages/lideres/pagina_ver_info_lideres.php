@@ -330,7 +330,7 @@ if (!isset($_SESSION['usuario'])) {
                                             $email = $dados_lider['email'];
                                             $cpf = $dados_lider['cpf'];
 
-                                            $info_usuario = $this->Lideres->infos([$email, $cpf], 'info_usuario_and_email_cpf', '', '', '');
+                                            $info_usuario = $this->Lideres->infos([$email, $cpf], 'info_usuario_and_email_cpf', '', '');
 
                                             $disabled_inputs = "";
                                             if (!$check_ativo) {

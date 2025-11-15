@@ -17,7 +17,7 @@ if (!isset($_SESSION['usuario'])) {
     $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 
     // id lider // opc // opc2 // ordem // datas
-    $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
+    $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '');
     $dados_lider = $query['dados'];
 
     // id lider // opc // ativo

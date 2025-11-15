@@ -171,7 +171,7 @@ if (!isset($_SESSION['usuario'])) {
           <!-- /.row -->
 
           <?php
-          $check_situacao_cadastro_lider = $this->Lideres->infos([$id_usuario, 1], 'check_lider_situacao_cadastro_id_coordenador', '', '', '');
+          $check_situacao_cadastro_lider = $this->Lideres->infos([$id_usuario, 1], 'query_lideres_id_coordenador_situacao_order_by_nome_lider', '', 'asc');
 
           if ($check_situacao_cadastro_lider['row'] == 0) {
           } else {

@@ -448,14 +448,14 @@ class Welcome extends CI_Controller
 		}
 
 		if ($nivel == 1) {
-			$dados_user = $this->Lideres->infos([$id_lider], 'info_lider', '', '', []);
+			$dados_user = $this->Lideres->infos([$id_lider], 'info_lider', '', []);
 
 			if ($dados_user['row'] == 0) {
 			} else {
 				$email = $dados_user['dados']['email'];
 				$cpf = $dados_user['dados']['cpf'];
 
-				$dados_lider = $this->Lideres->infos([$email, $cpf], 'info_lider_email_cpf', '', '', []);
+				$dados_lider = $this->Lideres->infos([$email, $cpf], 'info_lider_email_cpf', '', []);
 
 				if ($dados_lider['row'] == 0) {
 				} else {
@@ -656,10 +656,10 @@ class Welcome extends CI_Controller
 						$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
 						$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
 						if ($cadastro && $cadastroUsuario) {
-							$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '', '');
+							$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '');
 							$id_lider = $consultarDados['dados']['id_lider'];
 
-							$consultarDadosUsuario = $this->Lideres->infos([$email, $cpf_completo], 'info_usuario_and_email_cpf', '', '', '');
+							$consultarDadosUsuario = $this->Lideres->infos([$email, $cpf_completo], 'info_usuario_and_email_cpf', '', '');
 							$id_usuario = $consultarDadosUsuario['dados']['id_usuario'];
 
 							if ($isColider == '') {
@@ -702,7 +702,7 @@ class Welcome extends CI_Controller
 						';
 						}
 					} else {
-						$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_or_email_cpf_nome', '', '', '');
+						$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_or_email_cpf_nome', '', '');
 
 						if ($info_usuario['row'] == 0) {
 							$mensagem = "Link Inválido!\nDados não Encontrado";
@@ -785,10 +785,10 @@ class Welcome extends CI_Controller
 						$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
 						$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, '', $nivel, $senha);
 						if ($cadastro && $cadastroUsuario) {
-							$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '', '');
+							$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '');
 							$id_lider = $consultarDados['dados']['id_lider'];
 
-							$consultarDadosUsuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '', '');
+							$consultarDadosUsuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '');
 							$id_usuario = $consultarDadosUsuario['dados']['id_usuario'];
 
 							if ($isColider == '') {
@@ -825,7 +825,7 @@ class Welcome extends CI_Controller
 						';
 						}
 					} else {
-						$info_usuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '', '');
+						$info_usuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '');
 
 						if ($info_usuario['row'] == 0) {
 							$mensagem = "Link Inválido!\nDados não Encontrado";
@@ -890,7 +890,7 @@ class Welcome extends CI_Controller
 				$cpf = $info_lider['dados']['cpf'];
 				$nome = $this->FConsultas_model->getNomeUserId($id_lider)['nome'];
 
-				$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
+				$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '');
 
 				if ($info_usuario['row'] == 0) {
 					$mensagem = "Link Inválido!\nDados não Encontrado";
@@ -915,7 +915,7 @@ class Welcome extends CI_Controller
 					$email = $dados_coordenador['dados']['email'];
 					$cpf = $dados_coordenador['dados']['cpf'];
 					$nome = $dados_coordenador['dados']['nome_coordenador'];
-					$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
+					$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '');
 					$senha = $info_usuario['dados']['senha'];
 					$link = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
 				}
@@ -923,7 +923,7 @@ class Welcome extends CI_Controller
 				$email = $dados_coordenador['dados']['email'];
 				$cpf = $dados_coordenador['dados']['cpf'];
 				$nome = $dados_coordenador['dados']['nome_coordenador'];
-				$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
+				$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '');
 				$senha = $info_usuario['dados']['senha'];
 				$link = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf&nome=$nome&senha=$senha&x_ir=1&opc=1";
 			}
@@ -951,7 +951,7 @@ class Welcome extends CI_Controller
 		$id_lider = $this->input->post('id_lider');
 		$id_usuario = $this->input->post('id_usuario');
 
-		$info_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		$info_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '');
 		$is_br = $info_lider['dados']['pais'] == 'br' || '' ? true : false;
 
 		$telefone = $this->FConsultas_model->formatar_telefone($info_lider['dados']['telefone_whatsapp'], $is_br);
@@ -964,7 +964,7 @@ class Welcome extends CI_Controller
 		$email = $info_lider['dados']['email'];
 		$cpf = $info_lider['dados']['cpf'];
 		$nome = $info_lider['dados']['nome_lider'];
-		$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
+		$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '');
 		$senha = $info_usuario['dados']['senha'];
 
 		if ($is_br) {
@@ -1078,7 +1078,7 @@ class Welcome extends CI_Controller
 		$email_responsavel = $this->input->post('email_responsavel');
 		$telefone_responsavel = $this->input->post('telefone_responsavel');
 
-		$dadosPais = $this->Lideres->infos([$lider], 'info_lider', '', '', []);
+		$dadosPais = $this->Lideres->infos([$lider], 'info_lider', '', '');
 
 		$total_count = count($total);
 
@@ -2660,7 +2660,7 @@ class Welcome extends CI_Controller
 						';
 					}
 				} else {
-					$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_or_email_cpf_nome', '', '', '');
+					$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_or_email_cpf_nome', '', '');
 
 					if ($info_usuario['row'] == 0) {
 						$mensagem = "Link Inválido!\nDados não Encontrado";
@@ -2725,7 +2725,7 @@ class Welcome extends CI_Controller
 						';
 					}
 				} else {
-					$info_usuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '', '');
+					$info_usuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '');
 
 					if ($info_usuario['row'] == 0) {
 						$mensagem = "Link Inválido!\nDados não Encontrado";
@@ -2900,7 +2900,7 @@ class Welcome extends CI_Controller
 		$email = $info_coordenador['dados']['email'];
 		$cpf = $info_coordenador['dados']['cpf'];
 		$nome = $info_coordenador['dados']['nome_coordenador'];
-		$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '', '');
+		$info_usuario = $this->Lideres->infos([$email, $cpf, $nome], 'info_usuario_and_email_cpf_nome', '', '');
 		$senha = $info_usuario['dados']['senha'];
 
 		if ($is_br) {
@@ -2939,7 +2939,7 @@ class Welcome extends CI_Controller
 		$id_usuario = $this->input->post("idUsuario");
 		$motivo = $this->input->post("motivo");
 
-		$dados_lideres = $this->Lideres->infos([$id_coordenador], 1, 1, [false], []);
+		$dados_lideres = $this->Lideres->infos([$id_coordenador], 'query_lideres_id_coordenador', '', '');
 
 		if ($dados_lideres['row'] == 0) {
 		} else {
@@ -2967,7 +2967,7 @@ class Welcome extends CI_Controller
 		$id_coordenador = $this->input->post("id_coordenador");
 		$id_usuario = $this->input->post("idUsuario");
 
-		$dados_lideres = $this->Lideres->infos([$id_coordenador], 1, 1, [false], []);
+		$dados_lideres = $this->Lideres->infos([$id_coordenador], 'query_lideres_id_coordenador', '', '');
 
 		if ($dados_lideres['row'] == 0) {
 		} else {
@@ -3074,7 +3074,7 @@ class Welcome extends CI_Controller
 					$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, 2);
 					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
 					if ($cadastro && $cadastroUsuario) {
-						$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '', '');
+						$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '');
 						$id_lider = $consultarDados['dados']['id_lider'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
@@ -3103,7 +3103,7 @@ class Welcome extends CI_Controller
 					$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, 2);
 					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, "", $nivel, $senha);
 					if ($cadastro && $cadastroUsuario) {
-						$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '', '');
+						$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '');
 						$id_lider = $consultarDados['dados']['id_lider'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=&nome=$nome&senha=$senha&x_ir=1&opc=2";
@@ -3736,7 +3736,7 @@ class Welcome extends CI_Controller
 
 	public function enviar_email_lider_liberacao_sistema($id_lider, $link)
 	{
-		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '');
 		if ($dados_lider['row'] == 0) {
 			// enviar alerta p direção
 		} else {
@@ -3802,7 +3802,7 @@ class Welcome extends CI_Controller
 
 	public function enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider)
 	{
-		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '');
 		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
 		$data_hoje = date('d/m/Y');
 
@@ -3864,7 +3864,7 @@ class Welcome extends CI_Controller
 
 	public function enviar_email_supervisor_liberacao_sistema($id_supervisor, $id_usuario, $id_lider)
 	{
-		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '');
 		$dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '', '');
 		$data_hoje = date('d/m/Y');
 
@@ -3927,7 +3927,7 @@ class Welcome extends CI_Controller
 	public function enviarEmailDevocionalDiario()
 
 	{
-		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '', '');
+		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '');
 
 		$dataHj = date('m/d/Y');
 
@@ -4032,7 +4032,7 @@ class Welcome extends CI_Controller
 	}
 	public function atualizarProgressoDevocional()
 	{
-		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '', '');
+		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '');
 
 		$dataHj = date('m/d/Y');
 
@@ -4085,7 +4085,7 @@ class Welcome extends CI_Controller
 	}
 	public function atualizarModuloMensal()
 	{
-		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '', '');
+		$todosPais = $this->Lideres->infos([], 'query_all_lider_br', '', '');
 
 		$dataHj = date('m/d/Y');
 

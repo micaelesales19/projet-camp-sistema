@@ -13,48 +13,9 @@
 
 class Lideres extends CI_Model
 {
-    public function infos($id_usuario, $opc, $opc2, $order, $datas)
+    public function infos($id_usuario, $opc, $order, $datas)
     {
-        if ($opc == 1 && $opc2 == 1 && $order[0] == true) {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR ordenado
-            $id_usuario = $id_usuario[0];
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario ORDER BY nome_lider $order[1]");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 1 && $opc2 == 1 && $order[0] == false) {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR
-            $id_usuario = $id_usuario[0];
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 1 && $opc2 == 2 && $order[0] == false) {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR
-            $id_usuario = $id_usuario[0];
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorR = $id_usuario");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_lider') {
+        if ($opc == 'info_lider') { // ok
             // Consulta na tabela de líderes de acordo com o ID LIDER
             $id_usuario = $id_usuario[0];
             $consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_lider = '$id_usuario'");
@@ -67,7 +28,7 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'info_lider_or_email_cpf_nome') {
+        } else if ($opc == 'info_lider_or_email_cpf_nome') { // ok
             $email = $id_usuario[0];
             $cpf = $id_usuario[1];
             $cpf2 = $id_usuario[2];
@@ -82,73 +43,7 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'info_usuario_and_email_cpf_nome') {
-            $email = $id_usuario[0];
-            $cpf = $id_usuario[1];
-            $nome = $id_usuario[2];
-            $consultar_usuario = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf' AND nome LIKE '$nome'");
-            $dados_usuario = $consultar_usuario->row_array();
-            $total_usuario = $consultar_usuario->num_rows();
-
-            $dados = array(
-                'row' => $total_usuario,
-                'dados' => $dados_usuario,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_usuario_or_email_cpf_nome') {
-            $email = $id_usuario[0];
-            $cpf = $id_usuario[1];
-            $nome = $id_usuario[2];
-            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' OR cpf = '$cpf' OR nome = '$nome'");
-            $row = $consultar_lider->num_rows();
-            $dados_consulta_lideres = $consultar_lider->row_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_usuario_and_email_cpf') {
-            $email = $id_usuario[0];
-            $cpf = $id_usuario[1];
-            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf'");
-            $row = $consultar_lider->num_rows();
-            $dados_consulta_lideres = $consultar_lider->row_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_usuario_or_email_nome') {
-            $email = $id_usuario[0];
-            $nome = $id_usuario[1];
-            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' OR nome = '$nome'");
-            $row = $consultar_lider->num_rows();
-            $dados_consulta_lideres = $consultar_lider->row_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_usuario_id_usuario') {
-            $id = $id_usuario[0];
-            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE id_usuario = '$id'");
-            $row = $consultar_lider->num_rows();
-            $dados_consulta_lideres = $consultar_lider->row_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_lider_email_cpf') {
+        } else if ($opc == 'info_lider_email_cpf') { // ok
             // Consulta na tabela de líderes de acordo com o ID LIDER
             $email = $id_usuario[0];
             $cpf = $id_usuario[1];
@@ -162,7 +57,7 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'info_lider_nome_email_data_nascimento') {
+        } else if ($opc == 'info_lider_nome_email_data_nascimento') { // ok
             // Consulta na tabela de líderes de acordo com o ID LIDER
             $email = $id_usuario[0];
             $nome = $id_usuario[1];
@@ -177,13 +72,27 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'check_lider_situacao_cadastro_id_coordenador') {
-            // Consulta na tabela de líderes se tem lider esperando autorização pelo ID COORDENADOR
-            $id_coordenador = $id_usuario[0];
-            $situacao = $id_usuario[1];
-            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_coordenador = '$id_coordenador' AND confirmado = $situacao ORDER BY nome_lider ASC");
+        } else if ($opc == 'info_usuario_and_email_cpf_nome') { // ok
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $nome = $id_usuario[2];
+            $consultar_usuario = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf' AND nome LIKE '$nome'");
+            $dados_usuario = $consultar_usuario->row_array();
+            $total_usuario = $consultar_usuario->num_rows();
+
+            $dados = array(
+                'row' => $total_usuario,
+                'dados' => $dados_usuario,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_usuario_or_email_cpf_nome') { // ok
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $nome = $id_usuario[2];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' OR cpf = '$cpf' OR nome = '$nome'");
             $row = $consultar_lider->num_rows();
-            $dados_consulta_lideres = $consultar_lider->result_array();
+            $dados_consulta_lideres = $consultar_lider->row_array();
 
             $dados = array(
                 'row' => $row,
@@ -191,13 +100,12 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'check_lider_situacao_cadastro_id_supervisor') {
-            // Consulta na tabela de líderes se tem lider esperando autorização pelo ID COORDENADOR
-            $id_supervisor = $id_usuario[0];
-            $situacao = $id_usuario[1];
-            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_supervisorR = '$id_supervisor' AND confirmado = $situacao ORDER BY nome_lider ASC");
+        } else if ($opc == 'info_usuario_and_email_cpf') { // ok
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' AND cpf = '$cpf'");
             $row = $consultar_lider->num_rows();
-            $dados_consulta_lideres = $consultar_lider->result_array();
+            $dados_consulta_lideres = $consultar_lider->row_array();
 
             $dados = array(
                 'row' => $row,
@@ -205,13 +113,51 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'query_coordenador_supervisor_inicial') {
-            // retornando todos os coordenadores de acordo com uma data específica
+        } else if ($opc == 'info_usuario_or_email_nome') { // ok
+            $email = $id_usuario[0];
+            $nome = $id_usuario[1];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE email = '$email' OR nome = '$nome'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_usuario_id_usuario') { // ok
+            $id = $id_usuario[0];
+            $consultar_lider = $this->db->query("SELECT * FROM usuario WHERE id_usuario = '$id'");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'query_lideres_id_coordenador') { // ok
+            // Consulta na tabela de líderes de acordo com o ID COORDENADOR
+            $id_usuario = $id_usuario[0];
+            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario");
+            $row = $consultar_lideres->num_rows();
+            $dados_consulta_lideres = $consultar_lideres->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'query_lideres_id_coordenador_datas_order_by_nome_lider') {  // ok // query_coordenador_supervisor_inicial
+            // retornando todos os lideres do coordenador de acordo com uma data específica
             $id_usuario = $id_usuario[0];
             $data_1 = $datas['data_1']; // antiga
             $data_2 = $datas['data_2']; // atual
 
-            $consultar_coordenador = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario AND data_cadastro BETWEEN '$data_1' AND '$data_2' ORDER BY nome_lider ASC");
+            $consultar_coordenador = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario AND data_cadastro BETWEEN '$data_1' AND '$data_2' ORDER BY nome_lider $order");
             $row = $consultar_coordenador->num_rows();
             $dados_consulta_coordenador = $consultar_coordenador->result_array();
 
@@ -221,11 +167,11 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'query_coordenador_supervisor_inicial_2') {
-            // retornando todos os coordenadores de acordo com uma data específica
+        } else if ($opc == 'query_lideres_id_coordenador_order_by_nome_lider') { // ok // query_coordenador_supervisor_inicial_2
+            // retornando todos os lideres do coordenador
             $id_usuario = $id_usuario[0];
 
-            $consultar_coordenador = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario AND data_cadastro ORDER BY nome_lider ASC");
+            $consultar_coordenador = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario ORDER BY nome_lider $order");
             $row = $consultar_coordenador->num_rows();
             $dados_consulta_coordenador = $consultar_coordenador->result_array();
 
@@ -235,95 +181,37 @@ class Lideres extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'query_all_lider_br') {
+        } else if ($opc == 'query_lideres_id_coordenador_situacao_order_by_nome_lider') { // check_lider_situacao_cadastro_id_coordenador
+            // Consulta na tabela de líderes se tem lider esperando autorização pelo ID COORDENADOR
+            $id_coordenador = $id_usuario[0];
+            $situacao = $id_usuario[1];
+            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_coordenador = '$id_coordenador' AND confirmado = $situacao ORDER BY nome_lider $order");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'query_lideres_id_supervisor_situacao_order_by_nome_lider') { // check_lider_situacao_cadastro_id_supervisor
+            // Consulta na tabela de líderes se tem lider esperando autorização pelo ID SUPERVISOR
+            $id_supervisor = $id_usuario[0];
+            $situacao = $id_usuario[1];
+            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE id_supervisorR = '$id_supervisor' AND confirmado = $situacao ORDER BY nome_lider $order");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
+        } else if ($opc == 'query_all_lider_br') { // ok
             $dados = $this->db->query("SELECT * FROM lider WHERE confirmado LIKE 2 AND pais LIKE 'br'")->result_array();
             return $dados;
-        }
-    }
-
-    /*public function lideresAtivos($list)
-    {
-        $lista = $list['dados'];
-        $total_ativos = 0;
-        $dados_lider = [];
-
-        if ($list['row'] == 0) {
-        } else {
-            foreach ($lista as $key => $lideres) {
-                $id_lider = $lideres['id_lider'];
-                $ativo = $lideres['confirmado'];
-                $data_cadastro = $lideres['data_cadastro'];
-
-                $check = $this->check_lider_is_ativo($id_lider, $data_cadastro, $ativo);
-
-                if ($check == 0) {
-                } else {
-                    // líder novo
-                    array_push($dados_lider, $lideres);
-                    $total_ativos = $total_ativos + 1;
-                }
-            }
-        }
-
-        $dados = array(
-            'row' => $total_ativos,
-            'dados' => $dados_lider,
-        );
-        return $dados;
-    }*/
-
-    public function check_lider_is_ativo($id_lider, $data_cadastro, $ativo)
-    {
-        $data = date('Y-m-d');
-        $data_mais_um_mes = date('Y-m-d', strtotime('+1 month', strtotime($data_cadastro)));
-
-        $qtd_criancas = $this->Criancas->query([$id_lider], 'query_id_lider');
-        $qtd_criancas_ativas = $this->Criancas->query([$id_lider, 1], 'query_id_lider_ativo');
-
-        $pgs = $this->PG->query([$id_lider], 'query_pg_id_lider_all_ativo_or_no', 1);
-
-        if ($ativo == 0 || $ativo == 1 || $ativo == 3) {
-            return 0;
-        } else {
-            if (strtotime($data_mais_um_mes) > strtotime($data)) {
-                return 1;
-            } else {
-                if ($pgs['row'] == 0 && $qtd_criancas_ativas['row'] == 0 && $qtd_criancas['row'] == 0) {
-                    // inativo por n ter pg e nem crianças
-                    return 0;
-                } else {
-                    $id_modulo = $pgs['dados']['id_modulo'] ?? 1;
-                    $numero_licao = $pgs['dados']['n_licao'] ?? 1;
-                    $modulo = $this->FConsultas_model->consultarModuloId($id_modulo);
-                    $progresso = $this->PG->consultar_progresso('query_id_lider', [$id_lider]);
-                    $data_ultimo_relatorio = "";
-                    $i = 0;
-                    foreach ($progresso['dados'] as $key => $p) {
-                        $data_ultimo = $p['data_aula'];
-                        $i++;
-                        if ($i == $progresso['row']) {
-                            $data_ultimo_relatorio = $data_ultimo;
-                        }
-                    }
-
-                    if ($data_ultimo_relatorio == '') {
-                        // inativo por não preenchimento de relatórios
-                        return 0;
-                    } else {
-                        $data_convertida = $this->FConsultas_model->converterData($data_ultimo_relatorio);
-                        $data_mais_2_meses = date('Y-m-d', strtotime('+2 months', strtotime($data_convertida)));
-
-                        if (strtotime($data_mais_2_meses) < strtotime($data)) {
-                            // inativo por ter passado mais de 2 meses inativos
-                            return 0;
-                        } else if ($id_modulo == 10 && $numero_licao == $modulo['n_licao']) {
-                            return 1;
-                        } else {
-                            return 1;
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -374,8 +262,6 @@ class Lideres extends CI_Model
             'dados' => $dados_lider
         ];
     }
-
-
     public function check_lider_is_ativo_otimizado($id_lider, $data_cadastro, $ativo, $criacas_por_lider, $progresso_por_lider)
     {
         $data = date('Y-m-d');
@@ -878,7 +764,7 @@ class Lideres extends CI_Model
 
     public function excluirUsuarioPermanentemente($nome_usuario, $email, $cpf)
     {
-        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '', '');
+        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '');
         $this->db->where('id_usuario ', $user['dados']['id_usuario']);
         if ($this->db->delete('usuario')) {
             return true;
@@ -891,7 +777,7 @@ class Lideres extends CI_Model
     {
         $ativo = "1";
 
-        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '', '');
+        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '');
         $row = $user['row'];
 
         if ($row == 0) {
@@ -912,7 +798,7 @@ class Lideres extends CI_Model
     {
         $ativo = "0";
 
-        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '', '');
+        $user = $this->infos([$email, $cpf, $nome_usuario], 'info_usuario_and_email_cpf_nome', '', '');
         $row = $user['row'];
 
         if ($row == 0) {

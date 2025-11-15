@@ -403,7 +403,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                             $email = $dados_coordenador['email'];
                                             $cpf = $dados_coordenador['cpf'];
-                                            $info_usuario = $this->Lideres->infos([$email, $cpf], 'info_usuario_and_email_cpf', '', '', '');
+                                            $info_usuario = $this->Lideres->infos([$email, $cpf], 'info_usuario_and_email_cpf', '', '');
                                             $dados_usuario = $info_usuario['dados'];
                                             ?>
 
@@ -833,7 +833,7 @@ if (!isset($_SESSION['usuario'])) {
                                         </div>
 
                                         <?php
-                                        $lideres_do_coordenador = $this->Lideres->infos([$dados_coordenador['id_coordenador']], 1, 1, [false], '');
+                                        $lideres_do_coordenador = $this->Lideres->infos([$dados_coordenador['id_coordenador']], 'query_lideres_id_coordenador', '', '');
                                         if ($lideres_do_coordenador['row'] == 0) {
                                         } else {
                                         ?>

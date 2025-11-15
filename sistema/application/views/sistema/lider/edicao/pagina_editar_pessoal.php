@@ -9,10 +9,10 @@ if (!isset($_SESSION['usuario'])) {
   $voltar = "";
   $array = array('voltar' => $voltar);
 
-  $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
+  $query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '');
   $dados_pessoal = $query['dados'];
 
-  $info_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '', '');
+  $info_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '');
 
   $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>

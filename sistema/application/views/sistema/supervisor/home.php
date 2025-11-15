@@ -190,7 +190,7 @@ if (!isset($_SESSION['usuario'])) {
           <!-- /.row -->
 
           <?php
-          $check_situacao_cadastro = $this->Lideres->infos([$id_usuario, 1], 'check_lider_situacao_cadastro_id_supervisor', '', '', '');
+          $check_situacao_cadastro = $this->Lideres->infos([$id_usuario, 1], 'query_lideres_id_supervisor_situacao_order_by_nome_lider', '', 'asc');
           $check_situacao_cadastro_coordenador = $this->Coordenadores->infos([$id_usuario, 3], 'check_coordenador_situacao_cadastro_id_supervisor', '', '', '');
 
           if ($check_situacao_cadastro['row'] == 0 && $check_situacao_cadastro_coordenador['row'] == 0) {

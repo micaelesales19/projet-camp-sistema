@@ -21,7 +21,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $dados_lider = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
+    $dados_lider = $this->Lideres->infos([$id_usuario], 'info_lider', '', '');
 
     // id lider // opc // ativo
     $consultarPG = $this->PG->query([$id_usuario], 'query_lider_ativo_order_by_nome_pg_asc', 1);

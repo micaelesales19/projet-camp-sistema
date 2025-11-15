@@ -12,7 +12,7 @@ if (!isset($_SESSION['usuario'])) {
   $query = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
   $dados_pessoal = $query['dados'];
 
-  $query_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '', '');
+  $query_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '');
   $dados_usuario = $query_usuario['dados'];
 
   $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');

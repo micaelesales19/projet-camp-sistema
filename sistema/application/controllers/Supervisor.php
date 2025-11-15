@@ -656,7 +656,7 @@ class Supervisor extends CI_Controller
             $total_criancas_ativos = 0;
 
             // líderes e líderes ativos
-            $lideres_info = $this->Lideres->infos([$id_coordenador], 'query_coordenador_supervisor_inicial_2', '', [], []);
+            $lideres_info = $this->Lideres->infos([$id_coordenador], 'query_lideres_id_coordenador_order_by_nome_lider', '', 'asc', []);
             $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
 
             if (!empty($lideres_info['dados'])) {
@@ -720,7 +720,7 @@ class Supervisor extends CI_Controller
                 $ativo = $c['ativo'];
                 $check_coordenador_ativo = $this->Coordenadores->check_coordenador_ativo($id_coordenador, $ativo);
 
-                $lideres_info = $this->Lideres->infos([$id_coordenador], 'query_coordenador_supervisor_inicial', '', [], $datas_2);
+                $lideres_info = $this->Lideres->infos([$id_coordenador], 'query_lideres_id_coordenador_datas_order_by_nome_lider', '', 'asc', $datas_2);
                 $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
 
                 $total_criancas = 0;
@@ -793,7 +793,7 @@ class Supervisor extends CI_Controller
         $list_lideres = [];
 
         // busca todos os líderes do coordenador
-        $lideres_info = $this->Lideres->infos([$id_user], 'query_coordenador_supervisor_inicial_2', '', [], []);
+        $lideres_info = $this->Lideres->infos([$id_user], 'query_lideres_id_coordenador_order_by_nome_lider', '', 'asc', []);
         $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
 
         if (!empty($lideres_info['dados'])) {

@@ -14,7 +14,7 @@ if (!isset($_SESSION['usuario'])) {
   $query = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '', '');
   $dados_pessoal = $query['dados'];
 
-  $query_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '', '');
+  $query_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '');
   $dados_usuario = $query_usuario['dados'];
 ?>
 

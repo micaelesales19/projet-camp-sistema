@@ -18,7 +18,7 @@ if (!isset($_SESSION['usuario'])) {
 		$x_ir .= "";
 	}
 
-	$query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '', '');
+	$query = $this->Lideres->infos([$id_usuario], 'info_lider', '', '');
 	$dados_lider = $query['dados'];
 
 	/*$consultarPG = $this->PG->query([$id_usuario], 1, 1);
