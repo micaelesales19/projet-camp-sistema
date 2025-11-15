@@ -184,17 +184,18 @@ class Coordenadores extends CI_Model
         $total_lideres_do_coordenador = $consultar_se_o_coordenador_tem_lider->num_rows();
         $dados_lider = $consultar_se_o_coordenador_tem_lider->result_array();
 
-        // 🔹 1. Coleta todos os IDs de líderes de uma vez
-        $ids = array_column($consultar_se_o_coordenador_tem_lider, 'id_lider');
-
-        // 🔹 2. Busca todas as crianças desses líderes de uma vez
-        $criacas_por_lider = $this->Criancas->criacasPorLideres($ids);
-
-        // 🔹 3. Busca todos os progressos de uma vez
-        $progresso_por_lider = $this->PG->progressoPorLideres($ids);
 
         if ($ativo == 0 || $total_lideres_do_coordenador == 0) {
         } else {
+            // 🔹 1. Coleta todos os IDs de líderes de uma vez
+            $ids = array_column($dados_lider, 'id_lider');
+
+            // 🔹 2. Busca todas as crianças desses líderes de uma vez
+            $criacas_por_lider = $this->Criancas->criacasPorLideres($ids);
+
+            // 🔹 3. Busca todos os progressos de uma vez
+            $progresso_por_lider = $this->PG->progressoPorLideres($ids);
+
             foreach ($dados_lider as $key => $lideres) {
                 $id_lider = $lideres['id_lider'];
                 $ativo = $lideres['confirmado'];

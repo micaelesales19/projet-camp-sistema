@@ -80,7 +80,7 @@ class PG extends CI_Model
             $id_usuario = $dados[0];
             $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo ORDER BY id_modulo ASC LIMIT 1");
             $row = $query_consulta_pg->num_rows();
-            $consultar_pg = $query_consulta_pg->result_array();
+            $consultar_pg = $query_consulta_pg->row_array();
 
             $dados = array(
                 'row' => $row,

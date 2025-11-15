@@ -760,8 +760,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <?php
                                                         foreach ($pg['dados'] as $key => $dadosPG) {
 
-                                                            $consultaCriancas = $this->Criancas->query([$id_usuario, $dadosPG['id_pg'], 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
-                                                            $idPg = $dadosPG['id_pg'];
+                                                            $consultaCriancas = $this->Criancas->query([$id_usuario, $dadosPG['id_pg'], 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 
                                                             $i = 0;
                                                             foreach ($consultaCriancas['dados'] as $key => $linha) {

@@ -471,7 +471,9 @@ if (!isset($_SESSION['usuario'])) {
         <?php
         $dados = $this->PG->query([$id_usuario], 'query_id_lider_ativo_order_by_modulo_asc_limit_1_download_material', 1);
 
-        foreach ($dados['dados'] as $key => $pg) {
+        if ($dados['row'] == 0) {
+        } else {
+          $pg = $dados['dados'];
           $diaComecou = $pg['data_semana'];
 
           if ($diaComecou == '' || $diaComecou == '00') {

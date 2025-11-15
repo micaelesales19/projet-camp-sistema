@@ -55,6 +55,7 @@ class Criancas extends CI_Model
             $id_usuario = $dados[0];
             $idPG = $dados[1];
             $ativo = $dados[2];
+
             $order_by = $dados[3];
             $consultar_criancas = $this->db->query("SELECT * FROM criancas WHERE lider LIKE $id_usuario AND id_pg = $idPG AND ativo = $ativo ORDER BY nome_crianca $order_by");
             $row = $consultar_criancas->num_rows();
@@ -276,7 +277,7 @@ class Criancas extends CI_Model
     public function excluir_criancas_do_pg($id_pg, $id_lider, $id_usuario)
     {
 
-        $lista_de_criancas = $this->query([$id_lider, $id_pg], 'query_id_lider_id_pg_geral_order_by_nome_crianca_asc');
+        $lista_de_criancas = $this->query([$id_lider, $id_pg, 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
 
         if ($lista_de_criancas['row'] == 0) {
         } else {

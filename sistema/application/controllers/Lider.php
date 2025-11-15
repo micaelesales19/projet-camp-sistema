@@ -492,7 +492,7 @@ class Lider extends CI_Controller
 			$consultaCriancas = $this->Criancas->query([$id_lider, $id_pg, 1, 'asc'], 'query_id_lider_id_pg_ativo_order_by_nome_crianca');
 			$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_id_lider_id_pg_ativo', 1);
 		} else {
-			$consultaCriancas = $this->Criancas->$this->query([$id_lider, $id_pg], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
+			$consultaCriancas = $this->Criancas->query([$id_lider, $id_pg, 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
 			$dadosPg = $this->PG->query([$id_lider, $id_pg], 'query_pg_id_lider_all', 0);
 		}
 

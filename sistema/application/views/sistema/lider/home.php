@@ -184,10 +184,13 @@ if (!isset($_SESSION['usuario'])) {
         </section>
 
         <?php
-        $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = 1 ORDER BY id_modulo ASC LIMIT 1");
-        $consultar_pg = $query_consulta_pg->result_array();
 
-        foreach ($consultar_pg as $key => $pg) {
+        $dados = $this->PG->query([$id_usuario], 'query_id_lider_ativo_order_by_modulo_asc_limit_1_download_material', 1);
+
+        if ($dados['row'] == 0) {
+        } else {
+
+          $pg = $dados['dados'];
           $diaComecou = $pg['data_semana'];
 
           if ($diaComecou == '' || $diaComecou == '00') {

@@ -549,7 +549,19 @@ if (!isset($_SESSION['usuario'])) {
                                             if ($check_ativo) {
                                             ?>
                                                 <button type="button" style="margin-right: 10px;" class="btn btn-light pull-left mg_r_10" data-toggle="modal" data-target="#troca_de_coord_super">Solicitar Troca</button>
-                                                <button type="button" style="margin-right: 10px;" class="btn btn-danger pull-left" data-toggle="modal" data-target="#desativar_lider">Desativar Líder</button>
+
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-danger pull-left dropdown-toggle mg_r_10" data-toggle="dropdown">Desativar
+                                                        <span class="fa fa-caret-down"></span></button>
+                                                    <ul class="dropdown-menu">
+                                                        <li style="margin-bottom: 5px;">
+                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#desativar_lider">Desativar Líder</button>
+                                                        </li>
+                                                        <li style="margin-bottom: 5px;">
+                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#excluir_lider_permantemente">Excluir Permanentemente</button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
 
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-success pull-left dropdown-toggle" data-toggle="dropdown">Mudar Função

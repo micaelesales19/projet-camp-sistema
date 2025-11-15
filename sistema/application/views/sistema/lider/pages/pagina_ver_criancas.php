@@ -351,7 +351,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <h3 class="box-title"><i class="fa fa-table"></i> Suas Crianças</h3>
 
                                 <?php
-                                $criancas_desativadas = $this->Criancas->query([$id_usuario, 0], 'query_id_lider_ativo_order_by_nome_crianca');
+                                $criancas_desativadas = $this->Criancas->query([$id_usuario, 0, 'asc'], 'query_id_lider_ativo_order_by_nome_crianca');
                                 if ($criancas_desativadas['row'] == 0) {
                                 } else {
                                 ?>

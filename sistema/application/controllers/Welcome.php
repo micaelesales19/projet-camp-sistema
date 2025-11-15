@@ -2024,13 +2024,11 @@ class Welcome extends CI_Controller
 
 		if ($excluir) {
 			$this->FConsultas_model->mensagem('success', 'Sucesso!', ["PG Excluido Permanentemente!"]);
-			$funcao = $this->FConsultas_model->red($red, 2000, $data);
-			echo $funcao;
 		} else {
 			$this->FConsultas_model->mensagem('danger', 'Erro!', ["Tente novamente!"]);
-			$funcao = $this->FConsultas_model->red($red, 2000, $data);
-			echo $funcao;
 		}
+		$funcao = $this->FConsultas_model->red($red, 2000, $data);
+		echo $funcao;
 	}
 
 	// ok
@@ -3007,7 +3005,7 @@ class Welcome extends CI_Controller
 		$red = $this->input->post('red');
 		$data = [];
 
-		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Líder Excluido Permanentemente!"]);
+		$this->FConsultas_model->mensagem('success', 'Sucesso!', ["Coordenador Excluido Permanentemente!"]);
 		$funcao = $this->FConsultas_model->red("$red", 2000, $data);
 		echo $funcao;
 	}
