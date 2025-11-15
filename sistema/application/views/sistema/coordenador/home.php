@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario'])) {
 
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
   $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
-  $dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
+  $dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '');
 ?>
 
   <!DOCTYPE html>

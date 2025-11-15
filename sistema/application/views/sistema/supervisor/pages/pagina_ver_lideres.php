@@ -564,7 +564,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         <div class="form-group has-feedback">
                                                             <select class="form-control" name="id_coordenador">
                                                                 <?php
-                                                                $lista_coordenadores = $this->Coordenadores->infos([$id_usuario], 'info_coordenador_id_supervisor', '', '', '');
+                                                                $lista_coordenadores = $this->Coordenadores->infos([$id_usuario], 'info_coordenador_id_supervisor', '', '');
                                                                 if ($lista_coordenadores['row'] == 0) {
                                                                 ?>
                                                                     <option value="3000">Nenhum Coordenador</option>

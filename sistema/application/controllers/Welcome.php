@@ -905,7 +905,7 @@ class Welcome extends CI_Controller
 			}
 
 			// gerar link acesso coordenador/supervisor
-			$dados_coordenador = $this->Coordenadores->infos([$id_operador], 'info_coordenador', '', '', '');
+			$dados_coordenador = $this->Coordenadores->infos([$id_operador], 'info_coordenador', '', '');
 
 			if ($dados_coordenador['row'] == 0) {
 
@@ -2639,7 +2639,7 @@ class Welcome extends CI_Controller
 
 					if ($cadastro && $cadastroUsuario) {
 
-						$consultarDados = $this->Coordenadores->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_coordenador_or_email_cpf_nome', '', '', '');
+						$consultarDados = $this->Coordenadores->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_coordenador_or_email_cpf_nome', '', '');
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
@@ -2703,7 +2703,7 @@ class Welcome extends CI_Controller
 					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, "", $nivel, $senha);
 
 					if ($cadastro && $cadastroUsuario) {
-						$consultarDados = $this->Coordenadores->infos([$email, $nome, $data_nascimento_completo], 'info_coordenador_nome_email_data_nascimento', '', '', '');
+						$consultarDados = $this->Coordenadores->infos([$email, $nome, $data_nascimento_completo], 'info_coordenador_nome_email_data_nascimento', '', '');
 
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
@@ -2827,7 +2827,7 @@ class Welcome extends CI_Controller
 
 					if ($cadastro && $cadastroUsuario) {
 
-						$consultarDados = $this->Coordenadores->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_coordenador_or_email_cpf_nome', '', '', '');
+						$consultarDados = $this->Coordenadores->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_coordenador_or_email_cpf_nome', '', '');
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
 						$link_lider = "https://sistemas.campbrasil.com/sistema/acesso?email=$email&cpf=$cpf_completo&nome=$nome&senha=$senha&x_ir=1&opc=1";
@@ -2858,7 +2858,7 @@ class Welcome extends CI_Controller
 
 					if ($cadastro && $cadastroUsuario) {
 
-						$consultarDados = $this->Coordenadores->infos([$email, $nome, $data_nascimento_completo], 'info_coordenador_nome_email_data_nascimento', '', '', '');
+						$consultarDados = $this->Coordenadores->infos([$email, $nome, $data_nascimento_completo], 'info_coordenador_nome_email_data_nascimento', '', '');
 
 						$id_coordenador = $consultarDados['dados']['id_coordenador'];
 
@@ -2887,7 +2887,7 @@ class Welcome extends CI_Controller
 		$id_coordenador = $this->input->post('id_coordenador');
 		$id_usuario = $this->input->post('id_usuario');
 
-		$info_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+		$info_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '');
 		$is_br = $info_coordenador['dados']['pais'] == 'br' || '' ? true : false;
 
 		$telefone = $this->FConsultas_model->formatar_telefone($info_coordenador['dados']['telefone_whatsapp'], $is_br);
@@ -3769,7 +3769,7 @@ class Welcome extends CI_Controller
 
 	public function enviar_email_coordenador_liberacao_sistema($id_coordenador, $link)
 	{
-		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '');
 		if ($dados_coordenador['row'] == 0) {
 			// enviar alerta p direção
 		} else {
@@ -3803,7 +3803,7 @@ class Welcome extends CI_Controller
 	public function enviar_email_coordenador_liberacao_sistema_do_lider($id_coordenador, $id_usuario, $id_lider)
 	{
 		$dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '');
-		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+		$dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '');
 		$data_hoje = date('d/m/Y');
 
 		if ($dados_lider['row'] == 0) {

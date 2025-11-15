@@ -533,7 +533,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <select name="id_coordenador" class="form-control" <?= $disabled_inputs; ?>>
                                                         <?php
                                                         $id_coordenador = $dados_lider['id_coordenador'];
-                                                        $info_coordenadores = $this->Coordenadores->infos([$id_usuario], 'info_coordenador_id_supervisor', '', '', '');
+                                                        $info_coordenadores = $this->Coordenadores->infos([$id_usuario], 'info_coordenador_id_supervisor', '', '');
 
                                                         if ($info_coordenadores['row'] == 0) {
                                                         ?>

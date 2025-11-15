@@ -9,7 +9,7 @@ if (!isset($_SESSION['usuario'])) {
   $voltar = "";
   $array = array('voltar' => $voltar);
 
-  $query = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
+  $query = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '');
   $dados_pessoal = $query['dados'];
 
   $query_usuario = $this->Lideres->infos([$id_usuario_2], 'info_usuario_id_usuario', '', '');

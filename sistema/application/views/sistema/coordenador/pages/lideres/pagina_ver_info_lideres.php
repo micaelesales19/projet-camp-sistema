@@ -516,7 +516,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <select name="id_coordenador" class="form-control" <?= $disabled_inputs; ?>>
                                                         <?php
                                                         $id_coordenador = $dados_lider['id_coordenador'];
-                                                        $info_coordenadores = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+                                                        $info_coordenadores = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '');
 
                                                         if ($info_coordenadores['row'] == 0) {
                                                         ?>
@@ -1931,7 +1931,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <option value="0" selected>Selecione uma opção</option>
                                                 <?php
                                                 $id_coordenador = $dados_lider['id_coordenador'];
-                                                $info_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+                                                $info_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '');
 
                                                 $id_sr = $dados_lider['id_supervisorR'];
                                                 $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '', '');

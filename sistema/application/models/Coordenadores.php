@@ -8,35 +8,9 @@
 
 class Coordenadores extends CI_Model
 {
-    public function infos($id_usuario, $opc, $opc2, $order, $datas)
+    public function infos($id_usuario, $opc, $order, $datas)
     {
-        if ($opc == 1 && $opc2 == 1 && $order[0] == true) {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR ordenado
-            $id_usuario = $id_usuario[0];
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario ORDER BY nome_lider $order[1]");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 1 && $opc2 == 1 && $order[0] == false) {
-            // Consulta na tabela de líderes de acordo com o ID COORDENADOR
-            $id_usuario = $id_usuario[0];
-            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_coordenador = $id_usuario");
-            $row = $consultar_lideres->num_rows();
-            $dados_consulta_lideres = $consultar_lideres->result_array();
-
-            $dados = array(
-                'row' => $row,
-                'dados' => $dados_consulta_lideres,
-            );
-
-            return $dados;
-        } else if ($opc == 'info_coordenador') {
+        if ($opc == 'info_coordenador') {
             // Consulta na tabela de coordenador de acordo com o ID COORDENADOR
             $id_usuario = $id_usuario[0];
             $consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_coordenador = '$id_usuario'");
@@ -92,17 +66,33 @@ class Coordenadores extends CI_Model
             );
 
             return $dados;
-        } else if ($opc == 'check_coordenador_situacao_cadastro_id_supervisor') {
+        } else if ($opc == 'query_coordenadores_id_supervisor_situacao_order_by_nome_coordenador') { // check_coordenador_situacao_cadastro_id_supervisor
             // Consulta na tabela de coordenadores se tem coordenador esperando autorização pelo ID SUPERVISOR
             $id_supervisor = $id_usuario[0];
             $ativo = $id_usuario[1];
-            $consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR = '$id_supervisor' AND ativo = $ativo ORDER BY nome_coordenador ASC");
+            $consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR = '$id_supervisor' AND ativo = $ativo ORDER BY nome_coordenador $order");
             $row = $consultar_coordenadores->num_rows();
             $dados_consulta_coordenadores = $consultar_coordenadores->result_array();
 
             $dados = array(
                 'row' => $row,
                 'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        } else if ($opc == 'query_coordenadores_id_supervisor_datas_order_by_nome_coordenador') {
+            // retornando todos os supervisores do supervisor de acordo com uma data específica
+            $id_usuario = $id_usuario[0];
+            $data_1 = $datas['data_1']; // antiga
+            $data_2 = $datas['data_2']; // atual
+
+            $consultar_coordenador = $this->db->query("SELECT * FROM coordenador WHERE id_supervisorR = $id_usuario AND data_cadastro BETWEEN '$data_1' AND '$data_2' ORDER BY nome_coordenador $order");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenador = $consultar_coordenador->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenador,
             );
 
             return $dados;
@@ -122,7 +112,7 @@ class Coordenadores extends CI_Model
         }
     }
 
-    public function coordenadoresAtivos($list)
+    /*public function coordenadoresAtivos($list)
     {
         $lista = $list['dados'];
         $total_ativos = 0;
@@ -184,7 +174,7 @@ class Coordenadores extends CI_Model
             'dados' => $dados_coordenador,
         );
         return $dados;
-    }
+    }*/
 
     public function check_coordenador_ativo($id, $ativo)
     {
@@ -310,7 +300,7 @@ class Coordenadores extends CI_Model
         date_default_timezone_set('America/Sao_Paulo');
         $data = date('d/m/Y');
 
-        $dados_lider = $this->infos([$id_coordenador], 'info_coordenador', '', '', '');
+        $dados_lider = $this->infos([$id_coordenador], 'info_coordenador', '', '');
 
         $consultar_pg_desativado = $this->db3->query("SELECT * FROM alcancado_coordenador WHERE id_pastor LIKE '$id_coordenador'");
         $row = $consultar_pg_desativado->num_rows();
@@ -337,7 +327,7 @@ class Coordenadores extends CI_Model
         }
     }
 
-    public function editar_lider_exclusao_coord($id_lider, $id_coordenador, $id_responsavel)
+    /*public function editar_lider_exclusao_coord($id_lider, $id_coordenador, $id_responsavel)
     {
         $acao = "EX_CL_1";
         $motivo = "Excluiu seu coordenador ($id_coordenador) permanentemente, e seu líder ($id_lider) foi atualizado para o coordenador padrão";
@@ -351,5 +341,5 @@ class Coordenadores extends CI_Model
         } else {
             return false;
         }
-    }
+    }*/
 }

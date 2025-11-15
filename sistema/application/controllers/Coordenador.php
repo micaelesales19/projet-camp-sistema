@@ -36,7 +36,7 @@ class Coordenador extends CI_Controller
 		$info_codigo = $consultarLink->row_array();
 
 		if ($totalLink == 0) {
-			$dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '', '');
+			$dados_coordenador = $this->Coordenadores->infos([$id_usuario], 'info_coordenador', '', '');
 
 			if ($dados_coordenador['row'] != 0) {
 				$dados = $dados_coordenador['dados']['id_supervisorR'];
@@ -507,7 +507,7 @@ class Coordenador extends CI_Controller
 	{
 		$id_user = $this->input->get("id_user");
 
-		$dados_usuario = $this->Coordenadores->infos([$id_user], 'info_coordenador', '', '', '');
+		$dados_usuario = $this->Coordenadores->infos([$id_user], 'info_coordenador', '', '');
 		$dados_lideres = $this->consultasBDLider($id_user);
 
 		$dados = array(
