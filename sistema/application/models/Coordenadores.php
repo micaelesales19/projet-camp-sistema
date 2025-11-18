@@ -184,7 +184,6 @@ class Coordenadores extends CI_Model
         $total_lideres_do_coordenador = $consultar_se_o_coordenador_tem_lider->num_rows();
         $dados_lider = $consultar_se_o_coordenador_tem_lider->result_array();
 
-
         if ($ativo == 0 || $total_lideres_do_coordenador == 0) {
         } else {
             // 🔹 1. Coleta todos os IDs de líderes de uma vez
@@ -223,6 +222,32 @@ class Coordenadores extends CI_Model
         $data_2 = date('Y-m-d');
 
         $foto = "fotoU/geral.jpg";
+
+        $inserir['nome_coordenador'] = $nome;
+        $inserir['cpf'] = $cpf;
+        $inserir['email'] = $email;
+        $inserir['telefone_whatsapp'] = $telefone;
+        $inserir['nascimento'] = $nascimento;
+        $inserir['pais'] = $pais;
+        $inserir['estado'] = $estado;
+        $inserir['cidade'] = $cidade;
+        $inserir['id_supervisorR'] = $id_supervisor;
+        $inserir['id_supervisorE'] = $id_supervisor;
+        $inserir['foto'] = $foto;
+        $inserir['ativo'] = $ativo;
+        $inserir['data_cadastro'] = $data_2;
+
+        if ($this->db->insert("coordenador", $inserir)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function cadastro_coordenador_2($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $id_supervisor, $ativo, $foto)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $data_2 = date('Y-m-d');
 
         $inserir['nome_coordenador'] = $nome;
         $inserir['cpf'] = $cpf;
@@ -322,6 +347,25 @@ class Coordenadores extends CI_Model
         $this->db->where('id_coordenador', $id_coordenador);
         if ($this->db->delete('coordenador')) {
             $this->FAlerta_model->alerta_controle($id_responsavel, $id_coordenador, $motivo, $acao);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // trocar supervisão
+    public function trocar_supervisao_do_coordenador($id_supervisor, $id_novo_supervisor)
+    {
+        $this->db->set('id_supervisorR', $id_novo_supervisor);
+        $this->db->where('id_supervisorR', $id_supervisor);
+        $this->db->update('coordenador');
+    }
+
+
+    public function delete_coordenador_id($id_coordenador)
+    {
+        $this->db->where('id_coordenador', $id_coordenador);
+        if ($this->db->delete('coordenador')) {
             return true;
         } else {
             return false;

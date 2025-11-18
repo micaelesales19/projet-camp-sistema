@@ -239,6 +239,13 @@ class Criancas extends CI_Model
         $this->db->update('criancas');
     }
 
+    public function editar_liderenca_crianca_2($id_lider_antigo, $id_lider_novo)
+    {
+        $this->db->set('lider', $id_lider_novo);
+        $this->db->where('lider', $id_lider_antigo);
+        $this->db->update('criancas');
+    }
+
     public function excluir_crianca($id_crianca, $id_lider, $id_responsavel, $motivo)
     {
         date_default_timezone_set('America/Sao_Paulo');

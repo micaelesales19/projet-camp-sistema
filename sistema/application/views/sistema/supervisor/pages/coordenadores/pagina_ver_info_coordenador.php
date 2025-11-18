@@ -528,7 +528,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="col-lg-6" id="precisa_cpf">
                                                 <div class="form-group">
                                                     <label for="exampleInputEmail1">CPF</label>
-                                                    <input type="text" class="form-control" name="cpf" value="<?= $dados_coordenador['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required>
+                                                    <input type="text" class="form-control" id="cpf" name="cpf" value="<?= $dados_coordenador['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required>
                                                 </div>
                                             </div>
 
@@ -731,7 +731,7 @@ if (!isset($_SESSION['usuario'])) {
                                 </div>
                                 <div class="box-body">
                                     <input type="hidden" name="funcao_atiga" value="coordenador">
-                                    <input type="hidden" name="funcao_nova" value="supervisor">
+                                    <input type="hidden" name="funcao_nova" value="lider">
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_change" value="<?= $dados_coordenador['id_coordenador']; ?>">
                                     <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
@@ -744,7 +744,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <br><i>* observação: para essa nova função, você precisa selecionar um coodenador para os líderes desse coodenador.</i>
                                             </center>
                                             <!-- Caixa de pesquisa -->
-                                            <input type="text" id="pesquisaCoordenador_2" class="form-control mb-3" placeholder="Pesquisar coordenador...">
+                                            <input type="text" id="pesquisaCoordenador_2" class="form-control mb-3" placeholder="Pesquisar coordenador..."><br>
 
                                             <!-- Lista de coordenadores -->
                                             <div id="listaCoordenadores_2" style="max-height: 300px; overflow-y: auto;">
@@ -846,7 +846,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div id="listaCoordenadores_3" style="max-height: 300px; overflow-y: auto;">
 
                                                 <div class="form-check">
-                                                    <input class="form-check-input checkbox-coordenador" type="checkbox" value="0" id="coord0">
+                                                    <input class="form-check-input checkbox-coordenador-3" type="checkbox" value="0" id="coord0">
                                                     <label class="form-check-label" for="coord0">
                                                         Sem coordenador
                                                     </label>

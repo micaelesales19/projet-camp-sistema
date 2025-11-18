@@ -103,6 +103,10 @@ $route['cadastro/:any'] = 'welcome/cadastro';
 $route['alerta/solicitar/troca_de_coordenador_supervisor'] = 'welcome/enviando_alerta_troca_de_cs'; // ok
 $route['alerta/solicitar/trocar_de_funcao'] = 'welcome/trocar_de_funcao'; // ok
 
+// trocas de funções
+$route['tornar/tornar_supervisor_to_coordenador'] = 'welcome/trocar_de_funcao_2';
+$route['tornar/tornar_coordenador_to_lider'] = 'welcome/trocar_de_funcao_2';
+
 // adm
 $route['adm/home'] = 'adm/index';
 $route['adm/devocionais/mostrar'] = 'adm/mostrar_devocionais';

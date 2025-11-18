@@ -138,6 +138,19 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'query_lideres_id_supervisor') { // ok
+            // Consulta na tabela de líderes de acordo com o ID SUPERVISOR
+            $id_usuario = $id_usuario[0];
+            $consultar_lideres = $this->db->query("SELECT * FROM lider WHERE id_supervisorR = $id_usuario");
+            $row = $consultar_lideres->num_rows();
+            $dados_consulta_lideres = $consultar_lideres->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
         } else if ($opc == 'query_lideres_id_coordenador') { // ok
             // Consulta na tabela de líderes de acordo com o ID COORDENADOR
             $id_usuario = $id_usuario[0];
@@ -458,6 +471,38 @@ class Lideres extends CI_Model
         }
     }
 
+    public function cadastro_lider_2($nome, $cpf, $email, $telefone, $igreja, $nascimento, $id_pastor, $pais, $estado, $cidade, $id_coordenador, $id_slocal, $id_sregional, $confirmado, $foto)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date('d/m/Y'); // tirar
+        $data_2 = date('Y-m-d');
+
+        $inserir['nome_lider'] = $nome;
+        $inserir['cpf'] = $cpf;
+        $inserir['email'] = $email;
+        $inserir['telefone_whatsapp'] = $telefone;
+        $inserir['igreja'] = $igreja;
+        $inserir['nascimento'] = $nascimento;
+        $inserir['id_pastor'] = $id_pastor;
+        $inserir['pais'] = $pais;
+        $inserir['estado'] = $estado;
+        $inserir['cidade'] = $cidade;
+        $inserir['id_coordenador'] = $id_coordenador;
+        $inserir['id_supervisorR'] = $id_slocal;
+        $inserir['id_supervisorE'] = $id_sregional;
+        $inserir['foto'] = $foto;
+        $inserir['foto_2'] = '';
+        $inserir['confirmado'] = $confirmado;
+        $inserir['data'] = $data;
+        $inserir['data_cadastro'] = $data_2;
+
+        if ($this->db->insert("lider", $inserir)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function editar_lider($id, $nome, $cpf, $email, $telefone, $igreja, $nascimento, $pais, $estado, $cidade, $ativo, $id_coordenador, $id_supervisor, $foto)
     {
         $this->db->set('nome_lider', $nome);
@@ -708,10 +753,18 @@ class Lideres extends CI_Model
     }
 
     // trocar coordenação
-    public function trocar_coordenacao_do_lider($id_coordenador, $id_novo_coordenador)
+    public function trocar_coordenacao_do_lider($id_coordenador, $id_novo_coordenador): void
     {
         $this->db->set('id_coordenador', $id_novo_coordenador);
         $this->db->where('id_coordenador', $id_coordenador);
+        $this->db->update('lider');
+    }
+
+    // trocar supervisão
+    public function trocar_supervisao_do_lider($id_supervisor, $id_novo_supervisor)
+    {
+        $this->db->set('id_supervisorR', $id_novo_supervisor);
+        $this->db->where('id_supervisorR', $id_supervisor);
         $this->db->update('lider');
     }
 
@@ -741,6 +794,18 @@ class Lideres extends CI_Model
         $this->db->set('cpf', $cpf);
         $this->db->set('email', $email);
         $this->db->set('senha', $senha);
+        $this->db->where('id_usuario', $id_usuario);
+
+        if ($this->db->update('usuario')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function editar_usuario_nivel($id_usuario, $nivel)
+    {
+        $this->db->set('nivel', $nivel);
         $this->db->where('id_usuario', $id_usuario);
 
         if ($this->db->update('usuario')) {

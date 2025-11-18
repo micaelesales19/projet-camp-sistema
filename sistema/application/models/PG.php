@@ -111,6 +111,13 @@ class PG extends CI_Model
         $this->db->update('pg');
     }
 
+    public function trocar_lideranca_pg_2($id_lider_antigo, $id_novo_lider) // ok
+    {
+        $this->db->set('id_lider', $id_novo_lider);
+        $this->db->where('id_lider', $id_lider_antigo);
+        $this->db->update('pg');
+    }
+
     public function editar_ativo($id_pg, $idlider) // ok
     {
 
@@ -670,6 +677,13 @@ class PG extends CI_Model
         $this->db->set('id_lider', $id_lider_novo);
         $this->db->where('id_lider', $id_lider_antigo);
         $this->db->where('id_pg', $id_pg);
+        $this->db->update('progresso_pg');
+    }
+
+    public function editar_lideranca_relatorio_2($id_lider_antigo, $id_lider_novo)
+    {
+        $this->db->set('id_lider', $id_lider_novo);
+        $this->db->where('id_lider', $id_lider_antigo);
         $this->db->update('progresso_pg');
     }
 
