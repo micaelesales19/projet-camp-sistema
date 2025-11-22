@@ -1,7 +1,0 @@
-<?php
-foreach ($pages as $key => $value) {
-?>
-    <li><a href="<?= $value['routa']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
-<?php
-}
-?>

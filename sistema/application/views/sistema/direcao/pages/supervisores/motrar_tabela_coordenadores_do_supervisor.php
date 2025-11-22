@@ -229,7 +229,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                     titulo: 'Visualizar',
                     render: function(id) {
                         return `
-                    <form action="coordenadores/lideres/${id}" method="post" style="margin:0;">
+                    <form action="coordenador/lideres/${id}" method="post" style="margin:0;">
                         <input type="hidden" name="id_coordenador" value="${id}">
                         <input type="submit" class="btn btn-info btn-sm" value="Visualizar" />
                     </form>
@@ -449,6 +449,68 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
         // Inicializa
         $(document).ready(function() {
             console.log('na função');
+
+            // modal - excluir supervisor permanente
+            const pesquisarInput_3 = document.getElementById('pesquisaSupervisor');
+            if (pesquisarInput_3) {
+                pesquisarInput_3.addEventListener('input', function() {
+                    const filtro = this.value.toLowerCase();
+                    document.querySelectorAll('#listaSupervisores_3 .form-check').forEach(div => {
+                        const texto = div.innerText.toLowerCase();
+                        div.style.display = texto.includes(filtro) ? '' : 'none';
+                    });
+                });
+            }
+
+            const form_3 = document.querySelector('form#form_exclusao_supervisor_permanentemente');
+            if (!form_3) return; // evita erro se o formulário não existir
+
+            const checkboxes_3 = document.querySelectorAll('.checkbox-supervisor-3');
+            const inputHidden_3 = document.getElementById('idSupervisorNovoTroca');
+
+            function atualizarSelecaoUnica_3(event) {
+                checkboxes_3.forEach(cb => {
+                    if (cb !== event.target) cb.checked = false;
+                });
+                const selecionado = Array.from(checkboxes_3)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value)
+                    .join(',');
+                inputHidden_3.value = selecionado;
+                console.log('Selecionado:', inputHidden_3.value);
+            }
+
+            checkboxes_3.forEach(cb => cb.addEventListener('change', atualizarSelecaoUnica_3));
+
+            form_3.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (!inputHidden_3.value) {
+                    Swal.fire({
+                        title: 'Atenção!',
+                        text: 'Você precisa selecionar 1 coordenador.',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok',
+                        confirmButtonColor: '#198754',
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Cuidado!",
+                        text: "Essa alteração é irrevessível.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Continuar",
+                        cancelButtonText: "Cancelar",
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form_3.submit();
+                        }
+                    });
+                }
+            });
+
             atualizar_session();
         });
     </script>
@@ -500,8 +562,8 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                 <?php
                 if ($dados_supervisor['dados']['ativo'] == 0) {
                 ?>
-                    <form action="../exclusao/ativar" method="post">
-                        <input type="hidden" name="idUsuario" value="<?= $id_user; ?>">
+                    <form action="reativar" method="post">
+                        <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                         <input type="hidden" name="id_supervisor" value="<?= $dados_supervisor['dados']['id_supervisorR']; ?>">
                         <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                         <input type="submit" class="btn btn-warning" value="Ativar" />
@@ -509,7 +571,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                 <?php
                 } else {
                 ?>
-                    <form action="../desativar" method="post">
+                    <form action="desativar" method="post">
                         <input type="hidden" name="idUsuario" value="<?= $dados_supervisor['dados']['id_supervisorR']; ?>">
                         <input type="hidden" name="id_supervisor" value="<?= $dados_supervisor['dados']['id_supervisorR']; ?>">
                         <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
@@ -517,7 +579,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                     </form>
                 <?php } ?>
 
-                <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#excluir_coordenador_permantemente">Excluir Permanentemente</button>
+                <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#excluir_supervisor_permantemente">Excluir Permanentemente</button>
             </td>
             <td id="clicar" onclick="enviar_whatsapp('<?= $dados_supervisor['dados']['telefone_whatsapp']; ?>');"><input type="submit" class="btn btn-success" value="Enviar Mensagem" /></td>
         </tr>
@@ -536,4 +598,84 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
     </tbody>
 </table>
 
+<div class="modal fade" id="excluir_supervisor_permantemente">
+    <div class="modal-dialog modal-danger">
+        <div class="modal-content">
+            <form action="excluir" id="form_exclusao_supervisor_permanentemente" method="POST">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Excluir Supervisor Permanentemente</h4>
+                </div>
+
+                <div class="box-body">
+                    <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
+                    <input type="hidden" name="opc" value="<?= $id_supervisor; ?>">
+                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/supervisores">
+                    <input type="hidden" name="id_novo_supervisor" id="idSupervisorNovoTroca" value="0">
+
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Conte-nos o motivo:</label>
+                            <textarea name="motivo" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-group txt_center">
+                            <label for="exampleInputEmail1">Deseja realmente excluir esse Supervisor permanente?</label>
+                        </div>
+
+                        <?php
+                        $lideres_do_supervisor = $this->Lideres->infos([$id_supervisor], 'query_lideres_id_supervisor', '', '');
+                        $coordenadores_do_supervisor = $this->Coordenadores->infos([$id_supervisor], 'info_coordenador_id_supervisor', '', '');
+                        if ($lideres_do_supervisor['row'] == 0 && $coordenadores_do_supervisor['row'] == 0) {
+                        } else {
+                        ?>
+                            <label for="id_coordenador_troca">Selecione um novo supervisor para os coordenadores e líderes:</label>
+
+                            <!-- Caixa de pesquisa -->
+                            <input type="text" id="pesquisaSupervisor" class="form-control mb-3" placeholder="Pesquisar Supervisor..."><br>
+
+                            <!-- Lista de líderes -->
+                            <div id="listaSupervisores_3" style="max-height: 300px; overflow-y: auto;">
+
+                                <div class="form-check">
+                                    <input class="form-check-input checkbox-supervisor-3" type="checkbox" value="0" id="coord0">
+                                    <label class="form-check-label" for="coord0">
+                                        Sem supervisor
+                                    </label>
+                                </div>
+
+                                <?php
+                                // exemplo: buscando do banco
+                                $supervisores = $this->db->query("SELECT id_supervisorR, nome_supervisorR FROM supervisor_local ORDER BY nome_supervisorR ASC")->result_array();
+                                foreach ($supervisores as $c) {
+                                    if ($c['id_supervisorR'] == $id_supervisor) {
+                                    } else {
+                                ?>
+                                        <div class="form-check">
+                                            <input class="form-check-input checkbox-supervisor-3" type="checkbox" value="<?= $c['id_supervisorR']; ?>" id="coord<?= $c['id_supervisorR']; ?>">
+                                            <label class="form-check-label" for="coord<?= $c['id_supervisorR']; ?>">
+                                                <?= htmlspecialchars($c['nome_supervisorR']); ?>
+                                            </label>
+                                        </div>
+                                <?php }
+                                } ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Não</button>
+                    <input type="submit" class="btn btn-default pull-right" value="Sim">
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <div id="paginacao" style="margin-top:10px;"></div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

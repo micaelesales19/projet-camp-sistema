@@ -172,7 +172,7 @@ if (!isset($_SESSION['usuario'])) {
         <div class="wrapper">
             <!-- Menu -->
             <?php
-            $this->load->view('sistema/supervisor/partes/menu_lateral', $array);
+            $this->load->view('sistema/direcao/partes/menu_lateral', $array);
             ?>
 
             <!-- Content Wrapper. Contains page content -->

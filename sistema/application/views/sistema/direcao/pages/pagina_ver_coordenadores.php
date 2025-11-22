@@ -530,6 +530,21 @@ if (!isset($_SESSION['usuario'])) {
                                                         </div>
                                                     </div>
 
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <select name="id_supervisor" class="form-control">
+                                                                <?php
+                                                                $info_sLocal = $this->Supervisores->infos('', 'query_supervisor_order_by_nome', 'asc', '');
+                                                                if ($info_sLocal['row'] == 0) {
+                                                                } else {
+                                                                    foreach ($info_sLocal['dados'] as $key => $slocal) {
+                                                                ?>
+                                                                        <option value="<?= $slocal['id_supervisorR']; ?>"><?= $slocal['nome_supervisorR']; ?></option>
+                                                                <?php }
+                                                                } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>

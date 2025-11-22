@@ -378,6 +378,31 @@ class Lideres extends CI_Model
             } else {
                 return 0;
             }
+        } else if ($opc == 'consultar_and_email_nome_data_nascimento') {
+            $nome = $data[0];
+            $email = $data[1];
+            $data_nascimento = $data[2];
+
+            $consultar_1 = $this->db->query("SELECT * FROM lider WHERE nome_lider LIKE '$nome' AND email = '$email' AND nascimento = '$data_nascimento'");
+            $row_1 = $consultar_1->num_rows();
+
+            $consultar_2 = $this->db->query("SELECT * FROM coordenador WHERE nome_coordenador LIKE '$nome' AND email = '$email' AND nascimento = '$data_nascimento'");
+            $row_2 = $consultar_2->num_rows();
+
+            $consultar_3 = $this->db->query("SELECT * FROM supervisor_local WHERE nome_supervisorR LIKE '$nome' AND email = '$email' AND nascimento = '$data_nascimento'");
+            $row_3 = $consultar_3->num_rows();
+
+            $consultar_4 = $this->db->query("SELECT * FROM supervisor_regional WHERE nome_supervisorE LIKE '$nome' AND email = '$email' AND nascimento = '$data_nascimento'");
+            $row_4 = $consultar_4->num_rows();
+
+            $consultar_5 = $this->db->query("SELECT * FROM direcao WHERE nome_direcao LIKE '$nome' AND email = '$email' AND nascimento = '$data_nascimento'");
+            $row_5 = $consultar_5->num_rows();
+
+            if ($row_1 != 0 || $row_2 != 0 || $row_3 != 0 || $row_4 != 0 || $row_5 != 0) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -603,6 +628,16 @@ class Lideres extends CI_Model
         }
     }
 
+    public function delete_lider_id($id_lider)
+    {
+        $this->db->where('id_lider', $id_lider);
+        if ($this->db->delete('lider')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /*Colíder*/
     // CADASTROS
     public function cadastrarColider($id_lider, $nome_colider, $cpf, $email, $telefone, $nascimento)
@@ -760,11 +795,26 @@ class Lideres extends CI_Model
         $this->db->update('lider');
     }
 
+    public function trocar_coordenacao_do_lider_especifico($id_lider, $id_novo_coordenador): void
+    {
+        $this->db->set('id_coordenador', $id_novo_coordenador);
+        $this->db->where('id_lider', $id_lider);
+        $this->db->update('lider');
+    }
+
+
     // trocar supervisão
     public function trocar_supervisao_do_lider($id_supervisor, $id_novo_supervisor)
     {
         $this->db->set('id_supervisorR', $id_novo_supervisor);
         $this->db->where('id_supervisorR', $id_supervisor);
+        $this->db->update('lider');
+    }
+
+    public function trocar_supervisao_de_lideres_coordenador_especifico($id_coordenador, $id_novo_supervisor)
+    {
+        $this->db->set('id_supervisorR', $id_novo_supervisor);
+        $this->db->where('id_coordenador', $id_coordenador);
         $this->db->update('lider');
     }
 

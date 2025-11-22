@@ -43,11 +43,16 @@ if (!isset($_SESSION['usuario'])) {
 
             // Função para atualizar o campo hidden
             function atualizarIdsSelecionados() {
-                const selecionados = Array.from(checkboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
+                checkboxes.forEach(cb => {
+                    if (cb !== event.target) cb.checked = false;
+                });
 
-                inputHidden.value = selecionados.join(',');
+                const selecionado = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value)
+                    .join(',');
+                inputHidden.value = selecionado;
+
                 console.log('IDs atualizados:', inputHidden.value);
             }
 
@@ -85,12 +90,25 @@ if (!isset($_SESSION['usuario'])) {
                 });
             }
 
+            const pesquisarInput_4 = document.getElementById('pesquisaCoordenador_2');
+            if (pesquisarInput_4) {
+                pesquisarInput_4.addEventListener('input', function() {
+                    const filtro = this.value.toLowerCase();
+                    document.querySelectorAll('#listaCoordenadores_2 .form-check').forEach(div => {
+                        const texto = div.innerText.toLowerCase();
+                        div.style.display = texto.includes(filtro) ? '' : 'none';
+                    });
+                });
+            }
+
             const form_2 = document.querySelector('form#form_tornar_lider');
             if (!form_2) return; // evita erro se o formulário não existir
 
             // Pega todos os checkboxes
             const checkboxes_2 = document.querySelectorAll('.checkbox-supervisor-2');
-            const inputHidden_2 = document.getElementById('idsCoordenador');
+            const checkboxes_4 = document.querySelectorAll('.checkbox-coordenador-2');
+            const inputHidden_2 = document.getElementById('idsSupervisorTRLD');
+            const inputHidden_4 = document.getElementById('idsCoordenadorTRLD');
 
             // Função para atualizar o campo hidden
             function atualizarIdsSelecionados_2() {
@@ -107,18 +125,36 @@ if (!isset($_SESSION['usuario'])) {
                 console.log('ID atualizado:', inputHidden_2.value);
             }
 
+            function atualizarIdsSelecionados_4() {
+                // deixa apenas o clicado marcado
+                checkboxes_4.forEach(cb => {
+                    if (cb !== event.target) cb.checked = false;
+                });
+
+                const selecionados_2 = Array.from(checkboxes_4)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                inputHidden_4.value = selecionados_2.join(',');
+                console.log('ID atualizado:', inputHidden_4.value);
+            }
+
             // Adiciona o evento de mudança (check/uncheck) em cada checkbox
             checkboxes_2.forEach(cb => {
                 cb.addEventListener('change', atualizarIdsSelecionados_2);
             });
 
+            checkboxes_4.forEach(cb => {
+                cb.addEventListener('change', atualizarIdsSelecionados_4);
+            });
+
             // Validação: precisa ter 1 selecionado
             form_2.addEventListener('submit', function(e) {
-                if (!inputHidden_2.value) {
+                if (!inputHidden_2.value || !inputHidden_4.value) {
                     e.preventDefault();
                     Swal.fire({
                         title: 'Atenção!',
-                        text: 'Você precisa selecionar 1 coordenador.',
+                        text: 'Você precisa selecionar 1 coordenador/supervisor.',
                         icon: 'warning',
                         confirmButtonText: 'Ok',
                         confirmButtonColor: '#198754', // cor do botão principal (verde bootstrap)
@@ -129,8 +165,7 @@ if (!isset($_SESSION['usuario'])) {
                 }
             });
 
-
-            // modal - excluir coordenador permanente
+            // modal - excluir supervisor permanente
             const pesquisarInput_3 = document.getElementById('pesquisaSupervisor');
             if (pesquisarInput_3) {
                 pesquisarInput_3.addEventListener('input', function() {
@@ -363,15 +398,10 @@ if (!isset($_SESSION['usuario'])) {
 
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
-                                                            <form action="../../supervisor/excluir" method="POST">
-                                                                <input type="hidden" name="opc" value="<?= $dados_supervisor['id_supervisorR']; ?>">
-                                                                <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-                                                                <center>
-                                                                    <label for="opc">Opção 2:</label><br>
-                                                                    <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
-                                                                </center>
-                                                            </form>
+                                                            <center>
+                                                                <label for="opc">Opção 2:</label><br>
+                                                                <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#excluir_supervisor_permantemente">Excluir Permanentemente</button>
+                                                            </center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -393,7 +423,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="box-body chat" id="chat-box">
                                         <div class="box-footer">
                                             <div class="box-header with-border">
-                                                <h3 class="box-title">Dados Pessoais</h3>
+                                                <h3 class="box-title">Dados Pessoais | Supervisor</h3>
                                             </div> <br>
                                             <?php
 
@@ -507,7 +537,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div id="escrever_endereco">
                                                 <div class="form-group col-lg-2">
                                                     <label for="exampleInputPassword1">Pais</label>
-                                                    <input type="text" id="pais2" class="form-control" placeholder="Estado/Província/Região" name="pais" value="<?= $dados_supervisor['pais']; ?>" <?= $check_desativado; ?>>
+                                                    <input type="text" id="pais2" class="form-control" placeholder="Estado/Província/Região" name="nome_pais" value="<?= $dados_supervisor['pais']; ?>" <?= $check_desativado; ?>>
                                                 </div>
                                                 <div class="form-group col-lg-2">
                                                     <label for="exampleInputPassword1">Estado/Província/Região</label>
@@ -631,7 +661,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <br><i>* observação: para essa nova função, você precisa adicionar um outro supervisor.</i>
                                             </center>
                                             <!-- Caixa de pesquisa -->
-                                            <input type="text" id="pesquisaCoordenador" class="form-control mb-3" placeholder="Pesquisar coordenador..."><br>
+                                            <input type="text" id="pesquisaCoordenador" class="form-control mb-3" placeholder="Pesquisar Supervisor..."><br>
 
                                             <!-- Lista de coordenadores -->
                                             <div id="listaCoordenadores" style="max-height: 300px; overflow-y: auto;">
@@ -669,7 +699,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="tornar_lider">
                     <div class="modal-dialog modal-default">
                         <div class="modal-content">
-                            <form action="../../../../alerta/solicitar/trocar_de_funcao" method="POST" id="form_tornar_lider">
+                            <form action="../../../../tornar/tornar_supervisor_to_lider" method="POST" id="form_tornar_lider">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -681,35 +711,74 @@ if (!isset($_SESSION['usuario'])) {
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_change" value="<?= $dados_supervisor['id_supervisorR']; ?>">
                                     <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-                                    <input type="hidden" name="ids_coordenador" id="idsCoordenador">
+                                    <input type="hidden" name="id_troca_1" id="idsSupervisorTRLD">
+                                    <input type="hidden" name="id_troca_2" id="idsCoordenadorTRLD">
 
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <center>
-                                                <label for="id_troca_1">Deseja tornar <?= $dados_supervisor['nome_coordenador']; ?> líder?</label>
-                                                <br><i>* observação: para essa nova função, você precisa selecionar um coodenador para os líderes desse coodenador.</i>
+                                                <label for="id_troca_1">Deseja tornar <?= $dados_supervisor['nome_supervisorR']; ?> líder?</label>
+                                                <br><i>* observação: para essa nova função, você precisa selecionar um supervisor para os líderes desse supervisor.</i>
                                             </center>
-                                            <!-- Caixa de pesquisa -->
-                                            <input type="text" id="pesquisaSupervisor_2" class="form-control mb-3" placeholder="Pesquisar coordenador...">
 
-                                            <!-- Lista de coordenadores -->
-                                            <div id="listaSupervisores_2" style="max-height: 300px; overflow-y: auto;">
-                                                <?php
-                                                // exemplo: buscando do banco
-                                                $coordenadores = $this->db->query("SELECT id_supervisorR, nome_supervisorR FROM supervisor_local ORDER BY nome_supervisorR ASC")->result_array();
 
-                                                foreach ($coordenadores as $c) {
-                                                    if ($c['id_supervisorR'] == $id_supervisor) {
-                                                    } else {
-                                                ?>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input checkbox-supervisor-2" type="checkbox" value="<?= $c['id_supervisorR']; ?>" id="coord<?= $c['id_supervisorR']; ?>">
-                                                            <label class="form-check-label" for="coord<?= $c['id_supervisorR']; ?>">
-                                                                <?= htmlspecialchars($c['nome_supervisorR']); ?>
-                                                            </label>
+                                            <div class="nav-tabs-custom">
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a href="#selecionar_supervisor" data-toggle="tab">Supervisor</a></li>
+                                                    <li><a href="#selecionar_coordenador" data-toggle="tab">Coordenador</a></li>
+                                                </ul>
+
+                                                <div class="tab-content">
+                                                    <div class="tab-pane active" id="selecionar_supervisor">
+                                                        <!-- Caixa de pesquisa -->
+                                                        <input type="text" id="pesquisaSupervisor_2" class="form-control mb-3" placeholder="Pesquisar Supervisor...">
+
+                                                        <!-- Lista de coordenadores -->
+                                                        <div id="listaSupervisores_2" style="max-height: 300px; overflow-y: auto;">
+                                                            <?php
+                                                            // exemplo: buscando do banco
+                                                            $coordenadores = $this->db->query("SELECT id_supervisorR, nome_supervisorR FROM supervisor_local ORDER BY nome_supervisorR ASC")->result_array();
+
+                                                            foreach ($coordenadores as $c) {
+                                                                if ($c['id_supervisorR'] == $id_supervisor) {
+                                                                } else {
+                                                            ?>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input checkbox-supervisor-2" type="checkbox" value="<?= $c['id_supervisorR']; ?>" id="coord<?= $c['id_supervisorR']; ?>">
+                                                                        <label class="form-check-label" for="coord<?= $c['id_supervisorR']; ?>">
+                                                                            <?= htmlspecialchars($c['nome_supervisorR']); ?>
+                                                                        </label>
+                                                                    </div>
+                                                            <?php }
+                                                            } ?>
                                                         </div>
-                                                <?php }
-                                                } ?>
+                                                    </div>
+
+                                                    <div class="tab-pane" id="selecionar_coordenador">
+                                                        <!-- Caixa de pesquisa -->
+                                                        <input type="text" id="pesquisaCoordenador_2" class="form-control mb-3" placeholder="Pesquisar Coordenador...">
+
+                                                        <!-- Lista de coordenadores -->
+                                                        <div id="listaCoordenadores_2" style="max-height: 300px; overflow-y: auto;">
+                                                            <?php
+                                                            $id_supervisor = $dados_supervisor['id_supervisorR'];
+
+                                                            // exemplo: buscando do banco
+                                                            $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador WHERE id_supervisorR = $id_supervisor ORDER BY nome_coordenador ASC")->result_array();
+
+                                                            foreach ($coordenadores as $c) {
+                                                            ?>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input checkbox-coordenador-2" type="checkbox" value="<?= $c['id_coordenador']; ?>" id="coord<?= $c['id_coordenador']; ?>">
+                                                                    <label class="form-check-label" for="coord<?= $c['id_coordenador']; ?>">
+                                                                        <?= htmlspecialchars($c['nome_coordenador']); ?>
+                                                                    </label>
+                                                                </div>
+                                                            <?php
+                                                            } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -759,7 +828,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="excluir_supervisor_permantemente">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="../exclusao/permanente" id="form_exclusao_supervisor_permanentemente" method="POST">
+                            <form action="../excluir" id="form_exclusao_supervisor_permanentemente" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -769,7 +838,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-body">
                                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="opc" value="<?= $dados_supervisor['id_supervisorR']; ?>">
-                                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/supervisores">
+                                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/supervisores">
                                     <input type="hidden" name="id_novo_supervisor" id="idSupervisorNovoTroca" value="0">
 
                                     <div class="col-lg-12">
@@ -791,7 +860,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <label for="id_coordenador_troca">Selecione um novo coordenador para os líderes:</label>
 
                                             <!-- Caixa de pesquisa -->
-                                            <input type="text" id="pesquisaSupervisor" class="form-control mb-3" placeholder="Pesquisar Líder..."><br>
+                                            <input type="text" id="pesquisaSupervisor" class="form-control mb-3" placeholder="Pesquisar Supervisor..."><br>
 
                                             <!-- Lista de líderes -->
                                             <div id="listaSupervisores_3" style="max-height: 300px; overflow-y: auto;">
@@ -832,7 +901,6 @@ if (!isset($_SESSION['usuario'])) {
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
-
             </div>
             <!-- Footer -->
             <?php

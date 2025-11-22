@@ -6,7 +6,12 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
-    $voltar = "../../../";
+    if ($x == 'is_page_supervisor_coordenador') {
+        $voltar = "../../../../";
+    } else {
+        $voltar = "../../../";
+    }
+
     $array = array('voltar' => $voltar);
     $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>
@@ -301,9 +306,18 @@ if (!isset($_SESSION['usuario'])) {
                     </h1>
 
                     <ol class="breadcrumb">
-                        <li><a href="../home"><i class="fa fa-home"></i> Home</a></li>
-                        <li><a href="../../coordenadores"><i class="fa fa-users"></i> Coordenadores</a></li>
-                        <li><a href="../../coordenadores/lideres/<?= $id_coordenador; ?>"><i class="fa fa-users"></i> Líderes</a></li>
+                        <?php
+                        if ($x == 'is_page_supervisor_coordenador') {
+                        ?>
+                            <li><a href="<?= $voltar; ?>home"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="<?= $voltar; ?>page/supervisores"><i class="fa fa-users"></i> Supervisores</a></li>
+                            <li><a href="<?= $voltar; ?>page/supervisor/<?= $dados_do_coordenador['dados']['id_supervisorR']; ?>"><i class="fa fa-users"></i> Coordenador</a></li>
+                            <li><a href="<?= $voltar; ?>/page/supervisor/coordenador/lideres/<?= $id_coordenador; ?>"><i class="fa fa-users"></i> Líderes</a></li>
+                        <?php } else { ?>
+                            <li><a href="../home"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="../../coordenadores"><i class="fa fa-users"></i> Coordenadores</a></li>
+                            <li><a href="../../coordenadores/lideres/<?= $id_coordenador; ?>"><i class="fa fa-users"></i> Líderes</a></li>
+                        <?php } ?>
                         <li class="active">Informações</li>
                     </ol>
                 </section>
@@ -328,9 +342,9 @@ if (!isset($_SESSION['usuario'])) {
                                     </h4>
                                 </div>
                                 <center>
-                                    <button type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 15px;" data-target="#lideres_desativados">Ativar</button>
+                                    <button type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 15px;" data-target="#coordenadores_desativados">Ativar</button>
                                 </center>
-                                <div class="modal fade" id="lideres_desativados">
+                                <div class="modal fade" id="coordenadores_desativados">
                                     <div class="modal-dialog modal-warning">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -350,7 +364,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                     <div class="col-lg-3">
                                                         <div class="form-group">
-                                                            <form action="../../coordenadores/exclusao/ativar" method="POST">
+                                                            <form action="<?= $voltar ?>page/coordenador/exclusao/ativar" method="POST">
                                                                 <input type="hidden" name="id_coordenador" value="<?= $dados_coordenador['id_coordenador']; ?>">
                                                                 <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                 <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
@@ -364,15 +378,10 @@ if (!isset($_SESSION['usuario'])) {
 
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
-                                                            <form action="../../coordenadores/exclusao/permanente" method="POST">
-                                                                <input type="hidden" name="opc" value="<?= $dados_coordenador['id_coordenador']; ?>">
-                                                                <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-                                                                <center>
-                                                                    <label for="opc">Opção 2:</label><br>
-                                                                    <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
-                                                                </center>
-                                                            </form>
+                                                            <center>
+                                                                <label for="opc">Opção 2:</label><br>
+                                                                <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#excluir_coordenador_permantemente">Excluir Permanentemente</button>
+                                                            </center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -389,12 +398,12 @@ if (!isset($_SESSION['usuario'])) {
                             } ?>
 
                             <!-- form start -->
-                            <form action="../edicao/salvar" role="form" method="POST" enctype="multipart/form-data" name="form_editar_foto">
+                            <form action="<?= $voltar; ?>page/coordenador/edicao/salvar" role="form" method="POST" enctype="multipart/form-data" name="form_editar_foto">
                                 <div class="col-lg-12">
                                     <div class="box-body chat" id="chat-box">
                                         <div class="box-footer">
                                             <div class="box-header with-border">
-                                                <h3 class="box-title">Dados Pessoais</h3>
+                                                <h3 class="box-title">Dados Pessoais | Coordenador</h3>
                                             </div> <br>
                                             <?php
 
@@ -508,7 +517,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div id="escrever_endereco">
                                                 <div class="form-group col-lg-2">
                                                     <label for="exampleInputPassword1">Pais</label>
-                                                    <input type="text" id="pais2" class="form-control" placeholder="Pais" name="pais" value="<?= $dados_coordenador['pais']; ?>">
+                                                    <input type="text" id="pais2" class="form-control" placeholder="Pais" name="nome_pais" value="<?= $dados_coordenador['pais']; ?>">
                                                 </div>
 
                                                 <div class="form-group col-lg-3">
@@ -569,12 +578,18 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="col-lg-6">
                                                 <div class="form-group" id="form-group">
                                                     <label for="exampleInputPassword1">Supervisor</label>
-                                                    <?php
-                                                    $id_sr = $dados_coordenador['id_supervisorR'];
-                                                    $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '');
-                                                    ?>
                                                     <select name="id_supervisor" class="form-control" <?= $check_desativado; ?>>
-                                                        <option value="<?= $id_sr; ?>" selected><?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
+                                                        <?php
+                                                        $info_sLocal = $this->Supervisores->infos('', 'query_supervisor_order_by_nome', 'asc', '');
+                                                        foreach ($info_sLocal['dados'] as $key => $dados_supervisor) {
+                                                            if ($dados_coordenador['id_supervisorR'] == $dados_supervisor['id_supervisorR']) {
+                                                                $selected = "selected";
+                                                            } else {
+                                                                $selected = "";
+                                                            }
+                                                        ?>
+                                                            <option value="<?= $dados_supervisor['id_supervisorR']; ?>" <?= $selected; ?>><?= $dados_supervisor['nome_supervisorR']; ?></option>
+                                                        <?php } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -584,9 +599,6 @@ if (!isset($_SESSION['usuario'])) {
                                                 <button type="submit" class="btn btn-danger pull-left" style="margin-right: 10px;" <?= $check_desativado; ?>>Salvar</button>
 
                                                 <center>
-
-                                                    <button type="button" style="margin-right: 10px;" class="btn btn-light pull-left" data-toggle="modal" data-target="#troca_de_coord_super" <?= $check_desativado; ?>>Solicitar Troca</button>
-
                                                     <div class="input-group-btn">
                                                         <button type="button" class="btn btn-success pull-left dropdown-toggle" data-toggle="dropdown">Mudar Função
                                                             <span class="fa fa-caret-down"></span></button>
@@ -625,55 +637,10 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- /.box -->
                 </section>
 
-                <div class="modal fade" id="troca_de_coord_super">
-                    <div class="modal-dialog modal-light">
-                        <div class="modal-content">
-                            <form action="../../../../alerta/solicitar/troca_de_css" method="POST">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Solicitar Troca de Supervisor</h4>
-                                </div>
-
-                                <div class="box-body" style="height: 150px;">
-
-                                    <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
-                                    <input type="hidden" name="id_lider" value="<?= $dados_coordenador['id_coordenador']; ?>">
-                                    <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-
-                                    <div class="col-lg-12" style="position: relative;top: 50%; transform: translateY(-50%);">
-                                        <div class="form-group">
-                                            <label for="id_troca_1">Selecione quem você deseja trocar:</label>
-                                            <select name="id_troca_1" id="id_troca_1" class="form-control" onchange="trocar_nome();" required>
-                                                <option value="0" selected>Selecione uma opção</option>
-                                                <?php
-                                                $id_sr = $dados_coordenador['id_supervisorR'];
-                                                $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '');
-                                                ?>
-                                                <option value="sl <?= $id_sr; ?>">Supervisor: <?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
-                                            </select>
-
-                                            <br>
-                                            <label for="id_troca_2" id="opcao_escolhida">Escolha uma opção acima e digite o nome</label>
-                                            <input type="text" class="form-control" name="id_troca_2" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                    <input type="submit" id="btn_solicitar_1" class="btn btn-default pull-right" value="Solicitar">
-                                </div>
-                            </form>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
-
                 <div class="modal fade" id="tornar_supervisor">
                     <div class="modal-dialog modal-default">
                         <div class="modal-content">
-                            <form action="../../../../tornar/tornar_coordenador_to_supervisor" method="POST" id="form_tornar_supervisor">
+                            <form action="<?= $voltar; ?>../tornar/tornar_coordenador_to_supervisor" method="POST" id="form_tornar_supervisor">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -700,16 +667,20 @@ if (!isset($_SESSION['usuario'])) {
                                             <div id="listaCoordenadores" style="max-height: 300px; overflow-y: auto;">
                                                 <?php
                                                 // exemplo: buscando do banco
-                                                $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador WHERE id_supervisorR = $id_usuario ORDER BY nome_coordenador ASC")->result_array();
+                                                $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador ORDER BY nome_coordenador ASC")->result_array();
 
-                                                foreach ($coordenadores as $c): ?>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input checkbox-coordenador" type="checkbox" value="<?= $c['id_coordenador']; ?>" id="coord<?= $c['id_coordenador']; ?>">
-                                                        <label class="form-check-label" for="coord<?= $c['id_coordenador']; ?>">
-                                                            <?= htmlspecialchars($c['nome_coordenador']); ?>
-                                                        </label>
-                                                    </div>
-                                                <?php endforeach; ?>
+                                                foreach ($coordenadores as $c) {
+                                                    if ($c['id_coordenador'] == $dados_coordenador['id_coordenador']) {
+                                                    } else {
+                                                ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input checkbox-coordenador" type="checkbox" value="<?= $c['id_coordenador']; ?>" id="coord<?= $c['id_coordenador']; ?>">
+                                                            <label class="form-check-label" for="coord<?= $c['id_coordenador']; ?>">
+                                                                <?= htmlspecialchars($c['nome_coordenador']); ?>
+                                                            </label>
+                                                        </div>
+                                                <?php }
+                                                } ?>
                                             </div>
                                         </div>
                                     </div>
@@ -728,7 +699,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="tornar_lider">
                     <div class="modal-dialog modal-default">
                         <div class="modal-content">
-                            <form action="../../../../tornar/tornar_coordenador_to_lider" method="POST" id="form_tornar_lider">
+                            <form action="<?= $voltar; ?>../tornar/tornar_coordenador_to_lider" method="POST" id="form_tornar_lider">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -740,7 +711,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_change" value="<?= $dados_coordenador['id_coordenador']; ?>">
                                     <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-                                    <input type="text" name="id_troca" id="idsCoordenador">
+                                    <input type="hidden" name="id_troca" id="idsCoordenador">
 
                                     <div class="col-lg-12">
                                         <div class="form-group">
@@ -758,7 +729,6 @@ if (!isset($_SESSION['usuario'])) {
                                                 $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador ORDER BY nome_coordenador ASC")->result_array();
 
                                                 foreach ($coordenadores as $c) {
-
                                                     if ($c['id_coordenador'] == $id_coordenador) {
                                                     } else {
                                                 ?>
@@ -788,7 +758,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="desativar_coordenador">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="../../coordenadores/desativar" method="post">
+                            <form action="<?= $voltar ?>page/coordenador/desativar" method="post">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -819,7 +789,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="excluir_coordenador_permantemente">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="../exclusao/permanente" id="form_exclusao_coordenador_permanentemente" method="POST">
+                            <form action="<?= $voltar ?>page/coordenador/exclusao/permanente" id="form_exclusao_coordenador_permanentemente" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -829,7 +799,15 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-body">
                                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="opc" value="<?= $dados_coordenador['id_coordenador']; ?>">
-                                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/coordenadores">
+                                    <?php
+                                    if ($x == 'is_page_supervisor_coordenador') {
+                                        $id_supervisor = $dados_coordenador['id_supervisorR'];
+                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/direcao//page/supervisor/$id_supervisor";
+                                    } else {
+                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/supervisor/page/coordenadores";
+                                    }
+                                    ?>
+                                    <input type="hidden" name="red" value="<?= $red_exclusao; ?>">
                                     <input type="hidden" name="id_novo_coordenador" id="idCoordenadorNovoTroca" value="0">
 
                                     <div class="col-lg-12">

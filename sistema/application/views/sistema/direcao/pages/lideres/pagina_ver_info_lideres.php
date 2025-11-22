@@ -8,17 +8,17 @@
 
 <?php
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../../../index");
+    header("location: https://sistema.campbrasil.com/sistema/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
     $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 
-    $voltar = $x == 'is_page_coordenador' ? "../../../" : "../../";
-    $voltar_2 = $x == 'is_page_coordenador' ? "../../" : "../";
+    $voltar = $x == 'is_page_supervisor_coordenador' ? "../../../../" : "../../";
+    $voltar_2 = $x == 'is_page_supervisor_coordenador' ? "../../../" : "../";
 
-    $red_page_licao = $x == 'is_page_coordenador' ? 'super/coord' : 'super';
+    $red_page_licao = $x == 'is_page_supervisor_coordenador' ? 'super/coord/lider' : 'super';
 
     $array = array('voltar' => $voltar);
 
@@ -27,7 +27,11 @@ if (!isset($_SESSION['usuario'])) {
     if ($dados_do_lider['row'] == 0) {
         // escrever uma mensagem
         $this->FConsultas_model->mensagem('danger', 'Erro!', ['Os dados do líder não foi encontrado, tente novamente!']);
-        $funcao = $this->FConsultas_model->red("../lideres", 2000, []);
+        if ($x == 'is_page_supervisor_coordenador') {
+            $funcao = $this->FConsultas_model->red("../../../lideres", 2000, []);
+        } else {
+            $funcao = $this->FConsultas_model->red("../lideres", 2000, []);
+        }
         echo $funcao;
     } else {
         // id lider // opc // ativo
@@ -193,8 +197,8 @@ if (!isset($_SESSION['usuario'])) {
 
             var x = '<?= $x; ?>';
 
-            if (x == 'is_page_coordenador') {
-                ajax.open("GET", "../../pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral&ativo=0", false);
+            if (x == 'is_page_supervisor_coordenador') {
+                ajax.open("GET", "../../../pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral&ativo=0", false);
             } else {
                 ajax.open("GET", "../pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral&ativo=0", false);
             }
@@ -207,7 +211,7 @@ if (!isset($_SESSION['usuario'])) {
             var opc = document.getElementById('pais').value;
 
             if (opc == "br") {
-                document.getElementById('estaods2').value = '';
+                document.getElementById('estados2').value = '';
                 document.getElementById('cidades2').value = '';
                 document.getElementById('consultar_endereco').style.display = "inline";
                 document.getElementById('escrever_endereco').style.display = "none";
@@ -293,11 +297,12 @@ if (!isset($_SESSION['usuario'])) {
 
                     <ol class="breadcrumb">
                         <?php
-                        if ($x == 'is_page_coordenador') {
+                        if ($x == 'is_page_supervisor_coordenador') {
                         ?>
-                            <li><a href="../../../home"><i class="fa fa-home"></i> Home</a></li>
-                            <li><a href="../../coordenadores"><i class="fa fa-group"></i> Coordenadores</a></li>
-                            <li><a href="../../coordenadores/lideres/<?= $dados_lider['id_coordenador']; ?>"><i class="fa fa-group"></i> Líderes</a></li>
+                            <li><a href="<?= $voltar; ?>home"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="<?= $voltar; ?>page/supervisores"><i class="fa fa-group"></i> Supervisores</a></li>
+                            <li><a href="<?= $voltar; ?>page/supervisor/<?= $dados_lider['id_supervisorR']; ?>"><i class="fa fa-group"></i> Coordenador</a></li>
+                            <li><a href="<?= $voltar; ?>page/supervisor/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>"><i class="fa fa-group"></i> Líderes</a></li>
                         <?php } else { ?>
                             <li><a href="../../home"><i class="fa fa-home"></i> Home</a></li>
                             <li><a href="../lideres"><i class="fa fa-group"></i> Líderes</a></li>
@@ -333,12 +338,12 @@ if (!isset($_SESSION['usuario'])) {
                             <?php } ?>
 
                             <!-- form start -->
-                            <form action="salvar" role="form" method="POST" enctype="multipart/form-data" name="form_editar_foto">
+                            <form action="<?= $voltar_2; ?>lider/salvar" role="form" method="POST" enctype="multipart/form-data" name="form_editar_foto">
                                 <div class="col-lg-6">
                                     <div class="box-body chat" id="chat-box">
                                         <div class="box-footer">
                                             <div class="box-header with-border">
-                                                <h3 class="box-title">Dados Pessoais</h3>
+                                                <h3 class="box-title">Dados Pessoais | Líder</h3>
                                             </div> <br>
                                             <?php
                                             $foto_original = $dados_lider['foto'];
@@ -424,12 +429,12 @@ if (!isset($_SESSION['usuario'])) {
                                                 });
                                             </script>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <div class="form-group has-feedback">
                                                     <label for="exampleInputPassword1">País</label>
-                                                    <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
+                                                    <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)" <?= $disabled_inputs; ?>>
                                                         <?php
-                                                        if ($dados_lider['pais'] == '' || $dados_lider['pais'] == 'br') {
+                                                        if ($dados_lider['pais'] == '' || $dados_lider['pais'] == 'br' || $dados_lider['pais'] == 'Brasil') {
                                                         ?>
                                                             <option value="">País</option>
                                                             <option value="br" selected>Brasil</option>
@@ -451,28 +456,38 @@ if (!isset($_SESSION['usuario'])) {
                                             </div>
 
                                             <div id="consultar_endereco">
-                                                <div class="form-group col-lg-4" id="form-group">
+                                                <div class="form-group col-lg-6">
+                                                    <label for="exampleInputPassword1">Pais</label>
+                                                    <input type="text" class="form-control" placeholder="Pais" value="Brasil" disabled>
+                                                </div>
+
+                                                <div class="form-group col-lg-6" id="form-group">
                                                     <label for="exampleInputPassword1">Estado</label>
-                                                    <select id="estados" name="estados" class="form-control">
+                                                    <select id="estados" name="estados" class="form-control" <?= $disabled_inputs; ?>>
                                                         <option value=""></option>
                                                     </select>
                                                 </div>
 
-                                                <div class="form-group col-lg-4" id="form-group">
+                                                <div class="form-group col-lg-6" id="form-group">
                                                     <label for="exampleInputPassword1">Cidade</label>
-                                                    <select id="cidades" name="cidades" class="form-control"></select>
+                                                    <select id="cidades" name="cidades" class="form-control" <?= $disabled_inputs; ?>></select>
                                                 </div>
                                             </div>
 
                                             <div id="escrever_endereco">
-                                                <div class="form-group col-lg-4">
-                                                    <label for="exampleInputPassword1">Estado/Província/Região</label>
-                                                    <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2" value="<?= $dados_lider['estado']; ?>">
+                                                <div class="form-group col-lg-6">
+                                                    <label for="exampleInputPassword1">Pais</label>
+                                                    <input type="text" id="pais2" class="form-control" placeholder="Pais" name="nome_pais" value="<?= $dados_lider['pais']; ?>" <?= $disabled_inputs; ?>>
                                                 </div>
 
-                                                <div class="form-group col-lg-4">
+                                                <div class="form-group col-lg-6">
+                                                    <label for="exampleInputPassword1">Estado/Província/Região</label>
+                                                    <input type="text" id="estados2" class="form-control" placeholder="Estado/Província/Região" name="estados2" value="<?= $dados_lider['estado']; ?>" <?= $disabled_inputs; ?>>
+                                                </div>
+
+                                                <div class="form-group col-lg-6">
                                                     <label for="exampleInputPassword1">Cidade/Município/Distrito</label>
-                                                    <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2" value="<?= $dados_lider['cidade']; ?>">
+                                                    <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2" value="<?= $dados_lider['cidade']; ?>" <?= $disabled_inputs; ?>>
                                                 </div>
                                             </div>
 
@@ -487,7 +502,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="col-lg-6" id="precisa_cpf">
                                                 <div class="form-group">
                                                     <label for="exampleInputEmail1">CPF</label>
-                                                    <input type="text" class="form-control" name="cpf" id="cpf" value="<?= $dados_lider['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required>
+                                                    <input type="text" class="form-control" name="cpf" id="cpf" value="<?= $dados_lider['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required <?= $disabled_inputs; ?>>
                                                 </div>
                                             </div>
 
@@ -522,7 +537,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label for="exampleInputEmail1">Senha</label>
-                                                    <input type="password" class="form-control" id="senha" name="senha" value="<?= $info_usuario['dados']['senha']; ?>" placeholder="Senha" required>
+                                                    <input type="password" class="form-control" id="senha" name="senha" value="<?= $info_usuario['dados']['senha']; ?>" placeholder="Senha" required <?= $disabled_inputs; ?>>
                                                     <span onclick="toggleSenha()" style="position: absolute; right: 20px; top: 55%; transform: translateY(-50%); cursor: pointer;">👁️</span>
                                                 </div>
                                             </div>
@@ -533,20 +548,15 @@ if (!isset($_SESSION['usuario'])) {
                                                     <select name="id_coordenador" class="form-control" <?= $disabled_inputs; ?>>
                                                         <?php
                                                         $id_coordenador = $dados_lider['id_coordenador'];
-                                                        $info_coordenadores = $this->Coordenadores->infos([$id_usuario], 'info_coordenador_id_supervisor', '', '');
+                                                        $info_coordenadores = $this->Coordenadores->infos([], 'query_coordenadores_order_by_nome_coordenador', 'asc', '');
 
-                                                        if ($info_coordenadores['row'] == 0) {
+                                                        foreach ($info_coordenadores['dados'] as $key => $c) {
+                                                            if ($c['id_coordenador'] == $id_coordenador) {
                                                         ?>
-                                                            <option value="<?= $id_coordenador; ?>" selected>Você não tem Coordenador Cadastrado</option>
-                                                            <?php
-                                                        } else {
-                                                            foreach ($info_coordenadores['dados'] as $key => $c) {
-                                                                if ($c['id_coordenador'] == $id_coordenador) {
-                                                            ?>
-                                                                    <option value="<?= $c['id_coordenador']; ?>" selected><?= $c['nome_coordenador']; ?></option>
-                                                                <?php } else { ?>
-                                                                    <option value="<?= $c['id_coordenador']; ?>"><?= $c['nome_coordenador']; ?></option>
-                                                        <?php }
+                                                                <option value="<?= $c['id_coordenador']; ?>" selected><?= $c['nome_coordenador']; ?></option>
+                                                            <?php } else { ?>
+                                                                <option value="<?= $c['id_coordenador']; ?>"><?= $c['nome_coordenador']; ?></option>
+                                                        <?php
                                                             }
                                                         } ?>
                                                     </select>
@@ -556,12 +566,20 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="col-lg-6">
                                                 <div class="form-group" id="form-group">
                                                     <label for="exampleInputPassword1">Supervisor(você)</label>
-                                                    <?php
-                                                    $id_sr = $dados_lider['id_supervisorR'];
-                                                    $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '');
-                                                    ?>
                                                     <select name="id_supervisor" class="form-control" <?= $disabled_inputs; ?>>
-                                                        <option value="<?= $id_sr; ?>" selected><?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
+                                                        <?php
+                                                        $id_sr = $dados_lider['id_supervisorR'];
+                                                        $info_coordenadores = $this->Supervisores->infos([], 'query_supervisor_order_by_nome', 'asc', '');
+
+                                                        foreach ($info_coordenadores['dados'] as $key => $c) {
+                                                            if ($c['id_supervisorR'] == $id_sr) {
+                                                        ?>
+                                                                <option value="<?= $c['id_supervisorR']; ?>" selected><?= $c['nome_supervisorR']; ?></option>
+                                                            <?php } else { ?>
+                                                                <option value="<?= $c['id_supervisorR']; ?>"><?= $c['nome_supervisorR']; ?></option>
+                                                        <?php
+                                                            }
+                                                        } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -569,30 +587,36 @@ if (!isset($_SESSION['usuario'])) {
                                             <?php
                                             if ($check_ativo) {
                                             ?>
-                                                <button type="button" class="btn btn-light pull-left mg_r_10" data-toggle="modal" data-target="#troca_de_coord_super">Solicitar Troca</button>
 
-                                                <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-danger pull-left dropdown-toggle mg_r_10" data-toggle="dropdown">Desativar
-                                                        <span class="fa fa-caret-down"></span></button>
-                                                    <ul class="dropdown-menu">
-                                                        <li style="margin-bottom: 5px;">
-                                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#desativar_lider">Desativar Líder</button>
-                                                        </li>
-                                                        <li style="margin-bottom: 5px;">
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#excluir_lider_permantemente">Excluir Permanentemente</button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                                <div class="col-lg-12">
+                                                    <button type="button" class="btn btn-light pull-left mg_r_10" data-toggle="modal" data-target="#troca_de_coord_super">Solicitar Troca</button>
+
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-danger pull-left dropdown-toggle mg_r_10" data-toggle="dropdown">Desativar
+                                                            <span class="fa fa-caret-down"></span></button>
+                                                        <ul class="dropdown-menu">
+                                                            <li style="margin-bottom: 5px;">
+                                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#desativar_lider">Desativar Líder</button>
+                                                            </li>
+                                                            <li style="margin-bottom: 5px;">
+                                                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#excluir_lider_permantemente">Excluir Permanentemente</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
 
 
-                                                <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-success pull-left dropdown-toggle" data-toggle="dropdown">Mudar Função
-                                                        <span class="fa fa-caret-down"></span></button>
-                                                    <ul class="dropdown-menu">
-                                                        <li style="margin-bottom: 5px;">
-                                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#tornar_coordenador">Tornar Coordenador</button>
-                                                        </li>
-                                                    </ul>
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-success pull-left dropdown-toggle" data-toggle="dropdown">Mudar Função
+                                                            <span class="fa fa-caret-down"></span></button>
+                                                        <ul class="dropdown-menu">
+                                                            <li style="margin-bottom: 5px;">
+                                                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#tornar_coordenador">Tornar Coordenador</button>
+                                                            </li>
+                                                            <li style="margin-bottom: 5px;">
+                                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#tornar_supervisor">Tornar Supervisor</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
 
                                             <?php } else {
@@ -668,11 +692,19 @@ if (!isset($_SESSION['usuario'])) {
                                                     </div>
                                                 </div>
 
-                                                <div class="col-lg-6">
-                                                    <div class="form-group">
-                                                        <label for="exampleInputEmail1">CPF</label>
-                                                        <input type="text" class="form-control" id="exampleInputEmail1" name="cpf_colider" value="<?= $dados['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required <?= $disabled_inputs; ?>>
+                                                <?php
+                                                if ($dados_lider['pais'] == '' || $dados_lider['pais'] == 'br' || $dados_lider['pais'] == 'Brasil') {
+                                                ?>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="exampleInputEmail1">CPF</label>
+                                                            <input type="text" class="form-control" id="exampleInputEmail1" name="cpf_colider" value="<?= $dados['cpf']; ?>" placeholder="CPF" maxlength="14" minlength="11" required <?= $disabled_inputs; ?>>
+                                                        </div>
                                                     </div>
+                                                <?php } else {
+                                                } ?>
+
+                                                <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">E-mail</label>
                                                         <input type="email" class="form-control" id="exampleInputEmail1" name="email_colider" value="<?= $dados['email']; ?>" placeholder="E-mail" required <?= $disabled_inputs; ?>>
@@ -684,6 +716,9 @@ if (!isset($_SESSION['usuario'])) {
                                                         <label for="exampleInputEmail1">Telefone</label>
                                                         <input type="text" class="form-control" id="exampleInputEmail1" name="telefone_colider" value="<?= $dados['telefone_whatsapp']; ?>" placeholder="Telefone" minlength="11" required <?= $disabled_inputs; ?>>
                                                     </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="exampleInputEmail1">Data de Nascimento</label>
                                                         <input type="text" class="form-control" id="exampleInputEmail1" name="nascimento_colider" value="<?= $dados['nascimento']; ?>" maxlength="10" minlength="10" placeholder="Data de Nascimento" required <?= $disabled_inputs; ?>>
@@ -1021,7 +1056,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                     <div class="modal fade" id="<?= $dadosPG['id_pg']; ?>_troca_de_lider_pg">
                                                                         <div class="modal-dialog modal-light">
-                                                                            <form action="trocar-liderenca" method="POST" id="trocar_lider_de_pg">
+                                                                            <form action="<?= $voltar_2; ?>lider/trocar-liderenca" method="POST" id="trocar_lider_de_pg">
                                                                                 <div class="modal-content">
                                                                                     <div class="modal-header">
                                                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1039,23 +1074,26 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <label for="id_lider_troca">Selecione a nova liderança para esse PG:</label>
 
                                                                                         <!-- Caixa de pesquisa -->
-                                                                                        <input type="text" id="pesquisarLider" class="form-control mb-3" placeholder="Pesquisar Líder...">
+                                                                                        <input type="text" id="pesquisarLider" class="form-control mb-3" placeholder="Pesquisar Líder..."><br>
 
                                                                                         <!-- Lista de líderes -->
                                                                                         <div id="listaLideres" style="max-height: 300px; overflow-y: auto;">
                                                                                             <?php
                                                                                             // exemplo: buscando do banco
-                                                                                            $lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider WHERE id_supervisorR = $id_usuario ORDER BY nome_lider ASC")->result_array();
+                                                                                            $lideres = $this->db->query("SELECT id_lider, nome_lider,id_coordenador,id_supervisorR FROM lider ORDER BY nome_lider ASC")->result_array();
 
                                                                                             foreach ($lideres as $l) {
                                                                                                 if ($l['id_lider'] == $dados_lider['id_lider']) {
                                                                                                 } else {
-
+                                                                                                    $dados_do_coordenador = $this->Coordenadores->infos([$l['id_coordenador']], 'info_coordenador', '', '');
+                                                                                                    $dados_do_supervisor = $this->Supervisores->infos([$l['id_supervisorR']], 'info_supervisor', '', '');
                                                                                             ?>
                                                                                                     <div class="form-check">
                                                                                                         <input class="form-check-input checkbox-lider" type="checkbox" value="<?= $l['id_lider']; ?>" id="coord<?= $l['id_lider']; ?>">
                                                                                                         <label class="form-check-label" for="coord<?= $l['id_lider']; ?>">
-                                                                                                            <?= htmlspecialchars($l['nome_lider']); ?>
+                                                                                                            <?= htmlspecialchars($l['nome_lider']); ?> (
+                                                                                                            <?= htmlspecialchars($dados_do_coordenador['dados']['nome_coordenador'] ?? "coordenador não encontrado"); ?>,
+                                                                                                            <?= htmlspecialchars($dados_do_supervisor['dados']['nome_supervisorR'] ?? "supervisor não encontrado"); ?>)
                                                                                                         </label>
                                                                                                     </div>
                                                                                             <?php }
@@ -1739,7 +1777,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-body chat" id="chat-box">
                                     <?php
 
-                                    foreach ($pg['dados'] as $key => $dados_pg_progresso) {
+                                    foreach ($pg_ativos['dados'] as $key => $dados_pg_progresso) {
                                         $total_crianca_pg = $this->Criancas->query([$dados_lider['id_lider'], $dados_pg_progresso['id_pg'], 'asc'], 'query_id_lider_id_pg_geral_order_by_nome_crianca');
 
                                         $id_pgsss = $dados_pg_progresso['id_pg'];
@@ -1911,12 +1949,17 @@ if (!isset($_SESSION['usuario'])) {
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
-                                        <div class="form-group has-feedback">
-                                            <input type="text" class="form-control" placeholder="CPF do Colíder" minlength="11" name="cpfColider">
-                                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                    <?php
+                                    if ($dados_lider['pais'] == '' || $dados_lider['pais'] == 'br' || $dados_lider['pais'] == 'Brasil') {
+                                    ?>
+                                        <div class="col-lg-6">
+                                            <div class="form-group has-feedback">
+                                                <input type="text" class="form-control" placeholder="CPF do Colíder" minlength="11" name="cpfColider">
+                                                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    <?php } else {
+                                    } ?>
 
                                     <div class="col-lg-6">
                                         <div class="form-group has-feedback">
@@ -2016,7 +2059,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="desativar_lider">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="desativar" method="POST">
+                            <form action="<?= $voltar_2; ?>lider/desativar" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -2054,7 +2097,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="reativar_lider">
                     <div class="modal-dialog modal-success">
                         <div class="modal-content">
-                            <form action="reativar" method="POST">
+                            <form action="<?= $voltar_2; ?>lider/reativar" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -2087,7 +2130,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="excluir_lider_permantemente">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="excluir" id="form_exclusao_lider_permanentemente" method="POST">
+                            <form action="<?= $voltar_2; ?>lider/excluir" id="form_exclusao_lider_permanentemente" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -2097,10 +2140,10 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-body">
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
-                                    <?php if ($x == 'is_page_coordenador') { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/coordenadores/lideres/<?= $dados_lider['id_coordenador']; ?>">
+                                    <?php if ($x == 'is_page_supervisor_coordenador') { ?>
+                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/supervisor/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
                                     <?php } else { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/lideres">
+                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/lideres">
                                     <?php } ?>
                                     <input type="hidden" name="id_novo_lider" id="idLiderNovoTroca" value="0">
 
@@ -2339,7 +2382,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="tornar_coordenador">
                     <div class="modal-dialog modal-default">
                         <div class="modal-content">
-                            <form action="<?= $voltar; ?>../alerta/solicitar/trocar_de_funcao" method="POST" id="form_tornar_coordenador">
+                            <form action="<?= $voltar; ?>../tornar/tornar_lider_to_coordenador" method="POST" id="form_tornar_coordenador">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -2360,22 +2403,26 @@ if (!isset($_SESSION['usuario'])) {
                                                 <br><i>* observação: para essa nova função, o lider tem que ter 3 novos líderes.</i>
                                             </center>
                                             <!-- Caixa de pesquisa -->
-                                            <input type="text" id="pesquisaLider_coord" class="form-control mb-3" placeholder="Pesquisar Lider...">
+                                            <input type="text" id="pesquisaLider_coord" class="form-control mb-3" placeholder="Pesquisar Lider..."><br>
 
                                             <!-- Lista de Lideres -->
                                             <div id="listaLideres_coord" style="max-height: 300px; overflow-y: auto;">
                                                 <?php
                                                 // exemplo: buscando do banco
-                                                $lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider WHERE id_supervisorR = $id_usuario ORDER BY nome_lider ASC")->result_array();
+                                                $lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider ORDER BY nome_lider ASC")->result_array();
 
-                                                foreach ($lideres as $c): ?>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input checkbox-lider_coord" type="checkbox" value="<?= $c['id_lider']; ?>" id="lider<?= $c['id_lider']; ?>">
-                                                        <label class="form-check-label" for="lider<?= $c['id_lider']; ?>">
-                                                            <?= htmlspecialchars($c['nome_lider']); ?>
-                                                        </label>
-                                                    </div>
-                                                <?php endforeach; ?>
+                                                foreach ($lideres as $c) {
+                                                    if ($c['id_lider'] == $dados_lider['id_lider']) {
+                                                    } else {
+                                                ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input checkbox-lider_coord" type="checkbox" value="<?= $c['id_lider']; ?>" id="lider<?= $c['id_lider']; ?>">
+                                                            <label class="form-check-label" for="lider<?= $c['id_lider']; ?>">
+                                                                <?= htmlspecialchars($c['nome_lider']); ?>
+                                                            </label>
+                                                        </div>
+                                                <?php }
+                                                } ?>
                                             </div>
                                         </div>
                                     </div>
@@ -2390,6 +2437,66 @@ if (!isset($_SESSION['usuario'])) {
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
+
+                <div class="modal fade" id="tornar_supervisor">
+                    <div class="modal-dialog modal-default">
+                        <div class="modal-content">
+                            <form action="<?= $voltar; ?>../tornar/tornar_lider_to_supervisor" method="POST" id="tornar_lider_to_supervisor">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Solicitar Mudança Líder - Supervisor</h4>
+                                </div>
+                                <div class="box-body">
+                                    <input type="hidden" name="funcao_atiga" value="lider">
+                                    <input type="hidden" name="funcao_nova" value="supervisor">
+                                    <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
+                                    <input type="hidden" name="id_change" value="<?= $dados_lider['id_lider']; ?>">
+                                    <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
+                                    <input type="hidden" name="ids_coordenadores" id="idsCoordenadoresSupervisao">
+
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <center>
+                                                <label for="id_troca_1">Deseja tornar <?= $dados_lider['nome_lider']; ?> supervisor?</label>
+                                                <br><i>* observação: para essa nova função, o lider tem que ter 3 coordenações.</i>
+                                            </center>
+                                            <!-- Caixa de pesquisa -->
+                                            <input type="text" id="pesquisaCoord_super" class="form-control mb-3" placeholder="Pesquisar Lider..."><br>
+
+                                            <!-- Lista de Lideres -->
+                                            <div id="listaSupervisores_tonvfuncao" style="max-height: 300px; overflow-y: auto;">
+                                                <?php
+                                                // exemplo: buscando do banco
+                                                $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador ORDER BY nome_coordenador ASC")->result_array();
+
+                                                foreach ($coordenadores as $c) {
+                                                    if ($c['id_coordenador'] == $dados_lider['id_lider']) {
+                                                    } else {
+                                                ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input checkbox-coord-supervisao" type="checkbox" value="<?= $c['id_coordenador']; ?>" id="lider<?= $c['id_coordenador']; ?>">
+                                                            <label class="form-check-label" for="lider<?= $c['id_coordenador']; ?>">
+                                                                <?= htmlspecialchars($c['nome_coordenador']); ?>
+                                                            </label>
+                                                        </div>
+                                                <?php }
+                                                } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Não</button>
+                                    <input type="submit" id="btn_solicitar_1" class="btn btn-default pull-right" value="Solicitar">
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
             </div>
             <!-- Footer -->
             <?php
@@ -2473,6 +2580,58 @@ if (!isset($_SESSION['usuario'])) {
             });
 
             document.addEventListener("DOMContentLoaded", function() {
+                // modal - tornar supervisor
+                const pesquisarInput_super = document.getElementById('pesquisaCoord_super');
+                if (pesquisarInput_super) {
+                    pesquisarInput_super.addEventListener('input', function() {
+                        const filtro = this.value.toLowerCase();
+                        document.querySelectorAll('#listaSupervisores_tonvfuncao .form-check').forEach(div => {
+                            const texto = div.innerText.toLowerCase();
+                            div.style.display = texto.includes(filtro) ? '' : 'none';
+                        });
+                    });
+                }
+
+                const form_tornar_supervisor = document.querySelector('form#tornar_lider_to_supervisor');
+                if (!form_tornar_supervisor) return; // evita erro se o formulário não existir
+
+                // Pega todos os checkboxes
+                const checkboxes_coord_supervisao = document.querySelectorAll('.checkbox-coord-supervisao');
+                const inputHidden_coord_que_vao_para_supervisao = document.getElementById('idsCoordenadoresSupervisao');
+
+                // Função para atualizar o campo hidden
+                function atualizarIdsSelecionados_coord_new_supervisao() {
+                    const selecionados = Array.from(checkboxes_coord_supervisao)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
+
+                    inputHidden_coord_que_vao_para_supervisao.value = selecionados.join(',');
+                    console.log('IDs atualizados:', inputHidden_coord_que_vao_para_supervisao.value);
+                }
+
+                // Adiciona o evento de mudança (check/uncheck) em cada checkbox
+                checkboxes_coord_supervisao.forEach(cb => {
+                    cb.addEventListener('change', atualizarIdsSelecionados_coord_new_supervisao);
+                });
+
+                // Validação antes do envio
+                form_tornar_supervisor.addEventListener('submit', function(e) {
+                    const selecionados = inputHidden_coord_que_vao_para_supervisao.value.split(',').filter(v => v !== '');
+                    if (selecionados.length < 3) {
+                        e.preventDefault(); // impede o envio
+                        Swal.fire({
+                            title: 'Atenção!',
+                            text: 'Você precisa selecionar pelo menos 3 coordenadores.',
+                            icon: 'warning',
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: '#198754', // cor do botão principal (verde bootstrap)
+                            background: '#fefefe', // cor de fundo
+                            color: '#333', // cor do texto
+                            iconColor: '#f39c12', // cor do ícone
+                        });
+                    }
+                });
+
                 // modal - tornar coordenador
                 const pesquisarInput_coord = document.getElementById('pesquisaLider_coord');
                 if (pesquisarInput_coord) {

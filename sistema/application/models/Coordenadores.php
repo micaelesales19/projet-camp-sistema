@@ -66,6 +66,18 @@ class Coordenadores extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'query_coordenadores_order_by_nome_coordenador') { // check_coordenador_situacao_cadastro_id_supervisor
+            // Consulta na tabela de coordenadores
+            $consultar_coordenadores = $this->db->query("SELECT * FROM coordenador ORDER BY nome_coordenador $order");
+            $row = $consultar_coordenadores->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenadores->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
         } else if ($opc == 'query_coordenadores_id_supervisor_situacao_order_by_nome_coordenador') { // check_coordenador_situacao_cadastro_id_supervisor
             // Consulta na tabela de coordenadores se tem coordenador esperando autorização pelo ID SUPERVISOR
             $id_supervisor = $id_usuario[0];
@@ -98,8 +110,6 @@ class Coordenadores extends CI_Model
             return $dados;
         }
     }
-
-
     public function editar_autorizacao_coordenador($id_coordenador, $x)
     {
         $this->db->set('ativo', $x);
@@ -287,6 +297,7 @@ class Coordenadores extends CI_Model
         $this->db->where('id_coordenador', $id);
 
         if ($this->db->update('coordenador')) {
+            $this->Lideres->trocar_supervisao_de_lideres_coordenador_especifico($id, $id_sl);
             return true;
         } else {
             return false;
@@ -361,6 +372,12 @@ class Coordenadores extends CI_Model
         $this->db->update('coordenador');
     }
 
+    public function trocar_supervisao_do_coordenador_especifico($id_coordenador, $id_novo_supervisor)
+    {
+        $this->db->set('id_supervisorR', $id_novo_supervisor);
+        $this->db->where('id_coordenador', $id_coordenador);
+        $this->db->update('coordenador');
+    }
 
     public function delete_coordenador_id($id_coordenador)
     {

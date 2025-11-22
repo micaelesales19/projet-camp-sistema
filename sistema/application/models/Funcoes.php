@@ -477,4 +477,51 @@ class Funcoes extends CI_Model
             'dados_coordenadores_gerais_comparacao' => ['dados' => $list_coordenadores_comparacao],
         ];
     }
+
+    public function consultasBDLideresCoordenador($id_user)
+    {
+        $list_lideres = [];
+
+        // busca todos os líderes do coordenador
+        $lideres_info = $this->Lideres->infos([$id_user], 'query_lideres_id_coordenador_order_by_nome_lider', '', 'asc', []);
+        $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
+
+        if (!empty($lideres_info['dados'])) {
+            // adiciona informações individuais por líder
+            foreach ($lideres_info['dados'] as $lider) {
+                $id_lider = $lider['id_lider'];
+
+                $total_criancas_lider = 0;
+                $total_criancas_ativas_lider = 0;
+
+                // total de crianças desse líder
+                $q1 = $this->db->query("
+                SELECT COUNT(*) AS total
+                FROM criancas
+                WHERE lider = $id_lider
+            ")->row_array();
+                $total_criancas_lider = $q1['total'] ?? 0;
+
+                // se o líder for ativo, conta crianças ativas também
+                $lider_ativo = in_array($id_lider, array_column($lideres_ativos_info['dados'], 'id_lider'));
+                if ($lider_ativo) {
+                    $q2 = $this->db->query("
+                    SELECT COUNT(*) AS total
+                    FROM criancas
+                    WHERE lider = $id_lider
+                ")->row_array();
+                    $total_criancas_ativas_lider = $q2['total'] ?? 0;
+                }
+
+                $lider['total_criancas'] = $total_criancas_lider;
+                $lider['total_criancas_ativos'] = $total_criancas_ativas_lider;
+                $lider['ativo'] = $lider_ativo ? 1 : 0;
+
+                $list_lideres[] = $lider;
+            }
+        }
+        return [
+            'dados_lideres' => ['dados' => $list_lideres],
+        ];
+    }
 }

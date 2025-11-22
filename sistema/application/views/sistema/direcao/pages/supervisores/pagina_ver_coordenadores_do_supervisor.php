@@ -120,6 +120,7 @@ if (!isset($_SESSION['usuario'])) {
             // URL da requisição
             var url = 'coordenadores/mostrar';
             var params = {
+                id_usuario: '<?= $id_usuario; ?>',
                 id_user: id_user,
                 url_redirecionamento: '<?= $url_redirecionamento; ?>',
             };
@@ -271,6 +272,7 @@ if (!isset($_SESSION['usuario'])) {
             if (opc == "br") {
                 document.getElementById('estados2').value = '';
                 document.getElementById('cidades2').value = '';
+                document.getElementById('pais2').value = '';
                 document.getElementById('consultar_endereco').style.display = "inline";
                 document.getElementById('escrever_endereco').style.display = "none";
 
@@ -280,6 +282,11 @@ if (!isset($_SESSION['usuario'])) {
                 document.getElementById('cpf').setAttribute('required', 'true');
                 document.getElementById('cpf_colider').setAttribute('required', 'true');
             } else {
+                if (opc == 'Moçambique') {
+                    document.getElementById('pais2').value = 'Moçambique';
+                } else {
+                    document.getElementById('pais2').value = '';
+                }
                 document.getElementById('estados').value = '';
                 document.getElementById('cidades').value = '';
                 document.getElementById('escrever_endereco').style.display = "inline";
@@ -411,7 +418,7 @@ if (!isset($_SESSION['usuario'])) {
                             <div class="box-header with-border">
                                 <h3 class="box-title"><i class="fa fa-table"></i> Coordenadores</h3>
 
-                                <button type="button" name="btn_link_cadastro" class="btn btn-success" onclick="gerarELCopiarLink('<?= $id_usuario; ?>')" disabled>Copiar Link de Cadastro Coordenador <i class="fa fa-link"></i></button>
+                                <button type="button" name="btn_link_cadastro" class="btn btn-success" onclick="gerarELCopiarLink('<?= $id_supervisor; ?>')" disabled>Copiar Link de Cadastro Coordenador - <?= $id_supervisor; ?> <i class="fa fa-link"></i></button>
 
                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#cadastro_coordenador">Cadastrar Coordenador +</button>
 
@@ -420,9 +427,8 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="modal fade" id="cadastro_coordenador">
                                     <div class="modal-dialog modal-success">
                                         <div class="modal-content">
-                                            <form action="../coordenadores/salvar" method="POST">
+                                            <form action="../coordenador/salvar" method="POST">
                                                 <input type="hidden" name="id_pastor" value="2000">
-                                                <input type="hidden" name="id_supervisor" value="<?= $id_supervisor; ?>">
                                                 <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
                                                 <div class="modal-header">
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -432,7 +438,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 <div class="box-body">
 
                                                     <div class="col-lg-12">
-                                                        <div class="col-lg-4">
+                                                        <div class="col-lg-6">
                                                             <div class="form-group has-feedback">
                                                                 <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
                                                                     <option value="" selected>País</option>
@@ -444,13 +450,19 @@ if (!isset($_SESSION['usuario'])) {
                                                             </div>
                                                         </div>
                                                         <div id="escrever_endereco">
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" id="pais2" class="form-control" placeholder="Pais" name="nome_pais">
+                                                                    <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <input type="text" id="estados2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
@@ -459,7 +471,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         </div>
 
                                                         <div id="consultar_endereco">
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <select id="estados" name="estados" class="form-control">
                                                                         <option value=""></option>
@@ -467,7 +479,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <select id="cidades" name="cidades" class="form-control">
                                                                     </select>
@@ -516,6 +528,18 @@ if (!isset($_SESSION['usuario'])) {
                                                         <div class="form-group has-feedback" id="precisa_cpf">
                                                             <input type="text" class="form-control" placeholder="CPF" minlength="11" name="cpf" id="cpf" maxlength="14">
                                                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <select name="id_supervisor" class="form-control">
+                                                                <?php
+                                                                $info_sLocal = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '');
+                                                                $slocal = $info_sLocal['dados'];
+                                                                ?>
+                                                                <option value="<?= $slocal['id_supervisorR']; ?>">Supervisor: <?= $slocal['nome_supervisorR']; ?></option>
+                                                            </select>
                                                         </div>
                                                     </div>
 

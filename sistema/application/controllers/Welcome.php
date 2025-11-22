@@ -3702,7 +3702,7 @@ class Welcome extends CI_Controller
 
 	public function enviar_email_supervisor_liberacao_sistema($id_supervisor, $link)
 	{
-		$dados_supervisor = $this->Coordenadores->infos([$id_supervisor], 'info_supervisor', '', '');
+		$dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '');
 		if ($dados_supervisor['row'] == 0) {
 			// enviar alerta p direção
 		} else {
@@ -3890,7 +3890,8 @@ class Welcome extends CI_Controller
 					$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, "", $nivel, $senha);
 
 					if ($cadastro && $cadastroUsuario) {
-						$consultarDados = $this->Coordenadores->infos([$email, $nome, $data_nascimento_completo], 'info_coordenador_nome_email_data_nascimento', '', '');
+
+						$consultarDados = $this->Supervisores->infos([$email, $nome, $data_nascimento_completo], 'info_supervisor_nome_email_data_nascimento', '', '');
 
 						$id_supervisor = $consultarDados['dados']['id_supervisorR'];
 
@@ -4007,7 +4008,7 @@ class Welcome extends CI_Controller
 		}
 
 		$this->_excluir_permanentemente($id_supervisor, $id_usuario);
-		$this->Coordenadores->excluirCoordenadorPermanentemente($id_supervisor, $id_usuario);
+		$this->Supervisores->excluirSupervisorPermanentemente($id_supervisor, $id_usuario);
 
 		$red = $this->input->post('red');
 		$data = [];
@@ -4224,23 +4225,24 @@ class Welcome extends CI_Controller
 		$id_change = $this->input->post('id_change');
 		$nome = $this->FConsultas_model->getNomeUserId($id_change)['nome'];
 		$red = "";
+		$red_erro = $this->input->post('red');
 
-		if ($funcao_atiga == 'supervisor' && $funcao_nova == 'coordenador') {
+		if ($funcao_atiga == 'supervisor' && $funcao_nova == 'coordenador') { // ok
 			$id_troca = $this->input->post('id_troca'); // novo supervisor
 
 			$dados_do_supervisor = $this->Supervisores->infos([$id_change], 'info_supervisor', '', '');
 
 			if ($dados_do_supervisor['row'] == 0) {
-				$red = "https://sistema.campbrasil.com/sistema/direcao/page/supervisores";
+				$red = $red_erro;
 				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Dados do Supervisor não Encontrado!']);
 			} else {
 				$dados_supervisor = $dados_do_supervisor['dados'];
 
-				// check se já tem algum coordenador está cadastrado
-				$coordenadorjacadastrado = $this->Lideres->check_cadastro('info_coordenador_nome_email_data_nascimento', [$dados_supervisor['email'], $dados_supervisor['nome_supervisorR'], $dados_supervisor['nascimento']]);
+				// check se já tem algum coordenador cadastrado
+				$coordenadorjacadastrado = $this->Coordenadores->infos([$dados_supervisor['email'], $dados_supervisor['nome_supervisorR'], $dados_supervisor['nascimento']], 'info_coordenador_nome_email_data_nascimento', '', '');
 
 				// cadastro coordenador
-				if ($coordenadorjacadastrado == 0) {
+				if ($coordenadorjacadastrado['row'] == 0) {
 					$this->Coordenadores->cadastro_coordenador_2($dados_supervisor['nome_supervisorR'], $dados_supervisor['cpf'], $dados_supervisor['email'], $dados_supervisor['telefone_whatsapp'], $dados_supervisor['nascimento'], $dados_supervisor['pais'], $dados_supervisor['estado'], $dados_supervisor['cidade'], $id_troca, 1, $dados_supervisor['foto']);
 				}
 
@@ -4250,7 +4252,7 @@ class Welcome extends CI_Controller
 				$coordenador_novo = $this->Coordenadores->infos([$dados_supervisor['email'], $dados_supervisor['nome_supervisorR'], $dados_supervisor['nascimento']], 'info_coordenador_nome_email_data_nascimento', '', '');
 
 				if ($coordenador_novo['row'] == 0) {
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/coordenadores";
+					$red = $red_erro;
 				} else {
 					$this->Lideres->editar_usuario_nivel($dadosusuario['dados']['id_usuario'], 3);
 
@@ -4279,22 +4281,77 @@ class Welcome extends CI_Controller
 				$this->FAlerta_model->alerta_controle($id_usuario, $id_change, $motivo, $acao);
 				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Troca de Função!']);
 			}
+		} else if ($funcao_atiga == 'supervisor' && $funcao_nova == 'lider') { // ok
+			$id_troca_1 = $this->input->post('id_troca_1'); // novo supervisor
+			$id_troca_2 = $this->input->post('id_troca_2'); // novo coordenador
+
+			$dados_do_supervisor = $this->Supervisores->infos([$id_change], 'info_supervisor', '', '');
+
+			if ($dados_do_supervisor['row'] == 0) {
+				$red = $red_erro;
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Dados do Supervisor não Encontrado!']);
+			} else {
+				$dados_supervisor = $dados_do_supervisor['dados'];
+
+				// check se já tem algum lider está cadastrado
+				$liderjacadastrado = $this->Lideres->infos([$dados_supervisor['email'], $dados_supervisor['nome_supervisorR'], $dados_supervisor['nascimento']], 'info_lider_nome_email_data_nascimento', '', '');
+
+				// cadastro lider
+				if ($liderjacadastrado['row'] == 0) {
+					$this->Lideres->cadastro_lider_2($dados_supervisor['nome_supervisorR'], $dados_supervisor['cpf'], $dados_supervisor['email'], $dados_supervisor['telefone_whatsapp'], "", $dados_supervisor['nascimento'], 2000, $dados_supervisor['pais'], $dados_supervisor['estado'], $dados_supervisor['cidade'], $id_troca_2, $id_troca_1, $id_troca_1, 2, $dados_supervisor['foto']);
+				}
+
+				// atualizar o nível do usuário
+				$dadosusuario = $this->Lideres->infos([$dados_supervisor['email'], $dados_supervisor['cpf'], $dados_supervisor['nome_supervisorR']], 'info_usuario_and_email_cpf_nome', '', '');
+
+				$lider_novo = $this->Lideres->infos([$dados_supervisor['email'], $dados_supervisor['nome_supervisorR'], $dados_supervisor['nascimento']], 'info_lider_nome_email_data_nascimento', '', '');
+
+				if ($lider_novo['row'] == 0) {
+					$red = $red_erro;
+				} else {
+					$this->Lideres->editar_usuario_nivel($dadosusuario['dados']['id_usuario'], 1);
+
+					// apagar o supervisor
+					$this->Supervisores->delete_supervisor_local_id($id_change);
+
+					$id_lider_novo = $lider_novo['dados']['id_coordenador'];
+
+					$this->Lideres->trocar_supervisao_do_lider($id_change, $id_troca_1);
+					$this->Coordenadores->trocar_supervisao_do_coordenador($id_change, $id_troca_1);
+
+					// atualizazr PG
+					$this->PG->trocar_lideranca_pg_2($id_change, $id_lider_novo);
+					// atualizar relatório
+					$this->PG->editar_lideranca_relatorio_2($id_change, $id_lider_novo);
+					// atualizar criancas
+					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_lider_novo);
+
+					$red = "https://sistema.campbrasil.com/sistema/direcao/page/lider/$id_lider_novo";
+				}
+
+				$motivo = "O $nome_usuario efetuou troca de função do supervisor $nome (id: $id_change) para lider. Coordenadores e Líderes passarão para essa supervisão: $id_troca_1";
+				$acao = "TROCA_SUPERVISOR_TO_LIDER";
+
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_troca_1, $motivo, $acao);
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_change, $motivo, $acao);
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Troca de Função!']);
+			}
 		} else if ($funcao_atiga == 'coordenador' && $funcao_nova == 'lider') {
 			$id_troca = $this->input->post('id_troca'); // novo supervisor
 
 			$dados_do_coordenador = $this->Coordenadores->infos([$id_change], 'info_coordenador', '', '');
 
 			if ($dados_do_coordenador['row'] == 0) {
-				$red = "https://sistema.campbrasil.com/sistema/direcao/page/coordenadores";
+				$red = $red_erro;
 				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Dados do Coordenador não Encontrado!']);
 			} else {
 				$dados_coordenador = $dados_do_coordenador['dados'];
 
 				// check se já tem algum lider está cadastrado
-				$liderjacadastrado = $this->Lideres->check_cadastro('check_nome_2_cpf_email', [$dados_coordenador['nome_coordenador'], $dados_coordenador['cpf'], $dados_coordenador['email']]);
+				$liderjacadastrado = $this->Lideres->infos([$dados_coordenador['email'], $dados_coordenador['nome_coordenador'], $dados_coordenador['nascimento']], 'info_lider_nome_email_data_nascimento', '', datas: '');
 
 				// cadastro lider
-				if ($liderjacadastrado == 0) {
+				if ($liderjacadastrado['row'] == 0) {
 					$this->Lideres->cadastro_lider_2($dados_coordenador['nome_coordenador'], $dados_coordenador['cpf'], $dados_coordenador['email'], $dados_coordenador['telefone_whatsapp'], "", $dados_coordenador['nascimento'], 2000, $dados_coordenador['pais'], $dados_coordenador['estado'], $dados_coordenador['cidade'], $id_troca, $dados_coordenador['id_supervisorR'], $dados_coordenador['id_supervisorR'], 2, $dados_coordenador['foto']);
 				}
 
@@ -4304,7 +4361,7 @@ class Welcome extends CI_Controller
 				$lider_novo = $this->Lideres->infos([$dados_coordenador['email'], $dados_coordenador['nome_coordenador'], $dados_coordenador['nascimento']], 'info_lider_nome_email_data_nascimento', '', datas: '');
 
 				if ($lider_novo['row'] == 0) {
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/lideres";
+					$red = $red_erro;
 				} else {
 					$this->Lideres->editar_usuario_nivel($dadosusuario['dados']['id_usuario'], 1);
 
@@ -4332,7 +4389,187 @@ class Welcome extends CI_Controller
 				$this->FAlerta_model->alerta_controle($id_usuario, $id_change, $motivo, $acao);
 				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Troca de Função!']);
 			}
+		} else if ($funcao_atiga == 'coordenador' && $funcao_nova == 'supervisor') {
+			$id_troca = $this->input->post('ids_coordenadores'); // coordenadores para adicionar a nova coordenação
+			$lista_ids = explode(",", $id_troca);
+
+			$dados_do_coordenador = $this->Coordenadores->infos([$id_change], 'info_coordenador', '', '');
+
+			if ($dados_do_coordenador['row'] == 0) {
+				$red = $red_erro;
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Dados do Coordenador não Encontrado!']);
+			} else {
+				$dados_coordenador = $dados_do_coordenador['dados'];
+
+				// check se já tem algum supervisor está cadastrado
+				$supervisorjacadastrado = $this->Supervisores->infos([$dados_coordenador['email'], $dados_coordenador['cpf'], $dados_coordenador['nome_coordenador']], 'info_supervisor_and_email_cpf_nome', '', '');
+
+				// cadastro supervisor
+				if ($supervisorjacadastrado['row'] == 0) {
+					$this->Supervisores->cadastro_supervisor_2($dados_coordenador['nome_coordenador'], $dados_coordenador['cpf'], $dados_coordenador['email'], $dados_coordenador['telefone_whatsapp'], $dados_coordenador['nascimento'], $dados_coordenador['pais'], $dados_coordenador['estado'], $dados_coordenador['cidade'], 1, $dados_coordenador['foto']);
+				}
+
+				// consultar informações na tabela USUÁRIO
+				$dadosusuario = $this->Lideres->infos([$dados_coordenador['email'], $dados_coordenador['cpf'], $dados_coordenador['nome_coordenador']], 'info_usuario_and_email_cpf_nome', '', '');
+
+				$supervisor_novo = $this->Supervisores->infos([$dados_coordenador['email'], $dados_coordenador['cpf'], $dados_coordenador['nome_coordenador']], 'info_supervisor_and_email_cpf_nome', '', datas: '');
+
+				if ($supervisor_novo['row'] == 0) {
+					$red = $red_erro;
+				} else {
+					$this->Lideres->editar_usuario_nivel($dadosusuario['dados']['id_usuario'], 4);
+
+					// apagar o supervisor
+					$this->Coordenadores->delete_coordenador_id($id_change);
+
+					$id_supervisor_novo = $supervisor_novo['dados']['id_supervisorR'];
+
+					// Agora você pode percorrer cada ID
+					foreach ($lista_ids as $id) {
+						// trocando os coordenadores para a supervisão
+						$this->Coordenadores->trocar_supervisao_do_coordenador_especifico($id, $id_supervisor_novo);
+
+						// trocando os lideres para a nova supervisão
+						$this->Lideres->trocar_supervisao_de_lideres_coordenador_especifico($id, $id_supervisor_novo);
+					}
+
+					// atualizazr PG
+					$this->PG->trocar_lideranca_pg_2($id_change, $id_supervisor_novo);
+					// atualizar relatório
+					$this->PG->editar_lideranca_relatorio_2($id_change, $id_supervisor_novo);
+					// atualizar criancas
+					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_supervisor_novo);
+
+					$red = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor_novo";
+				}
+
+				$motivo = "O $nome_usuario efetuou troca de função do coordenador $nome (id: $id_change) para lider. Líderes passarão para essa coordenador: $id_troca";
+				$acao = "TROCA_COORDENADOR_TO_LIDER";
+
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_troca, $motivo, $acao);
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_change, $motivo, $acao);
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Troca de Função!']);
+			}
+		} else if ($funcao_atiga == 'lider' && $funcao_nova == 'coordenador') { // ok
+			$id_troca = $this->input->post('ids_lideres'); // coordenadores para adicionar a nova coordenação
+			$lista_ids = explode(",", $id_troca);
+
+			$dados_do_lider = $this->Lideres->infos([$id_change], 'info_lider', '', '');
+
+			if ($dados_do_lider['row'] == 0) {
+				$red = $red_erro;
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Dados do Líder não Encontrado!']);
+			} else {
+				$dados_lider = $dados_do_lider['dados'];
+
+				// check se já tem algum coordenador cadastrado
+				$coordenadorjacadastrado = $this->Coordenadores->infos([$dados_lider['email'], $dados_lider['nome_lider'], $dados_lider['nascimento']], 'info_coordenador_nome_email_data_nascimento', '', '');
+
+				// cadastro supervisor
+				if ($coordenadorjacadastrado['row'] == 0) {
+					$this->Coordenadores->cadastro_coordenador_2($dados_lider['nome_lider'], $dados_lider['cpf'], $dados_lider['email'], $dados_lider['telefone_whatsapp'], $dados_lider['nascimento'], $dados_lider['pais'], $dados_lider['estado'], $dados_lider['cidade'], $dados_lider['id_supervisorR'], 1, $dados_lider['foto']);
+				}
+
+				// consultar informações na tabela USUÁRIO
+				$dadosusuario = $this->Lideres->infos([$dados_lider['email'], $dados_lider['cpf'], $dados_lider['nome_lider']], 'info_usuario_and_email_cpf_nome', '', '');
+
+				$coordenador_novo = $this->Coordenadores->infos([$dados_lider['email'], $dados_lider['nome_lider'], $dados_lider['nascimento']], 'info_coordenador_nome_email_data_nascimento', '', datas: '');
+
+				if ($coordenador_novo['row'] == 0) {
+					$red = $red_erro;
+				} else {
+					$this->Lideres->editar_usuario_nivel($dadosusuario['dados']['id_usuario'], nivel: 3);
+
+					// apagar o supervisor
+					$this->Lideres->delete_lider_id($id_change);
+
+					$id_coordenador_novo = $coordenador_novo['dados']['id_coordenador'];
+
+					// Agora você pode percorrer cada ID
+					foreach ($lista_ids as $id) {
+						// trocando os lideres para a nova coordenação
+						$this->Lideres->trocar_coordenacao_do_lider_especifico($id, $id_coordenador_novo);
+					}
+
+					// atualizazr PG
+					$this->PG->trocar_lideranca_pg_2($id_change, $id_coordenador_novo);
+					// atualizar relatório
+					$this->PG->editar_lideranca_relatorio_2($id_change, $id_coordenador_novo);
+					// atualizar criancas
+					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_coordenador_novo);
+
+					$red = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/coordenador/lideres/$id_coordenador_novo";
+				}
+
+				$motivo = "O $nome_usuario efetuou troca de função do lider $nome (id: $id_change) para coordenador. Líderes passaram para essa coordenador: $id_troca";
+				$acao = "TROCA_LIDER_TO_COORDENADOR";
+
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_troca, $motivo, $acao);
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_change, $motivo, $acao);
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Troca de Função!']);
+			}
+		} else if ($funcao_atiga == 'lider' && $funcao_nova == 'supervisor') { // ok
+			$id_troca = $this->input->post('ids_coordenadores'); // coordenadores para adicionar a nova coordenação
+			$lista_ids = explode(",", $id_troca);
+
+			$dados_do_lider = $this->Lideres->infos([$id_change], 'info_lider', '', '');
+
+			if ($dados_do_lider['row'] == 0) {
+				$red = $red_erro;
+				$this->FConsultas_model->mensagem('danger', 'Erro!', ['Dados do Líder não Encontrado!']);
+			} else {
+				$dados_lider = $dados_do_lider['dados'];
+
+				// check se já tem algum supervisor cadastrado
+				$supervisorjacadastrado = $this->Supervisores->infos([$dados_lider['email'], $dados_lider['cpf'], $dados_lider['nome_lider']], 'info_supervisor_and_email_cpf_nome', '', '');
+
+				// cadastro supervisor
+				if ($supervisorjacadastrado['row'] == 0) {
+					$this->Supervisores->cadastro_supervisor_2($dados_lider['nome_lider'], $dados_lider['cpf'], $dados_lider['email'], $dados_lider['telefone_whatsapp'], $dados_lider['nascimento'], $dados_lider['pais'], $dados_lider['estado'], $dados_lider['cidade'], 1, $dados_lider['foto']);
+				}
+
+				// consultar informações na tabela USUÁRIO
+				$dadosusuario = $this->Lideres->infos([$dados_lider['email'], $dados_lider['cpf'], $dados_lider['nome_lider']], 'info_usuario_and_email_cpf_nome', '', '');
+
+				$supervisor_novo = $this->Supervisores->infos([$dados_lider['email'], $dados_lider['cpf'], $dados_lider['nome_lider']], 'info_supervisor_and_email_cpf_nome', '', '');
+
+				if ($supervisor_novo['row'] == 0) {
+					$red = $red_erro;
+				} else {
+					$this->Lideres->editar_usuario_nivel($dadosusuario['dados']['id_usuario'], nivel: 4);
+
+					// apagar o supervisor
+					$this->Lideres->delete_lider_id($id_change);
+
+					$id_supervisor_novo = $supervisor_novo['dados']['id_supervisorR'];
+
+					// Agora você pode percorrer cada ID
+					foreach ($lista_ids as $id) {
+						// trocando os lideres para a nova coordenação
+						$this->Coordenadores->trocar_supervisao_do_coordenador_especifico($id, $id_supervisor_novo);
+						// trocando os lideres para a nova coordenação
+						$this->Lideres->trocar_supervisao_de_lideres_coordenador_especifico($id, $id_supervisor_novo);
+					}
+
+					// atualizazr PG
+					$this->PG->trocar_lideranca_pg_2($id_change, $id_supervisor_novo);
+					// atualizar relatório
+					$this->PG->editar_lideranca_relatorio_2($id_change, $id_supervisor_novo);
+					// atualizar criancas
+					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_supervisor_novo);
+
+					$red = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor_novo";
+				}
+
+				$motivo = "O $nome_usuario efetuou troca de função do lider $nome (id: $id_change) para supervisor. Coordenadores passaram para essa supervisão: $id_troca";
+				$acao = "TROCA_LIDER_TO_SUPERVISOR";
+
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_troca, $motivo, $acao);
+				$this->FAlerta_model->alerta_controle($id_usuario, $id_change, $motivo, $acao);
+				$this->FConsultas_model->mensagem('success', 'Sucesso!', ['Troca de Função!']);
+			}
 		}
+
 		$funcao = $this->FConsultas_model->red("$red", 3000, []);
 		echo $funcao;
 	}

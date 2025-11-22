@@ -341,10 +341,40 @@ class Direcao extends CI_Controller
                 "icon" => "fa fa-group",
             );
             array_push($pages, $page1);
+        } else if ($routa == 'super/coord/lider') {
+            $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+
+            $id_supervisor = $dados_lider['dados']['id_supervisorR'];
+            $id_coordenador = $dados_lider['dados']['id_coordenador'];
+
+            $page1 = array(
+                "routa" => "../supervisores",
+                "name" => "Supervisores",
+                "icon" => "fa fa-group",
+            );
+            $page2 = array(
+                "routa" => "../supervisor/$id_supervisor",
+                "name" => "Coordenadores",
+                "icon" => "fa fa-group",
+            );
+            $page3 = array(
+                "routa" => "../supervisor/coordenador/lideres/$id_coordenador",
+                "name" => "Líderes",
+                "icon" => "fa fa-group",
+            );
+            $page4 = array(
+                "routa" => "../supervisor/coordenador/lider/$id_lider",
+                "name" => "Líder",
+                "icon" => "fa fa-user",
+            );
+
+            array_push($pages, $page1);
+            array_push($pages, $page2);
+            array_push($pages, $page3);
+            array_push($pages, $page4);
         } else if ($routa == 'super/coord') {
             $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
             $id_coordenador = $dados_lider['dados']['id_coordenador'];
-
             $page1 = array(
                 "routa" => "../coordenadores",
                 "name" => "Coordenadores",
@@ -428,8 +458,38 @@ class Direcao extends CI_Controller
                 "icon" => "fa fa-group",
             );
             array_push($pages, $page1);
-        } else {
+        } else if ($routa == 'super/coord/lider') {
+            $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
 
+            $id_supervisor = $dados_lider['dados']['id_supervisorR'];
+            $id_coordenador = $dados_lider['dados']['id_coordenador'];
+
+            $page1 = array(
+                "routa" => "../supervisores",
+                "name" => "Supervisores",
+                "icon" => "fa fa-group",
+            );
+            $page2 = array(
+                "routa" => "../supervisor/$id_supervisor",
+                "name" => "Coordenadores",
+                "icon" => "fa fa-group",
+            );
+            $page3 = array(
+                "routa" => "../supervisor/coordenador/lideres/$id_coordenador",
+                "name" => "Líderes",
+                "icon" => "fa fa-group",
+            );
+            $page4 = array(
+                "routa" => "../supervisor/coordenador/lider/$id_lider",
+                "name" => "Líder",
+                "icon" => "fa fa-user",
+            );
+
+            array_push($pages, $page1);
+            array_push($pages, $page2);
+            array_push($pages, $page3);
+            array_push($pages, $page4);
+        } else {
             $page1 = array(
                 "red" => "../lideres",
                 "name" => "Líderes",
@@ -488,6 +548,37 @@ class Direcao extends CI_Controller
             );
             array_push($pages, $page1);
             array_push($pages, $page2);
+        } else if ($routa == 'super/coord/lider') {
+            $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
+
+            $id_supervisor = $dados_lider['dados']['id_supervisorR'];
+            $id_coordenador = $dados_lider['dados']['id_coordenador'];
+
+            $page1 = array(
+                "routa" => "../supervisores",
+                "name" => "Supervisores",
+                "icon" => "fa fa-group",
+            );
+            $page2 = array(
+                "routa" => "../supervisor/$id_supervisor",
+                "name" => "Coordenadores",
+                "icon" => "fa fa-group",
+            );
+            $page3 = array(
+                "routa" => "../supervisor/coordenador/lideres/$id_coordenador",
+                "name" => "Líderes",
+                "icon" => "fa fa-group",
+            );
+            $page4 = array(
+                "routa" => "../supervisor/coordenador/lider/$id_lider",
+                "name" => "Líder",
+                "icon" => "fa fa-user",
+            );
+
+            array_push($pages, $page1);
+            array_push($pages, $page2);
+            array_push($pages, $page3);
+            array_push($pages, $page4);
         } else if ($routa == 'super/coord') {
 
             $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
@@ -579,10 +670,18 @@ class Direcao extends CI_Controller
 
     public function pagina_ver_detalhes_coordenadores()
     {
-        $id_coordenador =  $this->uri->segment(5);
+
+        $id_coordenador =  $this->uri->segment(6) ?? $this->uri->segment(4);
+
+        if (empty($this->uri->segment(6))) {
+            $x = "is_page_supervisor_coordenador";
+        } else {
+            $x = "is_page_supervisor_coordenador";
+        }
+
         $dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
 
-        $dados = array('id_coordenador' => $id_coordenador, 'dados_do_coordenador' => $dados_coordenador);
+        $dados = array('id_coordenador' => $id_coordenador, 'dados_do_coordenador' => $dados_coordenador, 'x' => $x);
         $this->load->view('sistema/direcao/pages/coordenadores/pagina_ver_info_coordenador', $dados);
     }
 
@@ -611,7 +710,7 @@ class Direcao extends CI_Controller
         $url_redirecionamento = $this->input->get("url_redirecionamento");
 
         $dados_usuario = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
-        $dados_coordenador = $this->consultasBDLideresCoordenador($id_coordenador);
+        $dados_coordenador = $this->Funcoes->consultasBDLideresCoordenador($id_coordenador);
 
         $dados = array(
             'id_user' => $id_user,
@@ -623,62 +722,16 @@ class Direcao extends CI_Controller
         $this->load->view('sistema/direcao/pages/coordenadores/mostrar_tabela_lideres_coordenador', $dados);
     }
 
-    public function consultasBDLideresCoordenador($id_user)
-    {
-        $list_lideres = [];
-
-        // busca todos os líderes do coordenador
-        $lideres_info = $this->Lideres->infos([$id_user], 'query_lideres_id_coordenador_order_by_nome_lider', '', 'asc', []);
-        $lideres_ativos_info = $this->Lideres->lideresAtivos($lideres_info);
-
-        if (!empty($lideres_info['dados'])) {
-            // adiciona informações individuais por líder
-            foreach ($lideres_info['dados'] as $lider) {
-                $id_lider = $lider['id_lider'];
-
-                $total_criancas_lider = 0;
-                $total_criancas_ativas_lider = 0;
-
-                // total de crianças desse líder
-                $q1 = $this->db->query("
-                SELECT COUNT(*) AS total
-                FROM criancas
-                WHERE lider = $id_lider
-            ")->row_array();
-                $total_criancas_lider = $q1['total'] ?? 0;
-
-                // se o líder for ativo, conta crianças ativas também
-                $lider_ativo = in_array($id_lider, array_column($lideres_ativos_info['dados'], 'id_lider'));
-                if ($lider_ativo) {
-                    $q2 = $this->db->query("
-                    SELECT COUNT(*) AS total
-                    FROM criancas
-                    WHERE lider = $id_lider
-                ")->row_array();
-                    $total_criancas_ativas_lider = $q2['total'] ?? 0;
-                }
-
-                $lider['total_criancas'] = $total_criancas_lider;
-                $lider['total_criancas_ativos'] = $total_criancas_ativas_lider;
-                $lider['ativo'] = $lider_ativo ? 1 : 0;
-
-                $list_lideres[] = $lider;
-            }
-        }
-        return [
-            'dados_lideres' => ['dados' => $list_lideres],
-        ];
-    }
-
     public function pagina_ver_detalhes_lider()
     {
-        $id_lider =  $this->uri->segment(5) ?? $this->uri->segment(4);
+        $id_lider =  $this->uri->segment(6) ?? $this->uri->segment(4);
 
-        if (empty($this->uri->segment(5))) {
+        if (empty($this->uri->segment(6))) {
             $x = "is_page_inicial_lider";
         } else {
-            $x = "is_page_coordenador";
+            $x = "is_page_supervisor_coordenador";
         }
+
         $dados_lider = $this->Lideres->infos([$id_lider], 'info_lider', '', '', '');
         $dados = array('id_lider' => $id_lider, 'dados_do_lider' => $dados_lider, 'x' => $x);
         $this->load->view('sistema/direcao/pages/lideres/pagina_ver_info_lideres', $dados);
@@ -882,6 +935,7 @@ class Direcao extends CI_Controller
 
     public function mostrar_coordenadores_do_supervisor() // ok
     {
+        $id_usuario =  $this->input->get("id_usuario");
         $id_supervisor =  $this->input->get("id_user");
         $url_redirecionamento = $this->input->get("url_redirecionamento");
         $dados_supervisor = $this->Supervisores->infos([$id_supervisor], 'info_supervisor', '', '', '');
@@ -889,6 +943,7 @@ class Direcao extends CI_Controller
         $dados_coordenador_do_supervisor = $this->Funcoes->consultasBDCoordenadordoSupervisor($id_supervisor);
 
         $dados = array(
+            'id_usuario' => $id_usuario,
             'id_supervisor' => $id_supervisor,
             'dados_supervisor' => $dados_supervisor,
             'info_coordenadores' => $dados_coordenador_do_supervisor,
@@ -896,5 +951,32 @@ class Direcao extends CI_Controller
         );
 
         $this->load->view('sistema/direcao/pages/supervisores/motrar_tabela_coordenadores_do_supervisor', $dados);
+    }
+
+    public function pagina_ver_lideres_do_coordenadores_do_supervisor() // ok
+    {
+        $id_coordenador =  $this->uri->segment(6);
+        $dados_coordenador = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+        $dados = array('id_coordenador' => $id_coordenador, 'dados_do_coordenador' => $dados_coordenador);
+        $this->load->view('sistema/direcao/pages/supervisores/pagina_ver_lideres_coordenador_supervisor', $dados);
+    }
+
+    public function mostrar_table_lideres_coordenador_supervisor()
+    {
+        $id_user = $this->input->get("id_supervisor");
+        $id_coordenador = $this->input->get("id_coordenador");
+        $url_redirecionamento = $this->input->get("url_redirecionamento");
+
+        $dados_usuario = $this->Coordenadores->infos([$id_coordenador], 'info_coordenador', '', '', '');
+        $dados_coordenador = $this->Funcoes->consultasBDLideresCoordenador($id_coordenador);
+
+        $dados = array(
+            'id_user' => $id_user,
+            'info_coordenadores' => $dados_coordenador,
+            'info' => $dados_usuario,
+            'url_redirecionamento' => $url_redirecionamento,
+        );
+
+        $this->load->view('sistema/direcao/pages/supervisores/mostrar_tabela_lideres_coordenador_supervisor', $dados);
     }
 }

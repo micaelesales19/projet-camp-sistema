@@ -36,6 +36,57 @@ class Supervisores extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'info_supervisor_and_email_cpf_nome') {
+            $email = $id_usuario[0];
+            $cpf = $id_usuario[1];
+            $nome = $id_usuario[2];
+            $consultar_coordenador = $this->db->query("SELECT * FROM supervisor_local WHERE nome_supervisorR LIKE '$nome' AND cpf = '$cpf' AND email = '$email'");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenador->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        } else if ($opc == 'info_supervisor_nome_email_data_nascimento') {
+            // Consulta na tabela de supervisor de acordo com o EMAIL, NOME E DATA DE NASCIMENTO
+            $email = $id_usuario[0];
+            $nome = $id_usuario[1];
+            $data_nascimento = $id_usuario[2];
+            $consultar_coordenador = $this->db->query("SELECT * FROM supervisor_local WHERE email = '$email' AND nome_supervisorR = '$nome' AND nascimento = '$data_nascimento'");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenador->row_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        } else if ($opc == 'query_supervisor') {
+            $consultar_coordenador = $this->db->query("SELECT * FROM supervisor_local");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenador->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
+        } else if ($opc == 'query_supervisor_order_by_nome') {
+            $consultar_coordenador = $this->db->query("SELECT * FROM supervisor_local ORDER BY nome_supervisorR $order");
+            $row = $consultar_coordenador->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenador->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
         }
     }
 
@@ -45,6 +96,31 @@ class Supervisores extends CI_Model
         $data_2 = date('Y-m-d');
 
         $foto = "fotoU/geral.jpg";
+
+        $inserir['nome_supervisorR'] = $nome;
+        $inserir['cpf'] = $cpf;
+        $inserir['email'] = $email;
+        $inserir['telefone_whatsapp'] = $telefone;
+        $inserir['nascimento'] = $nascimento;
+        $inserir['pais'] = $pais;
+        $inserir['estado'] = $estado;
+        $inserir['cidade'] = $cidade;
+        $inserir['id_supervisorE'] = "";
+        $inserir['foto'] = $foto;
+        $inserir['ativo'] = $ativo;
+        $inserir['data_cadastro'] = $data_2;
+
+        if ($this->db->insert("supervisor_local", $inserir)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function cadastro_supervisor_2($nome, $cpf, $email, $telefone, $nascimento, $pais, $estado, $cidade, $ativo, $foto)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $data_2 = date('Y-m-d');
 
         $inserir['nome_supervisorR'] = $nome;
         $inserir['cpf'] = $cpf;
@@ -173,7 +249,7 @@ class Supervisores extends CI_Model
         if ($row == 0) {
             //$inserir['id_exclusao'] = NULL;
             $inserir['id_supervisorR'] = $id_supervisor;
-            $inserir['nome_coordenador'] = $dados_supervisor['dados']['nome_supervisorR'];
+            $inserir['nome_supervisorR'] = $dados_supervisor['dados']['nome_supervisorR'];
             $inserir['id_responsavel'] = $id_responsavel;
             $inserir['motivo'] = $motivo;
             $inserir['data_saida'] = $data;

@@ -93,6 +93,7 @@ class Coordenador extends CI_Controller
 		$senha = $this->input->post("senha");
 
 		$pais = $this->input->post("pais");
+		$nome_pais = $this->input->post("nome_pais");
 
 		$is_br = $pais == 'br' || '' ? true : false;
 		$estado1 = $this->input->post('estados');
@@ -104,6 +105,7 @@ class Coordenador extends CI_Controller
 		$cidade = "";
 
 		if ($is_br) {
+			$nome_pais = "Brasil";
 			$estado = $estado1;
 			$cidade = $cidade1;
 		} else {
@@ -144,7 +146,7 @@ class Coordenador extends CI_Controller
 					$foto = 'fotoU/coordenador/' . $_FILES['files']['name'][$i];
 
 					if ($_FILES['files']['name'][$i] == '') {
-						$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
+						$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
 						$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 						if ($edicao && $editar_usuario) {
 							array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -153,7 +155,7 @@ class Coordenador extends CI_Controller
 						}
 					} else {
 						if ($foto_antiga == $foto) {
-							$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
+							$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
 							$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 							if ($edicao && $editar_usuario) {
@@ -163,7 +165,7 @@ class Coordenador extends CI_Controller
 							}
 						} else {
 							if (file_exists($foto)) {
-								$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
+								$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
 								$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 								if ($edicao && $editar_usuario) {
@@ -182,7 +184,7 @@ class Coordenador extends CI_Controller
 
 								// Upload file to server
 								if ($this->upload->do_upload('file')) {
-									$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto);
+									$edicao = $this->Coordenadores->editar_coordenador($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto);
 									$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
 									if ($edicao && $editar_usuario) {
@@ -219,7 +221,7 @@ class Coordenador extends CI_Controller
 					$foto = 'fotoU/coordenador/' . $_FILES['files']['name'][$i];
 
 					if ($_FILES['files']['name'][$i] == '') {
-						$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
+						$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
 						$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 						if ($edicao && $editar_usuario) {
@@ -229,7 +231,7 @@ class Coordenador extends CI_Controller
 						}
 					} else {
 						if ($foto_antiga == $foto) {
-							$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
+							$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
 							$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 							if ($edicao && $editar_usuario) {
@@ -239,7 +241,7 @@ class Coordenador extends CI_Controller
 							}
 						} else {
 							if (file_exists($foto)) {
-								$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
+								$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto_antiga);
 								$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 								if ($edicao && $editar_usuario) {
@@ -258,7 +260,7 @@ class Coordenador extends CI_Controller
 
 								// Upload file to server
 								if ($this->upload->do_upload('file')) {
-									$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto);
+									$edicao = $this->Coordenadores->editar_coordenador($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 2, $id_supervisor, $id_supervisor, $foto);
 									$editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
 									if ($edicao && $editar_usuario) {

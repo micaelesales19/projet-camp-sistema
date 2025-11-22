@@ -105,7 +105,13 @@ $route['alerta/solicitar/trocar_de_funcao'] = 'welcome/trocar_de_funcao'; // ok
 
 // trocas de funções
 $route['tornar/tornar_supervisor_to_coordenador'] = 'welcome/trocar_de_funcao_2';
+$route['tornar/tornar_supervisor_to_lider'] = 'welcome/trocar_de_funcao_2';
+
+$route['tornar/tornar_coordenador_to_supervisor'] = 'welcome/trocar_de_funcao_2';
 $route['tornar/tornar_coordenador_to_lider'] = 'welcome/trocar_de_funcao_2';
+
+$route['tornar/tornar_lider_to_coordenador'] = 'welcome/trocar_de_funcao_2';
+$route['tornar/tornar_lider_to_supervisor'] = 'welcome/trocar_de_funcao_2';
 
 // adm
 $route['adm/home'] = 'adm/index';

@@ -55,7 +55,6 @@ class Supervisor extends CI_Controller
     // ok
     public function criar_link_coordenador($id_usuario, $id_coordenador)
     {
-
         $consultarLink = $this->db->select("*")
             ->from("link_cadastro")
             ->where("id_usuario", $id_coordenador)
@@ -75,7 +74,7 @@ class Supervisor extends CI_Controller
             $data = date('Y-m-d');
 
             $inserir = [
-                'id_usuario' => $id_usuario,
+                'id_usuario' => $id_coordenador,
                 'nivel' => $nivel,
                 'codigo' => $codigo,
                 'link' => $link,
@@ -119,6 +118,7 @@ class Supervisor extends CI_Controller
         $id_usuario = $this->input->post("id_usuario");
         $senha = $this->input->post("senha");
 
+        $nome_pais = $this->input->post("nome_pais");
         $pais = $this->input->post("pais");
 
         $is_br = $pais == 'br' || '' ? true : false;
@@ -131,6 +131,7 @@ class Supervisor extends CI_Controller
         $cidade = "";
 
         if ($is_br) {
+            $nome_pais = "Brasil";
             $estado = $estado1;
             $cidade = $cidade1;
         } else {
@@ -169,7 +170,7 @@ class Supervisor extends CI_Controller
                     $foto = 'fotoU/supervisor/' . $_FILES['files']['name'][$i];
 
                     if ($_FILES['files']['name'][$i] == '') {
-                        $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                        $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto_antiga);
                         $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
                         if ($edicao && $editar_usuario) {
                             array_push($mensagem, "Sucesso! Seus Dados foram Editados!");
@@ -178,7 +179,7 @@ class Supervisor extends CI_Controller
                         }
                     } else {
                         if ($foto_antiga == $foto) {
-                            $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                            $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto_antiga);
                             $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
                             if ($edicao && $editar_usuario) {
@@ -188,7 +189,7 @@ class Supervisor extends CI_Controller
                             }
                         } else {
                             if (file_exists($foto)) {
-                                $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                                $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto_antiga);
                                 $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
                                 if ($edicao && $editar_usuario) {
@@ -207,7 +208,7 @@ class Supervisor extends CI_Controller
 
                                 // Upload file to server
                                 if ($this->upload->do_upload('file')) {
-                                    $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto);
+                                    $edicao = $this->Supervisores->editar_supervisor($id, $nome, $cpf_completo, $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto);
                                     $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, $cpf_completo, $senha);
 
                                     if ($edicao && $editar_usuario) {
@@ -244,7 +245,7 @@ class Supervisor extends CI_Controller
                     $foto = 'fotoU/supervisor/' . $_FILES['files']['name'][$i];
 
                     if ($_FILES['files']['name'][$i] == '') {
-                        $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                        $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto_antiga);
                         $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                         if ($edicao && $editar_usuario) {
@@ -254,7 +255,7 @@ class Supervisor extends CI_Controller
                         }
                     } else {
                         if ($foto_antiga == $foto) {
-                            $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                            $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto_antiga);
                             $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                             if ($edicao && $editar_usuario) {
@@ -264,7 +265,7 @@ class Supervisor extends CI_Controller
                             }
                         } else {
                             if (file_exists($foto)) {
-                                $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto_antiga);
+                                $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto_antiga);
                                 $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                                 if ($edicao && $editar_usuario) {
@@ -283,7 +284,7 @@ class Supervisor extends CI_Controller
 
                                 // Upload file to server
                                 if ($this->upload->do_upload('file')) {
-                                    $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $pais, $estado, $cidade, 2, $foto);
+                                    $edicao = $this->Supervisores->editar_supervisor($id, $nome, "", $email, $telefone, $data_nascimento_completo, $nome_pais, $estado, $cidade, 1, $foto);
                                     $editar_usuario = $this->Lideres->editar_usuario($id_usuario, $nome, $email, "", $senha);
 
                                     if ($edicao && $editar_usuario) {

@@ -85,7 +85,7 @@ if (!isset($_SESSION['usuario'])) {
     <div class="wrapper">
       <!-- Menu -->
       <?php
-      $this->load->view('sistema/supervisor/partes/menu_lateral', $array);
+      $this->load->view('sistema/direcao/partes/menu_lateral', $array);
       ?>
 
       <!-- Content Wrapper. Contains page content -->
@@ -96,8 +96,16 @@ if (!isset($_SESSION['usuario'])) {
             PG
             <small>Painel de Controle</small>
           </h1>
+
           <ol class="breadcrumb">
             <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
+            <?php
+            foreach ($pages as $key => $value) {
+            ?>
+              <li><a href="<?= $value['routa']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
+            <?php
+            }
+            ?>
             <li class="active">Preencher</li>
           </ol>
         </section>
