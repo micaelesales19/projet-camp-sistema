@@ -73,8 +73,12 @@ if (!isset($_SESSION['usuario'])) {
     function voltar() {
       var routa = '<?= $routa; ?>';
 
-      if (routa == 'super/coord') {
-        window.location = "../coordenadores/lider/<?= $id_lider; ?>";
+      if (routa == 'super') {
+        window.location = "../supervisor/coordenador/lider/<?= $id_lider; ?>";
+      } else if (routa == 'coord') {
+        window.location = "../coordenador/lider/<?= $id_lider; ?>";
+      } else if (routa == 'lider') {
+        window.location = "../lider/<?= $id_lider; ?>";
       } else {
         window.location = "../../page/pg";
       }

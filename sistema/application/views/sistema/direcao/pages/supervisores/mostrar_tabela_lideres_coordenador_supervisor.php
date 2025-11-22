@@ -67,7 +67,9 @@ $foto = base_url('import/sistema/' . $info['dados']['foto']);
 
             return lista_bd
                 .filter(c => {
-                    const dataCadastro = new Date(c.data_cadastro);
+                    const d = new Date(c.data_cadastro);
+                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
+
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     const ativo = valor === 'is_ativo' ? c.ativo == 1 : true;
                     return dentroDoPeriodo && ativo;
@@ -81,7 +83,8 @@ $foto = base_url('import/sistema/' . $info['dados']['foto']);
                 data_formatada_2
             } = calcularDatas(opc1, new Date(), data_in, data_final);
             return lista_bd.filter(c => {
-                const dataCadastro = new Date(c.data_cadastro);
+                const d = new Date(c.data_cadastro);
+                const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
                 // Primeiro: aplica sempre o filtro de data
                 const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                 return dentroDoPeriodo;

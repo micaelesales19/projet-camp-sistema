@@ -72,11 +72,16 @@ if (!isset($_SESSION['usuario'])) {
 
     function voltar() {
       var routa = '<?= $routa; ?>';
-      window.location = "../../page/pg";
 
-      if (routa == 'lideres/detalhes') {
+      if (routa == 'super') {
+        window.location = "../supervisor/coordenador/lider/<?= $id_lider; ?>";
+      } else if (routa == 'coord') {
+        window.location = "../coordenador/lider/<?= $id_lider; ?>";
+      } else if (routa == 'lider') {
         window.location = "../lider/<?= $id_lider; ?>";
-      } else {}
+      } else {
+        window.location = "../../page/pg";
+      }
     }
   </script>
 

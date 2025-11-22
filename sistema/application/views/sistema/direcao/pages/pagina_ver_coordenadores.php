@@ -435,9 +435,8 @@ if (!isset($_SESSION['usuario'])) {
                                                     <h4 class="modal-title">Cadastro | Coordenador</h4>
                                                 </div>
                                                 <div class="box-body">
-
                                                     <div class="col-lg-12">
-                                                        <div class="col-lg-4">
+                                                        <div class="col-lg-6">
                                                             <div class="form-group has-feedback">
                                                                 <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
                                                                     <option value="" selected>País</option>
@@ -449,19 +448,19 @@ if (!isset($_SESSION['usuario'])) {
                                                             </div>
                                                         </div>
                                                         <div id="escrever_endereco">
-                                                            <div class="col-lg-3">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <input type="text" id="pais2" class="form-control" placeholder="Pais" name="nome_pais">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-5">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <input type="text" id="estados2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-5">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
@@ -470,7 +469,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         </div>
 
                                                         <div id="consultar_endereco">
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <select id="estados" name="estados" class="form-control">
                                                                         <option value=""></option>
@@ -478,7 +477,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <select id="cidades" name="cidades" class="form-control">
                                                                     </select>

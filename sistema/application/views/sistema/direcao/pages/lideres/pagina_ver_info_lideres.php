@@ -15,10 +15,29 @@ if (!isset($_SESSION['usuario'])) {
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
     $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 
-    $voltar = $x == 'is_page_supervisor_coordenador' ? "../../../../" : "../../";
-    $voltar_2 = $x == 'is_page_supervisor_coordenador' ? "../../../" : "../";
+    if ($x == 'is_page_supervisor_coordenador') {
+        $voltar = "../../../../";
+    } else if ($x == 'is_page_coordenador') {
+        $voltar = "../../../";
+    } else {
+        $voltar = "../../";
+    }
 
-    $red_page_licao = $x == 'is_page_supervisor_coordenador' ? 'super/coord/lider' : 'super';
+    if ($x == 'is_page_supervisor_coordenador') {
+        $voltar_2 = "../../../";
+    } else if ($x == 'is_page_coordenador') {
+        $voltar_2 = "../../";
+    } else {
+        $voltar_2 = "../";
+    }
+
+    if ($x == 'is_page_supervisor_coordenador') {
+        $red_page_licao = "super";
+    } else if ($x == 'is_page_coordenador') {
+        $red_page_licao = "coord";
+    } else {
+        $red_page_licao = "lider";
+    }
 
     $array = array('voltar' => $voltar);
 
@@ -199,6 +218,8 @@ if (!isset($_SESSION['usuario'])) {
 
             if (x == 'is_page_supervisor_coordenador') {
                 ajax.open("GET", "../../../pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral&ativo=0", false);
+            } else if (x == 'is_page_coordenador') {
+                ajax.open("GET", "../../pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral&ativo=0", false);
             } else {
                 ajax.open("GET", "../pg/consultarProgresso?id_lider=" + idLider + "&id_pg=" + idPg + "&id_modulo=" + respostas + "&total=" + total + "&ano=" + ano + "&page=geral&ativo=0", false);
             }
@@ -303,9 +324,13 @@ if (!isset($_SESSION['usuario'])) {
                             <li><a href="<?= $voltar; ?>page/supervisores"><i class="fa fa-group"></i> Supervisores</a></li>
                             <li><a href="<?= $voltar; ?>page/supervisor/<?= $dados_lider['id_supervisorR']; ?>"><i class="fa fa-group"></i> Coordenador</a></li>
                             <li><a href="<?= $voltar; ?>page/supervisor/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>"><i class="fa fa-group"></i> Líderes</a></li>
+                        <?php } else if ($x == 'is_page_coordenador') { ?>
+                            <li><a href="<?= $voltar; ?>home"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="<?= $voltar; ?>page/coordenadores"><i class="fa fa-group"></i> Coordenadores</a></li>
+                            <li><a href="<?= $voltar; ?>page/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>"><i class="fa fa-group"></i> Líderes</a></li>
                         <?php } else { ?>
-                            <li><a href="../../home"><i class="fa fa-home"></i> Home</a></li>
-                            <li><a href="../lideres"><i class="fa fa-group"></i> Líderes</a></li>
+                            <li><a href="<?= $voltar; ?>home"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="<?= $voltar; ?>page/lideres"><i class="fa fa-group"></i> Líderes</a></li>
                         <?php } ?>
                         <li class="active">Informações</li>
                     </ol>
@@ -589,8 +614,6 @@ if (!isset($_SESSION['usuario'])) {
                                             ?>
 
                                                 <div class="col-lg-12">
-                                                    <button type="button" class="btn btn-light pull-left mg_r_10" data-toggle="modal" data-target="#troca_de_coord_super">Solicitar Troca</button>
-
                                                     <div class="input-group-btn">
                                                         <button type="button" class="btn btn-danger pull-left dropdown-toggle mg_r_10" data-toggle="dropdown">Desativar
                                                             <span class="fa fa-caret-down"></span></button>
@@ -1102,7 +1125,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                     </div>
                                                                                     <div class="modal-footer">
                                                                                         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                                                                        <input type="submit" id="btn_solicitar_2" class="btn btn-default pull-right" value="Solicitar">
+                                                                                        <input type="submit" id="btn_solicitar_2" class="btn btn-default pull-right" value="Trocar">
                                                                                     </div>
                                                                                 </div>
                                                                             </form>
@@ -1987,75 +2010,6 @@ if (!isset($_SESSION['usuario'])) {
                     <!-- /.modal-dialog -->
                 </div>
 
-                <div class="modal fade" id="troca_de_coord_super">
-                    <div class="modal-dialog modal-light">
-                        <div class="modal-content">
-                            <form action="<?= $voltar; ?>../alerta/solicitar/troca_de_coordenador_supervisor" id="troca_de_coordenador_supervisor" method="POST">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Solicitar Troca de Coordenador / Supervisor</h4>
-                                </div>
-
-                                <div class="box-body">
-                                    <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
-                                    <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
-                                    <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label for="id_troca_1">Selecione quem você deseja trocar:</label>
-                                            <select id="id_troca_1" name="id_troca_1" class="form-control" onchange="trocar_nome();" required>
-                                                <option value="0" selected>Selecione uma opção</option>
-                                                <?php
-                                                $id_sr = $dados_lider['id_supervisorR'];
-                                                $info_sLocal = $this->Supervisores->infos([$id_sr], 'info_supervisor', '', '');
-                                                ?>
-                                                <option value="super <?= $id_sr; ?>">Supervisor: <?= $info_sLocal['dados']['nome_supervisorR']; ?> (você)</option>
-                                            </select>
-                                            <br>
-                                            <label for="id_troca_2" id="opcao_escolhida">Escolha uma opção acima</label>
-                                            <input type="hidden" id="id_troca_2" name="id_troca_2" required>
-
-                                            <div id="mostrar_supervisores_para_troca" style="display: none;">
-                                                <!-- Caixa de pesquisa -->
-                                                <input type="text" id="pesquisarSupervisor" class="form-control mb-3" placeholder="Pesquisar Supervisor...">
-
-                                                <!-- Lista de supervisores -->
-                                                <div id="listaSupervisores" style="max-height: 300px; overflow-y: auto;">
-                                                    <?php
-                                                    // exemplo: buscando do banco
-                                                    $supervisores = $this->db->query("SELECT id_supervisorR, nome_supervisorR FROM supervisor_local ORDER BY nome_supervisorR ASC")->result_array();
-
-                                                    foreach ($supervisores as $s) {
-                                                        if ($s['id_supervisorR'] == $id_usuario) {
-                                                        } else {
-
-                                                    ?>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input checkbox-supervisor" type="checkbox" value="<?= $s['id_supervisorR']; ?>" id="supervisor<?= $s['id_supervisorR']; ?>">
-                                                                <label class="form-check-label" for="supervisor<?= $s['id_supervisorR']; ?>">
-                                                                    <?= htmlspecialchars($s['nome_supervisorR']); ?>
-                                                                </label>
-                                                            </div>
-                                                    <?php }
-                                                    } ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                    <input type="submit" id="btn_solicitar_1" class="btn btn-default pull-right" value="Solicitar">
-                                </div>
-                            </form>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
-
                 <div class="modal fade" id="desativar_lider">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
@@ -2142,6 +2096,8 @@ if (!isset($_SESSION['usuario'])) {
                                     <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
                                     <?php if ($x == 'is_page_supervisor_coordenador') { ?>
                                         <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/supervisor/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
+                                    <?php } else if ($x == 'is_page_coordenador') { ?>
+                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
                                     <?php } else { ?>
                                         <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/lideres">
                                     <?php } ?>
@@ -2178,7 +2134,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                 <?php
                                                 // exemplo: buscando do banco
-                                                $lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider WHERE id_supervisorR = $id_usuario ORDER BY nome_lider ASC")->result_array();
+                                                $lideres = $this->db->query("SELECT id_lider, nome_lider FROM lider ORDER BY nome_lider ASC")->result_array();
                                                 foreach ($lideres as $l) {
                                                     if ($l['id_lider'] == $dados_lider['id_lider']) {
                                                     } else {

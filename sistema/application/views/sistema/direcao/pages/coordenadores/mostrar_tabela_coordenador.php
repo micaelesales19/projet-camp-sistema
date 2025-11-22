@@ -67,7 +67,8 @@ $dados_coordenadores = $info_coordenadores['dados_coordenadores_gerais']['dados'
 
             return lista_bd
                 .filter(c => {
-                    const dataCadastro = new Date(c.data_cadastro);
+                    const d = new Date(c.data_cadastro);
+                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     const ativo = valor === 'is_ativo' ? c.check_coordenador_ativo == 1 : true;
                     return dentroDoPeriodo && ativo;
@@ -77,7 +78,8 @@ $dados_coordenadores = $info_coordenadores['dados_coordenadores_gerais']['dados'
 
                     // Filtra líderes dentro do período
                     const lideresNoPeriodo = listaLideres.filter(l => {
-                        const dataLider = new Date(l.data_cadastro);
+                        const d2 = new Date(l.data_cadastro);
+                        const dataLider = isNaN(d2) ? new Date('2018-02-01') : d2;
                         return dataLider >= data_formatada_1 && dataLider <= data_formatada_2;
                     });
 
@@ -227,7 +229,7 @@ $dados_coordenadores = $info_coordenadores['dados_coordenadores_gerais']['dados'
                     titulo: 'Visualizar',
                     render: function(id) {
                         return `
-                    <form action="coordenadores/lideres/${id}" method="post" style="margin:0;">
+                    <form action="coordenador/lideres/${id}" method="post" style="margin:0;">
                         <input type="hidden" name="id_coordenador" value="${id}">
                         <input type="submit" class="btn btn-info btn-sm" value="Visualizar" />
                     </form>

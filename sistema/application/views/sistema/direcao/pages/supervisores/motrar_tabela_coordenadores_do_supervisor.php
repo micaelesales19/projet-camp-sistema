@@ -69,7 +69,9 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
 
             return lista_bd
                 .filter(c => {
-                    const dataCadastro = new Date(c.data_cadastro);
+                    const d = new Date(c.data_cadastro);
+                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
+
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     const ativo = valor === 'is_ativo' ? c.check_coordenador_ativo == 1 : true;
                     return dentroDoPeriodo && ativo;
@@ -79,7 +81,8 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
 
                     // Filtra líderes dentro do período
                     const lideresNoPeriodo = listaLideres.filter(l => {
-                        const dataLider = new Date(l.data_cadastro);
+                        const d2 = new Date(l.data_cadastro);
+                        const dataLider = isNaN(d2) ? new Date('2018-02-01') : d2;
                         return dataLider >= data_formatada_1 && dataLider <= data_formatada_2;
                     });
 
@@ -111,10 +114,19 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                 const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                 return dentroDoPeriodo;
             });*/
+            /*lista_bd.filter(c => {
+                const d = new Date(c.data_cadastro);
+                const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
+                // Primeiro: aplica sempre o filtro de data
+                const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
+                console.log(dataCadastro);
+            });*/
+
 
             return lista_bd
                 .filter(c => {
-                    const dataCadastro = new Date(c.data_cadastro);
+                    const d = new Date(c.data_cadastro);
+                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     return dentroDoPeriodo;
                 })
@@ -124,7 +136,8 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
 
                     // Filtra líderes que estão dentro do mesmo período de datas
                     const lideresNoPeriodo = listaLideres.filter(l => {
-                        const dataLider = new Date(l.data_cadastro);
+                        const d2 = new Date(l.data_cadastro);
+                        const dataLider = isNaN(d2) ? new Date('2018-02-01') : d2;
                         return dataLider >= data_formatada_1 && dataLider <= data_formatada_2;
                     });
 

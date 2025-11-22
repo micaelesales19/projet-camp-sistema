@@ -802,9 +802,9 @@ if (!isset($_SESSION['usuario'])) {
                                     <?php
                                     if ($x == 'is_page_supervisor_coordenador') {
                                         $id_supervisor = $dados_coordenador['id_supervisorR'];
-                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/direcao//page/supervisor/$id_supervisor";
+                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor";
                                     } else {
-                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/supervisor/page/coordenadores";
+                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/direcao/page/coordenadores";
                                     }
                                     ?>
                                     <input type="hidden" name="red" value="<?= $red_exclusao; ?>">
