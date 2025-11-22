@@ -16,7 +16,7 @@ class Direcao extends CI_Controller
         );
     }
 
-
+    // criar link de cadastro para supervisor
     public function criar_link($id_usuario)
     {
         $consultarLink = $this->db->select("*")
@@ -28,50 +28,9 @@ class Direcao extends CI_Controller
 
         if ($totalLink == 0) {
             $dados = "";
-            $nivel = "4";
+            $nivel = "5";
             $codigo = $this->FConsultas_model->gerarLink();
             $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
-            $data = date('Y-m-d');
-
-            $inserir = [
-                'id_usuario' => $id_usuario,
-                'nivel' => $nivel,
-                'codigo' => $codigo,
-                'link' => $link,
-                'dados' => $dados,
-                'data' => $data
-            ];
-
-            if ($this->db->insert('link_cadastro', $inserir)) {
-                echo json_encode(['link' => $link]);
-            } else {
-                echo json_encode(['erro' => true]);
-            }
-        } else {
-            echo json_encode(['link' => $info_codigo['link']]);
-        }
-    }
-
-
-    public function criar_link_coordenador($id_usuario, $id_coordenador)
-    {
-
-        $consultarLink = $this->db->select("*")
-            ->from("link_cadastro")
-            ->where("id_usuario", $id_coordenador)
-            ->get();
-        $totalLink = $consultarLink->num_rows();
-        $info_codigo = $consultarLink->row_array();
-
-        if ($totalLink == 0) {
-            $dados = $id_usuario;
-            $nivel = "3";
-
-            $codigo = $this->FConsultas_model->gerarLink();
-
-            $link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
-
-            //return $codigo;
             $data = date('Y-m-d');
 
             $inserir = [

@@ -17,6 +17,7 @@ class Supervisor extends CI_Controller
     }
 
     // ok
+    // criar link cadastro coordenador
     public function criar_link($id_usuario)
     {
         $consultarLink = $this->db->select("*")
@@ -53,6 +54,7 @@ class Supervisor extends CI_Controller
     }
 
     // ok
+    // criar link cadastro para lider já passando quem será o coordenador e supervisor
     public function criar_link_coordenador($id_usuario, $id_coordenador)
     {
         $consultarLink = $this->db->select("*")

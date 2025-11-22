@@ -236,7 +236,7 @@ if (!isset($_SESSION['usuario'])) {
         }
 
         function gerarELCopiarLink(id_usuario) {
-            fetch(`<?= base_url('Supervisor/criar_link/'); ?>${id_usuario}`)
+            fetch(`<?= base_url('Direcao/criar_link/'); ?>${id_usuario}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.link) {

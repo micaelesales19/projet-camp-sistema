@@ -26,6 +26,7 @@ class Coordenador extends CI_Controller
 	}
 
 	// ok
+	// link cadastro líder
 	public function criar_link($id_usuario)
 	{
 		$consultarLink = $this->db->select("*")
@@ -41,9 +42,7 @@ class Coordenador extends CI_Controller
 			if ($dados_coordenador['row'] != 0) {
 				$dados = $dados_coordenador['dados']['id_supervisorR'];
 				$nivel = 3;
-			}/* else if ($dados_supervisor['row'] == 0) {
-				$nivel = 4;
-			}*/
+			}
 
 			$codigo = $this->FConsultas_model->gerarLink();
 			$link = "https://sistemas.campbrasil.com/sistema/cadastro/" . $codigo;
