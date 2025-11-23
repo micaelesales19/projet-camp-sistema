@@ -22,7 +22,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '');
+    $dados_direcao = $this->Direcaos->infos([$id_usuario], 'info_direcao', '', '');
 
     // id lider // opc // ativo
     $consultarPG = $this->PG->query([$id_usuario], 'query_lider_ativo_order_by_nome_pg_asc', 1);
@@ -155,7 +155,7 @@ if (!isset($_SESSION['usuario'])) {
         <div class="wrapper">
             <!-- Menu -->
             <?php
-            $this->load->view('sistema/supervisor/partes/menu_lateral', $array);
+            $this->load->view('sistema/direcao/partes/menu_lateral', $array);
             ?>
 
             <!-- Content Wrapper. Contains page content -->
@@ -584,7 +584,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                                             foreach ($lideres as $l) {*/
 
-                                                                                        $query = $this->db->query(" SELECT id_lider AS id, nome_lider AS nome, 'Líder' AS tipo FROM lider WHERE id_supervisorR = $id_usuario UNION SELECT id_coordenador AS id, nome_coordenador AS nome, 'Coordenador' AS tipo FROM coordenador WHERE id_supervisorR = $id_usuario ORDER BY nome ASC");
+                                                                                        $query = $this->db->query(" SELECT id_lider AS id, nome_lider AS nome, 'Líder' AS tipo FROM lider UNION SELECT id_coordenador AS id, nome_coordenador AS nome, 'Coordenador' AS tipo FROM coordenador ORDER BY nome ASC");
                                                                                         $lista = $query->result_array();
                                                                                         foreach ($lista as $l):
                                                                                         ?>
@@ -890,7 +890,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                 <select name="isResponsavel" id="isResponsavel_<?= $i; ?>" class="form-control" onchange="habilitar('<?= $i; ?>');">
                                                                                                     <?php
                                                                                                     $nome_responsavel = $linha['nome_responsavel'];
-                                                                                                    $nome_pai = $dados_supervisor['dados']['nome_supervisorR'];
+                                                                                                    $nome_pai = $dados_direcao['dados']['nome_direcao'];
 
                                                                                                     if ($nome_responsavel == $nome_pai) {
                                                                                                         $disabled = "disabled";
@@ -926,13 +926,13 @@ if (!isset($_SESSION['usuario'])) {
                                                                                                             input_2.disabled = false;
                                                                                                             input_3.disabled = false;
                                                                                                         } else if (i == 2) {
-                                                                                                            input_1.value = "<?php echo $dados_supervisor['dados']['nome_supervisorR']; ?>";
-                                                                                                            input_2.value = "<?php echo $dados_supervisor['dados']['email']; ?>";
-                                                                                                            input_3.value = "<?php echo $dados_supervisor['dados']['telefone_whatsapp']; ?>";
+                                                                                                            input_1.value = "<?php echo $dados_direcao['dados']['nome_direcao']; ?>";
+                                                                                                            input_2.value = "<?php echo $dados_direcao['dados']['email']; ?>";
+                                                                                                            input_3.value = "<?php echo $dados_direcao['dados']['telefone_whatsapp']; ?>";
 
-                                                                                                            input_1_desativados.value = "<?php echo $dados_supervisor['dados']['nome_supervisorR']; ?>";
-                                                                                                            input_2_desativados.value = "<?php echo $dados_supervisor['dados']['email']; ?>";
-                                                                                                            input_3_desativados.value = "<?php echo $dados_supervisor['dados']['telefone_whatsapp']; ?>";
+                                                                                                            input_1_desativados.value = "<?php echo $dados_direcao['dados']['nome_direcao']; ?>";
+                                                                                                            input_2_desativados.value = "<?php echo $dados_direcao['dados']['email']; ?>";
+                                                                                                            input_3_desativados.value = "<?php echo $dados_direcao['dados']['telefone_whatsapp']; ?>";
 
                                                                                                             input_1.disabled = true;
                                                                                                             input_2.disabled = true;
@@ -1272,7 +1272,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Responsável da Criança:</label>
                                         <select name="responsavel_crianca[]" id="isRespon_1" onchange="mostrarCamposPais(1);" class="form-control" required>
-                                            <option value="<?= $dados_supervisor['dados']['nome_supervisorR'] ?>" selected><?= $dados_supervisor['dados']['nome_supervisorR'] ?></option>
+                                            <option value="<?= $dados_direcao['dados']['nome_direcao'] ?>" selected><?= $dados_direcao['dados']['nome_direcao'] ?></option>
                                             <option value="outro">Outro</option>
                                         </select>
                                     </div>
@@ -1363,7 +1363,7 @@ if (!isset($_SESSION['usuario'])) {
 
                     $("#conteudo_cri").append('<div id="' + conteudo2 + '"></div>');
 
-                    $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-12"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-12"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="2">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCamposPais(' + i + ');" class="form-control" required><option value="<?= $dados_supervisor['dados']['nome_supervisorR'] ?>" selected><?= $dados_supervisor['dados']['nome_supervisorR'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total_cri" name="total[]">');
+                    $(conteudo).append('<br><hr><div class="col-lg-12"><div class="form-group"><label for="nomeCrianca">Nome da Criança</label><input class="form-control" id="nomeCrianca" type="text" name="nome[]" placeholder="Nome da Criança" required></div></div><div class="col-lg-12"><div class="form-group"><label for="dataDeNascimento">Data de Nascimento (DD/MM/YYYY)</label><input class="form-control" type="text" id="dataDeNascimento" name="nascimento[]" placeholder="Data de Nascimento (DD/MM/YYYY)" maxlength="10" minlength="10"></div></div><div class="col-lg-12"><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">É Cristão?</label><select name="opcao[]" class="form-control" required><option value="0" selected>Escolha uma opção</option><option value="1">Sim</option><option value="2">Não</option></select></div></div><div class="col-lg-6"><div class="form-group"><label for="exampleInputEmail1">Responsável da Criança:</label><select name="responsavel_crianca[]" id="isRespon_' + i + '" onchange="mostrarCamposPais(' + i + ');" class="form-control" required><option value="<?= $dados_direcao['dados']['nome_direcao'] ?>" selected><?= $dados_direcao['dados']['nome_direcao'] ?></option><option value="outro">Outro</option></select></div></div></div><div class="col-lg-12" id="' + linhaResponsaveis + '" style="display: none;"><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Nome do Responsável (Obrigatório):</label><input class="form-control" type="text" minlength="5" name="nome_responsavel[]" placeholder="Nome do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">E-mail do Responsável:</label><input class="form-control" type="text" name="email_responsavel[]" placeholder="E-mail do Responsável"></div></div><div class="col-lg-4"><div class="form-group"><label for="exampleInputEmail1">Telefone do Responsável:</label><input class="form-control" type="text" name="telefone_responsavel[]" minlength="11" placeholder="Telefone do Responsável"></div></div></div><div class="col-lg-12"><label for="observacao">Observação</label><textarea id="observacao" name="obs[]" class="form-control"></textarea></div><hr><br><input type="hidden" value="1" id="total_cri" name="total[]">');
                     return false;
                 });
 

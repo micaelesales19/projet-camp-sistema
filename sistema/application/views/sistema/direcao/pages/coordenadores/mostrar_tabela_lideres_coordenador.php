@@ -140,6 +140,15 @@ $foto = base_url('import/sistema/' . $info['dados']['foto']);
                     titulo: 'Nome'
                 },
                 {
+                    chave: 'igreja',
+                    titulo: 'Igreja'
+                },
+                {
+                    chave: 'telefone_whatsapp',
+                    titulo: 'WhatsApp',
+                    render: tel => tel || ''
+                },
+                {
                     chave: 'total_criancas',
                     titulo: 'Total Crianças'
                 },

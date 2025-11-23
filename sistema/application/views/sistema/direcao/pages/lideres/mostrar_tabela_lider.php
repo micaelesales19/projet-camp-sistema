@@ -16,9 +16,6 @@ $dados_coordenadores = $info_lideres['dados_lideres_gerais']['dados'];
 
     <script type="text/javascript">
         var lista_bd = <?= json_encode($dados_coordenadores, JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-
-        var id_user = "<?= $info['dados']['id_supervisorR']; ?>";
-
         var valor = sessionStorage.getItem("is_ativo") || '';
         var opc1 = sessionStorage.getItem("opc1") || 'opc1';
         var data_in = sessionStorage.getItem('data_in') || '2018-02-01';

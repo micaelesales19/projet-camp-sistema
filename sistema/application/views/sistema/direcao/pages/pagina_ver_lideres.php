@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = "../";
     $array = array('voltar' => $voltar);
 
-    $dados_supervisor = $this->Supervisores->infos([$id_usuario], 'info_supervisor', '', '');
+    $dados_direcao = $this->Direcaos->infos([$id_usuario], 'info_direcao', '', '');
     $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '');
 ?>
 
@@ -377,7 +377,7 @@ if (!isset($_SESSION['usuario'])) {
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
-                        Equipe: <?= $dados_supervisor['dados']['nome_supervisorR']; ?>
+                        Equipe: <?= $dados_direcao['dados']['nome_direcao']; ?>
                         <small>Painel de Controle</small>
                     </h1>
                     <ol class="breadcrumb">
@@ -428,7 +428,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                 <?php
                                                                 // exemplo: buscando do banco
-                                                                $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador WHERE id_supervisorR = $id_usuario ORDER BY nome_coordenador ASC")->result_array();
+                                                                $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador ORDER BY nome_coordenador ASC")->result_array();
                                                                 foreach ($coordenadores as $c) {
                                                                 ?>
                                                                     <div class="form-check">
