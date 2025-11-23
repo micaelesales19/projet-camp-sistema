@@ -72,11 +72,13 @@ if (!isset($_SESSION['usuario'])) {
 
     function voltar() {
       var routa = '<?= $routa; ?>';
-      window.location = "../../page/pg";
-
-      if (routa == 'lideres/detalhes') {
+      if (routa == 'coord') {
+        window.location = "../coordenador/lider/<?= $id_lider; ?>";
+      } else if (routa == 'lider') {
         window.location = "../lider/<?= $id_lider; ?>";
-      } else {}
+      } else {
+        window.location = "../../page/pg";
+      }
     }
   </script>
 
@@ -94,11 +96,17 @@ if (!isset($_SESSION['usuario'])) {
           <h1>
             PG
             <small>Painel de Controle</small>
-          </h1>
-          <ol class="breadcrumb">
-            <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
-            <li class="active">Preencher</li>
-          </ol>
+            <ol class="breadcrumb">
+              <li><a href="<?= $voltar ?>home"><i class="fa fa-home"></i> Home</a></li>
+              <?php
+              foreach ($pages as $key => $value) {
+              ?>
+                <li><a href="<?= $value['routa']; ?>"><i class="<?= $value['icon']; ?>"></i> <?= $value['name']; ?></a></li>
+              <?php
+              }
+              ?>
+              <li class="active">Preencher</li>
+            </ol>
         </section>
         <!-- Main content -->
         <section class="content">

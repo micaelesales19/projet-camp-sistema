@@ -70,9 +70,8 @@ if (!isset($_SESSION['usuario'])) {
 
     function voltar() {
       var routa = '<?= $routa; ?>';
-
-      if (routa == 'lideres/detalhes') {
-        window.location = "../lideres/detalhes/<?= $id_lider; ?>";
+      if (routa == 'lider') {
+        window.location = "../lider/<?= $id_lider; ?>";
       } else {
         window.location = "../../page/pg";
       }

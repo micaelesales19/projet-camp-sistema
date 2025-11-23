@@ -18,7 +18,7 @@ if (!isset($_SESSION['usuario'])) {
     $voltar = $x == 'is_page_coordenador' ? "../../../" : "../../";
     $voltar_2 = $x == 'is_page_coordenador' ? "../../" : "../";
 
-    $red_page_licao = $x == 'is_page_coordenador' ? 'super/coord' : 'super';
+    $red_page_licao = $x == 'is_page_coordenador' ? 'coord' : 'lider';
 
     $array = array('voltar' => $voltar);
 
