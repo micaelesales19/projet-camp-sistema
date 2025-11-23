@@ -74,7 +74,8 @@ $dados_coordenadores = $info_lideres['dados_lideres_gerais']['dados'];
 
             return lista_bd
                 .filter(c => {
-                    const dataCadastro = new Date(c.data_cadastro);
+                    const d = new Date(c.data_cadastro);
+                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     const ativo = valor === 'is_ativo' ? c.check_lider_ativo == 1 : true;
                     return dentroDoPeriodo && ativo;
@@ -90,7 +91,8 @@ $dados_coordenadores = $info_lideres['dados_lideres_gerais']['dados'];
 
             return lista_bd
                 .filter(c => {
-                    const dataCadastro = new Date(c.data_cadastro);
+                    const d = new Date(c.data_cadastro);
+                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     const ativo = c.check_lider_ativo;
                     return dentroDoPeriodo;

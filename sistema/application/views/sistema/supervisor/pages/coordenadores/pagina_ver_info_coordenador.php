@@ -303,7 +303,7 @@ if (!isset($_SESSION['usuario'])) {
                     <ol class="breadcrumb">
                         <li><a href="../home"><i class="fa fa-home"></i> Home</a></li>
                         <li><a href="../../coordenadores"><i class="fa fa-users"></i> Coordenadores</a></li>
-                        <li><a href="../../coordenadores/lideres/<?= $id_coordenador; ?>"><i class="fa fa-users"></i> Líderes</a></li>
+                        <li><a href="../../coordenador/lideres/<?= $id_coordenador; ?>"><i class="fa fa-users"></i> Líderes</a></li>
                         <li class="active">Informações</li>
                     </ol>
                 </section>
@@ -350,7 +350,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                     <div class="col-lg-3">
                                                         <div class="form-group">
-                                                            <form action="../../coordenadores/exclusao/ativar" method="POST">
+                                                            <form action="../../coordenador/exclusao/ativar" method="POST">
                                                                 <input type="hidden" name="id_coordenador" value="<?= $dados_coordenador['id_coordenador']; ?>">
                                                                 <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                                                 <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
@@ -364,15 +364,10 @@ if (!isset($_SESSION['usuario'])) {
 
                                                     <div class="col-lg-4">
                                                         <div class="form-group">
-                                                            <form action="../../coordenadores/exclusao/permanente" method="POST">
-                                                                <input type="hidden" name="opc" value="<?= $dados_coordenador['id_coordenador']; ?>">
-                                                                <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
-                                                                <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
-                                                                <center>
-                                                                    <label for="opc">Opção 2:</label><br>
-                                                                    <input type="submit" class="btn btn-danger" value="Excluir (Permanentemente)">
-                                                                </center>
-                                                            </form>
+                                                            <center>
+                                                                <label for="opc">Opção 2:</label><br>
+                                                                <button type="button" class="btn btn-danger pull-left" data-toggle="modal" data-target="#excluir_coordenador_permantemente">Excluir Permanentemente</button>
+                                                            </center>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -394,7 +389,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <div class="box-body chat" id="chat-box">
                                         <div class="box-footer">
                                             <div class="box-header with-border">
-                                                <h3 class="box-title">Dados Pessoais</h3>
+                                                <h3 class="box-title">Dados Pessoais | Coordenador</h3>
                                             </div> <br>
                                             <?php
 
@@ -506,12 +501,17 @@ if (!isset($_SESSION['usuario'])) {
                                             </div>
 
                                             <div id="escrever_endereco">
-                                                <div class="form-group col-lg-4">
+                                                <div class="form-group col-lg-2">
+                                                    <label for="exampleInputPassword1">Pais</label>
+                                                    <input type="text" id="pais2" class="form-control" placeholder="Pais" name="nome_pais" value="<?= $dados_coordenador['pais']; ?>">
+                                                </div>
+
+                                                <div class="form-group col-lg-3">
                                                     <label for="exampleInputPassword1">Estado/Província/Região</label>
                                                     <input type="text" id="estados2" class="form-control" placeholder="Estado/Província/Região" name="estados2" value="<?= $dados_coordenador['estado']; ?>">
                                                 </div>
 
-                                                <div class="form-group col-lg-4">
+                                                <div class="form-group col-lg-3">
                                                     <label for="exampleInputPassword1">Cidade/Município/Distrito</label>
                                                     <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2" value="<?= $dados_coordenador['cidade']; ?>">
                                                 </div>
@@ -778,7 +778,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="desativar_coordenador">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="../../coordenadores/desativar" method="post">
+                            <form action="../../coordenador/desativar" method="post">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>

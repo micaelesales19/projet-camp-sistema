@@ -28,6 +28,7 @@ $this->load->view('partes/head');
         if (opc == "br") {
             document.getElementById('estaods2').value = '';
             document.getElementById('cidades2').value = '';
+            document.getElementById('pais2').value = '';
             document.getElementById('consultar_endereco').style.display = "inline";
             document.getElementById('escrever_endereco').style.display = "none";
 
@@ -39,6 +40,11 @@ $this->load->view('partes/head');
                 document.getElementById('cpf_colider').setAttribute('required', 'true');
             }
         } else {
+            if (opc == 'Moçambique') {
+                document.getElementById('pais2').value = 'Moçambique';
+            } else {
+                document.getElementById('pais2').value = '';
+            }
             document.getElementById('estados').value = '';
             document.getElementById('cidades').value = '';
             document.getElementById('escrever_endereco').style.display = "inline";
@@ -203,6 +209,11 @@ $this->load->view('partes/head');
                     </div>
 
                     <div id="escrever_endereco">
+                        <div class="form-group has-feedback">
+                            <input type="text" id="pais2" class="form-control" placeholder="Pais" name="nome_pais">
+                            <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                        </div>
+
                         <div class="form-group has-feedback">
                             <input type="text" id="estaods2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
                             <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>

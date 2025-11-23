@@ -665,7 +665,7 @@ class Funcoes extends CI_Model
         ];
     }
 
-    public function consultasBDLider($id_user)
+    public function consultasBDLiderSupervisor($id_user)
     {
         $list_lideres = [];
         $list_lideres_comparacao = [];

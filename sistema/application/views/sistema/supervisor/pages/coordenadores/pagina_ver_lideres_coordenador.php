@@ -273,6 +273,7 @@ if (!isset($_SESSION['usuario'])) {
             if (opc == "br") {
                 document.getElementById('estados2').value = '';
                 document.getElementById('cidades2').value = '';
+                document.getElementById('pais2').value = '';
                 document.getElementById('consultar_endereco').style.display = "inline";
                 document.getElementById('escrever_endereco').style.display = "none";
 
@@ -280,6 +281,11 @@ if (!isset($_SESSION['usuario'])) {
                 document.getElementById('cpf').setAttribute('required', 'true');
 
             } else {
+                if (opc == 'Moçambique') {
+                    document.getElementById('pais2').value = 'Moçambique';
+                } else {
+                    document.getElementById('pais2').value = '';
+                }
                 document.getElementById('estados').value = '';
                 document.getElementById('cidades').value = '';
                 document.getElementById('escrever_endereco').style.display = "inline";
@@ -428,7 +434,7 @@ if (!isset($_SESSION['usuario'])) {
                                                 </div>
                                                 <div class="box-body">
                                                     <div class="col-lg-12">
-                                                        <div class="col-lg-4">
+                                                        <div class="col-lg-6">
                                                             <div class="form-group has-feedback">
                                                                 <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)">
                                                                     <option value="" selected>País</option>
@@ -440,13 +446,19 @@ if (!isset($_SESSION['usuario'])) {
                                                             </div>
                                                         </div>
                                                         <div id="escrever_endereco">
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group has-feedback">
+                                                                    <input type="text" id="pais2" class="form-control" placeholder="Pais" name="nome_pais">
+                                                                    <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <input type="text" id="estados2" class="form-control" placeholder="Estado/Província/Região" name="estados2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <input type="text" id="cidades2" class="form-control" placeholder="Cidade/Município/Distrito" name="cidades2">
                                                                     <span id="icon_outros" class="glyphicon glyphicon-map-marker form-control-feedback"></span>
@@ -455,7 +467,7 @@ if (!isset($_SESSION['usuario'])) {
                                                         </div>
 
                                                         <div id="consultar_endereco">
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <select id="estados" name="estados" class="form-control">
                                                                         <option value=""></option>
@@ -463,7 +475,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                     <span class="glyphicon glyphicon-map-marker form-control-feedback"></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-lg-4">
+                                                            <div class="col-lg-6">
                                                                 <div class="form-group has-feedback">
                                                                     <select id="cidades" name="cidades" class="form-control">
                                                                     </select>

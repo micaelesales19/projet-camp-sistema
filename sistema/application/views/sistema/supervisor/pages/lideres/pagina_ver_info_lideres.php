@@ -297,7 +297,7 @@ if (!isset($_SESSION['usuario'])) {
                         ?>
                             <li><a href="../../../home"><i class="fa fa-home"></i> Home</a></li>
                             <li><a href="../../coordenadores"><i class="fa fa-group"></i> Coordenadores</a></li>
-                            <li><a href="../../coordenadores/lideres/<?= $dados_lider['id_coordenador']; ?>"><i class="fa fa-group"></i> Líderes</a></li>
+                            <li><a href="../../coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>"><i class="fa fa-group"></i> Líderes</a></li>
                         <?php } else { ?>
                             <li><a href="../../home"><i class="fa fa-home"></i> Home</a></li>
                             <li><a href="../lideres"><i class="fa fa-group"></i> Líderes</a></li>
@@ -333,12 +333,12 @@ if (!isset($_SESSION['usuario'])) {
                             <?php } ?>
 
                             <!-- form start -->
-                            <form action="salvar" role="form" method="POST" enctype="multipart/form-data" name="form_editar_foto">
+                            <form action="<?= $voltar_2; ?>lider/salvar" role="form" method="POST" enctype="multipart/form-data" name="form_editar_foto">
                                 <div class="col-lg-6">
                                     <div class="box-body chat" id="chat-box">
                                         <div class="box-footer">
                                             <div class="box-header with-border">
-                                                <h3 class="box-title">Dados Pessoais</h3>
+                                                <h3 class="box-title">Dados Pessoais | Lider</h3>
                                             </div> <br>
                                             <?php
                                             $foto_original = $dados_lider['foto'];
@@ -1021,7 +1021,7 @@ if (!isset($_SESSION['usuario'])) {
 
                                                                     <div class="modal fade" id="<?= $dadosPG['id_pg']; ?>_troca_de_lider_pg">
                                                                         <div class="modal-dialog modal-light">
-                                                                            <form action="trocar-liderenca" method="POST" id="trocar_lider_de_pg">
+                                                                            <form action="<?= $voltar_2; ?>lider/trocar-liderenca" method="POST" id="trocar_lider_de_pg">
                                                                                 <div class="modal-content">
                                                                                     <div class="modal-header">
                                                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -1050,7 +1050,6 @@ if (!isset($_SESSION['usuario'])) {
                                                                                             foreach ($lideres as $l) {
                                                                                                 if ($l['id_lider'] == $dados_lider['id_lider']) {
                                                                                                 } else {
-
                                                                                             ?>
                                                                                                     <div class="form-check">
                                                                                                         <input class="form-check-input checkbox-lider" type="checkbox" value="<?= $l['id_lider']; ?>" id="coord<?= $l['id_lider']; ?>">
@@ -2016,7 +2015,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="desativar_lider">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="desativar" method="POST">
+                            <form action="<?= $voltar_2; ?>lider/desativar" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -2054,7 +2053,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="reativar_lider">
                     <div class="modal-dialog modal-success">
                         <div class="modal-content">
-                            <form action="reativar" method="POST">
+                            <form action="<?= $voltar_2; ?>lider/reativar" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -2087,7 +2086,7 @@ if (!isset($_SESSION['usuario'])) {
                 <div class="modal fade" id="excluir_lider_permantemente">
                     <div class="modal-dialog modal-danger">
                         <div class="modal-content">
-                            <form action="excluir" id="form_exclusao_lider_permanentemente" method="POST">
+                            <form action="<?= $voltar_2; ?>lider/excluir" id="form_exclusao_lider_permanentemente" method="POST">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span></button>
@@ -2098,7 +2097,7 @@ if (!isset($_SESSION['usuario'])) {
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
                                     <?php if ($x == 'is_page_coordenador') { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/coordenadores/lideres/<?= $dados_lider['id_coordenador']; ?>">
+                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
                                     <?php } else { ?>
                                         <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/lideres">
                                     <?php } ?>

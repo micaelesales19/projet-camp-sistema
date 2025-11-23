@@ -441,7 +441,7 @@ if (!isset($_SESSION['usuario'])) {
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Voltar</button>
-                                  <form action="page/coordenadores/liberar" method="post">
+                                  <form action="page/coordenador/liberar" method="post">
                                     <input type="hidden" name="id_coordenador" value="<?= $dados_coord['id_coordenador']; ?>">
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="routa" value="<?= $url_redirecionamento; ?>">

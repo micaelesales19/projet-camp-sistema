@@ -488,15 +488,11 @@ class Welcome extends CI_Controller
 				</script>
 			';
 		} else if ($nivel == 4) {
-
-
 			echo '
 				<script>
-					setTimeout(function(){ window.location="slocal/home"}, 0)
+					setTimeout(function(){ window.location="supervisor/home"}, 0)
 				</script>
 			';
-
-
 			//$this->load->view('sistema/slocal/home');
 		}
 	}
@@ -562,7 +558,7 @@ class Welcome extends CI_Controller
 	}
 
 	// cadastro lider via link
-	public function salvar_cadastro(): void
+	public function salvar_cadastro()
 	{
 		$nome = $this->input->post('nome');
 		$cpf = $this->input->post('cpf');
@@ -594,6 +590,16 @@ class Welcome extends CI_Controller
 		$emailColider = $this->input->post('emailColider');
 		$telefoneColider_digitado = $this->input->post('telefoneColider');
 		$nascimentoColider = $this->input->post('nascimentoColider');
+
+		$nome_digitado_pais = $this->input->post('nome_pais');
+
+		$nome_pais = "";
+
+		if ($pais == "br") {
+			$nome_pais = "Brasil";
+		} else {
+			$nome_pais = $nome_digitado_pais;
+		}
 
 		if ($estado1 == "" and $cidade1 == "") {
 			$estado = $estado2;
@@ -653,7 +659,7 @@ class Welcome extends CI_Controller
 
 					if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 						$nivel = 1;
-						$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
+						$cadastro = $this->Lideres->cadastro_lider($nome, $cpf_completo, $email, $telefone, $igreja, $data_nascimento_completo, 2000, $nome_pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
 						$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, $cpf_completo, $nivel, $senha);
 						if ($cadastro && $cadastroUsuario) {
 							$consultarDados = $this->Lideres->infos([$email, $cpfSoNumeros, $cpf_completo, $nome], 'info_lider_or_email_cpf_nome', '', '');
@@ -782,7 +788,7 @@ class Welcome extends CI_Controller
 
 					if ($liderjacadastrado == 0 && $usuariojatacadastrado == 0) {
 						$nivel = 1;
-						$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, 2000, $pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
+						$cadastro = $this->Lideres->cadastro_lider($nome, "", $email, $telefone, $igreja, $data_nascimento_completo, 2000, $nome_pais, $estado, $cidade, $id_coordenador, $id_supervisor, $id_supervisor, 1);
 						$cadastroUsuario = $this->Lideres->cadastrarUsuário($nome, $email, '', $nivel, $senha);
 						if ($cadastro && $cadastroUsuario) {
 							$consultarDados = $this->Lideres->infos([$email, $nome, $data_nascimento_completo], 'info_lider_nome_email_data_nascimento', '', '');
@@ -2590,7 +2596,7 @@ class Welcome extends CI_Controller
 		$cidade = "";
 
 		if ($pais == "br") {
-			$nome_pais = "br";
+			$nome_pais = "Brasil";
 		} else {
 			$nome_pais = $nome_digitado_pais;
 		}

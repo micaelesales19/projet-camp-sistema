@@ -20,31 +20,33 @@ $route['supervisor/page/lider/excluir'] = 'welcome/excluir_lider_permanentemente
 $route['supervisor/page/lider/trocar-liderenca'] = 'welcome/trocar_liderenca'; // ok
 $route['supervisor/page/lider/liberar'] = 'welcome/liberar_acesso'; // ok
 
+$route['supervisor/page/lider/:any'] = 'Supervisor/pagina_ver_detalhes_lider'; // ok // ok
+
 // coordenador - líder
-$route['supervisor/page/coordenadores/lider/salvar'] = 'Lider/e_pessoal'; // ok
+/*$route['supervisor/page/coordenadores/lider/salvar'] = 'Lider/e_pessoal'; // ok
 $route['supervisor/page/coordenadores/lider/desativar'] = 'welcome/desativar_lider'; // ok
 $route['supervisor/page/coordenadores/lider/reativar'] = 'welcome/ativar_lider'; // ok
 $route['supervisor/page/coordenadores/lider/excluir'] = 'welcome/excluir_lider_permanentemente'; // ok
-$route['supervisor/page/coordenadores/lider/trocar-liderenca'] = 'welcome/trocar_liderenca'; // ok
-
-$route['supervisor/page/coordenadores/lider/:any'] = 'Supervisor/pagina_ver_detalhes_lider'; // ok // ok
-
-$route['supervisor/page/lider/:any'] = 'Supervisor/pagina_ver_detalhes_lider'; // ok // ok
+$route['supervisor/page/coordenadores/lider/trocar-liderenca'] = 'welcome/trocar_liderenca'; // ok*/
 
 // coordenadores
 $route['supervisor/page/coordenadores'] = 'Supervisor/pagina_ver_coordenadores'; // ok // ok
-$route['supervisor/page/coordenadores/edicao/salvar'] = 'Coordenador/e_pessoal'; // ok
-$route['supervisor/page/coordenadores/salvar'] = 'welcome/cadastro_coordenador'; // ok
-$route['supervisor/page/coordenadores/desativar'] = 'welcome/desativar_coordenador'; // ok
-$route['supervisor/page/coordenadores/exclusao/ativar'] = 'welcome/ativar_coordenador'; // ok
-$route['supervisor/page/coordenadores/exclusao/permanente'] = 'welcome/excluir_coordenador_permanentemente'; // ok
-$route['supervisor/page/coordenadores/liberar'] = 'welcome/liberar_acesso_coordenador'; // ok
 
 $route['supervisor/page/coordenadores/mostrar'] = 'Supervisor/mostrar_table_coordenador'; // ok // ok
-$route['supervisor/page/coordenadores/lideres/mostrar'] = 'Supervisor/mostrar_table_lideres_coordenador'; // ok // ok
+$route['supervisor/page/coordenador/lideres/mostrar'] = 'Supervisor/mostrar_table_lideres_coordenador'; // ok // ok
 
-$route['supervisor/page/coordenadores/lideres/:any'] = 'Supervisor/pagina_ver_lideres_coordenadores'; // ok // ok
-$route['supervisor/page/coordenadores/detalhes/:any'] = 'Supervisor/pagina_ver_detalhes_coordenadores'; // ok // ok
+$route['supervisor/page/coordenador/edicao/salvar'] = 'Coordenador/e_pessoal'; // ok
+$route['supervisor/page/coordenador/salvar'] = 'welcome/cadastro_coordenador'; // ok
+$route['supervisor/page/coordenador/desativar'] = 'welcome/desativar_coordenador'; // ok
+$route['supervisor/page/coordenador/exclusao/ativar'] = 'welcome/ativar_coordenador'; // ok
+$route['supervisor/page/coordenador/exclusao/permanente'] = 'welcome/excluir_coordenador_permanentemente'; // ok
+
+$route['supervisor/page/coordenador/liberar'] = 'welcome/liberar_acesso_coordenador'; // ok
+
+$route['supervisor/page/coordenador/lider/:any'] = 'Supervisor/pagina_ver_detalhes_lider'; // ok // ok
+
+$route['supervisor/page/coordenador/lideres/:any'] = 'Supervisor/pagina_ver_lideres_coordenadores'; // ok // ok
+$route['supervisor/page/coordenador/detalhes/:any'] = 'Supervisor/pagina_ver_detalhes_coordenadores'; // ok // ok
 
 $route['supervisor/page/coordenadores/gerar_excel'] = 'welcome/gerar_excel';
 
