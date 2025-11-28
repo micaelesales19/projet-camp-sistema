@@ -2,7 +2,7 @@
 
 /** @var \$this */
 if (!isset($_SESSION['id_usuario'])) {
-  header("location: index");
+  header("location: https://sistemas.campbrasil.com/sistema/index");
 }
 
 $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";

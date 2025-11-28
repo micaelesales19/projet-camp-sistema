@@ -6,7 +6,7 @@ $voltar = "";
 $array = array('voltar' => $voltar);
 
 if (!isset($_SESSION['usuario'])) {
-  header("location: ../$voltar/index");
+  header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
@@ -208,8 +208,8 @@ if (!isset($_SESSION['usuario'])) {
           <!-- /.row -->
 
           <?php
-          $check_situacao_cadastro = $this->Lideres->infos([$id_usuario, 1], 'query_lideres_id_supervisor_situacao_order_by_nome_lider', '', 'asc');
-          $check_situacao_cadastro_coordenador = $this->Coordenadores->infos([$id_usuario, 3], 'query_coordenadores_id_supervisor_situacao_order_by_nome_coordenador', '', '');
+          $check_situacao_cadastro = $this->Lideres->infos([1], 'query_lideres_situacao_order_by_nome_lider', '', 'asc');
+          $check_situacao_cadastro_coordenador = $this->Coordenadores->infos([3], 'query_coordenadores_situacao_order_by_nome_coordenador', '', '');
 
           if ($check_situacao_cadastro['row'] == 0 && $check_situacao_cadastro_coordenador['row'] == 0) {
           } else {

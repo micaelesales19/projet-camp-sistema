@@ -2,7 +2,7 @@
 
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../index");
+    header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
     $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
@@ -425,7 +425,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="modal fade" id="cadastro_coordenador">
                                     <div class="modal-dialog modal-success">
                                         <div class="modal-content">
-                                            <form action="coordenadores/salvar" method="POST">
+                                            <form action="coordenador/salvar" method="POST">
                                                 <input type="hidden" name="id_pastor" value="2000">
                                                 <input type="hidden" name="id_supervisor" value="<?= $id_usuario; ?>">
                                                 <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">

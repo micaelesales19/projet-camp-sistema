@@ -13,7 +13,7 @@ $url_redirecionamento = current_url() . ($_SERVER['QUERY_STRING'] ? '?' . $_SERV
 
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../index");
+    header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";

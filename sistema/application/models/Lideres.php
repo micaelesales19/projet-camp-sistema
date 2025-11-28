@@ -222,6 +222,19 @@ class Lideres extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'query_lideres_situacao_order_by_nome_lider') { // check_lider_situacao_cadastro_id_supervisor
+            // Consulta na tabela de líderes se tem lider esperando autorização
+            $situacao = $id_usuario[0];
+            $consultar_lider = $this->db->query("SELECT * FROM lider WHERE confirmado = $situacao ORDER BY nome_lider $order");
+            $row = $consultar_lider->num_rows();
+            $dados_consulta_lideres = $consultar_lider->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_lideres,
+            );
+
+            return $dados;
         } else if ($opc == 'query_all_lider_br') { // ok
             $dados = $this->db->query("SELECT * FROM lider WHERE confirmado LIKE 2 AND pais LIKE 'br'")->result_array();
             return $dados;

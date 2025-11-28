@@ -624,7 +624,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                 <div class="box-body">
                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                     <input type="hidden" name="opc" value="<?= $id_supervisor; ?>">
-                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/supervisores">
+                    <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/direcao/page/supervisores">
                     <input type="hidden" name="id_novo_supervisor" id="idSupervisorNovoTroca" value="0">
 
                     <div class="col-lg-12">

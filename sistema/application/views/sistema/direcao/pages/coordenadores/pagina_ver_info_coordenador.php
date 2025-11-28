@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../../../index");
+  header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
@@ -316,9 +316,9 @@ if (!isset($_SESSION['usuario'])) {
                         <?php } else { ?>
                             <li><a href="../home"><i class="fa fa-home"></i> Home</a></li>
                             <li><a href="../../coordenadores"><i class="fa fa-users"></i> Coordenadores</a></li>
-                            <li><a href="../../coordenadores/lideres/<?= $id_coordenador; ?>"><i class="fa fa-users"></i> Líderes</a></li>
+                            <li><a href="../../coordenador/lideres/<?= $id_coordenador; ?>"><i class="fa fa-users"></i> Líderes</a></li>
                         <?php } ?>
-                        <li class="active">Informações</li>
+                        <li class="active">Informações aqui</li>
                     </ol>
                 </section>
 
@@ -802,9 +802,9 @@ if (!isset($_SESSION['usuario'])) {
                                     <?php
                                     if ($x == 'is_page_supervisor_coordenador') {
                                         $id_supervisor = $dados_coordenador['id_supervisorR'];
-                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor";
+                                        $red_exclusao = "https://sistemas.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor";
                                     } else {
-                                        $red_exclusao = "https://sistema.campbrasil.com/sistema/direcao/page/coordenadores";
+                                        $red_exclusao = "https://sistemas.campbrasil.com/sistema/direcao/page/coordenadores";
                                     }
                                     ?>
                                     <input type="hidden" name="red" value="<?= $red_exclusao; ?>">

@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($_SESSION['usuario'])) {
-	header("location: index");
+	header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
 	require_once(APPPATH . '../import/sistema/materiais/materiais_1_trilha.php');

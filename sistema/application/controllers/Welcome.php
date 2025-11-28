@@ -507,7 +507,8 @@ class Welcome extends CI_Controller
 		$this->db->where('id_usuario', $id_usuario);
 		$this->db->update('usuario');
 
-		echo "Fim de Sessão!!";
+		$this->FConsultas_model->mensagem('success', 'Adeus!', ["Fim de Sessão!!"]);
+		//echo "Fim de Sessão!!";
 		echo '
 			<script>
 				setTimeout(function(){ window.location="index"}, 3000)
@@ -4277,7 +4278,7 @@ class Welcome extends CI_Controller
 					// atualizar criancas
 					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_coordenador_novo);
 
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/coordenador/$id_coordenador_novo";
+					$red = "https://sistemas.campbrasil.com/sistema/direcao/page/coordenador/detalhes/$id_coordenador_novo";
 				}
 
 				$motivo = "O $nome_usuario efetuou troca de função do supervisor $nome (id: $id_change) para coordenador. Coordenadores e Líderes passarão para essa supervisão: $id_troca";
@@ -4332,7 +4333,7 @@ class Welcome extends CI_Controller
 					// atualizar criancas
 					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_lider_novo);
 
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/lider/$id_lider_novo";
+					$red = "https://sistemas.campbrasil.com/sistema/direcao/page/lider/$id_lider_novo";
 				}
 
 				$motivo = "O $nome_usuario efetuou troca de função do supervisor $nome (id: $id_change) para lider. Coordenadores e Líderes passarão para essa supervisão: $id_troca_1";
@@ -4385,7 +4386,7 @@ class Welcome extends CI_Controller
 					// atualizar criancas
 					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_lider_novo);
 
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/lider/$id_lider_novo";
+					$red = "https://sistemas.campbrasil.com/sistema/direcao/page/lider/$id_lider_novo";
 				}
 
 				$motivo = "O $nome_usuario efetuou troca de função do coordenador $nome (id: $id_change) para lider. Líderes passarão para essa coordenador: $id_troca";
@@ -4446,7 +4447,7 @@ class Welcome extends CI_Controller
 					// atualizar criancas
 					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_supervisor_novo);
 
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor_novo";
+					$red = "https://sistemas.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor_novo";
 				}
 
 				$motivo = "O $nome_usuario efetuou troca de função do coordenador $nome (id: $id_change) para lider. Líderes passarão para essa coordenador: $id_troca";
@@ -4504,7 +4505,7 @@ class Welcome extends CI_Controller
 					// atualizar criancas
 					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_coordenador_novo);
 
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/coordenador/lideres/$id_coordenador_novo";
+					$red = "https://sistemas.campbrasil.com/sistema/direcao/page/supervisor/coordenador/lideres/$id_coordenador_novo";
 				}
 
 				$motivo = "O $nome_usuario efetuou troca de função do lider $nome (id: $id_change) para coordenador. Líderes passaram para essa coordenador: $id_troca";
@@ -4564,7 +4565,7 @@ class Welcome extends CI_Controller
 					// atualizar criancas
 					$this->Criancas->editar_liderenca_crianca_2($id_change, $id_supervisor_novo);
 
-					$red = "https://sistema.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor_novo";
+					$red = "https://sistemas.campbrasil.com/sistema/direcao/page/supervisor/$id_supervisor_novo";
 				}
 
 				$motivo = "O $nome_usuario efetuou troca de função do lider $nome (id: $id_change) para supervisor. Coordenadores passaram para essa supervisão: $id_troca";

@@ -8,7 +8,7 @@
 
 <?php
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../../../index");
+    header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
@@ -2097,9 +2097,9 @@ if (!isset($_SESSION['usuario'])) {
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
                                     <?php if ($x == 'is_page_coordenador') { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
+                                        <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/supervisor/page/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
                                     <?php } else { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/supervisor/page/lideres">
+                                        <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/supervisor/page/lideres">
                                     <?php } ?>
                                     <input type="hidden" name="id_novo_lider" id="idLiderNovoTroca" value="0">
 

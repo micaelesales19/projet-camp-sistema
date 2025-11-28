@@ -8,7 +8,7 @@
 
 <?php
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../../../index");
+    header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
@@ -2159,7 +2159,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-body">
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
-                                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/coordenador/page/lideres">
+                                    <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/coordenador/page/lideres">
 
                                     <input type="hidden" name="id_novo_lider" id="idLiderNovoTroca" value="0">
 

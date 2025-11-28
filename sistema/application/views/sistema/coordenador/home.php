@@ -6,7 +6,7 @@ $voltar = "";
 $array = array('voltar' => $voltar);
 
 if (!isset($_SESSION['usuario'])) {
-  header("location: ../$voltar/index");
+  header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
   $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";

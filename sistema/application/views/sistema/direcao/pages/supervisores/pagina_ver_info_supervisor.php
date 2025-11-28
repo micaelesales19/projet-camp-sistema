@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../../../index");
+    header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
@@ -764,7 +764,7 @@ if (!isset($_SESSION['usuario'])) {
                                                             $id_supervisor = $dados_supervisor['id_supervisorR'];
 
                                                             // exemplo: buscando do banco
-                                                            $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador WHERE id_supervisorR = $id_supervisor ORDER BY nome_coordenador ASC")->result_array();
+                                                            $coordenadores = $this->db->query("SELECT id_coordenador, nome_coordenador FROM coordenador ORDER BY nome_coordenador ASC")->result_array();
 
                                                             foreach ($coordenadores as $c) {
                                                             ?>
@@ -838,7 +838,7 @@ if (!isset($_SESSION['usuario'])) {
                                 <div class="box-body">
                                     <input type="hidden" name="idUsuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="opc" value="<?= $dados_supervisor['id_supervisorR']; ?>">
-                                    <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/supervisores">
+                                    <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/direcao/page/supervisores">
                                     <input type="hidden" name="id_novo_supervisor" id="idSupervisorNovoTroca" value="0">
 
                                     <div class="col-lg-12">

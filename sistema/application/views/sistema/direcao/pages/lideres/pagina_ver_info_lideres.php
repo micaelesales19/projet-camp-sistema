@@ -8,7 +8,7 @@
 
 <?php
 if (!isset($_SESSION['usuario'])) {
-    header("location: https://sistema.campbrasil.com/sistema/index");
+    header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
     $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
@@ -133,7 +133,7 @@ if (!isset($_SESSION['usuario'])) {
             }
 
             if (is_ativo) {
-                document.getElementById('btn_solicitar_1').disabled = true;
+                //document.getElementById('btn_solicitar_1').disabled = true;
                 //document.getElementById('btn_solicitar_2').disabled = true;
                 document.getElementById('remove_cri').style.display = 'none';
             }
@@ -162,24 +162,6 @@ if (!isset($_SESSION['usuario'])) {
             if (dados == "Sim" || dados == "Não") {} else {
                 alert("Você não escolheu a opção");
                 return false;
-            }
-        }
-
-        function trocar_nome() {
-            const str = document.getElementById('id_troca_1').value;
-            const opc = str.split(' ');
-            if (opc[0] == 0) {
-                document.getElementById('opcao_escolhida').innerHTML = "Escolha uma opção acima e digite o nome";
-                document.getElementById('mostrar_supervisores_para_troca').style.display = 'none';
-                document.getElementById('btn_solicitar_1').disabled = true;
-            } else if (opc[0] == "coord") {
-                document.getElementById("opcao_escolhida").innerHTML = "Digite o nome do Coordenador";
-                document.getElementById('mostrar_supervisores_para_troca').style.display = 'inline';
-                document.getElementById('btn_solicitar_1').disabled = false;
-            } else if (opc[0] == "super") {
-                document.getElementById("opcao_escolhida").innerHTML = "Digite o nome do Supervisor";
-                document.getElementById('mostrar_supervisores_para_troca').style.display = 'inline';
-                document.getElementById('btn_solicitar_1').disabled = false;
             }
         }
 
@@ -2095,11 +2077,11 @@ if (!isset($_SESSION['usuario'])) {
                                     <input type="hidden" name="id_usuario" value="<?= $id_usuario; ?>">
                                     <input type="hidden" name="id_lider" value="<?= $dados_lider['id_lider']; ?>">
                                     <?php if ($x == 'is_page_supervisor_coordenador') { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/supervisor/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
+                                        <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/direcao/page/supervisor/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
                                     <?php } else if ($x == 'is_page_coordenador') { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
+                                        <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/direcao/page/coordenador/lideres/<?= $dados_lider['id_coordenador']; ?>">
                                     <?php } else { ?>
-                                        <input type="hidden" name="red" value="https://sistema.campbrasil.com/sistema/direcao/page/lideres">
+                                        <input type="hidden" name="red" value="https://sistemas.campbrasil.com/sistema/direcao/page/lideres">
                                     <?php } ?>
                                     <input type="hidden" name="id_novo_lider" id="idLiderNovoTroca" value="0">
 

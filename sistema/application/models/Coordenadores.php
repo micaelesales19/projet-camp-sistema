@@ -92,6 +92,19 @@ class Coordenadores extends CI_Model
             );
 
             return $dados;
+        } else if ($opc == 'query_coordenadores_situacao_order_by_nome_coordenador') {
+            // Consulta na tabela de coordenadores se tem coordenador esperando autorização
+            $ativo = $id_usuario[0];
+            $consultar_coordenadores = $this->db->query("SELECT * FROM coordenador WHERE ativo = $ativo ORDER BY nome_coordenador $order");
+            $row = $consultar_coordenadores->num_rows();
+            $dados_consulta_coordenadores = $consultar_coordenadores->result_array();
+
+            $dados = array(
+                'row' => $row,
+                'dados' => $dados_consulta_coordenadores,
+            );
+
+            return $dados;
         } else if ($opc == 'query_coordenadores_id_supervisor_datas_order_by_nome_coordenador') {
             // retornando todos os supervisores do supervisor de acordo com uma data específica
             $id_usuario = $id_usuario[0];

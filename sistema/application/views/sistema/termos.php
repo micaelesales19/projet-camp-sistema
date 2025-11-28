@@ -3,7 +3,7 @@ $id_usuario = ($_SESSION["id_usuario"]) ? $_SESSION["id_usuario"] : "";
 $id_usuario_2 = ($_SESSION["id_usuario_2"]) ? $_SESSION["id_usuario_2"] : "";
 
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../index.php");
+    header("location: https://sistemas.campbrasil.com/sistema/index");
 }
 
 ?>

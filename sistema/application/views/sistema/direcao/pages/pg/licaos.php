@@ -2,7 +2,7 @@
 
 /** @var \$this */
 if (!isset($_SESSION['usuario'])) {
-    header("location: ../../../index");
+  header("location: https://sistemas.campbrasil.com/sistema/index");
 } else {
 
     date_default_timezone_set('America/Sao_Paulo');
