@@ -827,6 +827,7 @@ class Lideres extends CI_Model
     public function trocar_supervisao_de_lideres_coordenador_especifico($id_coordenador, $id_novo_supervisor)
     {
         $this->db->set('id_supervisorR', $id_novo_supervisor);
+        $this->db->set('id_supervisorE', $id_novo_supervisor);
         $this->db->where('id_coordenador', $id_coordenador);
         $this->db->update('lider');
     }

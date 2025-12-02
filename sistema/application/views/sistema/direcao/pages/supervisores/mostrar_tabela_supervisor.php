@@ -71,7 +71,7 @@ $dados_supervisores = $info_supervisores['dados_supervisores_gerais']['dados'];
                     const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
 
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
-                    const ativo = valor === 'is_ativo' ? c.check_coordenador_ativo == 1 : true;
+                    const ativo = valor === 'is_ativo' ? c.check_supervisor_ativo == 1 : true;
                     return dentroDoPeriodo && ativo;
                 })
                 .map(c => {
