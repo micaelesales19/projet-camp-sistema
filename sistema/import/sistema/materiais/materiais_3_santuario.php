@@ -55,3 +55,11 @@ $materialLicaoVisuaisSantuario2 = array(
     'arquivo' => 'import/sistema/arquivos/01/Santuario/Santuario.ppsx',
     'imagem' => 'import/sistema/img/documento.png',
 );
+
+$materialLicaoVisuaisSantuario3 = array(
+    'id' => 5,
+    'nome' => 'Visuais do Santuário (Novos)',
+    'nome_visivel' => 'Visuais (Novos)',
+    'arquivo' => 'import/sistema/arquivos/01/Santuario/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);

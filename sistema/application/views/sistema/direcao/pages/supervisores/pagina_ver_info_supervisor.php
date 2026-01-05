@@ -499,7 +499,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     <label for="exampleInputPassword1">País</label>
                                                     <select id="pais" name="pais" class="form-control" onchange="aparecer_select(this)" <?= $check_desativado; ?>>
                                                         <?php
-                                                        if ($dados_supervisor['pais'] == '' || $dados_supervisor['pais'] == 'br') {
+                                                        if ($dados_supervisor['pais'] == '' || $dados_supervisor['pais'] == 'br' || $dados_supervisor['pais'] == 'Brasil') {
                                                         ?>
                                                             <option value="">País</option>
                                                             <option value="br" selected>Brasil</option>

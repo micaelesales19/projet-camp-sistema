@@ -55,3 +55,11 @@ $materialLicaoVisuaisMergulho2 = array(
     'arquivo' => 'import/sistema/arquivos/01/Mergulho/Mergulho.ppsx',
     'imagem' => 'import/sistema/img/documento.png',
 );
+
+$materialLicaoVisuaisMergulho3 = array(
+    'id' => 5,
+    'nome' => 'Visuais do Mergulho (Novos)',
+    'nome_visivel' => 'Visuais (Novos)',
+    'arquivo' => 'import/sistema/arquivos/01/Mergulho/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);

@@ -210,7 +210,7 @@ class Welcome extends CI_Controller
 				$this->db->where('id_usuario', $id_usuario);
 				$this->db->update('usuario');
 
-				$consultar_lider = $this->db->query("SELECT * FROM lider WHERE email = '$email' AND cpf = '$cpf_completo' AND (nome_lider LIKE '$nome' OR nome_lider LIKE '$nome_base')");
+				$consultar_lider = $this->db->query("SELECT * FROM lider WHERE (email = '$email' OR cpf = '$cpf_completo') AND  (nome_lider LIKE '$nome' OR nome_lider LIKE '$nome_base')");
 				$dados_lider = $consultar_lider->row_array();
 				$total_lider = $consultar_lider->num_rows();
 
@@ -231,6 +231,8 @@ class Welcome extends CI_Controller
 				$total_adm = $consultar_adm->num_rows();
 
 				if ($nivel == 1) {
+					//echo "nome: $nome nome 2: $nome_base cpf: $cpf_completo email: $email";
+
 					if ($total_lider == 0) {
 						$this->FConsultas_model->mensagem('danger', 'Erro!', ["Não foi encontrado seus dados em nossas bases! Entre em contato com o suporte pelo e-mail campbrasilemail@gmail.com"]);
 						$data = [

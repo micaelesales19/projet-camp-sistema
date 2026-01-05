@@ -57,3 +57,11 @@ $materialLicaoVisuaisTerrarios2 = array(
     'arquivo' => 'import/sistema/arquivos/02/Terrarios/Estação Final.ppsx',
     'imagem' => 'import/sistema/img/livro.png',*/
 );
+
+$materialLicaoVisuaisTerrarios3 = array(
+    'id' => 4,
+    'nome_visivel' => 'Visuais (Novos)',
+    'nome' => 'Visuais do Ação Terrários - Exploradores do Subsolo (Novos)',
+    'arquivo' => 'import/sistema/arquivos/02/Terrarios/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);

@@ -55,3 +55,11 @@ $materialLicaoVisuaisEstacao2 = array(
     'arquivo' => 'import/sistema/arquivos/01/Estacao/EstaçãoFinal.ppsx',
     'imagem' => 'import/sistema/img/documento.png',
 );
+
+$materialLicaoVisuaisEstacao3 = array(
+    'id' => 5,
+    'nome' => 'Visuais da Estação Final (Novos)',
+    'nome_visivel' => 'Visuais (Novos)',
+    'arquivo' => 'import/sistema/arquivos/01/Estacao/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);

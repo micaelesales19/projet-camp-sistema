@@ -147,6 +147,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoTrilha);
                 array_push($materialLicao, $materialLicaoTrilha);
                 array_push($materialLicao, $materialLicaoVisuaisTrilha2);
+                array_push($materialLicao, $materialLicaoVisuaisTrilha3);
                 array_push($materialLicao, $materialLicaoVisuaisTrilha1);
                 array_push($materialExtra, $materialChequinhoTrilha);
                 break;
@@ -158,6 +159,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoMergulho);
                 array_push($materialLicao, $materialLicaoMergulho);
                 array_push($materialLicao, $materialLicaoVisuaisMergulho2);
+                array_push($materialLicao, $materialLicaoVisuaisMergulho3);
                 array_push($materialLicao, $materialLicaoVisuaisMergulho1);
                 array_push($materialExtra, $materialChequinhoMergulho);
                 break;
@@ -169,6 +171,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoSantuario);
                 array_push($materialLicao, $materialLicaoSantuario);
                 array_push($materialLicao, $materialLicaoVisuaisSantuario2);
+                array_push($materialLicao, $materialLicaoVisuaisSantuario3);
                 array_push($materialLicao, $materialLicaoVisuaisSantuario1);
                 array_push($materialExtra, $materialChequinhoSantuario);
                 break;
@@ -179,8 +182,9 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialCards, $materialSemanarioArco);
                 array_push($materialLicao, $materialIntroducaoArco);
                 array_push($materialLicao, $materialLicaoArco);
-                array_push($materialLicao, $materialLicaoVisuaisArco1);
                 array_push($materialLicao, $materialLicaoVisuaisArco2);
+                array_push($materialLicao, $materialLicaoVisuaisArco3);
+                array_push($materialLicao, $materialLicaoVisuaisArco1);
                 array_push($materialExtra, $materialChequinhoArco);
                 break;
               case 5:
@@ -191,6 +195,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoEstacao);
                 array_push($materialLicao, $materialLicaoEstacao);
                 array_push($materialLicao, $materialLicaoVisuaisEstacao2);
+                array_push($materialLicao, $materialLicaoVisuaisEstacao3);
                 array_push($materialLicao, $materialLicaoVisuaisEstacao1);
                 array_push($materialExtra, $materialChequinhoEstacao);
                 break;
@@ -202,6 +207,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoSegredos);
                 array_push($materialLicao, $materialLicaoSegredos);
                 array_push($materialLicao, $materialLicaoVisuaisSegredos2);
+                array_push($materialLicao, $materialLicaoVisuaisSegredos3);
                 array_push($materialLicao, $materialLicaoVisuaisSegredos1);
                 array_push($materialExtra, $materialChequinhoSegredos);
                 break;
@@ -213,6 +219,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoSobreviventes);
                 array_push($materialLicao, $materialLicaoSobreviventes);
                 array_push($materialLicao, $materialLicaoVisuaisSobreviventes2);
+                array_push($materialLicao, $materialLicaoVisuaisSobreviventes3);
                 array_push($materialLicao, $materialLicaoVisuaisSobreviventes1);
                 array_push($materialExtra, $materialChequinhoSobreviventes);
                 break;
@@ -224,6 +231,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoTerrarios);
                 array_push($materialLicao, $materialLicaoTerrarios);
                 array_push($materialLicao, $materialLicaoVisuaisTerrarios2);
+                array_push($materialLicao, $materialLicaoVisuaisTerrarios3);
                 array_push($materialLicao, $materialLicaoVisuaisTerrarios1);
                 array_push($materialExtra, $materialChequinhoTerrarios);
                 break;
@@ -235,6 +243,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoOperacao);
                 array_push($materialLicao, $materialLicaoOperacao);
                 array_push($materialLicao, $materialLicaoVisuaisOperacao2);
+                array_push($materialLicao, $materialLicaoVisuaisOperacao3);
                 array_push($materialLicao, $materialLicaoVisuaisOperacao1);
                 array_push($materialExtra, $materialChequinhoOperacao);
                 break;
@@ -246,6 +255,7 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialLicao, $materialIntroducaoEvolucao);
                 array_push($materialLicao, $materialLicaoEvolucao);
                 array_push($materialLicao, $materialLicaoVisuaisEvolucao2);
+                array_push($materialLicao, $materialLicaoVisuaisEvolucao3);
                 array_push($materialLicao, $materialLicaoVisuaisEvolucao1);
                 array_push($materialExtra, $materialChequinhoEvolucao);
                 break;

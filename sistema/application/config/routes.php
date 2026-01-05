@@ -119,6 +119,7 @@ $route['adm/devocionais/mostrar'] = 'adm/mostrar_devocionais';
 $route['adm/devocionais/cadastrar'] = 'adm/cadastrar_devocionais';
 $route['adm/devocionais/salvar'] = 'adm/salvar_cadastro_devocionais';
 
+$route['adm/n-igrejas'] = 'adm/numero_igrejas';
 // material
 $route['pdf_modulo'] = 'welcome/ir_modulo';
 

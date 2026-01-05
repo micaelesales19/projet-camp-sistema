@@ -55,3 +55,11 @@ $materialLicaoVisuaisArco2 = array(
     'arquivo' => 'import/sistema/arquivos/01/Arco/Arco.ppsx',
     'imagem' => 'import/sistema/img/documento.png',
 );
+
+$materialLicaoVisuaisArco3 = array(
+    'id' => 5,
+    'nome' => 'Visuais do Arco (Novos)',
+    'nome_visivel' => 'Visuais (Novos)',
+    'arquivo' => 'import/sistema/arquivos/01/Arco/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);

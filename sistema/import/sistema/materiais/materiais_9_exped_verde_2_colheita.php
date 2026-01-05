@@ -57,3 +57,11 @@ $materialLicaoVisuaisOperacao2 = array(
     'arquivo' => 'import/sistema/arquivos/02/Operacao/Estação Final.ppsx',
     'imagem' => 'import/sistema/img/livro.png',*/
 );
+
+$materialLicaoVisuaisOperacao3 = array(
+    'id' => 4,
+    'nome_visivel' => 'Visuais (Novos)',
+    'nome' => 'Visuais a Expedição Verde 1 - A Colheita (Novos)',
+    'arquivo' => 'import/sistema/arquivos/02/Operacao/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);

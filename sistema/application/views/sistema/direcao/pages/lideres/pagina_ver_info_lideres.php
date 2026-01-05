@@ -2343,6 +2343,11 @@ if (!isset($_SESSION['usuario'])) {
                                             <!-- Caixa de pesquisa -->
                                             <input type="text" id="pesquisaLider_coord" class="form-control mb-3" placeholder="Pesquisar Lider..."><br>
 
+                                            <label class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="cadastro_depois">
+                                                <span class="form-check-label">Cadastrar líderes depois</span>
+                                            </label>
+
                                             <!-- Lista de Lideres -->
                                             <div id="listaLideres_coord" style="max-height: 300px; overflow-y: auto;">
                                                 <?php
@@ -2584,6 +2589,7 @@ if (!isset($_SESSION['usuario'])) {
 
                 const form_coord = document.querySelector('form#form_tornar_coordenador');
                 if (!form_coord) return; // evita erro se o formulário não existir
+                const cadastroDepois = document.querySelector('#cadastro_depois');
 
                 // Pega todos os checkboxes
                 const checkboxes_coord = document.querySelectorAll('.checkbox-lider_coord');
@@ -2606,6 +2612,9 @@ if (!isset($_SESSION['usuario'])) {
 
                 // Validação antes do envio
                 form_coord.addEventListener('submit', function(e) {
+                    // Se marcou "cadastrar depois", não valida
+                    if (cadastroDepois.checked) return;
+
                     const selecionados = inputHidden_coord.value.split(',').filter(v => v !== '');
                     if (selecionados.length < 3) {
                         e.preventDefault(); // impede o envio

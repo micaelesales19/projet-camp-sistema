@@ -57,3 +57,11 @@ $materialLicaoVisuaisSobreviventes2 = array(
     'arquivo' => 'import/sistema/arquivos/02/Sobreviventes/Estação Final.ppsx',
     'imagem' => 'import/sistema/img/livro.png',*/
 );
+
+$materialLicaoVisuaisSobreviventes3 = array(
+    'id' => 4,
+    'nome_visivel' => 'Visuais (Novos)',
+    'nome' => 'Visuais da Expedição Animal 2 - Os Sobreviventes (Novos)',
+    'arquivo' => 'import/sistema/arquivos/02/Sobreviventes/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);

@@ -50,10 +50,19 @@ $materialLicaoVisuaisTrilha1 = array(
     'imagem' => 'import/sistema/img/documento.png',
 );
 
+
 $materialLicaoVisuaisTrilha2 = array(
     'id' => 4,
     'nome' => 'Lição em PowerPoint da Trilha',
     'nome_visivel' => 'Lição em PowerPoint',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/Trilha.ppsx',
+    'imagem' => 'import/sistema/img/documento.png',
+);
+
+$materialLicaoVisuaisTrilha3 = array(
+    'id' => 5,
+    'nome' => 'Visuais da Trilha (Novos)',
+    'nome_visivel' => 'Visuais (Novos)',
+    'arquivo' => 'import/sistema/arquivos/01/Trilha/visuais-novos.pdf',
     'imagem' => 'import/sistema/img/documento.png',
 );

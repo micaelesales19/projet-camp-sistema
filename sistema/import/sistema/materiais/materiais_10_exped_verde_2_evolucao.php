@@ -57,3 +57,11 @@ $materialLicaoVisuaisEvolucao2 = array(
     'arquivo' => 'import/sistema/arquivos/02/Evolucao/Estação Final.ppsx',
     'imagem' => 'import/sistema/img/livro.png',*/
 );
+
+$materialLicaoVisuaisEvolucao3 = array(
+    'id' => 4,
+    'nome_visivel' => 'Visuais (Novos)',
+    'nome' => 'Visuais da Expedição Verde 2 - A Evolução',
+    'arquivo' => 'import/sistema/arquivos/02/Evolucao/visuais-novos.pdf',
+    'imagem' => 'import/sistema/img/documento.png',
+);
