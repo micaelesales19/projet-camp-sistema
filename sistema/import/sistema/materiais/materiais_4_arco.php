@@ -28,6 +28,7 @@ $materialIntroducaoArco = array(
 );
 
 $materialChequinhoArco = array(
+    'id' => 0,
     'nome' => 'Chequinho',
     'arquivo' => 'import/sistema/arquivos/01/Arco/feirinha.pdf'
 );

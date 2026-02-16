@@ -34,7 +34,7 @@ if (!isset($_SESSION['usuario'])) {
   $nome_modulo = $dadosModulos['nome_modulo'];
   $aprenderemos = $dadosModulos['aprenderemos'];
   $descricao = $dadosModulos['descricao'];
-?>
+  ?>
   <!DOCTYPE html>
   <html>
   <!-- Head -->
@@ -51,11 +51,11 @@ if (!isset($_SESSION['usuario'])) {
 
     .not-active {
       /*width: 120px;
-      margin: 2px;
-      display: table-column;
-      justify-content: center;
-      align-content: center;
-      text-align: center;*/
+        margin: 2px;
+        display: table-column;
+        justify-content: center;
+        align-content: center;
+        text-align: center;*/
 
       pointer-events: none;
       cursor: default;
@@ -264,10 +264,16 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialCapa, $materialContraCapaOrganelas);
                 array_push($materialCards, $materialCardsOrganelas);
                 array_push($materialCards, $materialSemanarioOrganelas);
+                array_push($materialCards, $materialVersiculoOrganelas);
                 array_push($materialLicao, $materialIntroducaoOrganelas);
                 array_push($materialLicao, $materialLicaoOrganelas);
                 array_push($materialLicao, $materialLicaoVisuaisOrganelas2);
                 array_push($materialLicao, $materialLicaoVisuaisOrganelas1);
+                array_push($materialCards, $materialComplementarOrganela);
+                array_push($materialExtra, $materialComplementarJogo1);
+                array_push($materialExtra, $materialComplementarJogo2);
+                array_push($materialExtra, $materialComplementarJogo3);
+                array_push($materialExtra, $materialComplementarJogo4);
                 break;
               default:
                 $color_modulo = 'green';
@@ -281,7 +287,8 @@ if (!isset($_SESSION['usuario'])) {
               <div class="col-md-6">
                 <div class="box bg-info">
                   <div class="box-header with-border">
-                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
+                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i>
+                      <?= $nome_modulo; ?> | <?= $aprenderemos; ?></h3>
                     <div class="box-tools pull-right">
                       <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                       </button>
@@ -298,7 +305,8 @@ if (!isset($_SESSION['usuario'])) {
               <div class="col-md-6">
                 <div class="box bg-info">
                   <div class="box-header with-border">
-                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-list"></i> <?= $nome_modulo; ?> | Lições</h3>
+                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-list"></i> <?= $nome_modulo; ?>
+                      | Lições</h3>
                     <div class="box-tools pull-right">
                       <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                       </button>
@@ -314,7 +322,7 @@ if (!isset($_SESSION['usuario'])) {
                             foreach ($licoes as $key => $dadosLicoes) {
                               $numero_licao = $dadosLicoes['numero_licao'];
                               $nome_licao = $dadosLicoes['nome_licao'];
-                            ?>
+                              ?>
                               <tr>
                                 <td><?= $numero_licao; ?> - <?= $nome_licao; ?></td>
                               </tr>
@@ -331,11 +339,12 @@ if (!isset($_SESSION['usuario'])) {
 
             <?php
             if ($materialCapa) {
-            ?>
+              ?>
               <div class="col-md-6">
                 <div class="small-box bg-info">
                   <div class="box-header with-border">
-                    <h3 class="box-title" style="color: <?= $color_h3; ?>;"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
+                    <h3 class="box-title" style="color: <?= $color_h3; ?>;"><i class="fa fa-download"></i>
+                      <?= $nome_modulo; ?> | Capa e Contra Capa</h3>
                     <div class="box-tools pull-right">
                       <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                       </button>
@@ -346,7 +355,7 @@ if (!isset($_SESSION['usuario'])) {
                     foreach ($materialCapa as $key => $capas) {
                       if ($capas['capa'] == '') {
                       } else {
-                    ?>
+                        ?>
                         <div class="succ">
                           <div class="img-center">
                             <a href="<?php echo base_url($capas['capa']); ?>" target="_blank" download>
@@ -354,7 +363,7 @@ if (!isset($_SESSION['usuario'])) {
                             </a>
                           </div>
                         </div>
-                    <?php }
+                      <?php }
                     } ?>
                   </div>
                 </div>
@@ -365,11 +374,12 @@ if (!isset($_SESSION['usuario'])) {
 
             <?php
             if ($materialLicao) {
-            ?>
+              ?>
               <div class="col-md-6">
                 <div class="small-box bg-info">
                   <div class="box-header with-border">
-                    <h3 class="box-title" style="color: <?= $color_h3; ?>; word-break: normal;"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
+                    <h3 class="box-title" style="color: <?= $color_h3; ?>; word-break: normal;"><i
+                        class="fa fa-download"></i> <?= $nome_modulo; ?> | Lição</h3>
                     <div class="box-tools pull-right">
                       <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                       </button>
@@ -381,7 +391,7 @@ if (!isset($_SESSION['usuario'])) {
 
                       if ($licao['id'] == 0) {
                       } else {
-                    ?>
+                        ?>
                         <div class="succ">
                           <form action="../../download_material" method="post" target="_blank" download>
                             <input type="hidden" name="id" value="<?= $licao['id']; ?>">
@@ -391,7 +401,8 @@ if (!isset($_SESSION['usuario'])) {
                             <input type="hidden" name="download" value="<?= $licao['arquivo']; ?>">
                             <div class="img-center">
                               <button type="submit" style="background-color: transparent; border: none;">
-                                <img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>" class="img-responsive img-capa" alt="User Image">
+                                <img src="<?php echo base_url($licao['imagem']); ?>" title="<?= $licao['nome']; ?>"
+                                  class="img-responsive img-capa" alt="User Image">
                               </button>
                             </div>
                             <label for=""><?= $licao['nome_visivel']; ?></label>
@@ -408,11 +419,12 @@ if (!isset($_SESSION['usuario'])) {
 
             <?php
             if ($materialCards) {
-            ?>
+              ?>
               <div class="col-md-6">
                 <div class="small-box bg-info">
                   <div class="box-header with-border">
-                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário (Cards)</h3>
+                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i>
+                      <?= $nome_modulo; ?> | Versículos e Mistérios e Devocional Diário (Cards)</h3>
                     <div class="box-tools pull-right">
                       <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                       </button>
@@ -421,11 +433,12 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="box-body chat" id="linha">
                     <?php
                     foreach ($materialCards as $key => $cards) {
-                    ?>
+                      ?>
                       <div class="succ">
                         <a href="<?php echo base_url($cards['arquivo']); ?>" target="_blank" download>
                           <div class="img-center">
-                            <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
+                            <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>"
+                              title="<?= $cards['nome']; ?>" class="img-capa" alt="User Image">
                           </div>
                           <label for=""><?= $cards['nome']; ?></label>
                         </a>
@@ -441,11 +454,12 @@ if (!isset($_SESSION['usuario'])) {
 
             <?php
             if ($materialExtra) {
-            ?>
+              ?>
               <div class="col-md-6">
                 <div class="small-box bg-info">
                   <div class="box-header with-border">
-                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i> <?= $nome_modulo; ?> | Extra</h3>
+                    <h3 class="box-title" style="color: <?= $color_h3; ?>"><i class="fa fa-download"></i>
+                      <?= $nome_modulo; ?> | Extra</h3>
                     <div class="box-tools pull-right">
                       <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                       </button>
@@ -454,11 +468,17 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="box-body chat" id="linha">
                     <?php
                     foreach ($materialExtra as $key => $extra) {
-                    ?>
+                      $link = base_url($extra['arquivo']);
+                      if ($extra['id'] == 10) {
+                        $link = $extra['arquivo'];
+                      } else {
+                      }
+                      ?>
                       <div class="succ">
-                        <a href="<?php echo base_url($extra['arquivo']); ?>" target="_blank" download>
+                        <a href="<?php echo $link; ?>" target="_blank" download>
                           <div class="img-center">
-                            <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
+                            <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>"
+                              title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
                           </div>
                           <label for=""><?= $extra['nome']; ?></label>
                         </a>
@@ -492,10 +512,10 @@ if (!isset($_SESSION['usuario'])) {
     ?>
 
     <script type="text/javascript">
-      $(document).ready(function() {
-        $("#todos").click(function() {
+      $(document).ready(function () {
+        $("#todos").click(function () {
           var val = this.checked;
-          $(".lista_sim").each(function() {
+          $(".lista_sim").each(function () {
             $(this).prop('checked', val);
           });
         });
@@ -504,5 +524,5 @@ if (!isset($_SESSION['usuario'])) {
   </body>
 
   </html>
-<?php
+  <?php
 } ?>

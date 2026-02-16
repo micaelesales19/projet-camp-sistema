@@ -21,6 +21,7 @@ $materialSemanarioOperacao = array(
 );
 
 $materialChequinhoOperacao = array(
+    'id' => 0,
     'nome' => 'Chequinho',
     'arquivo' => 'import/sistema/arquivos/02/Operacao/feirinha.pdf'
 );

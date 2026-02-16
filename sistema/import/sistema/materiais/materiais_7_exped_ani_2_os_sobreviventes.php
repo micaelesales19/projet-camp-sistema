@@ -21,6 +21,7 @@ $materialSemanarioSobreviventes = array(
 );
 
 $materialChequinhoSobreviventes = array(
+    'id' => 0,
     'nome' => 'Chequinho',
     'arquivo' => 'import/sistema/arquivos/02/Sobreviventes/feirinha.pdf'
 );

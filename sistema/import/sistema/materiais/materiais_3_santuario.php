@@ -20,6 +20,7 @@ $materialSemanarioSantuario = array(
 );
 
 $materialChequinhoSantuario = array(
+    'id' => 0,
     'nome' => 'Chequinho',
     'arquivo' => 'import/sistema/arquivos/01/Santuario/feirinha.pdf'
 );

@@ -21,6 +21,7 @@ $materialSemanarioTerrarios = array(
 );
 
 $materialChequinhoTerrarios = array(
+    'id' => 0,
     'nome' => 'Chequinho',
     'arquivo' => 'import/sistema/arquivos/02/Terrarios/feirinha.pdf'
 );

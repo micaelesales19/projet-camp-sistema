@@ -21,6 +21,7 @@ $materialSemanarioSegredos = array(
 );
 
 $materialChequinhoSegredos = array(
+    'id' => 0,
     'nome' => 'Chequinho',
     'arquivo' => 'import/sistema/arquivos/02/Segredos/feirinha.pdf'
 );

@@ -16,12 +16,14 @@ $materialCardsTrilha = array(
 );
 
 $materialSemanarioTrilha = array(
+    'id' => 0,
     'nome' => 'Devocional Diário',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/devocional.pdf'
 );
 
 
 $materialChequinhoTrilha = array(
+    'id' => 0,
     'nome' => 'Chequinho',
     'arquivo' => 'import/sistema/arquivos/01/Trilha/feirinha.pdf'
 );

@@ -264,10 +264,16 @@ if (!isset($_SESSION['usuario'])) {
                 array_push($materialCapa, $materialContraCapaOrganelas);
                 array_push($materialCards, $materialCardsOrganelas);
                 array_push($materialCards, $materialSemanarioOrganelas);
+                array_push($materialCards, $materialVersiculoOrganelas);
                 array_push($materialLicao, $materialIntroducaoOrganelas);
                 array_push($materialLicao, $materialLicaoOrganelas);
                 array_push($materialLicao, $materialLicaoVisuaisOrganelas2);
                 array_push($materialLicao, $materialLicaoVisuaisOrganelas1);
+                array_push($materialCards, $materialComplementarOrganela);
+                array_push($materialExtra, $materialComplementarJogo1);
+                array_push($materialExtra, $materialComplementarJogo2);
+                array_push($materialExtra, $materialComplementarJogo3);
+                array_push($materialExtra, $materialComplementarJogo4);
                 break;
               default:
                 $color_modulo = 'green';
@@ -454,9 +460,14 @@ if (!isset($_SESSION['usuario'])) {
                   <div class="box-body chat" id="linha">
                     <?php
                     foreach ($materialExtra as $key => $extra) {
+                      $link = base_url($extra['arquivo']);
+                      if ($extra['id'] == 10) {
+                        $link = $extra['arquivo'];
+                      } else {
+                      }
                     ?>
                       <div class="succ">
-                        <a href="<?php echo base_url($extra['arquivo']); ?>" target="_blank" download>
+                        <a href="<?php echo $link; ?>" target="_blank" download>
                           <div class="img-center">
                             <img src="<?php echo base_url('import/sistema/img/documento.png'); ?>" title="<?= $extra['nome']; ?>" class="img-capa" alt="User Image">
                           </div>
