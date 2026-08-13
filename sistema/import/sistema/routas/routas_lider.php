@@ -20,6 +20,7 @@ $route['lider/page/criancas/gerar/relatorio'] = 'welcome/RelatoriosCriancas'; //
 $route['lider/page/pg'] = 'Lider/pagina_visualizacao_pg'; // ok
 $route['lider/page/pg/cadastro/salvar'] = 'welcome/cadastro_pg'; // ok
 $route['lider/page/pg/edicao/salvar'] = 'welcome/editar_pg'; // ok
+$route['lider/page/pg/exclusao/ativar'] = 'welcome/ativar_pg'; // ok
 $route['lider/page/pg/exclusao/desativar'] = 'welcome/desativar_pg'; // ok
 $route['lider/page/pg/exclusao/permanente'] = 'welcome/excluir_pg_permanentemente'; // ok
 

@@ -30,7 +30,7 @@
       </thead>
       <tbody>
         <?php
-        // Consulta Criança                                                         
+        // Consulta Criança
         $sqlC = "SELECT * FROM criancas WHERE lider LIKE :ID_LIDER AND id_pg LIKE :ID_PG AND ativo = 1";
         $consultaC = $pdo->prepare($sqlC);
         $consultaC->bindValue(":ID_LIDER", $id_lider);

@@ -591,10 +591,10 @@ $pdf->SetFont('arial', '', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("Muitos anos se passarem desde que Adão e Eva foram expulsos do Éden. Você acha que o pecado cresceu ou diminuiu? (fig.7.1) Ele foi aumentando cada vez mais. Deus ficou contente? Por que não? Deus não suportava ver tanta coisa errada nos seres que Ele havia criado. O que será que Ele fez? A Bíblia diz:"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 9);
-$pdf->MultiCell(0, 10, $pdf->textoUTF8("O Senhor viu que a perversidade do homem tinha aumentado na terra e que toda a inclinação dos pensa- mentos do seu coração era sempre e somente para o mal. Então o Senhor arrependeu-se de ter feito o homem sobre a terra; e isso cortou-lhe o coração. Disse o Senhor: Farei desaparecer da face da terra o homem que criei, os homens e também os animais grandes, os animais pequenos e as aves do céu. Arrependo-me de havê-los feito. Gênesis 6:5-7"), 0, 'J');
+$pdf->MultiCell(0, 10, $pdf->textoUTF8("O Senhor viu que a perversidade do homem tinha aumentado na terra e que toda a inclinação dos pensamentos do seu coração era sempre e somente para o mal. Então o Senhor arrependeu-se de ter feito o homem sobre a terra; e isso cortou-lhe o coração. Disse o Senhor: Farei desaparecer da face da terra o homem que criei, os homens e também os animais grandes, os animais pequenos e as aves do céu. Arrependo-me de havê-los feito. Gênesis 6:5-7"), 0, 'J');
 
 $pdf->SetFont('arial', '', 9);
-$pdf->MultiCell(0, 10, $pdf->textoUTF8("A maldade estava por toda parte. Mas e nos dias de hoje? Quando Deus observa os homens,     as mulheres, as crianças, o que você acha que Ele sente? Você acha que Ele está contente? O homem quer fazer do jeito de Deus? Cada um quer fazer somente a sua vontade, como era naquele tempo. Mas Deus viu que havia alguém diferente: (fig.7.2)"), 0, 'J');
+$pdf->MultiCell(0, 10, $pdf->textoUTF8("A maldade estava por toda parte. Mas e nos dias de hoje? Quando Deus observa os homens, as mulheres, as crianças, o que você acha que Ele sente? Você acha que Ele está contente? O homem quer fazer do jeito de Deus? Cada um quer fazer somente a sua vontade, como era naquele tempo. Mas Deus viu que havia alguém diferente: (fig.7.2)"), 0, 'J');
 
 $pdf->SetFont('arial', 'I', 9);
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("¨A Noé, porém, o Senhor mostrou benevolência. Esta é a história da família de Noé: Noé era homem justo, íntegro entre o povo da sua época; ele andava com Deus. Gênesis 6:8-9"), 0, 'J');
@@ -766,7 +766,7 @@ $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Quem são os construtores? - Nós"), 0
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que são os faróis? - Nossas vidas"), 0, 'J');
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Quem é o verdadeiro dono dos faróis? - Deus"), 0, 'J');
 $pdf->MultiCell(0, 10, $pdf->textoUTF8("* Como o farol deve ser feito? - Do jeito de Deus"), 0, 'J');
-$pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que acontece se for feito do jeito errado? - Vamos ser inputeis, não vai dar certo"), 0, 'J');
+$pdf->MultiCell(0, 10, $pdf->textoUTF8("* O que acontece se for feito do jeito errado? - Vamos ser inuteis, não vai dar certo"), 0, 'J');
 
 $pdf->ln(10);
 // Select Arial italic 8

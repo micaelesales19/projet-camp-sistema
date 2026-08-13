@@ -1084,6 +1084,24 @@ if (!isset($_SESSION['usuario'])) {
                                                                                         <!-- Lista de líderes -->
                                                                                         <div id="listaLideres" style="max-height: 300px; overflow-y: auto;">
                                                                                             <?php
+                                                                                            $d_coordenador = $this->Coordenadores->infos([$dados_lider['id_coordenador']], 'info_coordenador', '', '');
+                                                                                            ?>
+                                                                                            <div class="form-check">
+                                                                                                <input class="form-check-input checkbox-lider" type="checkbox" value="<?= $d_coordenador['dados']['id_coordenador']; ?>" id="coord<?= $d_coordenador['dados']['id_coordenador']; ?>">
+                                                                                                <label class="form-check-label" for="coord<?= $d_coordenador['dados']['id_coordenador']; ?>">
+                                                                                                    <?= htmlspecialchars($d_coordenador['dados']['nome_coordenador']); ?> (para seu coordenador)
+                                                                                                </label>
+                                                                                            </div>
+                                                                                            <?php
+                                                                                            $d_supervisor = $this->Supervisores->infos([$dados_lider['id_supervisorR']], 'info_supervisor', '', '');
+                                                                                            ?>
+                                                                                            <div class="form-check">
+                                                                                                <input class="form-check-input checkbox-lider" type="checkbox" value="<?= $d_supervisor['dados']['id_supervisorR']; ?>" id="coord<?= $d_supervisor['dados']['id_supervisorR']; ?>">
+                                                                                                <label class="form-check-label" for="coord<?= $d_supervisor['dados']['id_supervisorR']; ?>">
+                                                                                                    <?= htmlspecialchars($d_supervisor['dados']['nome_supervisorR']); ?> (para seu supervisor)
+                                                                                                </label>
+                                                                                            </div>
+                                                                                            <?php
                                                                                             // exemplo: buscando do banco
                                                                                             $lideres = $this->db->query("SELECT id_lider, nome_lider,id_coordenador,id_supervisorR FROM lider ORDER BY nome_lider ASC")->result_array();
 

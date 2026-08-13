@@ -340,7 +340,7 @@ if (!isset($_SESSION['usuario'])) {
                                                     $comparador_modulo = 1;
                                                     $i = 1;
 
-                                                    if ($pg['row'] != 0 || $checksCriancas) {
+                                                    if ($pg['row'] != 0 || $checksCriancas['row'] == 0) {
 
                                                         $dados_pg = $pg['dados'];
 
@@ -405,7 +405,7 @@ if (!isset($_SESSION['usuario'])) {
                                                                 </div>
                                                                 <?php
                                                             } else {
-                                                                if (!$checksCriancas) {
+                                                                if ($checksCriancas['row'] == 0) {
                                                                 ?>
                                                                     <div class="col-md-12">
                                                                         <div class="callout callout-danger"><br>

@@ -18,7 +18,7 @@
         </thead>
         <tbody>
             <?php
-            $modulos = $this->FConsultas_model->consultarModuloAno($ano);
+            $modulos = $this->FConsultas_model->consultarModulo();
 
             $somaTotalPresencaModulo = 0;
             $somaTotalVersiculoModulo = 0;

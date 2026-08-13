@@ -21,7 +21,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
         var id_user = "<?= $id_supervisor; ?>";
         var valor = sessionStorage.getItem("is_ativo") || '';
         var opc1 = sessionStorage.getItem("opc1") || 'opc1';
-        var data_in = sessionStorage.getItem('data_in') || '2018-02-01';
+        var data_in = sessionStorage.getItem('data_in') || '2017-02-01';
         var data_final = sessionStorage.getItem('data_final') || '';
 
         // Variáveis globais
@@ -70,7 +70,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
             return lista_bd
                 .filter(c => {
                     const d = new Date(c.data_cadastro);
-                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
+                    const dataCadastro = isNaN(d) ? new Date('2017-02-01') : d;
 
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     const ativo = valor === 'is_ativo' ? c.check_coordenador_ativo == 1 : true;
@@ -82,7 +82,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                     // Filtra líderes dentro do período
                     const lideresNoPeriodo = listaLideres.filter(l => {
                         const d2 = new Date(l.data_cadastro);
-                        const dataLider = isNaN(d2) ? new Date('2018-02-01') : d2;
+                        const dataLider = isNaN(d2) ? new Date('2017-02-01') : d2;
                         return dataLider >= data_formatada_1 && dataLider <= data_formatada_2;
                     });
 
@@ -108,25 +108,10 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                 data_formatada_2
             } = calcularDatas(opc1, new Date(), data_in, data_final);
 
-            /*return lista_bd.filter(c => {
-                const dataCadastro = new Date(c.data_cadastro);
-                // Primeiro: aplica sempre o filtro de data
-                const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
-                return dentroDoPeriodo;
-            });*/
-            /*lista_bd.filter(c => {
-                const d = new Date(c.data_cadastro);
-                const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
-                // Primeiro: aplica sempre o filtro de data
-                const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
-                console.log(dataCadastro);
-            });*/
-
-
             return lista_bd
                 .filter(c => {
                     const d = new Date(c.data_cadastro);
-                    const dataCadastro = isNaN(d) ? new Date('2018-02-01') : d;
+                    const dataCadastro = isNaN(d) ? new Date('2017-02-01') : d;
                     const dentroDoPeriodo = dataCadastro >= data_formatada_1 && dataCadastro <= data_formatada_2;
                     return dentroDoPeriodo;
                 })
@@ -137,7 +122,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                     // Filtra líderes que estão dentro do mesmo período de datas
                     const lideresNoPeriodo = listaLideres.filter(l => {
                         const d2 = new Date(l.data_cadastro);
-                        const dataLider = isNaN(d2) ? new Date('2018-02-01') : d2;
+                        const dataLider = isNaN(d2) ? new Date('2017-02-01') : d2;
                         return dataLider >= data_formatada_1 && dataLider <= data_formatada_2;
                     });
 
@@ -154,6 +139,8 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
         }
 
         function preencher_primeira_tabela(lista) {
+            var total_criancas_do_supervisor = Number('<?= $total_criancas_do_supervisor; ?>') || 0;
+
             const totais = lista.reduce((acc, item) => {
                 acc.total_coordenadores += 1;
                 acc.total_coordenadores_ativos += item.check_coordenador_ativo == 1 ? 1 : 0;
@@ -171,7 +158,9 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                 total_criancas_ativos: 0
             });
 
-            //console.log(totais);
+            // 🔥 Soma o supervisor UMA VEZ só
+            totais.total_criancas += total_criancas_do_supervisor;
+            totais.total_criancas_ativos += total_criancas_do_supervisor;
 
             // Calcula porcentagens (evita divisão por 0)
             function calcPercent(part, total) {
@@ -233,7 +222,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                     render: function(data) {
                         return data == "1" ?
                             '<span class="label label-success">Ativo</span>' :
-                            '<span class="label label-danger">Inativo</span>';
+                            '<span class="label label-warning">Pendente</span>';
                     }
                 },
                 // 🔵 Ação: Visualizar
@@ -389,7 +378,7 @@ $foto = base_url('import/sistema/' . $dados_supervisor['dados']['foto']);
                     '<i class="fa fa-hand-pointer-o icon-circle"></i>' :
                     '<i class="fa fa-hand-pointer-o"></i>');
 
-            data_in = sessionStorage.getItem('data_in') || '2018-02-01';
+            data_in = sessionStorage.getItem('data_in') || '2017-02-01';
             data_final = sessionStorage.getItem('data_final') || '';
 
             console.log('INICIAR SESSION');

@@ -3578,7 +3578,8 @@ class Welcome extends CI_Controller
 
 	public function ir_modulo()
 	{
-		$this->load->view('import/sistema/arquivos/01/Arco/Arco.php');
+		require_once('import/sistema/arquivos/01/Trilha/Trilha.php');
+		//$this->load->view('import/sistema/arquivos/01/Arco/Arco.php');
 	}
 
 	public function enviar_email_lider_liberacao_sistema($id_lider, $link)

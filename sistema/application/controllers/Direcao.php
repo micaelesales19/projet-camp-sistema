@@ -823,6 +823,7 @@ class Direcao extends CI_Controller
             'dados_supervisor' => $dados_supervisor,
             'info_coordenadores' => $dados_coordenador_do_supervisor,
             'url_redirecionamento' => $url_redirecionamento,
+            'total_criancas_do_supervisor' => $dados_coordenador_do_supervisor['total_criancas_do_supervisor'],
         );
 
         $this->load->view('sistema/direcao/pages/supervisores/motrar_tabela_coordenadores_do_supervisor', $dados);

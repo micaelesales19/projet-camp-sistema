@@ -178,7 +178,7 @@ $dados_coordenadores = $info_lideres['dados_lideres_gerais']['dados'];
                     titulo: 'Visualizar',
                     render: function(id) {
                         return `
-                            <form action="lider/${id}" method="post" style="margin:0;">
+                            <form action="lider/${id}" method="post" target="_blank" style="margin:0;">
                                 <input type="hidden" name="id_lider" value="${id}">
                                 <input type="submit" class="btn btn-info btn-sm" value="Visualizar" />
                             </form>`;

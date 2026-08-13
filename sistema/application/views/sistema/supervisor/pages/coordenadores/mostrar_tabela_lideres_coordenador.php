@@ -155,7 +155,7 @@ $foto = base_url('import/sistema/' . $info['dados']['foto']);
                     render: function(data) {
                         return data == "1" ?
                             '<span class="label label-success">Ativo</span>' :
-                            '<span class="label label-danger">Inativo</span>';
+                            '<span class="label label-warning">Pendente</span>';
                     }
                 },
                 // 🔵 Ação: Visualizar

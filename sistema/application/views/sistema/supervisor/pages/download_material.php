@@ -32,6 +32,31 @@ if (!isset($_SESSION['usuario'])) {
       height: 300px;
       margin-bottom: 10px;
     }
+
+    .img-center {
+      width: 100px;
+      margin: 0 auto;
+    }
+
+    .img-capa {
+      width: 100px;
+      border-radius: 30px;
+      height: 150px;
+      display: flex;
+      margin: 0 auto;
+      justify-content: center;
+      align-content: center;
+    }
+
+
+    .img-blusa {
+      width: 150px;
+      height: 150px;
+      display: flex;
+      margin: 0 auto;
+      justify-content: center;
+      align-content: center;
+    }
   </style>
 
   <body class="hold-transition skin-blue sidebar-mini">
@@ -100,6 +125,67 @@ if (!isset($_SESSION['usuario'])) {
                       </p>
                     </div>
                   </div>
+
+                  <div class="col-md-3">
+                    <div class="box box-primary box-solid">
+                      <p>
+                        <center>
+                          <div class="img-center">
+                            <a href="<?php echo base_url('import/sistema/arquivos/livros/DISCIPULADO COM CRIANÇAS.pdf'); ?>" target="_blank" download>
+                              <img src="<?php echo base_url('import/sistema/arquivos/livros/capa_1.jpg'); ?>" title="Capa" class="img-capa" alt="User Image">
+                            </a>
+                          </div>
+                          <a href="<?php echo base_url('import/sistema/arquivos/livros/DISCIPULADO COM CRIANÇAS.pdf'); ?>" target="_blank" download> Tudo sobre Pequenos Grupos de Discipulado com Crianças</a><br>
+                        </center>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="box box-primary box-solid">
+                      <p>
+                        <center>
+                          <div class="img-center">
+                            <a href="<?php echo base_url('import/sistema/arquivos/livros/DISCIPULADO RELACIONAL PARA TODA IGREJA.pdf'); ?>" target="_blank" download>
+                              <img src="<?php echo base_url('import/sistema/arquivos/livros/capa_2.jpg'); ?>" title="Capa" class="img-capa" alt="User Image">
+                            </a>
+                          </div>
+                          <a href="<?php echo base_url('import/sistema/arquivos/livros/DISCIPULADO RELACIONAL PARA TODA IGREJA.pdf'); ?>" target="_blank" download> DISCIPULADO RELACIONAL PARA TODA IGREJA</a><br>
+                        </center>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="box box-primary box-solid">
+                      <p>
+                        <center>
+                          <div class="img-center">
+                            <a href="<?php echo base_url('import/sistema/arquivos/livros/Devocional Prático - Lado a Lado.pdf'); ?>" target="_blank" download>
+                              <img src="<?php echo base_url('import/sistema/arquivos/livros/capa_3.jpg'); ?>" title="Capa" class="img-capa" alt="User Image">
+                            </a>
+                          </div>
+                          <a href="<?php echo base_url('import/sistema/arquivos/livros/Devocional Prático - Lado a Lado.pdf'); ?>" target="_blank" download> Devocional Prático - Lado a Lado</a><br>
+                        </center>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="box box-primary box-solid">
+                      <p>
+                        <center>
+                          <div class="img-center">
+                            <a href="<?php echo base_url('import/sistema/arquivos/blusas/arte-blusa-lado-lado.pdf'); ?>" target="_blank" download>
+                              <img src="<?php echo base_url('import/sistema/arquivos/blusas/modelo-lado-a-lado.jpg'); ?>" title="Capa" class="img-blusa" alt="User Image">
+                            </a>
+                          </div>
+                          <a href="<?php echo base_url('import/sistema/arquivos/blusas/arte-blusa-lado-lado.pdf'); ?>" target="_blank" download> Blusa - Lado a Lado</a><br>
+                        </center>
+                      </p>
+                    </div>
+                  </div>
+
                 </div>
               </div>
               <!-- /.box-body -->

@@ -416,7 +416,7 @@ if (!isset($_SESSION['usuario'])) {
                                             $dados_usuario = $info_usuario['dados'];
                                             ?>
 
-                                            <input type="hidden" name="id_usuario" value="<?= $dados_usuario['id_usuario']; ?>">
+                                            <input type="hidden" name="id_usuario" value="<?= $dados_usuario['id_usuario'] ?? ""; ?>">
                                             <input type="hidden" name="id" aria-describedby="emailHelp" value="<?= $dados_coordenador['id_coordenador']; ?>">
                                             <input type="hidden" name="red" value="<?= $url_redirecionamento; ?>">
 
@@ -570,7 +570,7 @@ if (!isset($_SESSION['usuario'])) {
                                             <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label for="exampleInputEmail1">Senha</label>
-                                                    <input type="password" class="form-control" id="senha" name="senha" value="<?= $dados_usuario['senha']; ?>" placeholder="Senha" required>
+                                                    <input type="password" class="form-control" id="senha" name="senha" value="<?= $dados_usuario['senha'] ?? ""; ?>" placeholder="Senha" required>
                                                     <span onclick="toggleSenha()" style="position: absolute; right: 20px; top: 55%; transform: translateY(-50%); cursor: pointer;">👁️</span>
                                                 </div>
                                             </div>

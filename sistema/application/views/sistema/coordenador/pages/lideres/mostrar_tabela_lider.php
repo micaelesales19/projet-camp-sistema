@@ -174,7 +174,7 @@ $dados_coordenadores = $info_lideres['dados_lideres_gerais']['dados'];
                     render: function(data) {
                         return data == "1" ?
                             '<span class="label label-success">Ativo</span>' :
-                            '<span class="label label-danger">Inativo</span>';
+                            '<span class="label label-warning">Pendente</span>';
                     }
                 },
                 {

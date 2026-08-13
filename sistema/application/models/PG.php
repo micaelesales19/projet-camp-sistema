@@ -78,7 +78,7 @@ class PG extends CI_Model
             );
         } else if ($opc == 'query_id_lider_ativo_order_by_modulo_asc_limit_1_download_material') { // ok // antigo 2
             $id_usuario = $dados[0];
-            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo ORDER BY id_modulo ASC LIMIT 1");
+            $query_consulta_pg = $this->db->query("SELECT * FROM pg WHERE id_lider LIKE $id_usuario AND ativo = $ativo ORDER BY id_modulo DESC LIMIT 1");
             $row = $query_consulta_pg->num_rows();
             $consultar_pg = $query_consulta_pg->row_array();
 

@@ -323,10 +323,11 @@ if (!isset($_SESSION['usuario'])) {
                         <li class="active">Treinamento</li>
                     </ol>
                 </section>
+
                 <!-- Main content -->
                 <section class="content">
                     <div class="row">
-                        <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="col-md-3 col-sm-6 col-lg-12">
                             <div class="info-box bg-green">
                                 <span class="info-box-icon"><i class="fa fa-link"></i></span>
                                 <div class="info-box-content">
@@ -342,6 +343,7 @@ if (!isset($_SESSION['usuario'])) {
                         </div>
                         <!-- /.col -->
                     </div>
+
                     <div class="row">
                         <!-- /.col -->
                         <div class="col-md-4">
@@ -423,39 +425,47 @@ if (!isset($_SESSION['usuario'])) {
                                         <input type="hidden" name="opc" value="3">
                                         <input type="hidden" name="img" value="<?= $treinamento_3_1_img; ?>">
                                         <input type="hidden" name="img2" value="<?= $treinamento_3_2_img; ?>">
+
                                         <div class="col-lg-12">
-                                            <div class="col-xs-6">
+
+                                            <div class="col-lg-6">
                                                 <label for="">Nome</label>
                                                 <input type="text" class="form-control" placeholder="Nome" name="nome" required>
                                             </div>
-                                            <div class="col-xs-3">
-                                                <label for="">Mês</label>
-                                                <select name="mes_2" id="mes_2" class="form-control">
+
+                                            <div class="col-lg-3">
+                                                <label for="">Mês</label> <select name="mes_2" id="mes_2" class="form-control">
+
                                                     <?php
                                                     $s = 0;
 
                                                     foreach ($mes as $key => $value) {
                                                     ?>
-                                                        <option value="<?= $value; ?>" <?= $selected_mes_2[$s]; ?>><?= $value; ?></option>
+
+                                                        <option value="<?= $value; ?>" <?= $selected_mes_2[$s]; ?>>
+                                                            <?= $value; ?>
+                                                        </option>
+
                                                     <?php $s++;
-                                                    } ?>
+                                                    }
+                                                    ?>
                                                 </select>
                                             </div>
-                                            <div class="col-xs-3">
+
+                                            <div class="col-lg-3">
                                                 <label for="">Ano</label>
                                                 <input type="text" class="form-control" placeholder="Ano" minlength="4" maxlength="4" name="ano_2" id="ano_2" value="<?= $ano_session_2; ?>" required>
                                             </div>
                                         </div>
 
-                                        <div class="box-footer">
-                                            <br>
+                                        <div class="col-lg-12">
                                             <div class="checkbox">
                                                 <label>
                                                     <input type="checkbox" id="check_3" onclick="guardar_informacoes_3();" <?= $check_cert_3; ?>> Lembrar Informações
                                                 </label>
                                             </div>
 
-                                            <button type="submit" class="btn btn-info pull-right">Preenhcer</button>
+                                            <input type="submit" class="btn btn-info pull-right" value="Preenhcer">
                                     </form>
 
                                     <form action="../../download" method="POST">
@@ -465,135 +475,134 @@ if (!isset($_SESSION['usuario'])) {
                                     </form>
                                 </div>
                             </div>
+                            <!-- LINE 3 -->
                         </div>
-                        <!-- LINE 3 -->
 
-                        <!-- LINE 1 -->
-                        <div class="col-md-12">
-                            <div class="box box-danger">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Certificado Curso Presencial</h3>
-                                </div>
-                                <div class="box-body">
-                                    <form action="../../gerar_certificado" method="POST">
-                                        <input type="hidden" name="opc" value="1">
-                                        <input type="hidden" name="img" value="<?= $treinamento_1_img; ?>">
-                                        <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_supervisorR'] ?>">
-                                        <div class="col-xs-5">
-                                            <label for="">Nome</label>
-                                            <input type="text" class="form-control" placeholder="Nome" name="nome" required>
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <label for="">Carga Horária</label>
-                                            <input type="text" class="form-control" placeholder="Carga Horária" name="carga_horaria" id="cg_horaria" value="<?= $carga_horaria; ?>" required>
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <label for="">Data</label>
-                                            <input type="text" class="form-control" placeholder="Data (DD/MM/YYYY)" minlength="10" maxlength="10" name="data_treinamento" id="dt_treinamento" value="<?= $data_treinamento; ?>" required>
-                                        </div>
+                        <div class="row">
+                            <!-- LINE 1 -->
+                            <div class="col-md-12">
+                                <div class="box box-danger">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Certificado Curso Presencial</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <form action="../../gerar_certificado" method="POST">
+                                            <input type="hidden" name="opc" value="1">
+                                            <input type="hidden" name="img" value="<?= $treinamento_1_img; ?>">
+                                            <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_supervisorR'] ?>">
 
-                                        <div class="box-footer">
-                                            <br>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" id="check_1" onclick="guardar_informacoes_1();" <?= $check_cert_1; ?>> Lembrar Informações
-                                                </label>
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-5">
+                                                    <label for="">Nome</label>
+                                                    <input type="text" class="form-control" placeholder="Nome" name="nome" required>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <label for="">Carga Horária</label>
+                                                    <input type="text" class="form-control" placeholder="Carga Horária" name="carga_horaria" id="cg_horaria" value="<?= $carga_horaria; ?>" required>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <label for="">Data</label>
+                                                    <input type="text" class="form-control" placeholder="Data (DD/MM/YYYY)" minlength="10" maxlength="10" name="data_treinamento" id="dt_treinamento" value="<?= $data_treinamento; ?>" required>
+                                                </div>
                                             </div>
 
-                                            <button type="submit" class="btn btn-info pull-right">Preenhcer</button>
-                                    </form>
+                                            <div class="col-lg-12">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="check_1" onclick="guardar_informacoes_1();" <?= $check_cert_1; ?>> Lembrar Informações
+                                                    </label>
+                                                </div>
 
-                                    <form action="../../download" method="POST">
-                                        <input type="hidden" name="nome" value="Certificado Treinamento Presencial.png">
-                                        <input type="hidden" name="download" value="<?= $treinamento_1_img; ?>">
-                                        <button type="submit" class="btn btn-success">Download Imagem</button>
-                                    </form>
+                                                <button type="submit" class="btn btn-info pull-right">Preenhcer</button>
+                                        </form>
+
+                                        <form action="../../download" method="POST">
+                                            <input type="hidden" name="nome" value="Certificado Treinamento Presencial.png">
+                                            <input type="hidden" name="download" value="<?= $treinamento_1_img; ?>">
+                                            <button type="submit" class="btn btn-success">Download Imagem</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- LINE 1 -->
+                            <!-- LINE 1 -->
+
+                            <div class="row">
+                                <!-- LINE 2 -->
+                                <div class="col-md-12">
+                                    <div class="box box-danger">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Certificado Curso LOL 1</h3>
+                                        </div>
+                                        <div class="box-body">
+                                            <form action="../../gerar_certificado" method="POST">
+                                                <input type="hidden" name="opc" value="2">
+                                                <input type="hidden" name="img" value="<?= $treinamento_2_img; ?>">
+                                                <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_supervisorR']; ?>">
+                                                <input type="hidden" name="estado" value="<?= $dados_usuario['dados']['estado']; ?>">
+                                                <input type="hidden" name="cidade" value="<?= $dados_usuario['dados']['cidade']; ?>">
+
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-6">
+                                                        <label for="">Nome</label>
+                                                        <input type="text" class="form-control" placeholder="Nome" name="nome" required>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <label for="">De (Dia Inicial)</label>
+                                                        <input type="text" class="form-control" placeholder="De" minlength="2" maxlength="2" name="de_1" id="de_1" value="<?= $dia_de1; ?>" required>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <label for="">Até (Dia Final)</label>
+                                                        <input type="text" class="form-control" placeholder="Até" minlength="2" maxlength="2" name="ate_1" id="ate_1" value="<?= $dia_a1; ?>" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-6">
+                                                        <label for="">Mês</label>
+                                                        <select name="mes_1" id="mes_1" class="form-control">
+                                                            <?php
+                                                            $s = 0;
+
+                                                            foreach ($mes as $key => $value) {
+                                                            ?>
+                                                                <option value="<?= $value; ?>" <?= $selected_mes[$s]; ?>><?= $value; ?></option>
+                                                            <?php $s++;
+                                                            } ?>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <label for="">Ano</label>
+                                                        <input type="text" class="form-control" placeholder="Ano" minlength="4" maxlength="4" name="ano_1" id="ano_1" value="<?= $ano_session; ?>" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" id="check_2" onclick="guardar_informacoes_2();" <?= $check_cert_2; ?>> Lembrar Informações
+                                                        </label>
+                                                    </div>
+
+                                                    <button type="submit" class="btn btn-info pull-right">Preenhcer</button>
+                                            </form>
+
+                                            <form action="../../download" method="POST">
+                                                <input type="hidden" name="nome" value="Certificado Treinamento LOL 1.png">
+                                                <input type="hidden" name="download" value="<?= $treinamento_2_img; ?>">
+                                                <button type="submit" class="btn btn-success">Download Imagem</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- LINE 2 -->
+                            </div>
+                </section>
             </div>
             <!-- row -->
-
-            <section class="content">
-                <div class="row">
-                    <!-- LINE 2 -->
-                    <div class="col-md-12">
-                        <div class="box box-danger">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Certificado Curso LOL 1</h3>
-                            </div>
-                            <div class="box-body">
-                                <form action="../../gerar_certificado" method="POST">
-                                    <input type="hidden" name="opc" value="2">
-                                    <input type="hidden" name="img" value="<?= $treinamento_2_img; ?>">
-                                    <input type="hidden" name="nome_user" value="<?= $dados_usuario['dados']['nome_supervisorR']; ?>">
-                                    <input type="hidden" name="estado" value="<?= $dados_usuario['dados']['estado']; ?>">
-                                    <input type="hidden" name="cidade" value="<?= $dados_usuario['dados']['cidade']; ?>">
-                                    <div class="col-lg-12">
-                                        <div class="col-xs-6">
-                                            <label for="">Nome</label>
-                                            <input type="text" class="form-control" placeholder="Nome" name="nome" required>
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <label for="">De</label>
-                                            <input type="text" class="form-control" placeholder="De" minlength="2" maxlength="2" name="de_1" id="de_1" value="<?= $dia_de1; ?>" required>
-                                        </div>
-                                        <div class="col-xs-3">
-                                            <label for="">Até</label>
-                                            <input type="text" class="form-control" placeholder="Até" minlength="2" maxlength="2" name="ate_1" id="ate_1" value="<?= $dia_a1; ?>" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12">
-                                        <div class="col-xs-6">
-                                            <label for="">Mês</label>
-                                            <select name="mes_1" id="mes_1" class="form-control">
-                                                <?php
-                                                $s = 0;
-
-                                                foreach ($mes as $key => $value) {
-                                                ?>
-                                                    <option value="<?= $value; ?>" <?= $selected_mes[$s]; ?>><?= $value; ?></option>
-                                                <?php $s++;
-                                                } ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <label for="">Ano</label>
-                                            <input type="text" class="form-control" placeholder="Ano" minlength="4" maxlength="4" name="ano_1" id="ano_1" value="<?= $ano_session; ?>" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="box-footer">
-                                        <br>
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" id="check_2" onclick="guardar_informacoes_2();" <?= $check_cert_2; ?>> Lembrar Informações
-                                            </label>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-info pull-right">Preenhcer</button>
-                                </form>
-
-                                <form action="../../download" method="POST">
-                                    <input type="hidden" name="nome" value="Certificado Treinamento LOL 1.png">
-                                    <input type="hidden" name="download" value="<?= $treinamento_2_img; ?>">
-                                    <button type="submit" class="btn btn-success">Download Imagem</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- LINE 2 -->
-                </div>
-            </section>
-            </section>
-        </div>
-        <!-- /.content -->
-        <?php
-        $this->load->view('partes/footer');
-        ?>
+            <!-- /.content -->
+            <?php
+            $this->load->view('partes/footer');
+            ?>
         </div>
 
         <!-- Footer -->
