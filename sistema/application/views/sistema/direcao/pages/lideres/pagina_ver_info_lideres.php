@@ -356,10 +356,16 @@ if (!isset($_SESSION['usuario'])) {
                                             $foto_original = $dados_lider['foto'];
                                             //$foto_original = 'fotoU/pais/WhatsApp_Image_2022-12-05_at_08_30_33.jpeg';
 
+                                            $nome = $dados_lider['nome_lider'];
                                             $email = $dados_lider['email'];
                                             $cpf = $dados_lider['cpf'];
 
-                                            $info_usuario = $this->Lideres->infos([$email, $cpf], 'info_usuario_and_email_cpf', '', '');
+                                            if ($dados_lider['pais'] == 'br' || $dados_lider['pais'] == 'Brasil' || $dados_lider['pais'] == '') {
+                                                $info_usuario = $this->Lideres->infos([$email, $cpf], 'info_usuario_and_email_cpf', '', '');
+                                            } else {
+                                                $info_usuario = $this->Lideres->infos([$email, $nome], 'info_usuario_or_email_nome', '', '');
+                                            }
+
 
                                             $disabled_inputs = "";
                                             if (!$check_ativo) {

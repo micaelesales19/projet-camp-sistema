@@ -54,7 +54,6 @@ class FConsultas_model extends CI_Model
 		if ($dt && $dt->format('Y-m-d') === $data) {
 			return $data;
 		}
-
 		// 2) tenta vários formatos comuns
 		$formatos = [
 			'd/m/Y',
@@ -74,7 +73,11 @@ class FConsultas_model extends CI_Model
 			if ($dt !== false) {
 				// valida erros de parsing (por exemplo 32/13/2020)
 				$errors = DateTime::getLastErrors();
-				if ($errors['warning_count'] === 0 && $errors['error_count'] === 0) {
+
+				if (
+					$errors === false ||
+					($errors['warning_count'] === 0 && $errors['error_count'] === 0)
+				) {
 					return $dt->format('Y-m-d');
 				}
 			}
